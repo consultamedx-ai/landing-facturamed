@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FacturaMed · Demo — Facturación VeriFactu para consultas médicas</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<style>
+  :root{--blau:#0D3B66;--teal:#14B8A6;--verd:#059669;--verd-fosc:#047857;--gasa:#F7FAFC;--grafit:#1F2937;--boira:#94A3B8;--linia:#E2E8F0;--ambre:#D97706}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Inter',system-ui,sans-serif;background:var(--gasa);color:var(--grafit);line-height:1.55;-webkit-font-smoothing:antialiased}
+  h1,h2,h3{font-family:'Sora',sans-serif;color:var(--blau)}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+  nav{position:sticky;top:0;z-index:40;background:rgba(247,250,252,.9);backdrop-filter:blur(8px);border-bottom:1px solid var(--linia)}
+  .nav-in{display:flex;align-items:center;justify-content:space-between;height:60px}
+  .logo{font-family:'Sora';font-weight:700;font-size:1.1rem;color:var(--blau)}
+  .logo em{font-style:normal;color:var(--verd)}
+  .demo-chip{background:#FEF3C7;border:1px solid #FCD34D;color:#92400E;font-size:.72rem;font-weight:700;padding:5px 12px;border-radius:99px;letter-spacing:.04em}
+  main{padding:28px 0 60px}
+  .grid{display:grid;grid-template-columns:390px 1fr;gap:24px;align-items:start}
+  .card{background:#fff;border:1px solid var(--linia);border-radius:14px;padding:22px;margin-bottom:20px}
+  .card h2{font-size:1.05rem;margin-bottom:14px}
+  label{display:block;font-size:.8rem;font-weight:600;margin:12px 0 5px}
+  input,select{width:100%;padding:10px 12px;border:1px solid var(--linia);border-radius:9px;font:inherit;font-size:.92rem;background:var(--gasa)}
+  input:focus,select:focus{outline:2px solid var(--teal);background:#fff}
+  .fila{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .btn{display:inline-block;width:100%;background:var(--verd);color:#fff;border:none;cursor:pointer;font-family:inherit;font-weight:600;font-size:.98rem;padding:13px 22px;border-radius:99px;margin-top:16px;transition:background .15s}
+  .btn:hover{background:var(--verd-fosc)}
+  .btn.sec{background:#fff;color:var(--blau);border:1.5px solid var(--linia)}
+  .btn.sec:hover{background:var(--gasa)}
+  .check{display:flex;gap:8px;align-items:center;margin-top:12px;font-size:.85rem}
+  .check input{width:auto}
+  table{width:100%;border-collapse:collapse;font-size:.85rem}
+  th{text-align:left;background:var(--blau);color:#fff;padding:8px 10px;font-weight:600}
+  td{padding:8px 10px;border-bottom:1px solid var(--linia);vertical-align:top}
+  tr:hover td{background:var(--gasa);cursor:pointer}
+  .hash{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--boira)}
+  .estat-ok{color:var(--verd-fosc);font-weight:600}
+  .banner{border-radius:11px;padding:12px 16px;font-size:.87rem;margin-bottom:16px;display:none}
+  .banner.ok{display:block;background:#ECFDF5;border:1px solid #A7F3D0;color:var(--verd-fosc)}
+  .banner.err{display:block;background:#FEF2F2;border:1px solid #FECACA;color:#B91C1C}
+  .buit{color:var(--boira);font-size:.88rem;text-align:center;padding:26px 0}
+  /* ------- factura imprimible ------- */
+  #factura-modal{display:none;position:fixed;inset:0;background:rgba(13,59,102,.45);z-index:60;overflow:auto;padding:26px 12px}
+  #factura-modal.obert{display:block}
+  #factura-print{background:#fff;max-width:640px;margin:0 auto;border-radius:12px;padding:38px;position:relative;box-shadow:0 30px 80px rgba(0,0,0,.3)}
+  .f-cap{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:3px solid var(--blau);padding-bottom:14px;margin-bottom:18px}
+  .f-cap h2{font-size:1.2rem}
+  .f-cap .qui{font-size:.82rem;color:#475569;margin-top:4px}
+  .f-num{text-align:right;font-size:.85rem}
+  .f-num strong{font-family:'Sora';font-size:1.05rem;color:var(--blau);display:block}
+  .f-tab{width:100%;border-collapse:collapse;margin:14px 0;font-size:.9rem}
+  .f-tab th{background:var(--gasa);color:var(--blau);border-bottom:2px solid var(--blau)}
+  .f-tab td,.f-tab th{padding:9px 10px;text-align:left}
+  .f-tab .num{text-align:right}
+  .f-tot{margin-left:auto;width:240px;font-size:.9rem}
+  .f-tot div{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px dashed var(--linia)}
+  .f-tot .gran{font-weight:700;font-size:1.05rem;color:var(--blau);border-bottom:none;padding-top:9px}
+  .f-peu{display:flex;justify-content:space-between;align-items:flex-end;gap:18px;margin-top:22px;border-top:1px solid var(--linia);padding-top:16px}
+  .f-qr{text-align:center}
+  .f-qr .llegenda{font-size:.62rem;font-weight:600;color:var(--boira);margin-top:5px;max-width:150px}
+  .f-legal{font-size:.68rem;color:var(--boira);max-width:330px}
+  .f-legal .hash{word-break:break-all;display:block;margin-top:6px}
+  .demo-marca{position:absolute;top:14px;right:16px;background:#FEF3C7;border:1px solid #FCD34D;color:#92400E;font-size:.66rem;font-weight:700;padding:4px 10px;border-radius:99px}
+  .modal-accions{max-width:640px;margin:14px auto 0;display:flex;gap:12px}
+  .modal-accions .btn{margin-top:0}
+  @media(max-width:900px){.grid{grid-template-columns:1fr}}
+  @media print{
+    body *{visibility:hidden}
+    #factura-modal{display:block!important;position:static;background:#fff;padding:0}
+    #factura-print,#factura-print *{visibility:visible}
+    #factura-print{box-shadow:none;border-radius:0;max-width:100%}
+    .modal-accions{display:none}
+  }
+</style>
+</head>
+<body>
+<nav><div class="wrap nav-in">
+  <span class="logo">Factura<em>Med</em> <span style="font-size:.68rem;color:var(--boira);font-weight:500">by ConsultaMed</span></span>
+  <span class="demo-chip">MODE DEMO · datos ficticios · QR → entorno de PRUEBAS AEAT</span>
+</div></nav>
+
+<main class="wrap">
+  <div class="grid">
+    <div>
+      <div class="card" id="card-config">
+        <h2>1 · Su consulta</h2>
+        <label for="c-nom">Nombre del profesional</label>
+        <input id="c-nom" placeholder="Dra. Marta Ferrer">
+        <div class="fila">
+          <div><label for="c-nif">NIF</label><input id="c-nif" placeholder="12345678Z" maxlength="9"></div>
+          <div><label for="c-serie">Serie de facturación</label><input id="c-serie" value="2026" maxlength="10"></div>
+        </div>
+        <button class="btn sec" id="b-config" type="button">Guardar consulta</button>
+      </div>
+
+      <div class="card">
+        <h2>2 · Nueva factura</h2>
+        <label for="f-pacient">Paciente (referencia)</label>
+        <input id="f-pacient" placeholder="A. Ferrer (demo)">
+        <label for="f-concepte">Concepto</label>
+        <select id="f-concepte">
+          <option>Consulta médica</option><option>Primera visita</option><option>Revisión</option>
+          <option>Cura / procedimiento</option><option>Informe médico</option><option>Otro servicio sanitario</option>
+        </select>
+        <div class="fila">
+          <div><label for="f-import">Importe (€)</label><input id="f-import" type="number" min="1" step="0.01" value="90"></div>
+          <div><label>&nbsp;</label><div class="check" style="margin-top:0"><input type="checkbox" id="f-exempta" checked><label for="f-exempta" style="margin:0;font-weight:400">Exenta IVA (sanitaria)</label></div></div>
+        </div>
+        <button class="btn" id="b-crear" type="button">Emitir factura ⚡</button>
+        <p style="font-size:.72rem;color:var(--boira);margin-top:10px">Se genera el registro con huella SHA-256 encadenada y el QR de cotejo (entorno de pruebas). Nada se envía a la AEAT en la demo.</p>
+      </div>
+    </div>
+
+    <div>
+      <div class="banner" id="banner"></div>
+      <div class="card">
+        <h2 style="display:flex;justify-content:space-between;align-items:center">Registro de facturación (cadena VeriFactu)
+          <button class="btn sec" style="width:auto;margin:0;padding:8px 16px;font-size:.8rem" id="b-verificar" type="button">🔗 Verificar integridad</button>
+        </h2>
+        <div id="llista"></div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div id="factura-modal">
+  <div id="factura-print">
+    <span class="demo-marca">DEMO — SIN VALIDEZ FISCAL</span>
+    <div class="f-cap">
+      <div><h2 id="p-nom">—</h2><div class="qui">NIF <span id="p-nif">—</span> · Servicios médicos (exentos art. 20.Uno.3º LIVA)</div></div>
+      <div class="f-num">FACTURA<strong id="p-num">—</strong><span id="p-data">—</span></div>
+    </div>
+    <div style="font-size:.85rem"><strong>Paciente:</strong> <span id="p-pacient">—</span></div>
+    <table class="f-tab">
+      <thead><tr><th>Concepto</th><th class="num">Base</th><th class="num">IVA</th><th class="num">Total</th></tr></thead>
+      <tbody><tr><td id="p-concepte">—</td><td class="num" id="p-base">—</td><td class="num" id="p-iva">—</td><td class="num" id="p-total1">—</td></tr></tbody>
+    </table>
+    <div class="f-tot">
+      <div><span>Base imponible</span><span id="p-base2">—</span></div>
+      <div><span>Cuota IVA</span><span id="p-quota">—</span></div>
+      <div class="gran"><span>TOTAL</span><span id="p-total2">—</span></div>
+    </div>
+    <div class="f-peu">
+      <div class="f-legal">
+        Factura verificable en la sede electrónica de la AEAT — <strong>VERI*FACTU</strong> (demo: entorno de pruebas).
+        Registro con huella SHA-256 encadenada:
+        <span class="hash" id="p-hash">—</span>
+      </div>
+      <div class="f-qr"><div id="p-qr"></div><div class="llegenda">QR VERI*FACTU · Cotejo AEAT</div></div>
+    </div>
+  </div>
+  <div class="modal-accions">
+    <button class="btn sec" type="button" onclick="document.getElementById('factura-modal').classList.remove('obert')">← Volver</button>
+    <button class="btn" type="button" onclick="window.print()">🖨 Imprimir / Guardar PDF</button>
+  </div>
+</div>
+
+<script defer>
+(function(){
+  'use strict';
+  function safe(fn,nom){try{return fn()}catch(e){console.warn(nom,e)}}
+  var $=function(id){return document.getElementById(id)};
+  var LSC='fm_demo_config', LSR='fm_demo_registres';
+
+  // ---------- motor (port del facturamed-core) ----------
+  async function sha256hex(s){
+    var buf=await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
+    return Array.from(new Uint8Array(buf)).map(function(b){return b.toString(16).padStart(2,'0')}).join('').toUpperCase();
+  }
+  function fmtImport(n){return n.toFixed(2)}
+  function fmtData(d){return String(d.getDate()).padStart(2,'0')+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+d.getFullYear()}
+  function fmtISO(d){
+    var off=-d.getTimezoneOffset(),sig=off>=0?'+':'-',p=function(x){return String(x).padStart(2,'0')};
+    return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+'T'+p(d.getHours())+':'+p(d.getMinutes())+':'+p(d.getSeconds())+sig+p(Math.floor(Math.abs(off)/60))+':'+p(Math.abs(off)%60);
+  }
+  async function huellaAlta(r){
+    var cadena=['IDEmisorFactura='+r.nif,'NumSerieFactura='+r.num,'FechaExpedicionFactura='+r.fecha,
+      'TipoFactura='+r.tipo,'CuotaTotal='+r.quota,'ImporteTotal='+r.total,'Huella='+(r.anterior||''),
+      'FechaHoraHusoGenRegistro='+r.gen].join('&');
+    return sha256hex(cadena);
+  }
+  function urlQR(r){
+    var p=new URLSearchParams({nif:r.nif,numserie:r.num,fecha:r.fecha,importe:r.total});
+    return 'https://prewww2.aeat.es/wlpl/TIKE-CONT/ValidarQR?'+p.toString();
+  }
+
+  // ---------- estat ----------
+  function conf(){return JSON.parse(localStorage.getItem(LSC)||'null')}
+  function regs(){return JSON.parse(localStorage.getItem(LSR)||'[]')}
+  function guardaRegs(r){localStorage.setItem(LSR,JSON.stringify(r))}
+
+  // ---------- UI config ----------
+  safe(function(){
+    var c=conf();
+    if(c){$('c-nom').value=c.nom;$('c-nif').value=c.nif;$('c-serie').value=c.serie}
+    $('b-config').addEventListener('click',function(){
+      var nom=$('c-nom').value.trim(),nif=$('c-nif').value.trim().toUpperCase(),serie=$('c-serie').value.trim();
+      if(!nom||!/^[0-9A-Z][0-9]{7}[0-9A-Z]$/.test(nif)||!serie){avis('err','Revise nombre, NIF (9 caracteres) y serie.');return}
+      localStorage.setItem(LSC,JSON.stringify({nom:nom,nif:nif,serie:serie}));
+      avis('ok','Consulta guardada. Ya puede emitir facturas.');
+    });
+  },'config');
+
+  function avis(tipus,msg){var b=$('banner');b.className='banner '+tipus;b.textContent=msg;setTimeout(function(){b.className='banner'},6000)}
+
+  // ---------- crear factura ----------
+  safe(function(){
+    $('b-crear').addEventListener('click',async function(){
+      var c=conf();
+      if(!c){avis('err','Primero guarde los datos de su consulta (paso 1).');return}
+      var imp=parseFloat($('f-import').value);
+      if(!(imp>0)){avis('err','Importe no válido.');return}
+      var ex=$('f-exempta').checked, base=imp, quota=ex?0:base*0.21, total=base+quota;
+      var llista=regs(), n=llista.length+1, ara=new Date();
+      var r={
+        nif:c.nif, nom:c.nom,
+        num:c.serie+'-'+String(n).padStart(4,'0'),
+        fecha:fmtData(ara), gen:fmtISO(ara), tipo:'F1',
+        pacient:$('f-pacient').value.trim()||'Paciente demo',
+        concepte:$('f-concepte').value,
+        base:fmtImport(base), quota:fmtImport(quota), total:fmtImport(total),
+        exempta:ex, anterior:llista.length?llista[llista.length-1].huella:''
+      };
+      r.huella=await huellaAlta(r);
+      llista.push(r); guardaRegs(llista); pinta(); mostraFactura(r);
+    });
+  },'crear');
+
+  // ---------- llista ----------
+  function pinta(){
+    var l=regs(), el=$('llista');
+    if(!l.length){el.innerHTML='<div class="buit">Aún no hay facturas. Emita la primera con el formulario ← (30 segundos).</div>';return}
+    var h='<table><thead><tr><th>Nº</th><th>Fecha</th><th>Concepto</th><th>Total</th><th>Huella (SHA-256)</th><th></th></tr></thead><tbody>';
+    l.slice().reverse().forEach(function(r){
+      h+='<tr data-num="'+r.num+'"><td><strong>'+r.num+'</strong></td><td>'+r.fecha+'</td><td>'+r.concepte+'</td><td>'+r.total+' €</td><td class="hash">'+r.huella.slice(0,12)+'…</td><td class="estat-ok">✓ registrada</td></tr>';
+    });
+    el.innerHTML=h+'</tbody></table>';
+    el.querySelectorAll('tr[data-num]').forEach(function(tr){
+      tr.addEventListener('click',function(){
+        var r=regs().find(function(x){return x.num===tr.getAttribute('data-num')});
+        if(r)mostraFactura(r);
+      });
+    });
+  }
+
+  // ---------- verificar integritat ----------
+  safe(function(){
+    $('b-verificar').addEventListener('click',async function(){
+      var l=regs();
+      if(!l.length){avis('err','No hay registros que verificar.');return}
+      var ant='';
+      for(var i=0;i<l.length;i++){
+        var r=l[i];
+        if(r.anterior!==ant){avis('err','⛓️‍💥 Cadena rota en '+r.num+' — encadenamiento incorrecto.');return}
+        var re=await huellaAlta(r);
+        if(re!==r.huella){avis('err','⚠️ Registro '+r.num+' ALTERADO: la huella no coincide. Así lo detectaría la AEAT.');return}
+        ant=r.huella;
+      }
+      avis('ok','🔗 Cadena íntegra: '+l.length+' registro(s) verificados. Ninguna factura ha sido alterada.');
+    });
+  },'verificar');
+
+  // ---------- factura imprimible ----------
+  function mostraFactura(r){
+    $('p-nom').textContent=r.nom; $('p-nif').textContent=r.nif;
+    $('p-num').textContent=r.num; $('p-data').textContent=r.fecha;
+    $('p-pacient').textContent=r.pacient; $('p-concepte').textContent=r.concepte;
+    $('p-base').textContent=r.base+' €'; $('p-base2').textContent=r.base+' €';
+    $('p-iva').textContent=r.exempta?'Exenta':'21%';
+    $('p-quota').textContent=r.quota+' €';
+    $('p-total1').textContent=r.total+' €'; $('p-total2').textContent=r.total+' €';
+    $('p-hash').textContent=r.huella;
+    var cont=$('p-qr'); cont.innerHTML='';
+    safe(function(){
+      if(window.qrcode){
+        var q=window.qrcode(0,'M'); q.addData(urlQR(r)); q.make();
+        cont.innerHTML=q.createSvgTag({cellSize:3,margin:2});
+      }else{
+        cont.innerHTML='<div style="font-size:.6rem;max-width:150px;word-break:break-all">'+urlQR(r)+'</div>';
+      }
+    },'qr');
+    $('factura-modal').classList.add('obert');
+  }
+
+  pinta();
+  setTimeout(function(){document.querySelectorAll('.reveal').forEach(function(e){e.classList.add('vist')})},6000);
+})();
+</script>
+</body>
+</html>

@@ -3,71 +3,85 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FacturaMed · Demo — Facturación VeriFactu para consultas médicas</title>
+<title>FacturaMed · Beta — Facturación VeriFactu para consultas médicas</title>
 <meta name="robots" content="noindex">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <style>
-  :root{--blau:#0D3B66;--teal:#14B8A6;--verd:#059669;--verd-fosc:#047857;--gasa:#F7FAFC;--grafit:#1F2937;--boira:#94A3B8;--linia:#E2E8F0;--ambre:#D97706}
+  :root{--blau:#0D3B66;--teal:#14B8A6;--verd:#059669;--verd-fosc:#047857;--gasa:#F7FAFC;--grafit:#1F2937;--boira:#94A3B8;--linia:#E2E8F0;--vermell:#DC2626}
   *{margin:0;padding:0;box-sizing:border-box}
   body{font-family:'Inter',system-ui,sans-serif;background:var(--gasa);color:var(--grafit);line-height:1.55;-webkit-font-smoothing:antialiased}
   h1,h2,h3{font-family:'Sora',sans-serif;color:var(--blau)}
-  .wrap{max-width:1040px;margin:0 auto;padding:0 20px}
-  nav{position:sticky;top:0;z-index:40;background:rgba(247,250,252,.9);backdrop-filter:blur(8px);border-bottom:1px solid var(--linia)}
-  .nav-in{display:flex;align-items:center;justify-content:space-between;height:60px}
-  .logo{font-family:'Sora';font-weight:700;font-size:1.1rem;color:var(--blau)}
+  .wrap{max-width:1100px;margin:0 auto;padding:0 20px}
+  nav{position:sticky;top:0;z-index:40;background:rgba(247,250,252,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--linia)}
+  .nav-in{display:flex;align-items:center;justify-content:space-between;height:58px;gap:12px;flex-wrap:wrap}
+  .logo{font-family:'Sora';font-weight:700;font-size:1.08rem;color:var(--blau);white-space:nowrap}
   .logo em{font-style:normal;color:var(--verd)}
-  .demo-chip{background:#FEF3C7;border:1px solid #FCD34D;color:#92400E;font-size:.72rem;font-weight:700;padding:5px 12px;border-radius:99px;letter-spacing:.04em}
-  main{padding:28px 0 60px}
-  .grid{display:grid;grid-template-columns:390px 1fr;gap:24px;align-items:start}
-  .card{background:#fff;border:1px solid var(--linia);border-radius:14px;padding:22px;margin-bottom:20px}
-  .card h2{font-size:1.05rem;margin-bottom:14px}
-  label{display:block;font-size:.8rem;font-weight:600;margin:12px 0 5px}
-  input,select{width:100%;padding:10px 12px;border:1px solid var(--linia);border-radius:9px;font:inherit;font-size:.92rem;background:var(--gasa)}
+  .beta-chip{background:#FEF3C7;border:1px solid #FCD34D;color:#92400E;font-size:.68rem;font-weight:700;padding:4px 10px;border-radius:99px;letter-spacing:.03em}
+  .tabs{display:flex;gap:4px;background:#fff;border:1px solid var(--linia);border-radius:99px;padding:4px}
+  .tab{border:none;background:none;font:inherit;font-size:.85rem;font-weight:600;color:#64748B;padding:7px 16px;border-radius:99px;cursor:pointer}
+  .tab.actiu{background:var(--blau);color:#fff}
+  main{padding:24px 0 70px}
+  .vista{display:none}
+  .vista.actiu{display:block}
+  .grid{display:grid;grid-template-columns:390px 1fr;gap:22px;align-items:start}
+  .card{background:#fff;border:1px solid var(--linia);border-radius:14px;padding:20px;margin-bottom:18px}
+  .card h2{font-size:1rem;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+  label{display:block;font-size:.78rem;font-weight:600;margin:11px 0 4px}
+  input,select,textarea{width:100%;padding:9px 12px;border:1px solid var(--linia);border-radius:9px;font:inherit;font-size:.9rem;background:var(--gasa)}
   input:focus,select:focus{outline:2px solid var(--teal);background:#fff}
   .fila{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  .btn{display:inline-block;width:100%;background:var(--verd);color:#fff;border:none;cursor:pointer;font-family:inherit;font-weight:600;font-size:.98rem;padding:13px 22px;border-radius:99px;margin-top:16px;transition:background .15s}
+  .btn{display:inline-block;background:var(--verd);color:#fff;border:none;cursor:pointer;font-family:inherit;font-weight:600;font-size:.93rem;padding:11px 20px;border-radius:99px;margin-top:14px;transition:background .15s}
   .btn:hover{background:var(--verd-fosc)}
   .btn.sec{background:#fff;color:var(--blau);border:1.5px solid var(--linia)}
   .btn.sec:hover{background:var(--gasa)}
-  .check{display:flex;gap:8px;align-items:center;margin-top:12px;font-size:.85rem}
+  .btn.mini{padding:6px 13px;font-size:.78rem;margin:0}
+  .btn.perill{background:#fff;color:var(--vermell);border:1.5px solid #FECACA}
+  .check{display:flex;gap:8px;align-items:center;margin-top:10px;font-size:.84rem}
   .check input{width:auto}
-  table{width:100%;border-collapse:collapse;font-size:.85rem}
-  th{text-align:left;background:var(--blau);color:#fff;padding:8px 10px;font-weight:600}
-  td{padding:8px 10px;border-bottom:1px solid var(--linia);vertical-align:top}
-  tr:hover td{background:var(--gasa);cursor:pointer}
-  .hash{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--boira)}
-  .estat-ok{color:var(--verd-fosc);font-weight:600}
-  .banner{border-radius:11px;padding:12px 16px;font-size:.87rem;margin-bottom:16px;display:none}
+  table{width:100%;border-collapse:collapse;font-size:.84rem}
+  th{text-align:left;background:var(--blau);color:#fff;padding:8px 10px;font-weight:600;white-space:nowrap}
+  td{padding:8px 10px;border-bottom:1px solid var(--linia);vertical-align:middle}
+  tbody tr:hover td{background:var(--gasa)}
+  .hash{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--boira)}
+  .pill{display:inline-block;font-size:.68rem;font-weight:700;padding:2px 9px;border-radius:99px}
+  .pill.f1{background:#ECFDF5;color:var(--verd-fosc)}
+  .pill.r1{background:#FEF2F2;color:#B91C1C}
+  .banner{border-radius:11px;padding:11px 15px;font-size:.86rem;margin-bottom:14px;display:none}
   .banner.ok{display:block;background:#ECFDF5;border:1px solid #A7F3D0;color:var(--verd-fosc)}
   .banner.err{display:block;background:#FEF2F2;border:1px solid #FECACA;color:#B91C1C}
-  .buit{color:var(--boira);font-size:.88rem;text-align:center;padding:26px 0}
-  /* ------- factura imprimible ------- */
-  #factura-modal{display:none;position:fixed;inset:0;background:rgba(13,59,102,.45);z-index:60;overflow:auto;padding:26px 12px}
+  .buit{color:var(--boira);font-size:.87rem;text-align:center;padding:24px 0}
+  .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:18px}
+  .kpi{background:#fff;border:1px solid var(--linia);border-radius:12px;padding:14px 16px}
+  .kpi .v{font-family:'Sora';font-weight:700;font-size:1.35rem;color:var(--blau)}
+  .kpi .l{font-size:.72rem;color:var(--boira);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+  .accions-fila{display:flex;gap:6px;flex-wrap:wrap}
+  /* ---- factura modal ---- */
+  #factura-modal{display:none;position:fixed;inset:0;background:rgba(13,59,102,.45);z-index:60;overflow:auto;padding:24px 12px}
   #factura-modal.obert{display:block}
-  #factura-print{background:#fff;max-width:640px;margin:0 auto;border-radius:12px;padding:38px;position:relative;box-shadow:0 30px 80px rgba(0,0,0,.3)}
-  .f-cap{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:3px solid var(--blau);padding-bottom:14px;margin-bottom:18px}
-  .f-cap h2{font-size:1.2rem}
-  .f-cap .qui{font-size:.82rem;color:#475569;margin-top:4px}
-  .f-num{text-align:right;font-size:.85rem}
-  .f-num strong{font-family:'Sora';font-size:1.05rem;color:var(--blau);display:block}
-  .f-tab{width:100%;border-collapse:collapse;margin:14px 0;font-size:.9rem}
+  #factura-print{background:#fff;max-width:640px;margin:0 auto;border-radius:12px;padding:36px;position:relative;box-shadow:0 30px 80px rgba(0,0,0,.3)}
+  .f-cap{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:3px solid var(--blau);padding-bottom:13px;margin-bottom:16px;gap:14px}
+  .f-cap h2{font-size:1.15rem}
+  .f-cap .qui{font-size:.8rem;color:#475569;margin-top:3px}
+  .f-num{text-align:right;font-size:.83rem;white-space:nowrap}
+  .f-num strong{font-family:'Sora';font-size:1.02rem;color:var(--blau);display:block}
+  .f-tab{width:100%;border-collapse:collapse;margin:13px 0;font-size:.88rem}
   .f-tab th{background:var(--gasa);color:var(--blau);border-bottom:2px solid var(--blau)}
-  .f-tab td,.f-tab th{padding:9px 10px;text-align:left}
+  .f-tab td,.f-tab th{padding:8px 10px;text-align:left}
   .f-tab .num{text-align:right}
-  .f-tot{margin-left:auto;width:240px;font-size:.9rem}
+  .f-tot{margin-left:auto;width:240px;font-size:.88rem}
   .f-tot div{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px dashed var(--linia)}
-  .f-tot .gran{font-weight:700;font-size:1.05rem;color:var(--blau);border-bottom:none;padding-top:9px}
-  .f-peu{display:flex;justify-content:space-between;align-items:flex-end;gap:18px;margin-top:22px;border-top:1px solid var(--linia);padding-top:16px}
+  .f-tot .gran{font-weight:700;font-size:1.02rem;color:var(--blau);border-bottom:none;padding-top:8px}
+  .f-peu{display:flex;justify-content:space-between;align-items:flex-end;gap:18px;margin-top:20px;border-top:1px solid var(--linia);padding-top:15px}
   .f-qr{text-align:center}
-  .f-qr .llegenda{font-size:.62rem;font-weight:600;color:var(--boira);margin-top:5px;max-width:150px}
-  .f-legal{font-size:.68rem;color:var(--boira);max-width:330px}
-  .f-legal .hash{word-break:break-all;display:block;margin-top:6px}
-  .demo-marca{position:absolute;top:14px;right:16px;background:#FEF3C7;border:1px solid #FCD34D;color:#92400E;font-size:.66rem;font-weight:700;padding:4px 10px;border-radius:99px}
-  .modal-accions{max-width:640px;margin:14px auto 0;display:flex;gap:12px}
+  .f-qr .llegenda{font-size:.6rem;font-weight:600;color:var(--boira);margin-top:4px;max-width:150px}
+  .f-legal{font-size:.66rem;color:var(--boira);max-width:330px}
+  .f-legal .hash{word-break:break-all;display:block;margin-top:5px}
+  .beta-marca{position:absolute;top:13px;right:15px;background:#FEF3C7;border:1px solid #FCD34D;color:#92400E;font-size:.62rem;font-weight:700;padding:4px 10px;border-radius:99px}
+  .modal-accions{max-width:640px;margin:13px auto 0;display:flex;gap:12px}
   .modal-accions .btn{margin-top:0}
-  @media(max-width:900px){.grid{grid-template-columns:1fr}}
+  @media(max-width:920px){.grid{grid-template-columns:1fr}.kpis{grid-template-columns:1fr 1fr}}
   @media print{
     body *{visibility:hidden}
     #factura-modal{display:block!important;position:static;background:#fff;padding:0}
@@ -79,82 +93,174 @@
 </head>
 <body>
 <nav><div class="wrap nav-in">
-  <span class="logo">Factura<em>Med</em> <span style="font-size:.68rem;color:var(--boira);font-weight:500">by ConsultaMed</span></span>
-  <span class="demo-chip">MODE DEMO · datos ficticios · QR → entorno de PRUEBAS AEAT</span>
+  <span class="logo">Factura<em>Med</em> <span style="font-size:.66rem;color:var(--boira);font-weight:500">by ConsultaMed</span></span>
+  <div class="tabs" id="tabs">
+    <button class="tab actiu" data-v="facturar" type="button">Facturar</button>
+    <button class="tab" data-v="registre" type="button">Registro</button>
+    <button class="tab" data-v="pacients" type="button">Pacientes</button>
+    <button class="tab" data-v="config" type="button">Configuración</button>
+  </div>
+  <span class="beta-chip">BETA · sin remisión AEAT — no usar aún para facturas reales</span>
 </div></nav>
 
 <main class="wrap">
-  <div class="grid">
-    <div>
-      <div class="card" id="card-config">
-        <h2>1 · Su consulta</h2>
-        <label for="c-nom">Nombre del profesional</label>
-        <input id="c-nom" placeholder="Dra. Marta Ferrer">
-        <div class="fila">
-          <div><label for="c-nif">NIF</label><input id="c-nif" placeholder="12345678Z" maxlength="9"></div>
-          <div><label for="c-serie">Serie de facturación</label><input id="c-serie" value="2026" maxlength="10"></div>
-        </div>
-        <button class="btn sec" id="b-config" type="button">Guardar consulta</button>
-      </div>
+  <div class="banner" id="banner"></div>
 
-      <div class="card">
-        <h2>2 · Nueva factura</h2>
-        <label for="f-pacient">Paciente (referencia)</label>
-        <input id="f-pacient" placeholder="A. Ferrer (demo)">
-        <label for="f-concepte">Concepto</label>
-        <select id="f-concepte">
-          <option>Consulta médica</option><option>Primera visita</option><option>Revisión</option>
-          <option>Cura / procedimiento</option><option>Informe médico</option><option>Otro servicio sanitario</option>
-        </select>
-        <div class="fila">
-          <div><label for="f-import">Importe (€)</label><input id="f-import" type="number" min="1" step="0.01" value="90"></div>
-          <div><label>&nbsp;</label><div class="check" style="margin-top:0"><input type="checkbox" id="f-exempta" checked><label for="f-exempta" style="margin:0;font-weight:400">Exenta IVA (sanitaria)</label></div></div>
+  <!-- ============ FACTURAR ============ -->
+  <section class="vista actiu" id="v-facturar">
+    <div class="grid">
+      <div>
+        <div class="card">
+          <h2>Nueva factura</h2>
+          <label for="f-pacient">Paciente</label>
+          <input id="f-pacient" list="dl-pacients" placeholder="Escriba o elija (se creará si es nuevo)" autocomplete="off">
+          <datalist id="dl-pacients"></datalist>
+          <label for="f-concepte">Concepto</label>
+          <select id="f-concepte">
+            <option>Consulta médica</option><option>Primera visita</option><option>Revisión</option>
+            <option>Cura / procedimiento</option><option>Informe médico</option><option>Otro servicio sanitario</option>
+          </select>
+          <div class="fila">
+            <div><label for="f-import">Importe (€)</label><input id="f-import" type="number" min="0.01" step="0.01" value="90"></div>
+            <div><label for="f-serie">Serie</label><select id="f-serie"></select></div>
+          </div>
+          <div class="check"><input type="checkbox" id="f-exempta" checked><label for="f-exempta" style="margin:0;font-weight:400">Exenta de IVA (asistencia sanitaria, art. 20.Uno.3º LIVA)</label></div>
+          <button class="btn" id="b-crear" type="button">Emitir factura ⚡</button>
+          <p style="font-size:.7rem;color:var(--boira);margin-top:9px">Registro con huella SHA-256 encadenada + QR de cotejo (entorno de pruebas AEAT). Los datos se guardan solo en este dispositivo.</p>
         </div>
-        <button class="btn" id="b-crear" type="button">Emitir factura ⚡</button>
-        <p style="font-size:.72rem;color:var(--boira);margin-top:10px">Se genera el registro con huella SHA-256 encadenada y el QR de cotejo (entorno de pruebas). Nada se envía a la AEAT en la demo.</p>
+      </div>
+      <div>
+        <div class="kpis">
+          <div class="kpi"><div class="v" id="k-num">0</div><div class="l">Facturas emitidas</div></div>
+          <div class="kpi"><div class="v" id="k-total">0 €</div><div class="l">Total facturado</div></div>
+          <div class="kpi"><div class="v" id="k-cadena">—</div><div class="l">Estado de la cadena</div></div>
+        </div>
+        <div class="card">
+          <h2>Últimas facturas <button class="btn sec mini" id="b-anar-registre" type="button">Ver todo el registro →</button></h2>
+          <div id="ultimes"></div>
+        </div>
       </div>
     </div>
+  </section>
 
-    <div>
-      <div class="banner" id="banner"></div>
+  <!-- ============ REGISTRE ============ -->
+  <section class="vista" id="v-registre">
+    <div class="card">
+      <h2>Registro de facturación (cadena VeriFactu)
+        <span class="accions-fila">
+          <button class="btn sec mini" id="b-verificar" type="button">🔗 Verificar integridad</button>
+          <button class="btn sec mini" id="b-csv" type="button">⬇ Export gestoría (CSV)</button>
+        </span>
+      </h2>
+      <label for="r-filtre" style="margin-top:0">Buscar</label>
+      <input id="r-filtre" placeholder="Nº, paciente o concepto…" autocomplete="off">
+      <div id="llista" style="margin-top:12px;overflow-x:auto"></div>
+    </div>
+  </section>
+
+  <!-- ============ PACIENTS ============ -->
+  <section class="vista" id="v-pacients">
+    <div class="grid">
       <div class="card">
-        <h2 style="display:flex;justify-content:space-between;align-items:center">Registro de facturación (cadena VeriFactu)
-          <button class="btn sec" style="width:auto;margin:0;padding:8px 16px;font-size:.8rem" id="b-verificar" type="button">🔗 Verificar integridad</button>
-        </h2>
-        <div id="llista"></div>
+        <h2>Nuevo paciente</h2>
+        <label for="p-nom">Nombre y apellidos</label>
+        <input id="p-nom" placeholder="Anna Ferrer Puig">
+        <label for="p-nif">NIF (opcional, para factura nominal)</label>
+        <input id="p-nif" placeholder="00000000X" maxlength="9">
+        <label for="p-contacte">Email o teléfono (opcional)</label>
+        <input id="p-contacte" placeholder="anna@mail.com">
+        <button class="btn" id="b-pacient" type="button">Guardar paciente</button>
+      </div>
+      <div class="card">
+        <h2>Pacientes (<span id="p-compte">0</span>)</h2>
+        <div id="p-llista" style="overflow-x:auto"></div>
       </div>
     </div>
-  </div>
+  </section>
+
+  <!-- ============ CONFIG ============ -->
+  <section class="vista" id="v-config">
+    <div class="grid">
+      <div>
+        <div class="card">
+          <h2>Profesional / consulta</h2>
+          <label for="c-nom">Nombre</label>
+          <input id="c-nom" placeholder="Dra. Marta Ferrer">
+          <div class="fila">
+            <div><label for="c-nif">NIF</label><input id="c-nif" placeholder="12345678Z" maxlength="9"></div>
+            <div><label for="c-colegiat">Nº colegiado (opcional)</label><input id="c-colegiat" placeholder="080812345"></div>
+          </div>
+          <label for="c-adreca">Dirección (opcional, aparece en la factura)</label>
+          <input id="c-adreca" placeholder="C/ Salut 1, 17001 Girona">
+          <button class="btn" id="b-config" type="button">Guardar</button>
+        </div>
+        <div class="card">
+          <h2>Series de facturación</h2>
+          <div id="s-llista"></div>
+          <div class="fila">
+            <div><label for="s-codi">Nueva serie</label><input id="s-codi" placeholder="2026-B" maxlength="12"></div>
+            <div><label>&nbsp;</label><button class="btn sec" id="b-serie" type="button" style="margin-top:0;width:100%">Añadir serie</button></div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <h2>Copia de seguridad</h2>
+          <p style="font-size:.85rem;color:#475569">Los datos viven solo en este navegador. Exporte una copia periódicamente y guárdela en lugar seguro.</p>
+          <span class="accions-fila">
+            <button class="btn sec" id="b-backup" type="button">⬇ Exportar copia (JSON)</button>
+            <button class="btn sec" id="b-restaura-btn" type="button">⬆ Restaurar copia…</button>
+            <input type="file" id="b-restaura" accept="application/json" style="display:none">
+          </span>
+        </div>
+        <div class="card">
+          <h2>Zona de peligro</h2>
+          <p style="font-size:.85rem;color:#475569">Borra TODOS los datos de FacturaMed de este dispositivo (config, pacientes y registro).</p>
+          <button class="btn perill" id="b-esborrar" type="button">Borrar todos los datos</button>
+        </div>
+        <div class="card">
+          <h2>Estado del producto</h2>
+          <p style="font-size:.85rem;color:#475569">✅ Registro con huella encadenada · ✅ QR de cotejo (entorno pruebas) · ✅ Rectificativas · ✅ Export gestoría · ⏳ Remisión automática a la AEAT (pendiente de certificado y alta como sistema de facturación) · ⏳ Remesas a mutuas. <strong>Hasta entonces: solo datos de prueba.</strong></p>
+        </div>
+      </div>
+    </div>
+  </section>
 </main>
 
+<!-- ============ FACTURA IMPRIMIBLE ============ -->
 <div id="factura-modal">
   <div id="factura-print">
-    <span class="demo-marca">DEMO — SIN VALIDEZ FISCAL</span>
+    <span class="beta-marca">BETA — SIN VALIDEZ FISCAL</span>
     <div class="f-cap">
-      <div><h2 id="p-nom">—</h2><div class="qui">NIF <span id="p-nif">—</span> · Servicios médicos (exentos art. 20.Uno.3º LIVA)</div></div>
-      <div class="f-num">FACTURA<strong id="p-num">—</strong><span id="p-data">—</span></div>
+      <div>
+        <h2 id="pr-nom">—</h2>
+        <div class="qui">NIF <span id="pr-nif">—</span> · <span id="pr-extra">Servicios médicos exentos (art. 20.Uno.3º LIVA)</span></div>
+        <div class="qui" id="pr-adreca"></div>
+      </div>
+      <div class="f-num"><span id="pr-tipus">FACTURA</span><strong id="pr-num">—</strong><span id="pr-data">—</span></div>
     </div>
-    <div style="font-size:.85rem"><strong>Paciente:</strong> <span id="p-pacient">—</span></div>
+    <div style="font-size:.84rem"><strong>Paciente:</strong> <span id="pr-pacient">—</span> <span id="pr-pacient-nif" style="color:#64748B"></span></div>
+    <div style="font-size:.78rem;color:#B91C1C;margin-top:4px" id="pr-rectifica"></div>
     <table class="f-tab">
       <thead><tr><th>Concepto</th><th class="num">Base</th><th class="num">IVA</th><th class="num">Total</th></tr></thead>
-      <tbody><tr><td id="p-concepte">—</td><td class="num" id="p-base">—</td><td class="num" id="p-iva">—</td><td class="num" id="p-total1">—</td></tr></tbody>
+      <tbody><tr><td id="pr-concepte">—</td><td class="num" id="pr-base">—</td><td class="num" id="pr-iva">—</td><td class="num" id="pr-total1">—</td></tr></tbody>
     </table>
     <div class="f-tot">
-      <div><span>Base imponible</span><span id="p-base2">—</span></div>
-      <div><span>Cuota IVA</span><span id="p-quota">—</span></div>
-      <div class="gran"><span>TOTAL</span><span id="p-total2">—</span></div>
+      <div><span>Base imponible</span><span id="pr-base2">—</span></div>
+      <div><span>Cuota IVA</span><span id="pr-quota">—</span></div>
+      <div class="gran"><span>TOTAL</span><span id="pr-total2">—</span></div>
     </div>
     <div class="f-peu">
       <div class="f-legal">
-        Factura verificable en la sede electrónica de la AEAT — <strong>VERI*FACTU</strong> (demo: entorno de pruebas).
+        Factura verificable en la sede electrónica de la AEAT — <strong>VERI*FACTU</strong> (beta: entorno de pruebas).
         Registro con huella SHA-256 encadenada:
-        <span class="hash" id="p-hash">—</span>
+        <span class="hash" id="pr-hash">—</span>
       </div>
-      <div class="f-qr"><div id="p-qr"></div><div class="llegenda">QR VERI*FACTU · Cotejo AEAT</div></div>
+      <div class="f-qr"><div id="pr-qr"></div><div class="llegenda">QR VERI*FACTU · Cotejo AEAT</div></div>
     </div>
   </div>
   <div class="modal-accions">
-    <button class="btn sec" type="button" onclick="document.getElementById('factura-modal').classList.remove('obert')">← Volver</button>
+    <button class="btn sec" type="button" id="b-tancar-modal">← Volver</button>
     <button class="btn" type="button" onclick="window.print()">🖨 Imprimir / Guardar PDF</button>
   </div>
 </div>
@@ -164,130 +270,311 @@
   'use strict';
   function safe(fn,nom){try{return fn()}catch(e){console.warn(nom,e)}}
   var $=function(id){return document.getElementById(id)};
-  var LSC='fm_demo_config', LSR='fm_demo_registres';
+  var K={conf:'fm2_config',pac:'fm2_pacients',reg:'fm2_registres'};
 
-  // ---------- motor (port del facturamed-core) ----------
+  // ---------- utilitats ----------
   async function sha256hex(s){
-    var buf=await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
+    var buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));
     return Array.from(new Uint8Array(buf)).map(function(b){return b.toString(16).padStart(2,'0')}).join('').toUpperCase();
   }
-  function fmtImport(n){return n.toFixed(2)}
+  function fmt2(n){return (Math.round(n*100)/100).toFixed(2)}
   function fmtData(d){return String(d.getDate()).padStart(2,'0')+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+d.getFullYear()}
   function fmtISO(d){
     var off=-d.getTimezoneOffset(),sig=off>=0?'+':'-',p=function(x){return String(x).padStart(2,'0')};
     return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+'T'+p(d.getHours())+':'+p(d.getMinutes())+':'+p(d.getSeconds())+sig+p(Math.floor(Math.abs(off)/60))+':'+p(Math.abs(off)%60);
   }
   async function huellaAlta(r){
-    var cadena=['IDEmisorFactura='+r.nif,'NumSerieFactura='+r.num,'FechaExpedicionFactura='+r.fecha,
+    return sha256hex(['IDEmisorFactura='+r.nifEmisor,'NumSerieFactura='+r.num,'FechaExpedicionFactura='+r.fecha,
       'TipoFactura='+r.tipo,'CuotaTotal='+r.quota,'ImporteTotal='+r.total,'Huella='+(r.anterior||''),
-      'FechaHoraHusoGenRegistro='+r.gen].join('&');
-    return sha256hex(cadena);
+      'FechaHoraHusoGenRegistro='+r.gen].join('&'));
   }
   function urlQR(r){
-    var p=new URLSearchParams({nif:r.nif,numserie:r.num,fecha:r.fecha,importe:r.total});
+    var p=new URLSearchParams({nif:r.nifEmisor,numserie:r.num,fecha:r.fecha,importe:r.total});
     return 'https://prewww2.aeat.es/wlpl/TIKE-CONT/ValidarQR?'+p.toString();
+  }
+  function llegeix(k,defecte){try{return JSON.parse(localStorage.getItem(k))||defecte}catch(e){return defecte}}
+  function desa(k,v){localStorage.setItem(k,JSON.stringify(v))}
+  function avis(t,m){var b=$('banner');b.className='banner '+t;b.textContent=m;window.scrollTo({top:0,behavior:'smooth'});setTimeout(function(){b.className='banner'},7000)}
+  function esc(s){return String(s??'').replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+  function descarrega(nom,contingut,mime){
+    var blob=new Blob([contingut],{type:mime});var a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);a.download=nom;a.click();setTimeout(function(){URL.revokeObjectURL(a.href)},2000);
   }
 
   // ---------- estat ----------
-  function conf(){return JSON.parse(localStorage.getItem(LSC)||'null')}
-  function regs(){return JSON.parse(localStorage.getItem(LSR)||'[]')}
-  function guardaRegs(r){localStorage.setItem(LSR,JSON.stringify(r))}
+  function conf(){return llegeix(K.conf,null)}
+  function pacients(){return llegeix(K.pac,[])}
+  function registres(){return llegeix(K.reg,[])}
 
-  // ---------- UI config ----------
+  // ---------- migració des de la demo v1 ----------
   safe(function(){
-    var c=conf();
-    if(c){$('c-nom').value=c.nom;$('c-nif').value=c.nif;$('c-serie').value=c.serie}
+    if(conf())return;
+    var c1=llegeix('fm_demo_config',null),r1=llegeix('fm_demo_registres',[]);
+    if(!c1)return;
+    desa(K.conf,{nom:c1.nom,nif:c1.nif,colegiat:'',adreca:'',series:[{codi:c1.serie,seguent:r1.length+1}]});
+    if(r1.length){
+      desa(K.reg,r1.map(function(r){return{
+        num:r.num,serie:c1.serie,fecha:r.fecha,gen:r.gen,tipo:r.tipo||'F1',
+        nifEmisor:r.nif,pacientNom:r.pacient,pacientNif:'',concepte:r.concepte,
+        base:r.base,quota:r.quota,total:r.total,exempta:r.exempta,
+        anterior:r.anterior,huella:r.huella,esPrimer:!r.anterior,rectificaA:null};}));
+    }
+  },'migracio');
+
+  // ---------- navegació ----------
+  safe(function(){
+    $('tabs').addEventListener('click',function(e){
+      var b=e.target.closest('.tab');if(!b)return;
+      document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('actiu')});
+      document.querySelectorAll('.vista').forEach(function(v){v.classList.remove('actiu')});
+      b.classList.add('actiu');$('v-'+b.dataset.v).classList.add('actiu');
+    });
+    $('b-anar-registre').addEventListener('click',function(){document.querySelector('[data-v="registre"]').click()});
+  },'tabs');
+
+  // ---------- config ----------
+  function pintaConfig(){
+    var c=conf();if(!c)return;
+    $('c-nom').value=c.nom||'';$('c-nif').value=c.nif||'';
+    $('c-colegiat').value=c.colegiat||'';$('c-adreca').value=c.adreca||'';
+    var s=$('f-serie');s.innerHTML='';
+    (c.series||[]).forEach(function(x){var o=document.createElement('option');o.value=x.codi;o.textContent=x.codi+' (próx. nº '+x.seguent+')';s.appendChild(o)});
+    var l=$('s-llista');l.innerHTML='';
+    (c.series||[]).forEach(function(x){
+      var d=document.createElement('div');d.style.cssText='display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px dashed var(--linia);font-size:.87rem';
+      d.innerHTML='<span><strong>'+esc(x.codi)+'</strong></span><span style="color:var(--boira)">siguiente: '+esc(x.codi)+'-'+String(x.seguent).padStart(4,'0')+'</span>';
+      l.appendChild(d);
+    });
+  }
+  safe(function(){
     $('b-config').addEventListener('click',function(){
-      var nom=$('c-nom').value.trim(),nif=$('c-nif').value.trim().toUpperCase(),serie=$('c-serie').value.trim();
-      if(!nom||!/^[0-9A-Z][0-9]{7}[0-9A-Z]$/.test(nif)||!serie){avis('err','Revise nombre, NIF (9 caracteres) y serie.');return}
-      localStorage.setItem(LSC,JSON.stringify({nom:nom,nif:nif,serie:serie}));
-      avis('ok','Consulta guardada. Ya puede emitir facturas.');
+      var nom=$('c-nom').value.trim(),nif=$('c-nif').value.trim().toUpperCase();
+      if(!nom||!/^[0-9A-Z][0-9]{7}[0-9A-Z]$/.test(nif)){avis('err','Revise nombre y NIF (9 caracteres).');return}
+      var c=conf()||{series:[{codi:String(new Date().getFullYear()),seguent:1}]};
+      c.nom=nom;c.nif=nif;c.colegiat=$('c-colegiat').value.trim();c.adreca=$('c-adreca').value.trim();
+      desa(K.conf,c);pintaConfig();avis('ok','Configuración guardada.');
+    });
+    $('b-serie').addEventListener('click',function(){
+      var codi=$('s-codi').value.trim();if(!codi){avis('err','Escriba un código de serie.');return}
+      var c=conf();if(!c){avis('err','Guarde antes el profesional.');return}
+      if(c.series.some(function(x){return x.codi===codi})){avis('err','Esa serie ya existe.');return}
+      c.series.push({codi:codi,seguent:1});desa(K.conf,c);$('s-codi').value='';pintaConfig();avis('ok','Serie añadida.');
     });
   },'config');
 
-  function avis(tipus,msg){var b=$('banner');b.className='banner '+tipus;b.textContent=msg;setTimeout(function(){b.className='banner'},6000)}
+  // ---------- pacients ----------
+  function pintaPacients(){
+    var ps=pacients();$('p-compte').textContent=ps.length;
+    var dl=$('dl-pacients');dl.innerHTML='';
+    ps.forEach(function(p){var o=document.createElement('option');o.value=p.nom;dl.appendChild(o)});
+    var el=$('p-llista');
+    if(!ps.length){el.innerHTML='<div class="buit">Aún no hay pacientes. También se crean solos al facturar.</div>';return}
+    var h='<table><thead><tr><th>Nombre</th><th>NIF</th><th>Contacto</th><th>Facturas</th></tr></thead><tbody>';
+    var rs=registres();
+    ps.slice().sort(function(a,b){return a.nom.localeCompare(b.nom)}).forEach(function(p){
+      var n=rs.filter(function(r){return r.pacientNom===p.nom}).length;
+      h+='<tr><td><strong>'+esc(p.nom)+'</strong></td><td>'+esc(p.nif||'—')+'</td><td>'+esc(p.contacte||'—')+'</td><td>'+n+'</td></tr>';
+    });
+    el.innerHTML=h+'</tbody></table>';
+  }
+  safe(function(){
+    $('b-pacient').addEventListener('click',function(){
+      var nom=$('p-nom').value.trim();if(!nom){avis('err','El nombre es obligatorio.');return}
+      var ps=pacients();
+      if(ps.some(function(p){return p.nom.toLowerCase()===nom.toLowerCase()})){avis('err','Ese paciente ya existe.');return}
+      ps.push({nom:nom,nif:$('p-nif').value.trim().toUpperCase(),contacte:$('p-contacte').value.trim()});
+      desa(K.pac,ps);$('p-nom').value='';$('p-nif').value='';$('p-contacte').value='';
+      pintaPacients();avis('ok','Paciente guardado.');
+    });
+  },'pacients');
 
-  // ---------- crear factura ----------
+  // ---------- crear factura / rectificativa ----------
+  async function emet(dades){
+    var c=conf();
+    var serie=c.series.find(function(x){return x.codi===dades.serie});
+    var rs=registres();
+    var r={
+      num:serie.codi+'-'+String(serie.seguent).padStart(4,'0'),serie:serie.codi,
+      fecha:fmtData(new Date()),gen:fmtISO(new Date()),tipo:dades.tipo,
+      nifEmisor:c.nif,pacientNom:dades.pacientNom,pacientNif:dades.pacientNif||'',
+      concepte:dades.concepte,base:fmt2(dades.base),quota:fmt2(dades.quota),total:fmt2(dades.base+dades.quota),
+      exempta:dades.exempta,anterior:rs.length?rs[rs.length-1].huella:'',esPrimer:!rs.length,
+      rectificaA:dades.rectificaA||null
+    };
+    r.huella=await huellaAlta(r);
+    rs.push(r);desa(K.reg,rs);
+    serie.seguent++;desa(K.conf,c);
+    pintaTot();mostraFactura(r);
+    return r;
+  }
   safe(function(){
     $('b-crear').addEventListener('click',async function(){
       var c=conf();
-      if(!c){avis('err','Primero guarde los datos de su consulta (paso 1).');return}
+      if(!c||!c.nom){avis('err','Primero configure su consulta (pestaña Configuración).');document.querySelector('[data-v="config"]').click();return}
       var imp=parseFloat($('f-import').value);
       if(!(imp>0)){avis('err','Importe no válido.');return}
-      var ex=$('f-exempta').checked, base=imp, quota=ex?0:base*0.21, total=base+quota;
-      var llista=regs(), n=llista.length+1, ara=new Date();
-      var r={
-        nif:c.nif, nom:c.nom,
-        num:c.serie+'-'+String(n).padStart(4,'0'),
-        fecha:fmtData(ara), gen:fmtISO(ara), tipo:'F1',
-        pacient:$('f-pacient').value.trim()||'Paciente demo',
-        concepte:$('f-concepte').value,
-        base:fmtImport(base), quota:fmtImport(quota), total:fmtImport(total),
-        exempta:ex, anterior:llista.length?llista[llista.length-1].huella:''
-      };
-      r.huella=await huellaAlta(r);
-      llista.push(r); guardaRegs(llista); pinta(); mostraFactura(r);
+      var nomP=$('f-pacient').value.trim()||'Paciente';
+      var ps=pacients(),p=ps.find(function(x){return x.nom.toLowerCase()===nomP.toLowerCase()});
+      if(!p){p={nom:nomP,nif:'',contacte:''};ps.push(p);desa(K.pac,ps)}
+      var ex=$('f-exempta').checked;
+      await emet({serie:$('f-serie').value,tipo:'F1',pacientNom:p.nom,pacientNif:p.nif,
+        concepte:$('f-concepte').value,base:imp,quota:ex?0:imp*0.21,exempta:ex});
     });
   },'crear');
 
-  // ---------- llista ----------
-  function pinta(){
-    var l=regs(), el=$('llista');
-    if(!l.length){el.innerHTML='<div class="buit">Aún no hay facturas. Emita la primera con el formulario ← (30 segundos).</div>';return}
-    var h='<table><thead><tr><th>Nº</th><th>Fecha</th><th>Concepto</th><th>Total</th><th>Huella (SHA-256)</th><th></th></tr></thead><tbody>';
-    l.slice().reverse().forEach(function(r){
-      h+='<tr data-num="'+r.num+'"><td><strong>'+r.num+'</strong></td><td>'+r.fecha+'</td><td>'+r.concepte+'</td><td>'+r.total+' €</td><td class="hash">'+r.huella.slice(0,12)+'…</td><td class="estat-ok">✓ registrada</td></tr>';
+  async function rectifica(num){
+    var rs=registres(),orig=rs.find(function(r){return r.num===num});
+    if(!orig)return;
+    if(rs.some(function(r){return r.rectificaA===num})){avis('err','Esa factura ya tiene rectificativa.');return}
+    if(!confirm('Se emitirá una factura RECTIFICATIVA (R1) que anula '+num+' con importes en negativo. ¿Continuar?'))return;
+    await emet({serie:orig.serie,tipo:'R1',pacientNom:orig.pacientNom,pacientNif:orig.pacientNif,
+      concepte:'Rectificación de la factura '+num+' — '+orig.concepte,
+      base:-parseFloat(orig.base),quota:-parseFloat(orig.quota),exempta:orig.exempta,rectificaA:num});
+    avis('ok','Rectificativa emitida. La factura original queda anulada con rastro.');
+  }
+
+  // ---------- llistes ----------
+  function filaHTML(r){
+    var pill=r.tipo==='R1'?'<span class="pill r1">R1</span>':'<span class="pill f1">F1</span>';
+    var accions='<span class="accions-fila"><button class="btn sec mini" data-obre="'+esc(r.num)+'" type="button">Ver</button>';
+    if(r.tipo==='F1')accions+='<button class="btn sec mini" data-rect="'+esc(r.num)+'" type="button">Rectificar</button>';
+    accions+='</span>';
+    return '<tr><td><strong>'+esc(r.num)+'</strong></td><td>'+esc(r.fecha)+'</td><td>'+pill+'</td><td>'+esc(r.pacientNom)+'</td><td>'+esc(r.concepte)+'</td><td style="text-align:right">'+esc(r.total)+' €</td><td class="hash">'+r.huella.slice(0,10)+'…</td><td>'+accions+'</td></tr>';
+  }
+  function pintaRegistre(){
+    var f=($('r-filtre').value||'').toLowerCase();
+    var rs=registres().filter(function(r){
+      return !f||r.num.toLowerCase().includes(f)||r.pacientNom.toLowerCase().includes(f)||r.concepte.toLowerCase().includes(f);
     });
+    var el=$('llista');
+    if(!rs.length){el.innerHTML='<div class="buit">Sin resultados.</div>';return}
+    var h='<table><thead><tr><th>Nº</th><th>Fecha</th><th>Tipo</th><th>Paciente</th><th>Concepto</th><th style="text-align:right">Total</th><th>Huella</th><th></th></tr></thead><tbody>';
+    rs.slice().reverse().forEach(function(r){h+=filaHTML(r)});
     el.innerHTML=h+'</tbody></table>';
-    el.querySelectorAll('tr[data-num]').forEach(function(tr){
-      tr.addEventListener('click',function(){
-        var r=regs().find(function(x){return x.num===tr.getAttribute('data-num')});
-        if(r)mostraFactura(r);
-      });
+    enllacaAccions(el);
+  }
+  function pintaUltimes(){
+    var rs=registres().slice(-5).reverse(),el=$('ultimes');
+    if(!rs.length){el.innerHTML='<div class="buit">Emita la primera factura con el formulario ← (30 segundos).</div>';return}
+    var h='<table><thead><tr><th>Nº</th><th>Fecha</th><th>Tipo</th><th>Paciente</th><th>Concepto</th><th style="text-align:right">Total</th><th>Huella</th><th></th></tr></thead><tbody>';
+    rs.forEach(function(r){h+=filaHTML(r)});
+    el.innerHTML=h+'</tbody></table>';
+    enllacaAccions(el);
+  }
+  function enllacaAccions(scope){
+    scope.querySelectorAll('[data-obre]').forEach(function(b){
+      b.addEventListener('click',function(){var r=registres().find(function(x){return x.num===b.dataset.obre});if(r)mostraFactura(r)});
+    });
+    scope.querySelectorAll('[data-rect]').forEach(function(b){
+      b.addEventListener('click',function(){rectifica(b.dataset.rect)});
     });
   }
+  function pintaKPIs(){
+    var rs=registres();
+    $('k-num').textContent=rs.length;
+    var tot=rs.reduce(function(a,r){return a+parseFloat(r.total)},0);
+    $('k-total').textContent=fmt2(tot)+' €';
+  }
+  function pintaTot(){pintaConfig();pintaPacients();pintaRegistre();pintaUltimes();pintaKPIs()}
+
+  safe(function(){$('r-filtre').addEventListener('input',pintaRegistre)},'filtre');
 
   // ---------- verificar integritat ----------
   safe(function(){
     $('b-verificar').addEventListener('click',async function(){
-      var l=regs();
-      if(!l.length){avis('err','No hay registros que verificar.');return}
+      var rs=registres();
+      if(!rs.length){avis('err','No hay registros que verificar.');return}
       var ant='';
-      for(var i=0;i<l.length;i++){
-        var r=l[i];
-        if(r.anterior!==ant){avis('err','⛓️‍💥 Cadena rota en '+r.num+' — encadenamiento incorrecto.');return}
-        var re=await huellaAlta(r);
-        if(re!==r.huella){avis('err','⚠️ Registro '+r.num+' ALTERADO: la huella no coincide. Así lo detectaría la AEAT.');return}
+      for(var i=0;i<rs.length;i++){
+        var r=rs[i];
+        if((r.anterior||'')!==ant){avis('err','⛓️‍💥 Cadena rota en '+r.num+'.');$('k-cadena').textContent='ROTA';return}
+        if(await huellaAlta(r)!==r.huella){avis('err','⚠️ Registro '+r.num+' ALTERADO: la huella no coincide.');$('k-cadena').textContent='ALTERADA';return}
         ant=r.huella;
       }
-      avis('ok','🔗 Cadena íntegra: '+l.length+' registro(s) verificados. Ninguna factura ha sido alterada.');
+      $('k-cadena').textContent='ÍNTEGRA ✓';
+      avis('ok','🔗 Cadena íntegra: '+rs.length+' registro(s) verificados.');
     });
   },'verificar');
 
+  // ---------- export CSV gestoria ----------
+  safe(function(){
+    $('b-csv').addEventListener('click',function(){
+      var rs=registres();
+      if(!rs.length){avis('err','No hay facturas que exportar.');return}
+      var cap=['Numero','Fecha','Tipo','Paciente','NIF paciente','Concepto','Base','Cuota IVA','Total','Exenta art20','Rectifica a','Huella'];
+      var files=rs.map(function(r){
+        return [r.num,r.fecha,r.tipo,r.pacientNom,r.pacientNif,r.concepte,r.base.replace('.',','),r.quota.replace('.',','),r.total.replace('.',','),r.exempta?'SI':'NO',r.rectificaA||'',r.huella]
+          .map(function(v){v=String(v??'');return /[";\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v}).join(';');
+      });
+      descarrega('FacturaMed_export_'+new Date().toISOString().slice(0,10)+'.csv','﻿'+cap.join(';')+'\n'+files.join('\n'),'text/csv;charset=utf-8');
+      avis('ok','CSV exportado ('+rs.length+' facturas) — listo para su gestoría.');
+    });
+  },'csv');
+
+  // ---------- backup ----------
+  safe(function(){
+    $('b-backup').addEventListener('click',function(){
+      var dump={app:'FacturaMed',versio:2,data:new Date().toISOString(),config:conf(),pacients:pacients(),registres:registres()};
+      descarrega('FacturaMed_copia_'+new Date().toISOString().slice(0,10)+'.json',JSON.stringify(dump,null,1),'application/json');
+      avis('ok','Copia exportada. Guárdela en lugar seguro.');
+    });
+    $('b-restaura-btn').addEventListener('click',function(){$('b-restaura').click()});
+    $('b-restaura').addEventListener('change',function(){
+      var f=this.files[0];if(!f)return;
+      var lector=new FileReader();
+      lector.onload=function(){
+        try{
+          var d=JSON.parse(lector.result);
+          if(d.app!=='FacturaMed'||!d.config)throw new Error('formato');
+          if(!confirm('Esto SUSTITUIRÁ todos los datos actuales por la copia del '+(d.data||'').slice(0,10)+'. ¿Continuar?'))return;
+          desa(K.conf,d.config);desa(K.pac,d.pacients||[]);desa(K.reg,d.registres||[]);
+          pintaTot();avis('ok','Copia restaurada.');
+        }catch(e){avis('err','El archivo no es una copia válida de FacturaMed.')}
+      };
+      lector.readAsText(f);this.value='';
+    });
+    $('b-esborrar').addEventListener('click',function(){
+      if(!confirm('¿Borrar TODOS los datos de FacturaMed de este dispositivo?'))return;
+      if(prompt('Escriba BORRAR para confirmar')!=='BORRAR'){avis('err','Cancelado.');return}
+      [K.conf,K.pac,K.reg,'fm_demo_config','fm_demo_registres'].forEach(function(k){localStorage.removeItem(k)});
+      location.reload();
+    });
+  },'backup');
+
   // ---------- factura imprimible ----------
   function mostraFactura(r){
-    $('p-nom').textContent=r.nom; $('p-nif').textContent=r.nif;
-    $('p-num').textContent=r.num; $('p-data').textContent=r.fecha;
-    $('p-pacient').textContent=r.pacient; $('p-concepte').textContent=r.concepte;
-    $('p-base').textContent=r.base+' €'; $('p-base2').textContent=r.base+' €';
-    $('p-iva').textContent=r.exempta?'Exenta':'21%';
-    $('p-quota').textContent=r.quota+' €';
-    $('p-total1').textContent=r.total+' €'; $('p-total2').textContent=r.total+' €';
-    $('p-hash').textContent=r.huella;
-    var cont=$('p-qr'); cont.innerHTML='';
+    $('pr-nom').textContent=r.tipo==='R1'?conf().nom:conf()?conf().nom:'—';
+    var c=conf()||{};
+    $('pr-nom').textContent=c.nom||'—';
+    $('pr-nif').textContent=c.nif||'—';
+    $('pr-adreca').textContent=[c.adreca,c.colegiat?('Col. '+c.colegiat):''].filter(Boolean).join(' · ');
+    $('pr-tipus').textContent=r.tipo==='R1'?'FACTURA RECTIFICATIVA':'FACTURA';
+    $('pr-num').textContent=r.num;$('pr-data').textContent=r.fecha;
+    $('pr-pacient').textContent=r.pacientNom;
+    $('pr-pacient-nif').textContent=r.pacientNif?('· NIF '+r.pacientNif):'';
+    $('pr-rectifica').textContent=r.rectificaA?('Rectifica y anula la factura '+r.rectificaA+' (art. 15 RD 1619/2012).'):'';
+    $('pr-concepte').textContent=r.concepte;
+    $('pr-base').textContent=r.base+' €';$('pr-base2').textContent=r.base+' €';
+    $('pr-iva').textContent=r.exempta?'Exenta':'21%';
+    $('pr-quota').textContent=r.quota+' €';
+    $('pr-total1').textContent=r.total+' €';$('pr-total2').textContent=r.total+' €';
+    $('pr-hash').textContent=r.huella;
+    var cont=$('pr-qr');cont.innerHTML='';
     safe(function(){
-      if(window.qrcode){
-        var q=window.qrcode(0,'M'); q.addData(urlQR(r)); q.make();
-        cont.innerHTML=q.createSvgTag({cellSize:3,margin:2});
-      }else{
-        cont.innerHTML='<div style="font-size:.6rem;max-width:150px;word-break:break-all">'+urlQR(r)+'</div>';
-      }
+      if(window.qrcode){var q=window.qrcode(0,'M');q.addData(urlQR(r));q.make();cont.innerHTML=q.createSvgTag({cellSize:3,margin:2});}
+      else{cont.innerHTML='<div style="font-size:.58rem;max-width:150px;word-break:break-all">'+esc(urlQR(r))+'</div>'}
     },'qr');
     $('factura-modal').classList.add('obert');
   }
+  safe(function(){$('b-tancar-modal').addEventListener('click',function(){$('factura-modal').classList.remove('obert')})},'modal');
 
-  pinta();
-  setTimeout(function(){document.querySelectorAll('.reveal').forEach(function(e){e.classList.add('vist')})},6000);
+  // ---------- init ----------
+  safe(function(){
+    if(!conf()){
+      desa(K.conf,{nom:'',nif:'',colegiat:'',adreca:'',series:[{codi:String(new Date().getFullYear()),seguent:1}]});
+    }
+    pintaTot();
+  },'init');
 })();
 </script>
 </body>

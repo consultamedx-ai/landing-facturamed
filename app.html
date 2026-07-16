@@ -100,7 +100,7 @@
     <button class="tab" data-v="pacients" type="button">Pacientes</button>
     <button class="tab" data-v="config" type="button">Configuración</button>
   </div>
-  <span class="beta-chip">BETA · sin remisión AEAT — no usar aún para facturas reales</span>
+  <span class="beta-chip">BETA · remisión AEAT solo a PRUEBAS — no usar para facturas reales</span>
 </div></nav>
 
 <main class="wrap">
@@ -150,8 +150,10 @@
         <span class="accions-fila">
           <button class="btn sec mini" id="b-verificar" type="button">🔗 Verificar integridad</button>
           <button class="btn sec mini" id="b-csv" type="button">⬇ Export gestoría (CSV)</button>
+          <button class="btn mini" id="b-aeat" type="button" style="display:none">📡 Enviar a AEAT (pruebas)</button>
         </span>
       </h2>
+      <div id="bridge-info" style="font-size:.76rem;color:var(--boira);margin-bottom:8px">Bridge AEAT: comprobando…</div>
       <label for="r-filtre" style="margin-top:0">Buscar</label>
       <input id="r-filtre" placeholder="Nº, paciente o concepto…" autocomplete="off">
       <div id="llista" style="margin-top:12px;overflow-x:auto"></div>
@@ -434,12 +436,20 @@
   }
 
   // ---------- llistes ----------
+  function pillAEAT(r){
+    var e=(window.__aeatEstats||{})[r.num];
+    if(!e)return '<span class="pill" style="background:#F1F5F9;color:#64748B" title="Solo en este dispositivo">local</span>';
+    if(e.estat==='acceptat')return '<span class="pill f1" title="CSV: '+esc(e.csv||'')+'">✓ AEAT</span>';
+    if(e.estat==='encuat'||e.estat==='encuat_sense_cert')return '<span class="pill" style="background:#FEF3C7;color:#92400E">en cola</span>';
+    if(e.estat==='rebutjat')return '<span class="pill r1" title="'+esc((e.codiError||'')+' '+(e.descripcioError||''))+'">✗ error</span>';
+    return '<span class="pill" style="background:#FEF2F2;color:#B91C1C" title="'+esc(e.descripcioError||'')+'">sin conexión</span>';
+  }
   function filaHTML(r){
     var pill=r.tipo==='R1'?'<span class="pill r1">R1</span>':'<span class="pill f1">F1</span>';
     var accions='<span class="accions-fila"><button class="btn sec mini" data-obre="'+esc(r.num)+'" type="button">Ver</button>';
     if(r.tipo==='F1')accions+='<button class="btn sec mini" data-rect="'+esc(r.num)+'" type="button">Rectificar</button>';
     accions+='</span>';
-    return '<tr><td><strong>'+esc(r.num)+'</strong></td><td>'+esc(r.fecha)+'</td><td>'+pill+'</td><td>'+esc(r.pacientNom)+'</td><td>'+esc(r.concepte)+'</td><td style="text-align:right">'+esc(r.total)+' €</td><td class="hash">'+r.huella.slice(0,10)+'…</td><td>'+accions+'</td></tr>';
+    return '<tr><td><strong>'+esc(r.num)+'</strong></td><td>'+esc(r.fecha)+'</td><td>'+pill+'</td><td>'+esc(r.pacientNom)+'</td><td>'+esc(r.concepte)+'</td><td style="text-align:right">'+esc(r.total)+' €</td><td class="hash">'+r.huella.slice(0,10)+'…</td><td>'+pillAEAT(r)+'</td><td>'+accions+'</td></tr>';
   }
   function pintaRegistre(){
     var f=($('r-filtre').value||'').toLowerCase();
@@ -448,7 +458,7 @@
     });
     var el=$('llista');
     if(!rs.length){el.innerHTML='<div class="buit">Sin resultados.</div>';return}
-    var h='<table><thead><tr><th>Nº</th><th>Fecha</th><th>Tipo</th><th>Paciente</th><th>Concepto</th><th style="text-align:right">Total</th><th>Huella</th><th></th></tr></thead><tbody>';
+    var h='<table><thead><tr><th>Nº</th><th>Fecha</th><th>Tipo</th><th>Paciente</th><th>Concepto</th><th style="text-align:right">Total</th><th>Huella</th><th>AEAT</th><th></th></tr></thead><tbody>';
     rs.slice().reverse().forEach(function(r){h+=filaHTML(r)});
     el.innerHTML=h+'</tbody></table>';
     enllacaAccions(el);
@@ -456,7 +466,7 @@
   function pintaUltimes(){
     var rs=registres().slice(-5).reverse(),el=$('ultimes');
     if(!rs.length){el.innerHTML='<div class="buit">Emita la primera factura con el formulario ← (30 segundos).</div>';return}
-    var h='<table><thead><tr><th>Nº</th><th>Fecha</th><th>Tipo</th><th>Paciente</th><th>Concepto</th><th style="text-align:right">Total</th><th>Huella</th><th></th></tr></thead><tbody>';
+    var h='<table><thead><tr><th>Nº</th><th>Fecha</th><th>Tipo</th><th>Paciente</th><th>Concepto</th><th style="text-align:right">Total</th><th>Huella</th><th>AEAT</th><th></th></tr></thead><tbody>';
     rs.forEach(function(r){h+=filaHTML(r)});
     el.innerHTML=h+'</tbody></table>';
     enllacaAccions(el);
@@ -567,6 +577,62 @@
     $('factura-modal').classList.add('obert');
   }
   safe(function(){$('b-tancar-modal').addEventListener('click',function(){$('factura-modal').classList.remove('obert')})},'modal');
+
+
+  // ---------- bridge AEAT (pont local, entorn de proves) ----------
+  var BRIDGE='http://127.0.0.1:7373';
+  window.__aeatEstats={};
+  var bridgeViu=false;
+  function pintaBridge(msg,color){var el=$('bridge-info');if(el){el.textContent=msg;el.style.color=color||'var(--boira)'}}
+  async function sondejaBridge(){
+    try{
+      var r=await fetch(BRIDGE+'/estat',{signal:AbortSignal.timeout(1500)});
+      var d=await r.json();
+      bridgeViu=true;
+      $('b-aeat').style.display='';
+      pintaBridge('Bridge AEAT: ✓ conectado (entorno de PRUEBAS'+(d.certCarregat?', certificado cargado':', SIN certificado')+') · pendientes: '+d.pendents,'var(--verd-fosc)');
+      var c=await fetch(BRIDGE+'/cua').then(function(x){return x.json()});
+      window.__aeatEstats=c.estats||{};
+      pintaRegistre();pintaUltimes();
+    }catch(e){
+      bridgeViu=false;
+      $('b-aeat').style.display='none';
+      pintaBridge('Bridge AEAT: no detectado. Para enviar al entorno de pruebas, ejecute el bridge local en su Mac (carpeta facturamed-core: node bridge/servidor.mjs certificado.p12).');
+    }
+  }
+  safe(function(){
+    sondejaBridge();setInterval(sondejaBridge,7000);
+    $('b-aeat').addEventListener('click',async function(){
+      if(!bridgeViu){avis('err','Bridge no detectado.');return}
+      var c=conf(),rs=registres(),enviades=0,saltades=0;
+      for(var i=0;i<rs.length;i++){
+        var r=rs[i];
+        var previ=window.__aeatEstats[r.num];
+        if(previ&&(previ.estat==='acceptat'||previ.estat==='encuat')){saltades++;continue}
+        if(r.tipo==='R1'){saltades++;continue} // rectificatives: fase següent
+        var ps=pacients(),p=ps.find(function(x){return x.nom===r.pacientNom})||{};
+        var payload={
+          registre:{
+            nifEmisor:r.nifEmisor,numSerieFactura:r.num,fechaExpedicion:r.fecha,
+            tipoFactura:r.tipo,descripcion:r.concepte,
+            baseImponible:r.base,cuotaTotal:r.quota,importeTotal:r.total,
+            tipoIVA:r.exempta?'Exenta (art. 20.Uno.3\u00ba LIVA)':'21%',
+            huellaAnterior:r.anterior||'',esPrimerRegistro:!!r.esPrimer,
+            fechaHoraHusoGenRegistro:r.gen,tipoHuella:'01',huella:r.huella,
+            destinatari:(r.tipo==='F1'&&(r.pacientNif||p.nif))?{nombre:r.pacientNom,nif:r.pacientNif||p.nif}:null
+          },
+          emissor:{nifEmisor:c.nif,nombreEmisor:c.nom}
+        };
+        try{
+          var resp=await fetch(BRIDGE+'/alta',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+          var d=await resp.json();
+          if(d.ok)enviades++;else{avis('err','AEAT rechaz\u00f3 '+r.num+': '+(d.error||''));break}
+        }catch(e){avis('err','Error de conexi\u00f3n con el bridge.');break}
+      }
+      avis('ok','\ud83d\udce1 '+enviades+' factura(s) en cola hacia la AEAT (pruebas)'+(saltades?' \u00b7 '+saltades+' omitidas (ya enviadas o rectificativas)':'')+'. El estado se actualiza solo.');
+      sondejaBridge();
+    });
+  },'bridge');
 
   // ---------- init ----------
   safe(function(){

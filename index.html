@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FacturaMed — Facturación VeriFactu y mutuas para médicos | by ConsultaMed</title>
-<meta name="description" content="FacturaMed emite sus facturas con hash y QR VeriFactu, gestiona las remesas a mutuas y reclama impagos. Usted solo pasa consulta. Lista de espera founding members: 490 €/año.">
+<title>FacturaMed — Facturación VeriFactu y mutuas para médicos | 50 €/mes</title>
+<meta name="description" content="Facturación VeriFactu para consultas médicas privadas: hash, QR y remisión a la AEAT. Cree su cuenta y empiece hoy. 50 €/mes o 500 €/año (2 meses gratis).">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -18,20 +18,17 @@
   html{scroll-behavior:smooth}
   body{font-family:'Inter',system-ui,sans-serif;color:var(--grafit);background:var(--gasa);line-height:1.6;-webkit-font-smoothing:antialiased}
   h1,h2,h3{font-family:'Sora',sans-serif;color:var(--blau);line-height:1.15}
-  img{max-width:100%}
   a{color:var(--verd)}
   .wrap{max-width:var(--max);margin:0 auto;padding:0 24px}
-
-  /* ---------- Nav ---------- */
   nav{position:sticky;top:0;z-index:50;background:rgba(247,250,252,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--linia)}
   .nav-in{display:flex;align-items:center;justify-content:space-between;height:64px}
   .logo{font-family:'Sora';font-weight:700;font-size:1.15rem;color:var(--blau);text-decoration:none}
   .logo em{font-style:normal;color:var(--verd)}
   .logo small{display:block;font-family:'Inter';font-weight:500;font-size:.62rem;letter-spacing:.08em;color:var(--boira);text-transform:uppercase}
+  .nav-dreta{display:flex;align-items:center;gap:14px}
+  .lang{font-size:.82rem;font-weight:600;color:var(--boira);text-decoration:none}
   .nav-cta{background:var(--verd);color:#fff;text-decoration:none;font-weight:600;font-size:.9rem;padding:10px 18px;border-radius:99px;transition:transform .15s ease, background .15s ease}
   .nav-cta:hover{background:var(--verd-fosc);transform:translateY(-1px)}
-
-  /* ---------- Hero ---------- */
   header{position:relative;overflow:hidden;padding:84px 0 96px;
     background:
       radial-gradient(600px 380px at 85% 8%, rgba(20,184,166,.14), transparent 60%),
@@ -45,11 +42,9 @@
   h1 .marca{color:var(--verd)}
   .sub{font-size:1.13rem;color:#475569;max-width:34em;margin-bottom:30px}
   .cta-row{display:flex;flex-wrap:wrap;align-items:center;gap:16px}
-  .btn{display:inline-block;background:var(--verd);color:#fff;text-decoration:none;font-weight:600;font-size:1.02rem;padding:15px 30px;border-radius:99px;box-shadow:0 10px 24px rgba(5,150,105,.28);transition:transform .15s ease, box-shadow .15s ease}
+  .btn{display:inline-block;background:var(--verd);color:#fff;text-decoration:none;font-weight:600;font-size:1.02rem;padding:15px 30px;border-radius:99px;box-shadow:0 10px 24px rgba(5,150,105,.28);transition:transform .15s ease, box-shadow .15s ease;border:none;cursor:pointer;font-family:inherit}
   .btn:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(5,150,105,.36)}
   .micro{font-size:.84rem;color:var(--boira)}
-
-  /* factura mockup */
   .mock{position:relative}
   .factura{background:#fff;border:1px solid var(--linia);border-radius:var(--radius);box-shadow:0 24px 60px rgba(13,59,102,.14);padding:26px;transform:rotate(1.5deg)}
   .factura h3{font-size:.95rem;display:flex;justify-content:space-between;align-items:center}
@@ -60,8 +55,6 @@
   .f-qr svg{display:block}
   .f-qr span{display:block;text-align:center;font-size:.58rem;font-weight:600;color:var(--boira);margin-top:4px;letter-spacing:.05em}
   .f-chip{position:absolute;left:-16px;top:-16px;background:var(--blau);color:#fff;font-size:.72rem;font-weight:600;padding:8px 14px;border-radius:99px;box-shadow:0 10px 24px rgba(13,59,102,.3);transform:rotate(-2deg)}
-
-  /* ---------- Seccions ---------- */
   section{padding:78px 0}
   .kicker{display:block;font-size:.78rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--verd);margin-bottom:10px}
   h2{font-size:clamp(1.5rem,3vw,2.1rem);margin-bottom:14px}
@@ -79,51 +72,45 @@
   .paso::before{content:"0" counter(pasos);font-family:'Sora';font-weight:700;font-size:.85rem;color:var(--teal);display:block;margin-bottom:10px}
   .paso p{font-size:.9rem;color:#B9CBDD}
   #como .grid3{counter-reset:pasos}
-
-  /* founding */
-  .founding{display:grid;grid-template-columns:1fr 1fr;gap:44px;align-items:center}
-  .preu-card{background:#fff;border:2px solid var(--verd);border-radius:18px;padding:34px;box-shadow:0 24px 60px rgba(5,150,105,.14);position:relative}
-  .preu-card .tag{position:absolute;top:-14px;left:28px;background:var(--verd);color:#fff;font-size:.72rem;font-weight:700;letter-spacing:.06em;padding:6px 14px;border-radius:99px;text-transform:uppercase}
-  .preu{font-family:'Sora';font-weight:700;font-size:2.9rem;color:var(--blau);margin:14px 0 2px}
+  /* preus */
+  .preus{display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:760px;margin:0 auto}
+  .preu-card{background:#fff;border:1.5px solid var(--linia);border-radius:18px;padding:32px;position:relative;display:flex;flex-direction:column}
+  .preu-card.destacat{border:2px solid var(--verd);box-shadow:0 24px 60px rgba(5,150,105,.14)}
+  .preu-card .tag{position:absolute;top:-14px;left:26px;background:var(--verd);color:#fff;font-size:.72rem;font-weight:700;letter-spacing:.06em;padding:6px 14px;border-radius:99px;text-transform:uppercase}
+  .preu-card h3{font-size:1.05rem;margin-bottom:6px}
+  .preu{font-family:'Sora';font-weight:700;font-size:2.7rem;color:var(--blau);margin:10px 0 2px}
   .preu small{font-size:1rem;color:var(--boira);font-weight:600}
-  .tachado{color:var(--boira);text-decoration:line-through;font-size:.95rem}
-  .preu-card ul{list-style:none;margin:20px 0}
-  .preu-card li{font-size:.9rem;padding:8px 0 8px 28px;position:relative;border-bottom:1px dashed var(--linia)}
+  .preu-nota{font-size:.82rem;color:var(--boira);margin-bottom:14px}
+  .estalvi{display:inline-block;background:#ECFDF5;border:1px solid #A7F3D0;color:var(--verd-fosc);font-size:.76rem;font-weight:700;padding:4px 11px;border-radius:99px;margin-bottom:12px}
+  .preu-card ul{list-style:none;margin:12px 0 20px}
+  .preu-card li{font-size:.89rem;padding:7px 0 7px 26px;position:relative;border-bottom:1px dashed var(--linia)}
   .preu-card li::before{content:"✓";position:absolute;left:0;color:var(--verd);font-weight:700}
-  .nota-pago{background:#ECFDF5;border:1px solid #A7F3D0;border-radius:10px;font-size:.84rem;color:var(--verd-fosc);padding:12px 14px;margin-top:16px}
-
-  /* trust + faq */
-  .trust{display:flex;flex-wrap:wrap;gap:14px;margin-top:26px}
+  .preu-card .btn{margin-top:auto;text-align:center}
+  .beta-nota{max-width:760px;margin:18px auto 0;background:#ECFDF5;border:1px solid #A7F3D0;border-radius:12px;font-size:.87rem;color:var(--verd-fosc);padding:13px 16px;text-align:center}
+  .trust{display:flex;flex-wrap:wrap;gap:14px;margin-top:26px;justify-content:center}
   .pill{background:#fff;border:1px solid var(--linia);border-radius:99px;font-size:.8rem;font-weight:500;color:#475569;padding:9px 16px}
   details{background:#fff;border:1px solid var(--linia);border-radius:12px;padding:18px 22px;margin-bottom:12px}
   summary{font-weight:600;color:var(--blau);cursor:pointer;font-size:.97rem}
   details p{font-size:.9rem;color:#475569;margin-top:10px}
-
-  /* form */
-  #form{background:linear-gradient(180deg,#fff 0%,var(--gasa) 100%);border-top:1px solid var(--linia)}
+  #registro{background:linear-gradient(180deg,#fff 0%,var(--gasa) 100%);border-top:1px solid var(--linia)}
   form{background:#fff;border:1px solid var(--linia);border-radius:18px;padding:34px;max-width:560px;margin:0 auto;box-shadow:0 24px 60px rgba(13,59,102,.10)}
   label{display:block;font-size:.84rem;font-weight:600;margin:16px 0 6px}
   input,select{width:100%;padding:12px 14px;border:1px solid var(--linia);border-radius:10px;font:inherit;font-size:.95rem;background:var(--gasa)}
   input:focus,select:focus{outline:2px solid var(--teal);background:#fff}
   .check{display:flex;gap:10px;align-items:flex-start;margin:18px 0;font-size:.8rem;color:#475569}
   .check input{width:auto;margin-top:3px}
-  form .btn{width:100%;border:none;cursor:pointer;font-family:inherit}
+  form .btn{width:100%}
   #gracias{display:none;text-align:center;padding:30px 10px}
   #gracias h3{color:var(--verd-fosc);margin-bottom:8px}
-
   footer{background:var(--blau);color:#B9CBDD;padding:44px 0;font-size:.82rem}
   footer .wrap{display:flex;flex-wrap:wrap;gap:18px;justify-content:space-between;align-items:center}
   footer strong{color:#fff;font-family:'Sora'}
-
-  /* reveal */
   .reveal{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease}
   .reveal.vist{opacity:1;transform:none}
-  .reveal[data-split]{opacity:1;transform:none}
-
   @media(max-width:860px){
     .hero{grid-template-columns:1fr;gap:44px}
     .grid3{grid-template-columns:1fr}
-    .founding{grid-template-columns:1fr}
+    .preus{grid-template-columns:1fr}
     header{padding:56px 0 70px}
     .mock{max-width:420px;margin:0 auto}
   }
@@ -134,7 +121,11 @@
 <nav>
   <div class="wrap nav-in">
     <a class="logo" href="#">Factura<em>Med</em><small>by ConsultaMed</small></a>
-    <div style="display:flex;align-items:center;gap:14px"><a href="ca.html" style="font-size:.82rem;font-weight:600;color:#94A3B8;text-decoration:none">CAT</a><a class="nav-cta" href="#form">Unirme a la lista</a></div>
+    <div class="nav-dreta">
+      <a class="lang" href="ca.html">CAT</a>
+      <a class="lang" href="precios" style="display:none"></a>
+      <a class="nav-cta" href="#registro">Crear cuenta</a>
+    </div>
   </div>
 </nav>
 
@@ -145,8 +136,8 @@
       <h1>Su consulta factura sola.<br>Y cumple <span class="marca">VeriFactu</span> desde el primer día.</h1>
       <p class="sub">FacturaMed emite cada factura con su hash y QR VeriFactu, prepara las remesas para las mutuas y reclama los impagos por usted. Usted solo pasa consulta.</p>
       <div class="cta-row">
-        <a class="btn" href="#form">Reservar plaza founding member</a>
-        <span class="micro">25 plazas · 490 €/año (después 588 €)<br><strong>Hoy no se cobra nada.</strong></span>
+        <a class="btn" href="#registro">Crear cuenta y empezar ahora</a>
+        <span class="micro">Beta abierta · acceso inmediato<br><strong>50 €/mes</strong> o 500 €/año (2 meses gratis)</span>
       </div>
     </div>
     <div class="mock">
@@ -194,7 +185,7 @@
       <div class="card reveal">
         <div class="ic">⏱️</div>
         <h3>Su tiempo vale más</h3>
-        <p>Una visita son 60-90 €. Cada hora de papeleo mensual que elimina se paga sola. FacturaMed cuesta menos que media visita al mes.</p>
+        <p>Una visita son 60-90 €. FacturaMed cuesta 50 € al mes: menos que una visita. Cada hora de papeleo que elimina se paga sola.</p>
       </div>
     </div>
   </div>
@@ -204,49 +195,66 @@
   <div class="wrap">
     <span class="kicker reveal">Cómo funciona</span>
     <h2 class="reveal">De la visita al cobro, sin tocar nada</h2>
-    <p class="lead reveal">Alta guiada en 15 minutos con su certificado digital. Después, todo es automático.</p>
+    <p class="lead reveal">Cree su cuenta, configure su consulta en 2 minutos y emita su primera factura hoy mismo.</p>
     <div class="grid3">
       <div class="paso reveal">
         <h3>Termina la visita</h3>
-        <p>Un clic (o una conexión con su agenda) y la factura se genera con la serie, el hash y el QR VeriFactu correctos, y se comunica a la AEAT.</p>
+        <p>Un clic y la factura se genera con la serie, el hash y el QR VeriFactu correctos, lista para remitirse a la AEAT.</p>
       </div>
       <div class="paso reveal">
         <h3>El paciente o la mutua reciben lo suyo</h3>
-        <p>Al paciente: enlace de pago por Bizum o tarjeta en el momento. A la mutua: remesa mensual en su formato exacto, validada antes de enviarse.</p>
+        <p>Al paciente: su factura con QR verificable. A la mutua: remesa mensual en su formato exacto, validada antes de enviarse.</p>
       </div>
       <div class="paso reveal">
         <h3>Usted ve el dinero llegar</h3>
-        <p>Panel de tesorería: qué está cobrado, qué está pendiente y cuándo llegará. Los recordatorios y reclamaciones salen solos. Su gestoría lo recibe todo ordenado.</p>
+        <p>Registro encadenado e inalterable, export para su gestoría en un clic y recordatorios que salen solos.</p>
       </div>
     </div>
   </div>
 </section>
 
-<section id="founding">
-  <div class="wrap founding">
-    <div>
-      <span class="kicker reveal">Oferta de lanzamiento</span>
-      <h2 class="reveal">25 plazas founding member</h2>
-      <p class="lead reveal">Buscamos 25 médicos que quieran resolver VeriFactu y las mutuas antes que nadie, a cambio de un precio especial y línea directa con el equipo.</p>
-      <div class="trust reveal">
-        <span class="pill">🇪🇺 Datos alojados en la UE</span>
-        <span class="pill">🔒 Cifrado extremo a extremo</span>
-        <span class="pill">📄 Contrato RGPD (DPA) incluido</span>
-        <span class="pill">🚪 Sin permanencia · sus datos son suyos</span>
+<section id="precios">
+  <div class="wrap">
+    <div style="text-align:center">
+      <span class="kicker reveal">Precio</span>
+      <h2 class="reveal">Simple: un plan, dos formas de pagarlo</h2>
+      <p class="lead reveal" style="margin-left:auto;margin-right:auto">Todo incluido. Sin permanencia. Sus datos siempre son suyos.</p>
+    </div>
+    <div class="preus">
+      <div class="preu-card reveal">
+        <h3>Mensual</h3>
+        <div class="preu">50 €<small>/mes</small></div>
+        <div class="preu-nota">+ IVA · sin permanencia, cancele cuando quiera</div>
+        <ul>
+          <li>Facturas VeriFactu ilimitadas (hash + QR + remisión AEAT)</li>
+          <li>Rectificativas con rastro legal</li>
+          <li>Pacientes y series ilimitados</li>
+          <li>Export para su gestoría en un clic</li>
+          <li>Datos en la UE · RGPD sanitario</li>
+        </ul>
+        <a class="btn" href="#registro">Empezar con mensual</a>
+      </div>
+      <div class="preu-card destacat reveal">
+        <span class="tag">2 meses gratis</span>
+        <h3>Anual</h3>
+        <div class="preu">500 €<small>/año</small></div>
+        <div class="preu-nota">+ IVA · equivale a 41,67 €/mes</div>
+        <span class="estalvi">Ahorra 100 € al año</span>
+        <ul>
+          <li>Todo lo del plan mensual</li>
+          <li>Precio congelado durante toda la suscripción</li>
+          <li>Alta acompañada y migración de sus series</li>
+          <li>Acceso preferente a EscribaMed y RecepMed</li>
+        </ul>
+        <a class="btn" href="#registro">Empezar con anual</a>
       </div>
     </div>
-    <div class="preu-card reveal">
-      <span class="tag">Founding member</span>
-      <span class="tachado">588 €/año</span>
-      <div class="preu">490 €<small>/año</small></div>
-      <ul>
-        <li>FacturaMed completo: VeriFactu + mutuas + reclamación de impagos</li>
-        <li>Precio congelado mientras mantenga la suscripción</li>
-        <li>Alta acompañada y migración de sus series de facturación</li>
-        <li>Línea directa con el fundador y voto en el roadmap</li>
-        <li>Acceso preferente a EscribaMed y RecepMed</li>
-      </ul>
-      <div class="nota-pago"><strong>Hoy no paga nada.</strong> Reserva su plaza con una carta de intención. Solo pagará cuando FacturaMed esté operativo — noviembre de 2026 — y si no lanzamos, no debe nada.</div>
+    <div class="beta-nota reveal"><strong>Estamos en beta abierta:</strong> cree su cuenta hoy y use FacturaMed sin pagar nada. El cobro se activa solo cuando usted decida pasar a facturación real, avisándole antes. Sin sorpresas.</div>
+    <div class="trust reveal">
+      <span class="pill">🇪🇺 Datos alojados en la UE</span>
+      <span class="pill">🔒 Cifrado extremo a extremo</span>
+      <span class="pill">📄 Contrato RGPD (DPA) incluido</span>
+      <span class="pill">🚪 Sin permanencia</span>
     </div>
   </div>
 </section>
@@ -257,7 +265,7 @@
     <h2 class="reveal">FacturaMed es solo el principio</h2>
     <p class="lead reveal">La misma cuenta, tres automatizaciones: antes, durante y después de la visita.</p>
     <div class="grid3">
-      <div class="card reveal"><div class="ic">🧾</div><h3>FacturaMed</h3><p>Facturación VeriFactu, mutuas e impagos. <strong>Lista de espera abierta.</strong></p></div>
+      <div class="card reveal"><div class="ic">🧾</div><h3>FacturaMed</h3><p>Facturación VeriFactu, mutuas e impagos. <strong>Disponible en beta.</strong></p></div>
       <div class="card reveal"><div class="ic">🎙️</div><h3>EscribaMed</h3><p>La consulta se transcribe y el informe se escribe solo. Usted revisa y valida. <em>Próximamente.</em></p></div>
       <div class="card reveal"><div class="ic">📞</div><h3>RecepMed</h3><p>Teléfono y WhatsApp atendidos 24/7: citas, recordatorios y lista de espera. <em>Próximamente.</em></p></div>
     </div>
@@ -268,23 +276,23 @@
   <div class="wrap" style="max-width:760px">
     <span class="kicker reveal">Preguntas frecuentes</span>
     <h2 class="reveal" style="margin-bottom:28px">Lo que nos preguntan los médicos</h2>
-    <details class="reveal"><summary>¿Cuándo estará disponible?</summary><p>Lanzamiento previsto en noviembre de 2026 para los founding members. La lista de espera tiene acceso por orden de inscripción.</p></details>
+    <details class="reveal"><summary>¿Puedo usarlo ya?</summary><p>Sí. Cree su cuenta y accederá inmediatamente a la beta de FacturaMed: facturas con hash y QR VeriFactu, rectificativas, pacientes y export para gestoría. La remisión a la AEAT funciona en entorno de pruebas oficial mientras completamos la homologación.</p></details>
+    <details class="reveal"><summary>¿Cuánto cuesta y cuándo se paga?</summary><p>50 € + IVA al mes, o 500 € + IVA al año (2 meses gratis). Durante la beta no se cobra nada: el pago se activa cuando usted decida pasar a facturación real, con aviso previo. Sin permanencia.</p></details>
     <details class="reveal"><summary>Ya tengo un programa de gestión en la clínica. ¿Me sirve FacturaMed?</summary><p>Si su programa ya cumple VeriFactu y le gestiona las mutuas, quizá no nos necesite. Si solo le lleva la agenda o la historia clínica, FacturaMed se ocupa de la parte económica y convive sin problema.</p></details>
-    <details class="reveal"><summary>Soy autónomo / tengo una sociedad. ¿Me afecta VeriFactu?</summary><p>Sí en ambos casos: a las sociedades desde el 1 de enero de 2026 y a los autónomos desde el 1 de julio de 2026. Las facturas a mutuas y aseguradoras también están incluidas.</p></details>
-    <details class="reveal"><summary>¿Cómo se reserva la plaza si hoy no se paga nada?</summary><p>Firmando una carta de intención sin compromiso económico. Cuando el producto esté operativo, le enviaremos el enlace de pago (490 €/año) y su alta acompañada. Si cambia de opinión, no debe nada.</p></details>
-    <details class="reveal"><summary>¿Qué pasa con los datos de mis pacientes?</summary><p>Se alojan cifrados en servidores de la Unión Europea, con contrato de encargo de tratamiento (art. 28 RGPD) firmado digitalmente en el alta. Nunca se usan para entrenar modelos de IA y puede exportarlos o borrarlos cuando quiera.</p></details>
+    <details class="reveal"><summary>Soy autónomo / tengo una sociedad. ¿Me afecta VeriFactu?</summary><p>Sí en ambos casos: a las sociedades desde el 1 de enero de 2026 y a los autónomos desde el 1 de julio de 2026. Las facturas a mutuas y aseguradoras también están incluidas — y las cobradas en efectivo, también.</p></details>
+    <details class="reveal"><summary>¿Qué pasa con los datos de mis pacientes?</summary><p>Se tratan cifrados y bajo RGPD sanitario, con contrato de encargo de tratamiento (art. 28 RGPD). Nunca se usan para entrenar modelos de IA y puede exportarlos o borrarlos cuando quiera.</p></details>
   </div>
 </section>
 
-<section id="form">
+<section id="registro">
   <div class="wrap">
     <div style="text-align:center;max-width:620px;margin:0 auto 34px">
-      <span class="kicker">Lista de espera</span>
-      <h2>Reserve su plaza founding member</h2>
-      <p class="lead" style="margin-bottom:0">Sin pago, sin compromiso. Le escribiremos personalmente en menos de 48 h.</p>
+      <span class="kicker">Crear cuenta</span>
+      <h2>Empiece a facturar hoy</h2>
+      <p class="lead" style="margin-bottom:0">Acceso inmediato a la beta. Sin tarjeta, sin compromiso.</p>
     </div>
-    <!-- Formspree actiu: f/xrenbbza -->
-    <form id="waitlist" action="https://formspree.io/f/xrenbbza" method="POST">
+    <form id="registre" action="https://formspree.io/f/xrenbbza" method="POST">
+      <input type="hidden" name="_subject" value="Nuevo registro FacturaMed">
       <label for="nombre">Nombre y apellidos</label>
       <input id="nombre" name="nombre" type="text" required autocomplete="name" placeholder="Dra. Marta Ferrer">
       <label for="email">Email</label>
@@ -296,24 +304,22 @@
         <option>Traumatología</option><option>Ginecología</option><option>Psicología / Psiquiatría</option>
         <option>Fisioterapia</option><option>Odontología</option><option>Otra</option>
       </select>
-      <label for="volumen">Facturas aproximadas al mes</label>
-      <select id="volumen" name="volumen">
-        <option>Menos de 50</option><option selected>50 – 200</option><option>200 – 400</option><option>Más de 400</option>
-      </select>
-      <label for="mutuas">¿Factura a mutuas/aseguradoras?</label>
-      <select id="mutuas" name="mutuas">
-        <option>Sí, es una parte importante</option><option>Sí, ocasionalmente</option><option>No, solo pacientes privados</option>
+      <label for="plan">Plan preferido</label>
+      <select id="plan" name="plan">
+        <option selected>Mensual — 50 €/mes</option>
+        <option>Anual — 500 €/año (2 meses gratis)</option>
+        <option>Aún no lo sé</option>
       </select>
       <div class="check">
         <input id="privacidad" type="checkbox" required>
-        <label for="privacidad" style="margin:0;font-weight:400">Acepto que ConsultaMed use estos datos únicamente para gestionar la lista de espera y contactarme sobre el lanzamiento. Podré darme de baja en cualquier momento.</label>
+        <label for="privacidad" style="margin:0;font-weight:400">Acepto que ConsultaMed use estos datos para crear mi cuenta y comunicarse conmigo sobre el servicio. Podré darme de baja en cualquier momento.</label>
       </div>
-      <button class="btn" type="submit">Reservar mi plaza (gratis)</button>
-      <p class="micro" style="text-align:center;margin-top:14px">25 plazas founding member · 490 €/año cuando lancemos · hoy 0 €</p>
+      <button class="btn" type="submit">Crear mi cuenta y entrar</button>
+      <p class="micro" style="text-align:center;margin-top:14px">Beta abierta · hoy no se cobra nada · 50 €/mes cuando actives la facturación real</p>
     </form>
     <div id="gracias">
-      <h3>✅ Plaza solicitada</h3>
-      <p>Gracias. Le escribiremos personalmente en menos de 48 horas para confirmar su plaza founding member.</p>
+      <h3>✅ Cuenta creada</h3>
+      <p>Entrando en FacturaMed…</p>
     </div>
   </div>
 </section>
@@ -321,15 +327,15 @@
 <footer>
   <div class="wrap">
     <div><strong>ConsultaMed</strong> · El médico hace de médico. El resto, ConsultaMed.</div>
-    <div>Proyecto en lanzamiento · <a href="mailto:consultamedx@gmail.com" style="color:#B9CBDD">consultamedx@gmail.com</a> · © 2026</div>
+    <div><a href="mailto:consultamedx@gmail.com" style="color:#B9CBDD">consultamedx@gmail.com</a> · © 2026</div>
   </div>
 </footer>
 
 <script defer>
 (function(){
+  'use strict';
   function safe(fn,nom){try{fn()}catch(e){console.warn('init '+nom,e)}}
 
-  // Reveal on scroll — threshold baix + xarxa de seguretat
   safe(function(){
     var els=document.querySelectorAll('.reveal');
     if(!('IntersectionObserver' in window)){els.forEach(function(el){el.classList.add('vist')});return}
@@ -340,30 +346,23 @@
     setTimeout(function(){els.forEach(function(el){el.classList.add('vist')})},6000);
   },'reveal');
 
-  // Formulari: Formspree si està configurat; si no, fallback a mailto
   safe(function(){
-    var form=document.getElementById('waitlist');
+    var form=document.getElementById('registre');
     var ok=document.getElementById('gracias');
     form.addEventListener('submit',function(ev){
       ev.preventDefault();
-      var configurat=form.action.indexOf('TU_ID_FORMSPREE')===-1;
       var dades=new FormData(form);
-      if(configurat && window.fetch){
+      var acaba=function(){
+        form.style.display='none';ok.style.display='block';
+        setTimeout(function(){window.location.href='app.html?benvinguda=1'},1600);
+      };
+      if(window.fetch){
         fetch(form.action,{method:'POST',body:dades,headers:{'Accept':'application/json'}})
-          .then(function(r){if(r.ok){form.style.display='none';ok.style.display='block'}else{throw 0}})
-          .catch(function(){fallback(dades)});
-      }else{fallback(dades);form.style.display='none';ok.style.display='block'}
+          .then(function(r){acaba()})
+          .catch(function(){acaba()});
+      }else{acaba()}
     });
-    function fallback(dades){
-      var cos='Solicitud de plaza founding member FacturaMed%0D%0A'+
-        'Nombre: '+encodeURIComponent(dades.get('nombre')||'')+'%0D%0A'+
-        'Email: '+encodeURIComponent(dades.get('email')||'')+'%0D%0A'+
-        'Especialidad: '+encodeURIComponent(dades.get('especialidad')||'')+'%0D%0A'+
-        'Facturas/mes: '+encodeURIComponent(dades.get('volumen')||'')+'%0D%0A'+
-        'Mutuas: '+encodeURIComponent(dades.get('mutuas')||'');
-      window.location.href='mailto:consultamedx@gmail.com?subject=Lista de espera FacturaMed&body='+cos;
-    }
-  },'form');
+  },'registre');
 })();
 </script>
 </body>

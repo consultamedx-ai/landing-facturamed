@@ -562,7 +562,7 @@
         if(d.llicencia!=='ok'){chip(false,'bloqueado');return}
         chip(true,'');
         var extra=(d.veus?'':' · sin identificación de voces')+(d.ia?' · IA ✓':'');
-        $('chip-agent').textContent='⬤ agente local: conectado ('+(d.model||'?')+')'+extra;
+        $('chip-agent').textContent='⬤ agente local EscribaMed: conectado'+extra;
         $('b-ia').style.display=d.ia?'inline-block':'none';
         if(!clau)fetch(AGENT+'/clau').then(function(r){return r.json()}).then(function(k){clau=k.clau}).catch(function(){});
       }).catch(function(){clearTimeout(tm);estatAgent=null;chip(false,'no detectado')});
@@ -672,7 +672,7 @@
     $('b-ia').addEventListener('click',function(){
       var t=$('d-transcripcio').value.trim();
       if(!t){avis('err','No hay transcripción: dicte, grabe la visita o cargue un ejemplo.');return}
-      if(!estatAgent||!estatAgent.ia){avis('err','IA local no disponible (arranque Ollama en su ordenador).');return}
+      if(!estatAgent||!estatAgent.ia){avis('err','El motor de redacción EscribaMed se está iniciando en su ordenador. Espere unos segundos y vuelva a pulsar.');return}
       var b=$('b-ia');b.disabled=true;b.textContent='🤖 Redactando…';
       var t0=Date.now();
       var cron2=setInterval(function(){b.textContent='🤖 Redactando… '+Math.round((Date.now()-t0)/1000)+' s'},1000);
@@ -687,7 +687,7 @@
           if(v){$(MAPA_IA[k]).value=v;autoAlta($(MAPA_IA[k]));n++}
         });
         if(/^(Dr|Pac|Acomp)\.:/m.test(t)){$('e-transcripcion').value=t;autoAlta($('e-transcripcion'))}
-        avis('ok','🤖 Informe redactado por la IA en su ordenador ('+n+' apartados, '+Math.round(d.temps/1000)+' s, modelo '+d.model+'). Revíselo SIEMPRE antes de imprimir o firmar.');
+        avis('ok','🤖 Informe redactado por el motor EscribaMed en su ordenador ('+n+' apartados, '+Math.round(d.temps/1000)+' s). Revíselo SIEMPRE antes de imprimir o firmar.');
       }).catch(function(){clearInterval(cron2);b.disabled=false;b.textContent='🤖 Redactar (IA local)';avis('err','No se ha podido contactar con la IA local.')});
     });
   },'agent');

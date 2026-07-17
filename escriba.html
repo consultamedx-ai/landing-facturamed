@@ -38,6 +38,12 @@
   .btn.mini{padding:6px 13px;font-size:.78rem;margin:0}
   .btn.perill{background:#fff;color:var(--vermell);border:1.5px solid #FECACA}
   .btn[disabled]{opacity:.45;cursor:not-allowed}
+  .chip-agent{display:inline-flex;align-items:center;gap:6px;font-size:.72rem;font-weight:700;padding:4px 11px;border-radius:99px;border:1px solid var(--linia);background:var(--gasa);color:var(--boira)}
+  .chip-agent.on{background:#ECFDF5;border-color:#A7F3D0;color:var(--verd-fosc)}
+  #b-gravar.gravant{background:var(--vermell)}
+  #agent-progres{font-size:.8rem;color:#475569;margin-top:8px;min-height:1.2em}
+  .veu-fila{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:.84rem}
+  .veu-fila select{width:auto;flex:1}
   .modes{display:flex;gap:6px;margin-top:2px}
   .mode{flex:1;border:1.5px solid var(--linia);background:#fff;border-radius:99px;padding:8px 10px;font:inherit;font-size:.82rem;font-weight:600;color:#64748B;cursor:pointer;transition:all .12s}
   .mode.actiu{background:var(--blau);color:#fff;border-color:var(--blau)}
@@ -149,6 +155,30 @@
         </div>
         <div class="ajuda">
           <strong>Truco:</strong> diga el nombre de cada apartado mientras dicta — «<em>motivo de consulta…</em>», «<em>anamnesis…</em>», «<em>exploración…</em>», «<em>diagnóstico…</em>», «<em>tratamiento…</em>», «<em>recomendaciones…</em>» — y EscribaMed ordenará solo el informe. La versión final lo hará sin necesidad de decirlos.
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Visita completa <span class="chip-agent" id="chip-agent">⬤ agente local: buscando…</span></h2>
+        <p style="font-size:.8rem;color:#475569;margin-bottom:4px">Grabe la visita entera y el <strong>agente local EscribaMed</strong> la transcribe e identifica quién habla — todo <strong>dentro de su ordenador</strong>: el audio nunca sale de la consulta.</p>
+        <div id="agent-off" style="display:none">
+          <p style="font-size:.78rem;color:var(--boira);margin-top:8px">Agente no detectado. En la beta, la instalación la asiste ConsultaMed (un solo comando, 5 minutos). Una vez instalado y arrancado, este panel se activa solo.</p>
+        </div>
+        <div id="agent-on" style="display:none">
+          <label for="v-parlants">Personas en la consulta</label>
+          <select id="v-parlants">
+            <option value="2" selected>2 — médico y paciente</option>
+            <option value="3">3 — médico, paciente y acompañante</option>
+          </select>
+          <div class="accions-fila" style="margin-top:12px">
+            <button class="btn mini" id="b-gravar" type="button">⏺ Grabar visita</button>
+          </div>
+          <div id="agent-progres"></div>
+          <div id="veus-panell" style="display:none">
+            <div class="ajuda" style="margin-top:10px"><strong>¿Quién es quién?</strong> Revise la asignación automática y corrija si hace falta:</div>
+            <div id="veus-files"></div>
+            <button class="btn sec mini" id="b-aplicar-veus" type="button" style="margin-top:8px">Aplicar etiquetas</button>
+          </div>
         </div>
       </div>
     </div>
@@ -411,7 +441,7 @@
     $('b-estructurar').addEventListener('click',function(){
       var t=$('d-transcripcio').value.trim();
       if(!t){avis('err','No hay nada que estructurar: dicte o cargue un ejemplo primero.');return}
-      var esConversa=/^(Dr|Pac)\.:/m.test(t),out,n=0;
+      var esConversa=/^(Dr|Pac|Acomp)\.:/m.test(t),out,n=0;
       if(esConversa){
         // apartats: només del que diu el metge; el diàleg sencer va a l annex
         var nomesDr=t.split('\n').filter(function(l){return /^Dr\.:/i.test(l)}).map(function(l){return l.replace(/^Dr\.:\s*/i,'')}).join(' ');
@@ -506,6 +536,133 @@
     });
     pintaLlista();
   },'guardar');
+
+  // ---------- AGENT LOCAL (visita completa: whisper + identificacio de veus) ----------
+  safe(function(){
+    var AGENT='http://127.0.0.1:7474';
+    var clau=null,estatAgent=null,mr=null,chunks=[],gravantVisita=false,t0=0,cron=null;
+    var ultimaVisita=null; // {segments:[{inici,fi,text,veu}], veus:[...]}
+    var ROLS=[{v:'dr',t:'Médico',p:'Dr.: '},{v:'pac',t:'Paciente',p:'Pac.: '},{v:'acomp',t:'Acompañante',p:'Acomp.: '}];
+
+    function chip(on,txt){
+      var c=$('chip-agent');
+      c.className='chip-agent'+(on?' on':'');
+      c.textContent=(on?'⬤ agente local: conectado':'⬤ agente local: '+txt);
+      $('agent-on').style.display=on?'block':'none';
+      $('agent-off').style.display=on?'none':'block';
+    }
+    function sondeja(){
+      var ctl=new AbortController();var tm=setTimeout(function(){ctl.abort()},2500);
+      fetch(AGENT+'/estat',{signal:ctl.signal}).then(function(r){return r.json()}).then(function(d){
+        clearTimeout(tm);estatAgent=d;
+        if(!d.ok){chip(false,'error');return}
+        if(d.llicencia!=='ok'){chip(false,'bloqueado');return}
+        chip(true,'');
+        var extra=d.veus?'':' · sin identificación de voces (solo transcripción)';
+        $('chip-agent').textContent='⬤ agente local: conectado ('+(d.model||'?')+')'+extra;
+        if(!clau)fetch(AGENT+'/clau').then(function(r){return r.json()}).then(function(k){clau=k.clau}).catch(function(){});
+      }).catch(function(){clearTimeout(tm);estatAgent=null;chip(false,'no detectado')});
+    }
+    sondeja();setInterval(function(){if(!document.hidden&&!gravantVisita)sondeja()},10000);
+
+    function cronometre(){
+      var s=Math.floor((Date.now()-t0)/1000);
+      $('agent-progres').textContent='⏺ Grabando '+String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')+' — pulse ⏹ al terminar la visita';
+      if(s>=30*60)aturaGravacio();
+    }
+    function comencaGravacio(){
+      if(!$('d-consent').checked){avis('err','Marque primero la casilla de consentimiento.');return}
+      if(gravant){avis('err','Pare primero el dictado por micrófono.');return}
+      navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true}}).then(function(stream){
+        chunks=[];
+        var opts={};
+        if(window.MediaRecorder&&MediaRecorder.isTypeSupported&&MediaRecorder.isTypeSupported('audio/webm;codecs=opus'))opts={mimeType:'audio/webm;codecs=opus'};
+        mr=new MediaRecorder(stream,opts);
+        mr.ondataavailable=function(e){if(e.data&&e.data.size)chunks.push(e.data)};
+        mr.onstop=function(){
+          stream.getTracks().forEach(function(tr){tr.stop()});
+          enviaAudio(new Blob(chunks,{type:mr.mimeType||'audio/webm'}));
+        };
+        mr.start(1000);
+        gravantVisita=true;t0=Date.now();
+        var b=$('b-gravar');b.classList.add('gravant');b.textContent='⏹ Finalizar y transcribir';
+        cron=setInterval(cronometre,1000);cronometre();
+      }).catch(function(){avis('err','No se ha podido acceder al micrófono.')});
+    }
+    function aturaGravacio(){
+      gravantVisita=false;clearInterval(cron);
+      var b=$('b-gravar');b.classList.remove('gravant');b.textContent='⏺ Grabar visita';
+      if(mr&&mr.state!=='inactive')mr.stop();
+    }
+    $('b-gravar').addEventListener('click',function(){gravantVisita?aturaGravacio():comencaGravacio()});
+
+    function enviaAudio(blob){
+      var idi=$('d-lang').value==='ca-ES'?'ca':'es';
+      var n=$('v-parlants').value;
+      $('agent-progres').textContent='⚙️ Procesando en su ordenador ('+Math.round(blob.size/1024)+' KB)… puede tardar 1-3 min según la duración.';
+      fetch(AGENT+'/transcriu?idioma='+idi+'&parlants='+n,{
+        method:'POST',headers:{'X-EM-Clau':clau||'','Content-Type':'application/octet-stream'},body:blob
+      }).then(function(r){return r.json()}).then(function(d){
+        if(!d.ok){$('agent-progres').textContent='';avis('err',d.error||'Error del agente local.');return}
+        ultimaVisita=d;
+        $('agent-progres').textContent='✓ '+Math.round(d.durada)+' s de audio · transcripción lista'+(d.veusIdentificades?' · voces identificadas':' · sin separación de voces');
+        if(d.veusIdentificades){proposaRols(d.segments,parseInt(n,10))}
+        else{
+          $('veus-panell').style.display='none';
+          $('d-transcripcio').value=d.segments.map(function(s){return s.text}).join(' ');
+          autoAlta($('d-transcripcio'));
+          avis('ok','Transcripción hecha en local. Sin identificación de voces (instale los modelos de voz para activarla).');
+        }
+      }).catch(function(){$('agent-progres').textContent='';avis('err','No se ha podido contactar con el agente local.')});
+    }
+
+    function textDeVeu(segments,veu){return segments.filter(function(s){return s.veu===veu}).map(function(s){return s.text}).join(' ')}
+    function proposaRols(segments,n){
+      var veus=[];segments.forEach(function(s){if(s.veu!==null&&veus.indexOf(s.veu)<0)veus.push(s.veu)});
+      veus=veus.slice(0,3);
+      // heuristica: la veu amb mes paraules-marcador es el metge; de la resta, la que mes parla es el pacient
+      var punts=veus.map(function(v){
+        var t=textDeVeu(segments,v),c=0;
+        MARCADORS.forEach(function(m){var re=new RegExp('\\b('+m.re+')\\b','gi');c+=(t.match(re)||[]).length});
+        return {veu:v,marcadors:c,paraules:t.split(/\s+/).length};
+      });
+      punts.sort(function(a,b){return b.marcadors-a.marcadors||b.paraules-a.paraules});
+      var assign={};
+      if(punts.length){assign[punts[0].veu]='dr'}
+      var resta=punts.slice(1).sort(function(a,b){return b.paraules-a.paraules});
+      if(resta[0])assign[resta[0].veu]='pac';
+      if(resta[1])assign[resta[1].veu]='acomp';
+      // panell de revisio
+      var cont=$('veus-files');cont.innerHTML='';
+      veus.forEach(function(v){
+        var seg=Math.round(segments.filter(function(s){return s.veu===v}).reduce(function(a,s){return a+(s.fi-s.inici)},0));
+        var fila=document.createElement('div');fila.className='veu-fila';
+        var mostra=textDeVeu(segments,v).slice(0,46);
+        var ops=ROLS.map(function(r){return '<option value="'+r.v+'"'+(assign[v]===r.v?' selected':'')+'>'+r.t+'</option>'}).join('');
+        fila.innerHTML='<span style="white-space:nowrap;font-weight:600">Voz '+(v+1)+' ('+seg+' s)</span><select data-veu="'+v+'">'+ops+'</select><span style="color:var(--boira);font-size:.74rem">«'+esc(mostra)+'…»</span>';
+        cont.appendChild(fila);
+      });
+      $('veus-panell').style.display='block';
+      aplicaEtiquetes();
+    }
+    function aplicaEtiquetes(){
+      if(!ultimaVisita)return;
+      var mapa={};
+      document.querySelectorAll('#veus-files select').forEach(function(s){mapa[parseInt(s.dataset.veu,10)]=s.value});
+      var linies=[],ant=null,acum='';
+      ultimaVisita.segments.forEach(function(s){
+        var rol=mapa[s.veu],pre=(ROLS.find(function(r){return r.v===rol})||ROLS[1]).p;
+        if(rol===ant){acum+=' '+s.text}
+        else{if(acum)linies.push(acum);acum=pre+s.text;ant=rol}
+      });
+      if(acum)linies.push(acum);
+      $('d-transcripcio').value=linies.join('\n');textFinal=$('d-transcripcio').value+'\n';
+      autoAlta($('d-transcripcio'));
+      mode='conversa';$('m-conversa')&&$('m-conversa').click&&$('m-conversa').click();
+      avis('ok','🎧 Visita transcrita e identificada en su ordenador. Revise «¿quién es quién?» y pulse «🧠 Estructurar dictado».');
+    }
+    $('b-aplicar-veus').addEventListener('click',aplicaEtiquetes);
+  },'agent');
 
   // ---------- idioma de l informe (persistent) ----------
   safe(function(){

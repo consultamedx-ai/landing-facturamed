@@ -641,6 +641,31 @@
     }
     pintaTot();
   },'init');
+
+  // ---------- arribada amb paràmetres (registre web / EscribaMed) ----------
+  safe(function(){
+    var q=new URLSearchParams(location.search);
+    if(q.get('benvinguda')==='1'){
+      avis('ok','👋 Bienvenido/a a FacturaMed (beta). Primer paso: pestaña Configuración — nombre, NIF y serie. Después emita su primera factura en 20 segundos.');
+      var c=conf();
+      if(!c||!c.nom)document.querySelector('[data-v="config"]').click();
+    }
+    if(q.get('facturar')==='1'){
+      if(q.get('nom'))$('f-pacient').value=q.get('nom');
+      var val=q.get('concepte');
+      if(val){
+        var sel=$('f-concepte'),trobat=false;
+        for(var i=0;i<sel.options.length;i++){if(sel.options[i].text===val){sel.selectedIndex=i;trobat=true;break}}
+        if(!trobat){var o=document.createElement('option');o.text=val;sel.add(o);sel.value=val}
+      }
+      if(q.get('import'))$('f-import').value=q.get('import');
+      document.querySelector('[data-v="facturar"]').click();
+      avis('ok','📝 Visita recibida de EscribaMed — revise los datos y pulse «Emitir factura».');
+    }
+    if(q.get('benvinguda')||q.get('facturar')){
+      try{history.replaceState(null,'',location.pathname)}catch(e){}
+    }
+  },'params');
 })();
 </script>
 </body>

@@ -20,8 +20,12 @@
   .logo{font-family:'Sora';font-weight:700;font-size:1.08rem;color:var(--blau);white-space:nowrap}
   .logo em{font-style:normal;color:var(--teal)}
   .logo small{font-size:.66rem;color:var(--boira);font-weight:500}
+  .nav-dreta{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
   .beta-chip{background:#FEF3C7;border:1px solid #FCD34D;color:#92400E;font-size:.68rem;font-weight:700;padding:4px 10px;border-radius:99px;letter-spacing:.03em}
   .nav-enllac{font-size:.8rem;font-weight:600;color:var(--verd);text-decoration:none}
+  .lang-tog{display:inline-flex;border:1px solid var(--linia);border-radius:99px;overflow:hidden;background:#fff}
+  .lang-b{border:none;background:#fff;font:inherit;font-size:.72rem;font-weight:700;color:var(--boira);padding:5px 11px;cursor:pointer;transition:all .12s}
+  .lang-b.actiu{background:var(--blau);color:#fff}
   main{padding:24px 0 70px}
   .grid{display:grid;grid-template-columns:400px 1fr;gap:22px;align-items:start}
   .card{background:#fff;border:1px solid var(--linia);border-radius:14px;padding:20px;margin-bottom:18px}
@@ -106,80 +110,83 @@
 
 <nav><div class="wrap nav-in">
   <span class="logo">Escriba<em>Med</em> <small>by ConsultaMed</small></span>
-  <span class="beta-chip">BETA PRIVADA · solo datos ficticios</span>
-  <a class="nav-enllac" href="app.html">FacturaMed →</a>
+  <div class="nav-dreta">
+    <span class="beta-chip" data-t>BETA PRIVADA · solo datos ficticios</span>
+    <span class="lang-tog"><button class="lang-b" id="lang-es" type="button">ESP</button><button class="lang-b" id="lang-ca" type="button">CAT</button></span>
+    <a class="nav-enllac" href="app.html">FacturaMed →</a>
+  </div>
 </div></nav>
 
 <main class="wrap">
   <div class="banner" id="banner"></div>
-  <div class="avis-priv">🔒 <strong>Beta privada de demostración.</strong> No introduzca datos reales de pacientes. El reconocimiento de voz lo realiza el servicio de su navegador (Chrome). Informe siempre al paciente antes de dictar en su presencia.</div>
+  <div class="avis-priv" id="avis-priv">🔒 <strong>Beta privada de demostración.</strong> No introduzca datos reales de pacientes. El reconocimiento de voz lo realiza el servicio de su navegador (Chrome). Informe siempre al paciente antes de dictar en su presencia.</div>
 
   <div class="grid">
     <!-- ============ COLUMNA DICTADO ============ -->
     <div>
       <div class="card">
-        <h2>1 · Dicte la visita</h2>
-        <label for="d-pacient">Paciente</label>
-        <input id="d-pacient" list="dl-pacients" placeholder="Nombre del paciente (ficticio)" autocomplete="off">
+        <h2 data-t>1 · Dicte la visita</h2>
+        <label for="d-pacient" data-t>Paciente</label>
+        <input id="d-pacient" list="dl-pacients" placeholder="Nombre del paciente (ficticio)" data-tph autocomplete="off">
         <datalist id="dl-pacients"></datalist>
-        <label for="d-lang">Idioma del dictado</label>
+        <label for="d-lang" data-t>Idioma del dictado</label>
         <select id="d-lang">
-          <option value="es-ES" selected>Español</option>
-          <option value="ca-ES">Català</option>
+          <option value="es-ES" selected data-t>Español</option>
+          <option value="ca-ES" data-t>Català</option>
         </select>
-        <label>Modo</label>
+        <label data-t>Modo</label>
         <div class="modes">
-          <button type="button" class="mode actiu" id="m-dictat">🎙 Dictado</button>
-          <button type="button" class="mode" id="m-conversa">👥 Conversación</button>
+          <button type="button" class="mode actiu" id="m-dictat" data-t>🎙 Dictado</button>
+          <button type="button" class="mode" id="m-conversa" data-t>👥 Conversación</button>
         </div>
         <div id="parlants" style="display:none">
-          <label>¿Quién habla ahora? (toque para cambiar)</label>
+          <label data-t>¿Quién habla ahora? (toque para cambiar)</label>
           <div class="modes">
-            <button type="button" class="mode parlant actiu" id="p-dr">🩺 Médico</button>
-            <button type="button" class="mode parlant" id="p-pac">🧑 Paciente</button>
+            <button type="button" class="mode parlant actiu" id="p-dr" data-t>🩺 Médico</button>
+            <button type="button" class="mode parlant" id="p-pac" data-t>🧑 Paciente</button>
           </div>
         </div>
         <div class="check">
           <input type="checkbox" id="d-consent">
-          <label for="d-consent" style="margin:0;font-weight:400">He informado al paciente y cuento con su consentimiento para el dictado (datos ficticios en beta).</label>
+          <label for="d-consent" style="margin:0;font-weight:400" data-t>He informado al paciente y cuento con su consentimiento para el dictado (datos ficticios en beta).</label>
         </div>
         <div class="mic-zona">
-          <button id="b-mic" type="button" disabled title="Marque primero la casilla de consentimiento">🎙️</button>
+          <button id="b-mic" type="button" disabled title="Marque primero la casilla de consentimiento" data-ttitle="Marque primero la casilla de consentimiento">🎙️</button>
           <div id="estat-mic">Marque la casilla para activar el micrófono</div>
           <div id="interim"></div>
         </div>
-        <label for="d-transcripcio">Transcripción (editable)</label>
-        <textarea id="d-transcripcio" rows="7" placeholder="Aquí aparecerá lo que dicte…"></textarea>
+        <label for="d-transcripcio" data-t>Transcripción (editable)</label>
+        <textarea id="d-transcripcio" rows="7" placeholder="Aquí aparecerá lo que dicte…" data-tph></textarea>
         <div class="accions-fila" style="margin-top:12px">
-          <button class="btn sec mini" id="b-exemple" type="button">✨ Ejemplo dictado</button>
-          <button class="btn sec mini" id="b-exemple2" type="button">👥 Ejemplo conversación</button>
-          <button class="btn perill mini" id="b-netejar" type="button">Limpiar</button>
+          <button class="btn sec mini" id="b-exemple" type="button" data-t>✨ Ejemplo dictado</button>
+          <button class="btn sec mini" id="b-exemple2" type="button" data-t>👥 Ejemplo conversación</button>
+          <button class="btn perill mini" id="b-netejar" type="button" data-t>Limpiar</button>
         </div>
-        <div class="ajuda">
+        <div class="ajuda" id="ajuda-dictat">
           <strong>Truco:</strong> diga el nombre de cada apartado mientras dicta — «<em>motivo de consulta…</em>», «<em>anamnesis…</em>», «<em>exploración…</em>», «<em>diagnóstico…</em>», «<em>tratamiento…</em>», «<em>recomendaciones…</em>» — y EscribaMed ordenará solo el informe. La versión final lo hará sin necesidad de decirlos.
         </div>
       </div>
 
       <div class="card">
-        <h2>Visita completa <span class="chip-agent" id="chip-agent">⬤ agente local: buscando…</span></h2>
-        <p style="font-size:.8rem;color:#475569;margin-bottom:4px">Grabe la visita entera y el <strong>agente local EscribaMed</strong> la transcribe e identifica quién habla — todo <strong>dentro de su ordenador</strong>: el audio nunca sale de la consulta.</p>
+        <h2><span data-t>Visita completa</span> <span class="chip-agent" id="chip-agent">⬤ agente local: buscando…</span></h2>
+        <p style="font-size:.8rem;color:#475569;margin-bottom:4px" id="p-visita-info">Grabe la visita entera y el <strong>agente local EscribaMed</strong> la transcribe e identifica quién habla — todo <strong>dentro de su ordenador</strong>: el audio nunca sale de la consulta.</p>
         <div id="agent-off" style="display:none">
-          <p style="font-size:.78rem;color:var(--boira);margin-top:8px">Agente no detectado. En la beta, la instalación la asiste ConsultaMed (un solo comando, 5 minutos). Una vez instalado y arrancado, este panel se activa solo.</p>
+          <p style="font-size:.78rem;color:var(--boira);margin-top:8px" id="agent-off-p">Agente no detectado. En la beta, la instalación la asiste ConsultaMed (un solo comando, 5 minutos). Una vez instalado y arrancado, este panel se activa solo.</p>
         </div>
         <div id="agent-on" style="display:none">
-          <label for="v-parlants">Personas en la consulta</label>
+          <label for="v-parlants" data-t>Personas en la consulta</label>
           <select id="v-parlants">
-            <option value="2" selected>2 — médico y paciente</option>
-            <option value="3">3 — médico, paciente y acompañante</option>
+            <option value="2" selected data-t>2 — médico y paciente</option>
+            <option value="3" data-t>3 — médico, paciente y acompañante</option>
           </select>
           <div class="accions-fila" style="margin-top:12px">
-            <button class="btn mini" id="b-gravar" type="button">⏺ Grabar visita</button>
+            <button class="btn mini" id="b-gravar" type="button" data-t>⏺ Grabar visita</button>
           </div>
           <div id="agent-progres"></div>
           <div id="veus-panell" style="display:none">
-            <div class="ajuda" style="margin-top:10px"><strong>¿Quién es quién?</strong> Revise la asignación automática y corrija si hace falta:</div>
+            <div class="ajuda" style="margin-top:10px" id="ajuda-veus"><strong>¿Quién es quién?</strong> Revise la asignación automática y corrija si hace falta:</div>
             <div id="veus-files"></div>
-            <button class="btn sec mini" id="b-aplicar-veus" type="button" style="margin-top:8px">Aplicar etiquetas</button>
+            <button class="btn sec mini" id="b-aplicar-veus" type="button" style="margin-top:8px" data-t>Aplicar etiquetas</button>
           </div>
         </div>
       </div>
@@ -188,37 +195,37 @@
     <!-- ============ COLUMNA INFORME ============ -->
     <div>
       <div class="card">
-        <h2>2 · Informe clínico
+        <h2><span data-t>2 · Informe clínico</span>
           <span class="accions-fila">
-            <button class="btn mini" id="b-ia" type="button" style="display:none">🤖 Redactar (IA local)</button>
-            <button class="btn mini" id="b-estructurar" type="button">🧠 Estructurar dictado</button>
-            <button class="btn sec mini" id="b-copiar" type="button">⧉ Copiar</button>
+            <button class="btn mini" id="b-ia" type="button" style="display:none" data-t>🤖 Redactar (IA local)</button>
+            <button class="btn mini" id="b-estructurar" type="button" data-t>🧠 Estructurar dictado</button>
+            <button class="btn sec mini" id="b-copiar" type="button" data-t>⧉ Copiar</button>
           </span>
         </h2>
-        <div class="sec-informe"><label for="e-motivo">Motivo de consulta</label><textarea id="e-motivo" rows="1"></textarea></div>
-        <div class="sec-informe"><label for="e-anamnesis">Anamnesis / enfermedad actual</label><textarea id="e-anamnesis" rows="2"></textarea></div>
-        <div class="sec-informe"><label for="e-antecedentes">Antecedentes</label><textarea id="e-antecedentes" rows="1"></textarea></div>
-        <div class="sec-informe"><label for="e-exploracion">Exploración física</label><textarea id="e-exploracion" rows="2"></textarea></div>
-        <div class="sec-informe"><label for="e-pruebas">Pruebas complementarias</label><textarea id="e-pruebas" rows="1"></textarea></div>
-        <div class="sec-informe"><label for="e-diagnostico">Diagnóstico</label><textarea id="e-diagnostico" rows="1"></textarea></div>
-        <div class="sec-informe"><label for="e-tratamiento">Tratamiento</label><textarea id="e-tratamiento" rows="2"></textarea></div>
-        <div class="sec-informe"><label for="e-recomendaciones">Recomendaciones y seguimiento</label><textarea id="e-recomendaciones" rows="2"></textarea></div>
-        <div class="sec-informe"><label for="e-transcripcion">Transcripción de la visita (anexo · modo conversación)</label><textarea id="e-transcripcion" rows="2"></textarea></div>
+        <div class="sec-informe"><label for="e-motivo" data-t>Motivo de consulta</label><textarea id="e-motivo" rows="1"></textarea></div>
+        <div class="sec-informe"><label for="e-anamnesis" data-t>Anamnesis / enfermedad actual</label><textarea id="e-anamnesis" rows="2"></textarea></div>
+        <div class="sec-informe"><label for="e-antecedentes" data-t>Antecedentes</label><textarea id="e-antecedentes" rows="1"></textarea></div>
+        <div class="sec-informe"><label for="e-exploracion" data-t>Exploración física</label><textarea id="e-exploracion" rows="2"></textarea></div>
+        <div class="sec-informe"><label for="e-pruebas" data-t>Pruebas complementarias</label><textarea id="e-pruebas" rows="1"></textarea></div>
+        <div class="sec-informe"><label for="e-diagnostico" data-t>Diagnóstico</label><textarea id="e-diagnostico" rows="1"></textarea></div>
+        <div class="sec-informe"><label for="e-tratamiento" data-t>Tratamiento</label><textarea id="e-tratamiento" rows="2"></textarea></div>
+        <div class="sec-informe"><label for="e-recomendaciones" data-t>Recomendaciones y seguimiento</label><textarea id="e-recomendaciones" rows="2"></textarea></div>
+        <div class="sec-informe"><label for="e-transcripcion" data-t>Transcripción de la visita (anexo · modo conversación)</label><textarea id="e-transcripcion" rows="2"></textarea></div>
         <div class="fila" style="margin-top:10px">
-          <div><label for="e-idioma">Idioma del informe impreso</label>
-            <select id="e-idioma"><option value="es" selected>Español</option><option value="ca">Català</option></select></div>
+          <div><label for="e-idioma" data-t>Idioma del informe impreso</label>
+            <select id="e-idioma"><option value="es" selected data-t>Español</option><option value="ca" data-t>Català</option></select></div>
           <div></div>
         </div>
         <div class="accions-fila" style="margin-top:16px">
-          <button class="btn" id="b-imprimir" type="button">🖨 Ver / imprimir informe</button>
-          <button class="btn sec" id="b-guardar" type="button">💾 Guardar</button>
-          <button class="btn verd" id="b-facturar" type="button">💶 Facturar esta visita</button>
+          <button class="btn" id="b-imprimir" type="button" data-t>🖨 Ver / imprimir informe</button>
+          <button class="btn sec" id="b-guardar" type="button" data-t>💾 Guardar</button>
+          <button class="btn verd" id="b-facturar" type="button" data-t>💶 Facturar esta visita</button>
         </div>
-        <p style="font-size:.7rem;color:var(--boira);margin-top:9px">El informe es siempre revisable y editable por el médico antes de imprimir o facturar. Los datos se guardan solo en este dispositivo.</p>
+        <p style="font-size:.7rem;color:var(--boira);margin-top:9px" id="p-informe-nota">El informe es siempre revisable y editable por el médico antes de imprimir o facturar. Los datos se guardan solo en este dispositivo.</p>
       </div>
 
       <div class="card">
-        <h2>Informes guardados</h2>
+        <h2 data-t>Informes guardados</h2>
         <div id="llista-informes"></div>
       </div>
     </div>
@@ -228,7 +235,7 @@
 <!-- ============ MODAL INFORME ============ -->
 <div id="informe-modal">
   <div id="informe-print">
-    <span class="beta-marca">DEMO · SIN VALIDEZ CLÍNICA</span>
+    <span class="beta-marca" data-t>DEMO · SIN VALIDEZ CLÍNICA</span>
     <div class="i-cap">
       <div>
         <h2 id="p-metge">—</h2>
@@ -247,8 +254,8 @@
     </div>
   </div>
   <div class="modal-accions">
-    <button class="btn" onclick="window.print()" type="button">🖨 Imprimir / guardar PDF</button>
-    <button class="btn sec" id="b-tancar-modal" type="button">Cerrar</button>
+    <button class="btn" onclick="window.print()" type="button" data-t>🖨 Imprimir / guardar PDF</button>
+    <button class="btn sec" id="b-tancar-modal" type="button" data-t>Cerrar</button>
   </div>
 </div>
 
@@ -259,10 +266,171 @@
   function safe(fn,nom){try{fn()}catch(e){try{console.error('[EscribaMed]',nom,e)}catch(_){}}}
   var K={inf:'em_informes',conf:'fm2_config',pac:'fm2_pacients'};
 
+  // ============ i18n (interfície CAT/ESP) ============
+  var LANG = localStorage.getItem('em_idioma_ui')==='ca' ? 'ca' : 'es';
+  var TR = {
+    "BETA PRIVADA · solo datos ficticios":"BETA PRIVADA · només dades fictícies",
+    "1 · Dicte la visita":"1 · Dicti la visita",
+    "Paciente":"Pacient",
+    "Nombre del paciente (ficticio)":"Nom del pacient (fictici)",
+    "Idioma del dictado":"Idioma del dictat",
+    "Español":"Espanyol",
+    "Català":"Català",
+    "Modo":"Mode",
+    "🎙 Dictado":"🎙 Dictat",
+    "👥 Conversación":"👥 Conversa",
+    "¿Quién habla ahora? (toque para cambiar)":"Qui parla ara? (toqui per canviar)",
+    "🩺 Médico":"🩺 Metge",
+    "🧑 Paciente":"🧑 Pacient",
+    "He informado al paciente y cuento con su consentimiento para el dictado (datos ficticios en beta).":"He informat el pacient i tinc el seu consentiment per al dictat (dades fictícies en beta).",
+    "Marque primero la casilla de consentimiento":"Marqui primer la casella de consentiment",
+    "Transcripción (editable)":"Transcripció (editable)",
+    "Aquí aparecerá lo que dicte…":"Aquí apareixerà el que dicti…",
+    "✨ Ejemplo dictado":"✨ Exemple dictat",
+    "👥 Ejemplo conversación":"👥 Exemple conversa",
+    "Limpiar":"Netejar",
+    "Visita completa":"Visita completa",
+    "Personas en la consulta":"Persones a la consulta",
+    "2 — médico y paciente":"2 — metge i pacient",
+    "3 — médico, paciente y acompañante":"3 — metge, pacient i acompanyant",
+    "⏺ Grabar visita":"⏺ Gravar visita",
+    "Aplicar etiquetas":"Aplicar etiquetes",
+    "2 · Informe clínico":"2 · Informe clínic",
+    "🤖 Redactar (IA local)":"🤖 Redactar (IA local)",
+    "🧠 Estructurar dictado":"🧠 Estructurar dictat",
+    "⧉ Copiar":"⧉ Copiar",
+    "Motivo de consulta":"Motiu de consulta",
+    "Anamnesis / enfermedad actual":"Anamnesi / malaltia actual",
+    "Antecedentes":"Antecedents",
+    "Exploración física":"Exploració física",
+    "Pruebas complementarias":"Proves complementàries",
+    "Diagnóstico":"Diagnòstic",
+    "Tratamiento":"Tractament",
+    "Recomendaciones y seguimiento":"Recomanacions i seguiment",
+    "Transcripción de la visita (anexo · modo conversación)":"Transcripció de la visita (annex · mode conversa)",
+    "Idioma del informe impreso":"Idioma de l'informe imprès",
+    "🖨 Ver / imprimir informe":"🖨 Veure / imprimir informe",
+    "💾 Guardar":"💾 Desar",
+    "💶 Facturar esta visita":"💶 Facturar aquesta visita",
+    "Informes guardados":"Informes desats",
+    "DEMO · SIN VALIDEZ CLÍNICA":"DEMO · SENSE VALIDESA CLÍNICA",
+    "🖨 Imprimir / guardar PDF":"🖨 Imprimir / desar PDF",
+    "Cerrar":"Tancar",
+    "Pulse el micrófono y empiece a dictar":"Premi el micròfon i comenci a dictar",
+    "Marque la casilla para activar el micrófono":"Marqui la casella per activar el micròfon",
+    "Este navegador no soporta dictado por voz — use Google Chrome":"Aquest navegador no admet el dictat per veu — faci servir Google Chrome",
+    "Micrófono bloqueado. Pulse el candado de la barra de direcciones y permita el micrófono para consultamed.es.":"Micròfon bloquejat. Premi el cadenat de la barra d'adreces i permeti el micròfon per a consultamed.es.",
+    "El dictado necesita conexión a internet.":"El dictat necessita connexió a internet.",
+    "No se ha encontrado ningún micrófono.":"No s'ha trobat cap micròfon.",
+    "No se ha podido iniciar el dictado. Recargue la página.":"No s'ha pogut iniciar el dictat. Recarregui la pàgina.",
+    "🔴 Escuchando… hable con normalidad":"🔴 Escoltant… parli amb normalitat",
+    "Dictado en pausa — pulse para continuar":"Dictat en pausa — premi per continuar",
+    "Ejemplo cargado. Pulse «🧠 Estructurar dictado» para generar el informe.":"Exemple carregat. Premi «🧠 Estructurar dictat» per generar l'informe.",
+    "Conversación de ejemplo cargada. Pulse «🧠 Estructurar dictado»: los apartados se rellenan con lo que dice el médico y el diálogo completo queda como anexo.":"Conversa d'exemple carregada. Premi «🧠 Estructurar dictat»: els apartats s'omplen amb el que diu el metge i el diàleg complet queda com a annex.",
+    "No hay nada que estructurar: dicte o cargue un ejemplo primero.":"No hi ha res a estructurar: dicti o carregui un exemple primer.",
+    "Informe estructurado en":"Informe estructurat en",
+    "apartado(s)":"apartat(s)",
+    "+ transcripción anexa":"+ transcripció annexa",
+    "Revíselo y complete lo que falte.":"Revisi'l i completi el que falti.",
+    "No se han reconocido apartados. Diga los nombres de las secciones al dictar.":"No s'han reconegut apartats. Digui els noms de les seccions en dictar.",
+    "El informe está vacío.":"L'informe és buit.",
+    "⧉ Informe copiado al portapapeles — péguelo donde quiera.":"⧉ Informe copiat al porta-retalls — enganxi'l on vulgui.",
+    "No se ha podido copiar.":"No s'ha pogut copiar.",
+    "Este navegador no permite copiar automáticamente.":"Aquest navegador no permet copiar automàticament.",
+    "Todavía no hay informes guardados.":"Encara no hi ha informes desats.",
+    "Fecha":"Data",
+    "Ver":"Veure",
+    "💾 Informe guardado en este dispositivo.":"💾 Informe desat en aquest dispositiu.",
+    "Indique el nombre del paciente antes de facturar.":"Indiqui el nom del pacient abans de facturar.",
+    "Marque primero la casilla de consentimiento.":"Marqui primer la casella de consentiment.",
+    "Pare primero el dictado por micrófono.":"Aturi primer el dictat per micròfon.",
+    "No se ha podido acceder al micrófono.":"No s'ha pogut accedir al micròfon.",
+    "⏹ Finalizar y transcribir":"⏹ Finalitzar i transcriure",
+    "Grabando":"Gravant",
+    "pulse ⏹ al terminar la visita":"premi ⏹ en acabar la visita",
+    "Procesando en su ordenador":"Processant al seu ordinador",
+    "puede tardar 1-3 min según la duración.":"pot trigar 1-3 min segons la durada.",
+    "Error del agente local.":"Error de l'agent local.",
+    "s de audio · transcripción lista":"s d'àudio · transcripció llesta",
+    "voces identificadas":"veus identificades",
+    "sin separación de voces":"sense separació de veus",
+    "Transcripción hecha en local. Sin identificación de voces (instale los modelos de voz para activarla).":"Transcripció feta en local. Sense identificació de veus (instal·li els models de veu per activar-la).",
+    "No se ha podido contactar con el agente local.":"No s'ha pogut contactar amb l'agent local.",
+    "🎧 Visita transcrita e identificada en su ordenador. Revise «¿quién es quién?» y pulse «🧠 Estructurar dictado».":"🎧 Visita transcrita i identificada al seu ordinador. Revisi «qui és qui?» i premi «🧠 Estructurar dictat».",
+    "No hay transcripción: dicte, grabe la visita o cargue un ejemplo.":"No hi ha transcripció: dicti, gravi la visita o carregui un exemple.",
+    "El motor de redacción EscribaMed se está iniciando en su ordenador. Espere unos segundos y vuelva a pulsar.":"El motor de redacció EscribaMed s'està iniciant al seu ordinador. Esperi uns segons i torni a prémer.",
+    "Redactando…":"Redactant…",
+    "La IA local no ha respondido.":"La IA local no ha respost.",
+    "Informe redactado por el motor EscribaMed en su ordenador":"Informe redactat pel motor EscribaMed al seu ordinador",
+    "apartados":"apartats",
+    "Revíselo SIEMPRE antes de imprimir o firmar.":"Revisi'l SEMPRE abans d'imprimir o signar.",
+    "No se ha podido contactar con la IA local.":"No s'ha pogut contactar amb la IA local.",
+    "agente local EscribaMed: conectado":"agent local EscribaMed: connectat",
+    " · sin identificación de voces":" · sense identificació de veus",
+    "agente local: ":"agent local: ",
+    "buscando…":"cercant…",
+    "no detectado":"no detectat",
+    "error":"error",
+    "bloqueado":"bloquejat",
+    "Voz":"Veu",
+    "Médico":"Metge",
+    "Paciente ":"Pacient",
+    "Acompañante":"Acompanyant"
+  };
+  function TX(s){ if(LANG!=='ca')return s; return TR[s]!==undefined?TR[s]:s; }
+  var HTMLT = {
+    "avis-priv":{
+      es:'🔒 <strong>Beta privada de demostración.</strong> No introduzca datos reales de pacientes. El reconocimiento de voz lo realiza el servicio de su navegador (Chrome). Informe siempre al paciente antes de dictar en su presencia.',
+      ca:'🔒 <strong>Beta privada de demostració.</strong> No introdueixi dades reals de pacients. El reconeixement de veu el fa el servei del seu navegador (Chrome). Informi sempre el pacient abans de dictar en presència seva.'
+    },
+    "ajuda-dictat":{
+      es:'<strong>Truco:</strong> diga el nombre de cada apartado mientras dicta — «<em>motivo de consulta…</em>», «<em>anamnesis…</em>», «<em>exploración…</em>», «<em>diagnóstico…</em>», «<em>tratamiento…</em>», «<em>recomendaciones…</em>» — y EscribaMed ordenará solo el informe. La versión final lo hará sin necesidad de decirlos.',
+      ca:'<strong>Truc:</strong> digui el nom de cada apartat mentre dicta — «<em>motiu de consulta…</em>», «<em>anamnesi…</em>», «<em>exploració…</em>», «<em>diagnòstic…</em>», «<em>tractament…</em>», «<em>recomanacions…</em>» — i EscribaMed ordenarà sol l\'informe. La versió final ho farà sense necessitat de dir-los.'
+    },
+    "p-visita-info":{
+      es:'Grabe la visita entera y el <strong>agente local EscribaMed</strong> la transcribe e identifica quién habla — todo <strong>dentro de su ordenador</strong>: el audio nunca sale de la consulta.',
+      ca:'Gravi la visita sencera i l\'<strong>agent local EscribaMed</strong> la transcriu i identifica qui parla — tot <strong>dins del seu ordinador</strong>: l\'àudio no surt mai de la consulta.'
+    },
+    "agent-off-p":{
+      es:'Agente no detectado. En la beta, la instalación la asiste ConsultaMed (un solo comando, 5 minutos). Una vez instalado y arrancado, este panel se activa solo.',
+      ca:'Agent no detectat. A la beta, la instal·lació l\'assisteix ConsultaMed (una sola ordre, 5 minuts). Un cop instal·lat i engegat, aquest panell s\'activa sol.'
+    },
+    "ajuda-veus":{
+      es:'<strong>¿Quién es quién?</strong> Revise la asignación automática y corrija si hace falta:',
+      ca:'<strong>Qui és qui?</strong> Revisi l\'assignació automàtica i corregeixi si cal:'
+    },
+    "p-informe-nota":{
+      es:'El informe es siempre revisable y editable por el médico antes de imprimir o facturar. Los datos se guardan solo en este dispositivo.',
+      ca:'L\'informe sempre és revisable i editable pel metge abans d\'imprimir o facturar. Les dades es desen només en aquest dispositiu.'
+    }
+  };
+  var refrescaEstatMic=function(){};
+  function aplicaIdioma(lang){
+    LANG = lang==='ca' ? 'ca' : 'es';
+    try{localStorage.setItem('em_idioma_ui',LANG)}catch(e){}
+    document.documentElement.lang=LANG;
+    document.querySelectorAll('[data-t]').forEach(function(el){
+      if(el.getAttribute('data-orig')===null)el.setAttribute('data-orig',el.textContent.trim());
+      el.textContent=TX(el.getAttribute('data-orig'));
+    });
+    document.querySelectorAll('[data-tph]').forEach(function(el){
+      if(el.getAttribute('data-origph')===null)el.setAttribute('data-origph',el.getAttribute('placeholder')||'');
+      el.setAttribute('placeholder',TX(el.getAttribute('data-origph')));
+    });
+    document.querySelectorAll('[data-ttitle]').forEach(function(el){ el.title=TX(el.getAttribute('data-ttitle')); });
+    Object.keys(HTMLT).forEach(function(id){ var el=$(id); if(el)el.innerHTML=HTMLT[id][LANG]; });
+    var be=$('lang-es'),bc=$('lang-ca'); if(be)be.classList.toggle('actiu',LANG==='es'); if(bc)bc.classList.toggle('actiu',LANG==='ca');
+    if($('d-lang'))$('d-lang').value = LANG==='ca' ? 'ca-ES' : 'es-ES';
+    if($('e-idioma')){ $('e-idioma').value=LANG; try{localStorage.setItem('em_idioma',LANG)}catch(e){} }
+    safe(refrescaEstatMic,'refrescMic');
+    safe(function(){pintaLlista()},'refrescLlista');
+  }
+
   function llegeix(k,defecte){try{return JSON.parse(localStorage.getItem(k))||defecte}catch(e){return defecte}}
   function desa(k,v){localStorage.setItem(k,JSON.stringify(v))}
-  function avis(t,m){var b=$('banner');b.className='banner '+t;b.textContent=m;window.scrollTo({top:0,behavior:'smooth'});setTimeout(function(){b.className='banner'},7000)}
+  function avis(tipus,m){var b=$('banner');b.className='banner '+tipus;b.textContent=TX(m);window.scrollTo({top:0,behavior:'smooth'});setTimeout(function(){b.className='banner'},7000)}
   function esc(s){return String(s??'').replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+  function dateLoc(){return new Date().toLocaleDateString(LANG==='ca'?'ca-ES':'es-ES')}
 
   var CAMPS=['e-motivo','e-anamnesis','e-antecedentes','e-exploracion','e-pruebas','e-diagnostico','e-tratamiento','e-recomendaciones','e-transcripcion'];
   var TITOLS_ES={'e-motivo':'Motivo de consulta','e-anamnesis':'Anamnesis / enfermedad actual','e-antecedentes':'Antecedentes','e-exploracion':'Exploración física','e-pruebas':'Pruebas complementarias','e-diagnostico':'Diagnóstico','e-tratamiento':'Tratamiento','e-recomendaciones':'Recomendaciones y seguimiento','e-transcripcion':'Transcripción de la visita (anexo)'};
@@ -312,17 +480,20 @@
   safe(function(){
     var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
     var boto=$('b-mic'),estat=$('estat-mic'),interim=$('interim'),ta=$('d-transcripcio');
+    var estatMsgEs='Marque la casilla para activar el micrófono';
+    function setEstat(msgEs){estatMsgEs=msgEs;estat.textContent=TX(msgEs);}
+    refrescaEstatMic=function(){estat.textContent=TX(estatMsgEs);};
 
     $('d-consent').addEventListener('change',function(){
       boto.disabled=!this.checked;
-      boto.title=this.checked?'':'Marque primero la casilla de consentimiento';
-      estat.textContent=this.checked?'Pulse el micrófono y empiece a dictar':'Marque la casilla para activar el micrófono';
+      boto.title=this.checked?'':TX('Marque primero la casilla de consentimiento');
+      setEstat(this.checked?'Pulse el micrófono y empiece a dictar':'Marque la casilla para activar el micrófono');
       if(!this.checked&&gravant)atura();
     });
 
     if(!SR){
       boto.disabled=true;$('d-consent').disabled=true;
-      estat.textContent='Este navegador no soporta dictado por voz — use Google Chrome';
+      setEstat('Este navegador no soporta dictado por voz — use Google Chrome');
       return;
     }
 
@@ -366,13 +537,13 @@
       rec=crea();
       try{rec.start()}catch(e){avis('err','No se ha podido iniciar el dictado. Recargue la página.');return}
       gravant=true;boto.classList.add('gravant');boto.textContent='■';
-      estat.className='viu';estat.textContent='🔴 Escuchando… hable con normalidad';
+      estat.className='viu';setEstat('🔴 Escuchando… hable con normalidad');
     }
     function atura(){
       gravant=false;
       if(rec){try{rec.stop()}catch(e){}}
       boto.classList.remove('gravant');boto.textContent='🎙️';
-      estat.className='';estat.textContent='Dictado en pausa — pulse para continuar';
+      estat.className='';setEstat('Dictado en pausa — pulse para continuar');
       interim.textContent='';
     }
     boto.addEventListener('click',function(){gravant?atura():engega()});
@@ -423,7 +594,6 @@
     MARCADORS.forEach(function(mrc){
       var re=new RegExp('\\b('+mrc.re+')\\b','gi'),m;
       while((m=re.exec(text))!==null){
-        // context: si el marcador ve just després de "en/el/con/sin/de…" és part de la frase, no una capçalera
         var abans=text.slice(Math.max(0,m.index-16),m.index);
         if(/\b(en|el|la|los|las|del|de|al|un|una|su|sus|con|sin|por|para|els|les|amb|sense|per)\s+$/i.test(abans))continue;
         talls.push({pos:m.index,fi:m.index+m[0].length,id:mrc.id});
@@ -446,7 +616,6 @@
       if(!t){avis('err','No hay nada que estructurar: dicte o cargue un ejemplo primero.');return}
       var esConversa=/^(Dr|Pac|Acomp)\.:/m.test(t),out,n=0;
       if(esConversa){
-        // apartats: només del que diu el metge; el diàleg sencer va a l annex
         var nomesDr=t.split('\n').filter(function(l){return /^Dr\.:/i.test(l)}).map(function(l){return l.replace(/^Dr\.:\s*/i,'')}).join(' ');
         out=estructura(nomesDr,true);
         out['e-transcripcion']=t;
@@ -454,7 +623,8 @@
         out=estructura(t,false);
       }
       CAMPS.forEach(function(id){if(out[id]){$(id).value=out[id];autoAlta($(id));n++}});
-      avis(n?'ok':'err',n?('🧠 Informe estructurado en '+n+' apartado(s)'+(esConversa?' + transcripción anexa':'')+'. Revíselo y complete lo que falte.'):'No se han reconocido apartados. Diga los nombres de las secciones al dictar.');
+      if(n){avis('ok','🧠 '+TX('Informe estructurado en')+' '+n+' '+TX('apartado(s)')+(esConversa?' '+TX('+ transcripción anexa'):'')+'. '+TX('Revíselo y complete lo que falte.'));}
+      else{avis('err','No se han reconocido apartados. Diga los nombres de las secciones al dictar.');}
     });
   },'estructurar');
 
@@ -477,7 +647,7 @@
   // ---------- modal imprimible ----------
   function obreModal(pacient,dataTxt,camps){
     var c=llegeix(K.conf,null)||{},idi=$('e-idioma').value,T=TIT(),P=PRT[idi]||PRT.es;
-    $('p-metge').textContent=c.nom||'Dr./Dra. (configure su nombre en FacturaMed)';
+    $('p-metge').textContent=c.nom||'Dr./Dra.';
     $('p-metge-detall').textContent=[c.nif?('NIF '+c.nif):'',c.colegiat?('Col. '+c.colegiat):'',c.adreca||''].filter(Boolean).join(' · ');
     $('p-doc-titol').textContent=P.doc;
     $('p-data').textContent=dataTxt;
@@ -496,7 +666,7 @@
   }
   safe(function(){
     $('b-imprimir').addEventListener('click',function(){
-      obreModal($('d-pacient').value.trim(),new Date().toLocaleDateString('es-ES'),null);
+      obreModal($('d-pacient').value.trim(),dateLoc(),null);
     });
     $('b-tancar-modal').addEventListener('click',function(){$('informe-modal').classList.remove('obert')});
     $('informe-modal').addEventListener('click',function(e){if(e.target===this)this.classList.remove('obert')});
@@ -505,12 +675,13 @@
   // ---------- guardar + llista ----------
   function pintaLlista(){
     var l=llegeix(K.inf,[]),cont=$('llista-informes');
-    if(!l.length){cont.innerHTML='<div class="buit">Todavía no hay informes guardados.</div>';return}
-    var h='<table><thead><tr><th>Fecha</th><th>Paciente</th><th>Diagnóstico</th><th></th></tr></thead><tbody>';
+    if(!cont)return;
+    if(!l.length){cont.innerHTML='<div class="buit">'+esc(TX('Todavía no hay informes guardados.'))+'</div>';return}
+    var h='<table><thead><tr><th>'+esc(TX('Fecha'))+'</th><th>'+esc(TX('Paciente'))+'</th><th>'+esc(TX('Diagnóstico'))+'</th><th></th></tr></thead><tbody>';
     l.slice().reverse().slice(0,25).forEach(function(inf){
       var dx=(inf.camps['e-diagnostico']||inf.camps['e-motivo']||'—');
       h+='<tr><td>'+esc(inf.dataTxt)+'</td><td>'+esc(inf.pacient||'—')+'</td><td>'+esc(dx.length>52?dx.slice(0,52)+'…':dx)+'</td>'+
-         '<td style="white-space:nowrap"><button class="btn sec mini" data-obre="'+inf.id+'" type="button">Ver</button> '+
+         '<td style="white-space:nowrap"><button class="btn sec mini" data-obre="'+inf.id+'" type="button">'+esc(TX('Ver'))+'</button> '+
          '<button class="btn perill mini" data-esborra="'+inf.id+'" type="button">✕</button></td></tr>';
     });
     cont.innerHTML=h+'</tbody></table>';
@@ -521,7 +692,7 @@
       CAMPS.forEach(function(id){camps[id]=$(id).value.trim();if(camps[id])buit=false});
       if(buit){avis('err','El informe está vacío.');return}
       var l=llegeix(K.inf,[]);
-      l.push({id:Date.now(),dataTxt:new Date().toLocaleDateString('es-ES'),pacient:$('d-pacient').value.trim(),camps:camps});
+      l.push({id:Date.now(),dataTxt:dateLoc(),pacient:$('d-pacient').value.trim(),camps:camps});
       desa(K.inf,l);pintaLlista();
       avis('ok','💾 Informe guardado en este dispositivo.');
     });
@@ -544,13 +715,13 @@
   safe(function(){
     var AGENT='http://127.0.0.1:7474';
     var clau=null,estatAgent=null,mr=null,chunks=[],gravantVisita=false,t0=0,cron=null;
-    var ultimaVisita=null; // {segments:[{inici,fi,text,veu}], veus:[...]}
+    var ultimaVisita=null;
     var ROLS=[{v:'dr',t:'Médico',p:'Dr.: '},{v:'pac',t:'Paciente',p:'Pac.: '},{v:'acomp',t:'Acompañante',p:'Acomp.: '}];
 
     function chip(on,txt){
       var c=$('chip-agent');
       c.className='chip-agent'+(on?' on':'');
-      c.textContent=(on?'⬤ agente local: conectado':'⬤ agente local: '+txt);
+      c.textContent=(on?('⬤ '+TX('agente local EscribaMed: conectado')):('⬤ '+TX('agente local: ')+TX(txt)));
       $('agent-on').style.display=on?'block':'none';
       $('agent-off').style.display=on?'none':'block';
     }
@@ -561,8 +732,8 @@
         if(!d.ok){chip(false,'error');return}
         if(d.llicencia!=='ok'){chip(false,'bloqueado');return}
         chip(true,'');
-        var extra=(d.veus?'':' · sin identificación de voces')+(d.ia?' · IA ✓':'');
-        $('chip-agent').textContent='⬤ agente local EscribaMed: conectado'+extra;
+        var extra=(d.veus?'':TX(' · sin identificación de voces'))+(d.ia?' · IA ✓':'');
+        $('chip-agent').textContent='⬤ '+TX('agente local EscribaMed: conectado')+extra;
         $('b-ia').style.display=d.ia?'inline-block':'none';
         if(!clau)fetch(AGENT+'/clau').then(function(r){return r.json()}).then(function(k){clau=k.clau}).catch(function(){});
       }).catch(function(){clearTimeout(tm);estatAgent=null;chip(false,'no detectado')});
@@ -571,7 +742,7 @@
 
     function cronometre(){
       var s=Math.floor((Date.now()-t0)/1000);
-      $('agent-progres').textContent='⏺ Grabando '+String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')+' — pulse ⏹ al terminar la visita';
+      $('agent-progres').textContent='⏺ '+TX('Grabando')+' '+String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')+' — '+TX('pulse ⏹ al terminar la visita');
       if(s>=30*60)aturaGravacio();
     }
     function comencaGravacio(){
@@ -589,13 +760,13 @@
         };
         mr.start(1000);
         gravantVisita=true;t0=Date.now();
-        var b=$('b-gravar');b.classList.add('gravant');b.textContent='⏹ Finalizar y transcribir';
+        var b=$('b-gravar');b.classList.add('gravant');b.textContent=TX('⏹ Finalizar y transcribir');
         cron=setInterval(cronometre,1000);cronometre();
       }).catch(function(){avis('err','No se ha podido acceder al micrófono.')});
     }
     function aturaGravacio(){
       gravantVisita=false;clearInterval(cron);
-      var b=$('b-gravar');b.classList.remove('gravant');b.textContent='⏺ Grabar visita';
+      var b=$('b-gravar');b.classList.remove('gravant');b.textContent=TX('⏺ Grabar visita');
       if(mr&&mr.state!=='inactive')mr.stop();
     }
     $('b-gravar').addEventListener('click',function(){gravantVisita?aturaGravacio():comencaGravacio()});
@@ -603,13 +774,13 @@
     function enviaAudio(blob){
       var idi=$('d-lang').value==='ca-ES'?'ca':'es';
       var n=$('v-parlants').value;
-      $('agent-progres').textContent='⚙️ Procesando en su ordenador ('+Math.round(blob.size/1024)+' KB)… puede tardar 1-3 min según la duración.';
+      $('agent-progres').textContent='⚙️ '+TX('Procesando en su ordenador')+' ('+Math.round(blob.size/1024)+' KB)… '+TX('puede tardar 1-3 min según la duración.');
       fetch(AGENT+'/transcriu?idioma='+idi+'&parlants='+n,{
         method:'POST',headers:{'X-EM-Clau':clau||'','Content-Type':'application/octet-stream'},body:blob
       }).then(function(r){return r.json()}).then(function(d){
         if(!d.ok){$('agent-progres').textContent='';avis('err',d.error||'Error del agente local.');return}
         ultimaVisita=d;
-        $('agent-progres').textContent='✓ '+Math.round(d.durada)+' s de audio · transcripción lista'+(d.veusIdentificades?' · voces identificadas':' · sin separación de voces');
+        $('agent-progres').textContent='✓ '+Math.round(d.durada)+' '+TX('s de audio · transcripción lista')+(d.veusIdentificades?' · '+TX('voces identificadas'):' · '+TX('sin separación de voces'));
         if(d.veusIdentificades){proposaRols(d.segments,parseInt(n,10))}
         else{
           $('veus-panell').style.display='none';
@@ -624,7 +795,6 @@
     function proposaRols(segments,n){
       var veus=[];segments.forEach(function(s){if(s.veu!==null&&veus.indexOf(s.veu)<0)veus.push(s.veu)});
       veus=veus.slice(0,3);
-      // heuristica: la veu amb mes paraules-marcador es el metge; de la resta, la que mes parla es el pacient
       var punts=veus.map(function(v){
         var t=textDeVeu(segments,v),c=0;
         MARCADORS.forEach(function(m){var re=new RegExp('\\b('+m.re+')\\b','gi');c+=(t.match(re)||[]).length});
@@ -636,14 +806,13 @@
       var resta=punts.slice(1).sort(function(a,b){return b.paraules-a.paraules});
       if(resta[0])assign[resta[0].veu]='pac';
       if(resta[1])assign[resta[1].veu]='acomp';
-      // panell de revisio
       var cont=$('veus-files');cont.innerHTML='';
       veus.forEach(function(v){
         var seg=Math.round(segments.filter(function(s){return s.veu===v}).reduce(function(a,s){return a+(s.fi-s.inici)},0));
         var fila=document.createElement('div');fila.className='veu-fila';
         var mostra=textDeVeu(segments,v).slice(0,46);
-        var ops=ROLS.map(function(r){return '<option value="'+r.v+'"'+(assign[v]===r.v?' selected':'')+'>'+r.t+'</option>'}).join('');
-        fila.innerHTML='<span style="white-space:nowrap;font-weight:600">Voz '+(v+1)+' ('+seg+' s)</span><select data-veu="'+v+'">'+ops+'</select><span style="color:var(--boira);font-size:.74rem">«'+esc(mostra)+'…»</span>';
+        var ops=ROLS.map(function(r){return '<option value="'+r.v+'"'+(assign[v]===r.v?' selected':'')+'>'+esc(TX(r.t.trim()))+'</option>'}).join('');
+        fila.innerHTML='<span style="white-space:nowrap;font-weight:600">'+esc(TX('Voz'))+' '+(v+1)+' ('+seg+' s)</span><select data-veu="'+v+'">'+ops+'</select><span style="color:var(--boira);font-size:.74rem">«'+esc(mostra)+'…»</span>';
         cont.appendChild(fila);
       });
       $('veus-panell').style.display='block';
@@ -673,13 +842,13 @@
       var t=$('d-transcripcio').value.trim();
       if(!t){avis('err','No hay transcripción: dicte, grabe la visita o cargue un ejemplo.');return}
       if(!estatAgent||!estatAgent.ia){avis('err','El motor de redacción EscribaMed se está iniciando en su ordenador. Espere unos segundos y vuelva a pulsar.');return}
-      var b=$('b-ia');b.disabled=true;b.textContent='🤖 Redactando…';
-      var t0=Date.now();
-      var cron2=setInterval(function(){b.textContent='🤖 Redactando… '+Math.round((Date.now()-t0)/1000)+' s'},1000);
+      var b=$('b-ia');b.disabled=true;b.textContent='🤖 '+TX('Redactando…');
+      var tini=Date.now();
+      var cron2=setInterval(function(){b.textContent='🤖 '+TX('Redactando…')+' '+Math.round((Date.now()-tini)/1000)+' s'},1000);
       fetch(AGENT+'/redacta',{method:'POST',headers:{'Content-Type':'application/json','X-EM-Clau':clau||''},
         body:JSON.stringify({dialeg:t,idioma:$('e-idioma').value})
       }).then(function(r){return r.json()}).then(function(d){
-        clearInterval(cron2);b.disabled=false;b.textContent='🤖 Redactar (IA local)';
+        clearInterval(cron2);b.disabled=false;b.textContent=TX('🤖 Redactar (IA local)');
         if(!d.ok){avis('err',d.error||'La IA local no ha respondido.');return}
         var n=0;
         Object.keys(MAPA_IA).forEach(function(k){
@@ -687,17 +856,10 @@
           if(v){$(MAPA_IA[k]).value=v;autoAlta($(MAPA_IA[k]));n++}
         });
         if(/^(Dr|Pac|Acomp)\.:/m.test(t)){$('e-transcripcion').value=t;autoAlta($('e-transcripcion'))}
-        avis('ok','🤖 Informe redactado por el motor EscribaMed en su ordenador ('+n+' apartados, '+Math.round(d.temps/1000)+' s). Revíselo SIEMPRE antes de imprimir o firmar.');
-      }).catch(function(){clearInterval(cron2);b.disabled=false;b.textContent='🤖 Redactar (IA local)';avis('err','No se ha podido contactar con la IA local.')});
+        avis('ok','🤖 '+TX('Informe redactado por el motor EscribaMed en su ordenador')+' ('+n+' '+TX('apartados')+', '+Math.round(d.temps/1000)+' s). '+TX('Revíselo SIEMPRE antes de imprimir o firmar.'));
+      }).catch(function(){clearInterval(cron2);b.disabled=false;b.textContent=TX('🤖 Redactar (IA local)');avis('err','No se ha podido contactar con la IA local.')});
     });
   },'agent');
-
-  // ---------- idioma de l informe (persistent) ----------
-  safe(function(){
-    var g=localStorage.getItem('em_idioma');
-    if(g==='ca'||g==='es')$('e-idioma').value=g;
-    $('e-idioma').addEventListener('change',function(){localStorage.setItem('em_idioma',this.value)});
-  },'idioma');
 
   // ---------- facturar → FacturaMed ----------
   safe(function(){
@@ -708,6 +870,13 @@
       window.location.href='app.html?'+p.toString();
     });
   },'facturar');
+
+  // ---------- selector d'idioma (aplica-ho tot) ----------
+  safe(function(){
+    $('lang-es').addEventListener('click',function(){aplicaIdioma('es')});
+    $('lang-ca').addEventListener('click',function(){aplicaIdioma('ca')});
+    aplicaIdioma(LANG);
+  },'i18n');
 })();
 </script>
 </body>

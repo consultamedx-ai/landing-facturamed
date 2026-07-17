@@ -38,6 +38,10 @@
   .btn.mini{padding:6px 13px;font-size:.78rem;margin:0}
   .btn.perill{background:#fff;color:var(--vermell);border:1.5px solid #FECACA}
   .btn[disabled]{opacity:.45;cursor:not-allowed}
+  .modes{display:flex;gap:6px;margin-top:2px}
+  .mode{flex:1;border:1.5px solid var(--linia);background:#fff;border-radius:99px;padding:8px 10px;font:inherit;font-size:.82rem;font-weight:600;color:#64748B;cursor:pointer;transition:all .12s}
+  .mode.actiu{background:var(--blau);color:#fff;border-color:var(--blau)}
+  .mode.parlant.actiu{background:var(--teal);border-color:var(--teal)}
   .check{display:flex;gap:8px;align-items:flex-start;margin-top:12px;font-size:.8rem;color:#475569}
   .check input{width:auto;margin-top:3px}
   .banner{border-radius:11px;padding:11px 15px;font-size:.86rem;margin-bottom:14px;display:none}
@@ -115,6 +119,18 @@
           <option value="es-ES" selected>Español</option>
           <option value="ca-ES">Català</option>
         </select>
+        <label>Modo</label>
+        <div class="modes">
+          <button type="button" class="mode actiu" id="m-dictat">🎙 Dictado</button>
+          <button type="button" class="mode" id="m-conversa">👥 Conversación</button>
+        </div>
+        <div id="parlants" style="display:none">
+          <label>¿Quién habla ahora? (toque para cambiar)</label>
+          <div class="modes">
+            <button type="button" class="mode parlant actiu" id="p-dr">🩺 Médico</button>
+            <button type="button" class="mode parlant" id="p-pac">🧑 Paciente</button>
+          </div>
+        </div>
         <div class="check">
           <input type="checkbox" id="d-consent">
           <label for="d-consent" style="margin:0;font-weight:400">He informado al paciente y cuento con su consentimiento para el dictado (datos ficticios en beta).</label>
@@ -127,7 +143,8 @@
         <label for="d-transcripcio">Transcripción (editable)</label>
         <textarea id="d-transcripcio" rows="7" placeholder="Aquí aparecerá lo que dicte…"></textarea>
         <div class="accions-fila" style="margin-top:12px">
-          <button class="btn sec mini" id="b-exemple" type="button">✨ Cargar ejemplo</button>
+          <button class="btn sec mini" id="b-exemple" type="button">✨ Ejemplo dictado</button>
+          <button class="btn sec mini" id="b-exemple2" type="button">👥 Ejemplo conversación</button>
           <button class="btn perill mini" id="b-netejar" type="button">Limpiar</button>
         </div>
         <div class="ajuda">
@@ -153,6 +170,12 @@
         <div class="sec-informe"><label for="e-diagnostico">Diagnóstico</label><textarea id="e-diagnostico" rows="1"></textarea></div>
         <div class="sec-informe"><label for="e-tratamiento">Tratamiento</label><textarea id="e-tratamiento" rows="2"></textarea></div>
         <div class="sec-informe"><label for="e-recomendaciones">Recomendaciones y seguimiento</label><textarea id="e-recomendaciones" rows="2"></textarea></div>
+        <div class="sec-informe"><label for="e-transcripcion">Transcripción de la visita (anexo · modo conversación)</label><textarea id="e-transcripcion" rows="2"></textarea></div>
+        <div class="fila" style="margin-top:10px">
+          <div><label for="e-idioma">Idioma del informe impreso</label>
+            <select id="e-idioma"><option value="es" selected>Español</option><option value="ca">Català</option></select></div>
+          <div></div>
+        </div>
         <div class="accions-fila" style="margin-top:16px">
           <button class="btn" id="b-imprimir" type="button">🖨 Ver / imprimir informe</button>
           <button class="btn sec" id="b-guardar" type="button">💾 Guardar</button>
@@ -179,15 +202,15 @@
         <div class="qui" id="p-metge-detall"></div>
       </div>
       <div class="i-meta">
-        <div><strong>Informe clínico</strong></div>
+        <div><strong id="p-doc-titol">Informe clínico</strong></div>
         <div id="p-data"></div>
         <div id="p-pacient"></div>
       </div>
     </div>
     <div id="p-seccions"></div>
     <div class="i-peu">
-      <div class="i-legal">Documento generado con EscribaMed (beta privada) · ConsultaMed. Contenido dictado y revisado por el facultativo. Demostración con datos ficticios — sin validez clínica ni legal.</div>
-      <div class="i-firma">Firma del facultativo</div>
+      <div class="i-legal" id="p-legal">Documento generado con EscribaMed (beta privada) · ConsultaMed. Contenido dictado y revisado por el facultativo. Demostración con datos ficticios — sin validez clínica ni legal.</div>
+      <div class="i-firma" id="p-firma">Firma del facultativo</div>
     </div>
   </div>
   <div class="modal-accions">
@@ -208,8 +231,14 @@
   function avis(t,m){var b=$('banner');b.className='banner '+t;b.textContent=m;window.scrollTo({top:0,behavior:'smooth'});setTimeout(function(){b.className='banner'},7000)}
   function esc(s){return String(s??'').replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 
-  var CAMPS=['e-motivo','e-anamnesis','e-antecedentes','e-exploracion','e-pruebas','e-diagnostico','e-tratamiento','e-recomendaciones'];
-  var TITOLS={'e-motivo':'Motivo de consulta','e-anamnesis':'Anamnesis / enfermedad actual','e-antecedentes':'Antecedentes','e-exploracion':'Exploración física','e-pruebas':'Pruebas complementarias','e-diagnostico':'Diagnóstico','e-tratamiento':'Tratamiento','e-recomendaciones':'Recomendaciones y seguimiento'};
+  var CAMPS=['e-motivo','e-anamnesis','e-antecedentes','e-exploracion','e-pruebas','e-diagnostico','e-tratamiento','e-recomendaciones','e-transcripcion'];
+  var TITOLS_ES={'e-motivo':'Motivo de consulta','e-anamnesis':'Anamnesis / enfermedad actual','e-antecedentes':'Antecedentes','e-exploracion':'Exploración física','e-pruebas':'Pruebas complementarias','e-diagnostico':'Diagnóstico','e-tratamiento':'Tratamiento','e-recomendaciones':'Recomendaciones y seguimiento','e-transcripcion':'Transcripción de la visita (anexo)'};
+  var TITOLS_CA={'e-motivo':'Motiu de consulta','e-anamnesis':'Anamnesi / malaltia actual','e-antecedentes':'Antecedents','e-exploracion':'Exploració física','e-pruebas':'Proves complementàries','e-diagnostico':'Diagnòstic','e-tratamiento':'Tractament','e-recomendaciones':'Recomanacions i seguiment','e-transcripcion':'Transcripció de la visita (annex)'};
+  var PRT={
+    es:{doc:'Informe clínico',pacient:'Paciente: ',firma:'Firma del facultativo',legal:'Documento generado con EscribaMed (beta privada) · ConsultaMed. Contenido dictado y revisado por el facultativo. Demostración con datos ficticios — sin validez clínica ni legal.'},
+    ca:{doc:'Informe clínic',pacient:'Pacient: ',firma:'Signatura del facultatiu',legal:'Document generat amb EscribaMed (beta privada) · ConsultaMed. Contingut dictat i revisat pel facultatiu. Demostració amb dades fictícies — sense validesa clínica ni legal.'}
+  };
+  function TIT(){return $('e-idioma').value==='ca'?TITOLS_CA:TITOLS_ES}
 
   // ---------- textarea auto-alçada ----------
   function autoAlta(t){t.style.height='auto';t.style.height=Math.min(t.scrollHeight+2,340)+'px'}
@@ -226,6 +255,24 @@
       var o=document.createElement('option');o.value=p.nom||p;dl.appendChild(o);
     });
   },'pacients');
+
+  // ---------- mode i parlant ----------
+  var mode='dictat',parlant='dr';
+  safe(function(){
+    function pintaMode(){
+      $('m-dictat').classList.toggle('actiu',mode==='dictat');
+      $('m-conversa').classList.toggle('actiu',mode==='conversa');
+      $('parlants').style.display=mode==='conversa'?'block':'none';
+    }
+    $('m-dictat').addEventListener('click',function(){mode='dictat';pintaMode()});
+    $('m-conversa').addEventListener('click',function(){mode='conversa';pintaMode()});
+    function pintaParlant(){
+      $('p-dr').classList.toggle('actiu',parlant==='dr');
+      $('p-pac').classList.toggle('actiu',parlant==='pac');
+    }
+    $('p-dr').addEventListener('click',function(){parlant='dr';pintaParlant()});
+    $('p-pac').addEventListener('click',function(){parlant='pac';pintaParlant()});
+  },'mode');
 
   // ---------- dictat (Web Speech API) ----------
   var rec=null,gravant=false,textFinal='';
@@ -253,10 +300,17 @@
         var mig='';
         for(var i=ev.resultIndex;i<ev.results.length;i++){
           var tr=ev.results[i][0].transcript;
-          if(ev.results[i].isFinal){textFinal+=tr.trim()+' ';}else{mig+=tr;}
+          if(ev.results[i].isFinal){
+            var seg=tr.trim();
+            if(!seg)continue;
+            if(mode==='conversa'){
+              if(textFinal&&!/\n$/.test(textFinal))textFinal+='\n';
+              textFinal+=(parlant==='dr'?'Dr.: ':'Pac.: ')+seg+'\n';
+            }else{textFinal+=seg+' ';}
+          }else{mig+=tr;}
         }
         ta.value=textFinal;autoAlta(ta);
-        interim.textContent=mig?('… '+mig):'';
+        interim.textContent=mig?((mode==='conversa'?(parlant==='dr'?'🩺 ':'🧑 '):'')+'… '+mig):'';
       };
       r.onerror=function(ev){
         if(ev.error==='no-speech')return;
@@ -294,11 +348,18 @@
 
   // ---------- exemple i netejar ----------
   var EXEMPLE='Motivo de consulta dolor lumbar de tres semanas de evolución. Anamnesis paciente de cuarenta y cinco años sin alergias medicamentosas conocidas refiere dolor lumbar de características mecánicas que empeora al final del día no irradiado a extremidades sin pérdida de fuerza niega fiebre ni síndrome constitucional. Antecedentes hipertensión arterial en tratamiento con enalapril diez miligramos. Exploración física dolor a la palpación de la musculatura paravertebral lumbar Lasègue negativo bilateral fuerza y sensibilidad conservadas reflejos presentes y simétricos. Diagnóstico lumbalgia mecánica inespecífica. Tratamiento ibuprofeno seiscientos miligramos cada ocho horas durante cinco días con protección gástrica y calor local. Recomendaciones evitar el reposo prolongado en cama ejercicio suave y progresivo control en dos semanas si no mejora o antes si aparece fiebre pérdida de fuerza o alteración de esfínteres.';
+  var EXEMPLE2='Dr.: Buenos días qué le trae por aquí\nPac.: Desde hace unos tres días me duele mucho la garganta y me cuesta tragar\nDr.: Tiene fiebre o tos\nPac.: Ayer por la noche llegué a treinta y ocho y medio pero tos no tengo\nDr.: Alguna alergia a medicamentos\nPac.: No ninguna que yo sepa\nDr.: Anamnesis paciente que refiere odinofagia de tres días de evolución con fiebre de hasta treinta y ocho y medio sin tos ni clínica respiratoria\nDr.: Exploración faringe hiperémica con exudado amigdalar bilateral adenopatías laterocervicales dolorosas auscultación sin hallazgos\nDr.: Diagnóstico faringoamigdalitis aguda de probable origen bacteriano\nDr.: Tratamiento amoxicilina quinientos miligramos cada ocho horas durante siete días y paracetamol si fiebre o dolor\nDr.: Recomendaciones hidratación abundante reposo relativo y control en cuarenta y ocho horas si no hay mejoría';
   safe(function(){
     $('b-exemple').addEventListener('click',function(){
       $('d-transcripcio').value=EXEMPLE;textFinal=EXEMPLE+' ';autoAlta($('d-transcripcio'));
       if(!$('d-pacient').value)$('d-pacient').value='Paciente de Prueba';
       avis('ok','Ejemplo cargado. Pulse «🧠 Estructurar dictado» para generar el informe.');
+    });
+    $('b-exemple2').addEventListener('click',function(){
+      mode='conversa';$('m-conversa').click();
+      $('d-transcripcio').value=EXEMPLE2;textFinal=EXEMPLE2+'\n';autoAlta($('d-transcripcio'));
+      if(!$('d-pacient').value)$('d-pacient').value='Paciente de Prueba';
+      avis('ok','Conversación de ejemplo cargada. Pulse «🧠 Estructurar dictado»: los apartados se rellenan con lo que dice el médico y el diálogo completo queda como anexo.');
     });
     $('b-netejar').addEventListener('click',function(){
       $('d-transcripcio').value='';textFinal='';$('interim').textContent='';
@@ -324,7 +385,7 @@
     if(!/[.!?]$/.test(s))s+='.';
     return s;
   }
-  function estructura(text){
+  function estructura(text,descartaInici){
     var talls=[];
     MARCADORS.forEach(function(mrc){
       var re=new RegExp('\\b('+mrc.re+')\\b','gi'),m;
@@ -336,11 +397,10 @@
       }
     });
     talls.sort(function(a,b){return a.pos-b.pos});
-    // si un marcador queda dins del fragment d un altre amb la mateixa posició, mantenim ordre
     var out={};
     function afegeix(id,frag){frag=netejaFrag(frag);if(!frag)return;out[id]=out[id]?out[id]+'\n'+frag:frag}
-    if(!talls.length){afegeix('e-anamnesis',text);return out}
-    if(talls[0].pos>0)afegeix('e-anamnesis',text.slice(0,talls[0].pos));
+    if(!talls.length){if(!descartaInici)afegeix('e-anamnesis',text);return out}
+    if(talls[0].pos>0&&!descartaInici)afegeix('e-anamnesis',text.slice(0,talls[0].pos));
     for(var i=0;i<talls.length;i++){
       var fi=(i+1<talls.length)?talls[i+1].pos:text.length;
       if(fi>talls[i].fi)afegeix(talls[i].id,text.slice(talls[i].fi,fi));
@@ -350,17 +410,25 @@
   safe(function(){
     $('b-estructurar').addEventListener('click',function(){
       var t=$('d-transcripcio').value.trim();
-      if(!t){avis('err','No hay nada que estructurar: dicte o cargue el ejemplo primero.');return}
-      var out=estructura(t),n=0;
+      if(!t){avis('err','No hay nada que estructurar: dicte o cargue un ejemplo primero.');return}
+      var esConversa=/^(Dr|Pac)\.:/m.test(t),out,n=0;
+      if(esConversa){
+        // apartats: només del que diu el metge; el diàleg sencer va a l annex
+        var nomesDr=t.split('\n').filter(function(l){return /^Dr\.:/i.test(l)}).map(function(l){return l.replace(/^Dr\.:\s*/i,'')}).join(' ');
+        out=estructura(nomesDr,true);
+        out['e-transcripcion']=t;
+      }else{
+        out=estructura(t,false);
+      }
       CAMPS.forEach(function(id){if(out[id]){$(id).value=out[id];autoAlta($(id));n++}});
-      avis(n?'ok':'err',n?('🧠 Informe estructurado en '+n+' apartado(s). Revíselo y complete lo que falte.'):'No se han reconocido apartados. Diga los nombres de las secciones al dictar.');
+      avis(n?'ok':'err',n?('🧠 Informe estructurado en '+n+' apartado(s)'+(esConversa?' + transcripción anexa':'')+'. Revíselo y complete lo que falte.'):'No se han reconocido apartados. Diga los nombres de las secciones al dictar.');
     });
   },'estructurar');
 
   // ---------- copiar ----------
   function textInforme(){
-    var linies=[];
-    CAMPS.forEach(function(id){var v=$(id).value.trim();if(v)linies.push(TITOLS[id].toUpperCase()+'\n'+v)});
+    var linies=[],T=TIT();
+    CAMPS.forEach(function(id){var v=$(id).value.trim();if(v)linies.push(T[id].toUpperCase()+'\n'+v)});
     return linies.join('\n\n');
   }
   safe(function(){
@@ -375,16 +443,19 @@
 
   // ---------- modal imprimible ----------
   function obreModal(pacient,dataTxt,camps){
-    var c=llegeix(K.conf,null)||{};
+    var c=llegeix(K.conf,null)||{},idi=$('e-idioma').value,T=TIT(),P=PRT[idi]||PRT.es;
     $('p-metge').textContent=c.nom||'Dr./Dra. (configure su nombre en FacturaMed)';
     $('p-metge-detall').textContent=[c.nif?('NIF '+c.nif):'',c.colegiat?('Col. '+c.colegiat):'',c.adreca||''].filter(Boolean).join(' · ');
+    $('p-doc-titol').textContent=P.doc;
     $('p-data').textContent=dataTxt;
-    $('p-pacient').textContent=pacient?('Paciente: '+pacient):'';
+    $('p-pacient').textContent=pacient?(P.pacient+pacient):'';
+    $('p-firma').textContent=P.firma;
+    $('p-legal').textContent=P.legal;
     var cont=$('p-seccions');cont.innerHTML='';
     CAMPS.forEach(function(id){
-      var v=(camps?camps[id]:$(id).value).trim();if(!v)return;
+      var v=String((camps?camps[id]:$(id).value)||'').trim();if(!v)return;
       var d=document.createElement('div');d.className='i-sec';
-      d.innerHTML='<h3>'+esc(TITOLS[id])+'</h3><p>'+esc(v)+'</p>';
+      d.innerHTML='<h3>'+esc(T[id])+'</h3><p>'+esc(v)+'</p>';
       cont.appendChild(d);
     });
     if(!cont.children.length){avis('err','El informe está vacío.');return}
@@ -435,6 +506,13 @@
     });
     pintaLlista();
   },'guardar');
+
+  // ---------- idioma de l informe (persistent) ----------
+  safe(function(){
+    var g=localStorage.getItem('em_idioma');
+    if(g==='ca'||g==='es')$('e-idioma').value=g;
+    $('e-idioma').addEventListener('change',function(){localStorage.setItem('em_idioma',this.value)});
+  },'idioma');
 
   // ---------- facturar → FacturaMed ----------
   safe(function(){

@@ -188,6 +188,7 @@
       <div class="card">
         <h2>2 · Informe clínico
           <span class="accions-fila">
+            <button class="btn mini" id="b-ia" type="button" style="display:none">🤖 Redactar (IA local)</button>
             <button class="btn mini" id="b-estructurar" type="button">🧠 Estructurar dictado</button>
             <button class="btn sec mini" id="b-copiar" type="button">⧉ Copiar</button>
           </span>
@@ -558,8 +559,9 @@
         if(!d.ok){chip(false,'error');return}
         if(d.llicencia!=='ok'){chip(false,'bloqueado');return}
         chip(true,'');
-        var extra=d.veus?'':' · sin identificación de voces (solo transcripción)';
+        var extra=(d.veus?'':' · sin identificación de voces')+(d.ia?' · IA ✓':'');
         $('chip-agent').textContent='⬤ agente local: conectado ('+(d.model||'?')+')'+extra;
+        $('b-ia').style.display=d.ia?'inline-block':'none';
         if(!clau)fetch(AGENT+'/clau').then(function(r){return r.json()}).then(function(k){clau=k.clau}).catch(function(){});
       }).catch(function(){clearTimeout(tm);estatAgent=null;chip(false,'no detectado')});
     }
@@ -662,6 +664,30 @@
       avis('ok','🎧 Visita transcrita e identificada en su ordenador. Revise «¿quién es quién?» y pulse «🧠 Estructurar dictado».');
     }
     $('b-aplicar-veus').addEventListener('click',aplicaEtiquetes);
+
+    // --- redaccio automatica de l informe amb la IA local ---
+    var MAPA_IA={motivo:'e-motivo',anamnesis:'e-anamnesis',antecedentes:'e-antecedentes',exploracion:'e-exploracion',pruebas:'e-pruebas',diagnostico:'e-diagnostico',tratamiento:'e-tratamiento',recomendaciones:'e-recomendaciones'};
+    $('b-ia').addEventListener('click',function(){
+      var t=$('d-transcripcio').value.trim();
+      if(!t){avis('err','No hay transcripción: dicte, grabe la visita o cargue un ejemplo.');return}
+      if(!estatAgent||!estatAgent.ia){avis('err','IA local no disponible (arranque Ollama en su ordenador).');return}
+      var b=$('b-ia');b.disabled=true;b.textContent='🤖 Redactando…';
+      var t0=Date.now();
+      var cron2=setInterval(function(){b.textContent='🤖 Redactando… '+Math.round((Date.now()-t0)/1000)+' s'},1000);
+      fetch(AGENT+'/redacta',{method:'POST',headers:{'Content-Type':'application/json','X-EM-Clau':clau||''},
+        body:JSON.stringify({dialeg:t,idioma:$('e-idioma').value})
+      }).then(function(r){return r.json()}).then(function(d){
+        clearInterval(cron2);b.disabled=false;b.textContent='🤖 Redactar (IA local)';
+        if(!d.ok){avis('err',d.error||'La IA local no ha respondido.');return}
+        var n=0;
+        Object.keys(MAPA_IA).forEach(function(k){
+          var v=(d.camps[k]||'').trim();
+          if(v){$(MAPA_IA[k]).value=v;autoAlta($(MAPA_IA[k]));n++}
+        });
+        if(/^(Dr|Pac|Acomp)\.:/m.test(t)){$('e-transcripcion').value=t;autoAlta($('e-transcripcion'))}
+        avis('ok','🤖 Informe redactado por la IA en su ordenador ('+n+' apartados, '+Math.round(d.temps/1000)+' s, modelo '+d.model+'). Revíselo SIEMPRE antes de imprimir o firmar.');
+      }).catch(function(){clearInterval(cron2);b.disabled=false;b.textContent='🤖 Redactar (IA local)';avis('err','No se ha podido contactar con la IA local.')});
+    });
   },'agent');
 
   // ---------- idioma de l informe (persistent) ----------

@@ -112,7 +112,7 @@
   <span class="logo">Escriba<em>Med</em> <small>by ConsultaMed</small></span>
   <div class="nav-dreta">
     <span class="beta-chip" data-t>BETA PRIVADA · solo datos ficticios</span>
-    <span class="lang-tog"><button class="lang-b" id="lang-es" type="button">ESP</button><button class="lang-b" id="lang-ca" type="button">CAT</button></span>
+    <span class="lang-tog"><button class="lang-b" id="lang-es" type="button">ESP</button><button class="lang-b" id="lang-ca" type="button">CAT</button><button class="lang-b" id="lang-de" type="button">DE</button></span>
     <a class="nav-enllac" href="app.html">FacturaMed →</a>
   </div>
 </div></nav>
@@ -133,6 +133,7 @@
         <select id="d-lang">
           <option value="es-ES" selected data-t>Español</option>
           <option value="ca-ES" data-t>Català</option>
+          <option value="de-DE" data-t>Alemán</option>
         </select>
         <label data-t>Modo</label>
         <div class="modes">
@@ -213,7 +214,7 @@
         <div class="sec-informe"><label for="e-transcripcion" data-t>Transcripción de la visita (anexo · modo conversación)</label><textarea id="e-transcripcion" rows="2"></textarea></div>
         <div class="fila" style="margin-top:10px">
           <div><label for="e-idioma" data-t>Idioma del informe impreso</label>
-            <select id="e-idioma"><option value="es" selected data-t>Español</option><option value="ca" data-t>Català</option></select></div>
+            <select id="e-idioma"><option value="es" selected data-t>Español</option><option value="ca" data-t>Català</option><option value="de" data-t>Alemán</option></select></div>
           <div></div>
         </div>
         <div class="accions-fila" style="margin-top:16px">
@@ -267,7 +268,8 @@
   var K={inf:'em_informes',conf:'fm2_config',pac:'fm2_pacients'};
 
   // ============ i18n (interfície CAT/ESP) ============
-  var LANG = localStorage.getItem('em_idioma_ui')==='ca' ? 'ca' : 'es';
+  var _g0 = localStorage.getItem('em_idioma_ui');
+  var LANG = (_g0==='ca'||_g0==='de') ? _g0 : 'es';
   var TR = {
     "BETA PRIVADA · solo datos ficticios":"BETA PRIVADA · només dades fictícies",
     "1 · Dicte la visita":"1 · Dicti la visita",
@@ -377,36 +379,152 @@
     "Paciente ":"Pacient",
     "Acompañante":"Acompanyant"
   };
-  function TX(s){ if(LANG!=='ca')return s; return TR[s]!==undefined?TR[s]:s; }
+  var TR_DE = {
+    "BETA PRIVADA · solo datos ficticios":"PRIVATE BETA · nur fiktive Daten",
+    "1 · Dicte la visita":"1 · Diktieren Sie den Besuch",
+    "Paciente":"Patient",
+    "Nombre del paciente (ficticio)":"Name des Patienten (fiktiv)",
+    "Idioma del dictado":"Diktatsprache",
+    "Español":"Spanisch",
+    "Català":"Katalanisch",
+    "Alemán":"Deutsch",
+    "Modo":"Modus",
+    "🎙 Dictado":"🎙 Diktat",
+    "👥 Conversación":"👥 Gespräch",
+    "¿Quién habla ahora? (toque para cambiar)":"Wer spricht jetzt? (zum Wechseln tippen)",
+    "🩺 Médico":"🩺 Arzt",
+    "🧑 Paciente":"🧑 Patient",
+    "He informado al paciente y cuento con su consentimiento para el dictado (datos ficticios en beta).":"Ich habe den Patienten informiert und habe seine Einwilligung zum Diktat (fiktive Daten in der Beta).",
+    "Marque primero la casilla de consentimiento":"Aktivieren Sie zuerst das Einwilligungskästchen",
+    "Transcripción (editable)":"Transkription (bearbeitbar)",
+    "Aquí aparecerá lo que dicte…":"Hier erscheint, was Sie diktieren…",
+    "✨ Ejemplo dictado":"✨ Beispiel Diktat",
+    "👥 Ejemplo conversación":"👥 Beispiel Gespräch",
+    "Limpiar":"Löschen",
+    "Visita completa":"Vollständiger Besuch",
+    "Personas en la consulta":"Personen im Sprechzimmer",
+    "2 — médico y paciente":"2 — Arzt und Patient",
+    "3 — médico, paciente y acompañante":"3 — Arzt, Patient und Begleitperson",
+    "⏺ Grabar visita":"⏺ Besuch aufnehmen",
+    "Aplicar etiquetas":"Zuordnung übernehmen",
+    "2 · Informe clínico":"2 · Arztbericht",
+    "🤖 Redactar (IA local)":"🤖 Verfassen (lokale KI)",
+    "🧠 Estructurar dictado":"🧠 Diktat strukturieren",
+    "⧉ Copiar":"⧉ Kopieren",
+    "Motivo de consulta":"Vorstellungsgrund",
+    "Anamnesis / enfermedad actual":"Anamnese / aktuelle Beschwerden",
+    "Antecedentes":"Vorgeschichte",
+    "Exploración física":"Körperliche Untersuchung",
+    "Pruebas complementarias":"Zusatzuntersuchungen",
+    "Diagnóstico":"Diagnose",
+    "Tratamiento":"Therapie",
+    "Recomendaciones y seguimiento":"Empfehlungen und Verlauf",
+    "Transcripción de la visita (anexo · modo conversación)":"Transkription des Besuchs (Anhang · Gesprächsmodus)",
+    "Idioma del informe impreso":"Sprache des gedruckten Berichts",
+    "🖨 Ver / imprimir informe":"🖨 Bericht ansehen / drucken",
+    "💾 Guardar":"💾 Speichern",
+    "💶 Facturar esta visita":"💶 Diesen Besuch abrechnen",
+    "Informes guardados":"Gespeicherte Berichte",
+    "DEMO · SIN VALIDEZ CLÍNICA":"DEMO · OHNE KLINISCHE GÜLTIGKEIT",
+    "🖨 Imprimir / guardar PDF":"🖨 Drucken / als PDF speichern",
+    "Cerrar":"Schließen",
+    "Pulse el micrófono y empiece a dictar":"Drücken Sie das Mikrofon und beginnen Sie zu diktieren",
+    "Marque la casilla para activar el micrófono":"Aktivieren Sie das Kästchen, um das Mikrofon freizugeben",
+    "Este navegador no soporta dictado por voz — use Google Chrome":"Dieser Browser unterstützt kein Sprachdiktat — verwenden Sie Google Chrome",
+    "Micrófono bloqueado. Pulse el candado de la barra de direcciones y permita el micrófono para consultamed.es.":"Mikrofon blockiert. Klicken Sie auf das Schloss in der Adressleiste und erlauben Sie das Mikrofon für consultamed.es.",
+    "El dictado necesita conexión a internet.":"Das Diktat benötigt eine Internetverbindung.",
+    "No se ha encontrado ningún micrófono.":"Es wurde kein Mikrofon gefunden.",
+    "No se ha podido iniciar el dictado. Recargue la página.":"Das Diktat konnte nicht gestartet werden. Laden Sie die Seite neu.",
+    "🔴 Escuchando… hable con normalidad":"🔴 Höre zu… sprechen Sie normal",
+    "Dictado en pausa — pulse para continuar":"Diktat pausiert — drücken Sie, um fortzufahren",
+    "Ejemplo cargado. Pulse «🧠 Estructurar dictado» para generar el informe.":"Beispiel geladen. Drücken Sie «🧠 Diktat strukturieren», um den Bericht zu erstellen.",
+    "Conversación de ejemplo cargada. Pulse «🧠 Estructurar dictado»: los apartados se rellenan con lo que dice el médico y el diálogo completo queda como anexo.":"Beispielgespräch geladen. Drücken Sie «🧠 Diktat strukturieren»: die Abschnitte werden mit den Aussagen des Arztes gefüllt und das vollständige Gespräch bleibt als Anhang.",
+    "No hay nada que estructurar: dicte o cargue un ejemplo primero.":"Es gibt nichts zu strukturieren: diktieren Sie oder laden Sie zuerst ein Beispiel.",
+    "Informe estructurado en":"Bericht strukturiert in",
+    "apartado(s)":"Abschnitt(e)",
+    "+ transcripción anexa":"+ Transkription im Anhang",
+    "Revíselo y complete lo que falte.":"Prüfen Sie ihn und ergänzen Sie das Fehlende.",
+    "No se han reconocido apartados. Diga los nombres de las secciones al dictar.":"Es wurden keine Abschnitte erkannt. Nennen Sie die Abschnittsnamen beim Diktieren.",
+    "El informe está vacío.":"Der Bericht ist leer.",
+    "⧉ Informe copiado al portapapeles — péguelo donde quiera.":"⧉ Bericht in die Zwischenablage kopiert — beliebig einfügen.",
+    "No se ha podido copiar.":"Kopieren nicht möglich.",
+    "Este navegador no permite copiar automáticamente.":"Dieser Browser erlaubt kein automatisches Kopieren.",
+    "Todavía no hay informes guardados.":"Noch keine gespeicherten Berichte.",
+    "Fecha":"Datum",
+    "Ver":"Ansehen",
+    "💾 Informe guardado en este dispositivo.":"💾 Bericht auf diesem Gerät gespeichert.",
+    "Indique el nombre del paciente antes de facturar.":"Geben Sie den Namen des Patienten vor der Abrechnung an.",
+    "Marque primero la casilla de consentimiento.":"Aktivieren Sie zuerst das Einwilligungskästchen.",
+    "Pare primero el dictado por micrófono.":"Stoppen Sie zuerst das Mikrofon-Diktat.",
+    "No se ha podido acceder al micrófono.":"Kein Zugriff auf das Mikrofon möglich.",
+    "⏹ Finalizar y transcribir":"⏹ Beenden und transkribieren",
+    "Grabando":"Aufnahme",
+    "pulse ⏹ al terminar la visita":"drücken Sie ⏹ am Ende des Besuchs",
+    "Procesando en su ordenador":"Verarbeitung auf Ihrem Computer",
+    "puede tardar 1-3 min según la duración.":"kann je nach Dauer 1–3 Min. dauern.",
+    "Error del agente local.":"Fehler des lokalen Agenten.",
+    "s de audio · transcripción lista":"s Audio · Transkription fertig",
+    "voces identificadas":"Stimmen identifiziert",
+    "sin separación de voces":"ohne Stimmentrennung",
+    "Transcripción hecha en local. Sin identificación de voces (instale los modelos de voz para activarla).":"Transkription lokal erstellt. Ohne Stimmerkennung (installieren Sie die Stimmmodelle, um sie zu aktivieren).",
+    "No se ha podido contactar con el agente local.":"Der lokale Agent ist nicht erreichbar.",
+    "🎧 Visita transcrita e identificada en su ordenador. Revise «¿quién es quién?» y pulse «🧠 Estructurar dictado».":"🎧 Besuch auf Ihrem Computer transkribiert und zugeordnet. Prüfen Sie «Wer ist wer?» und drücken Sie «🧠 Diktat strukturieren».",
+    "No hay transcripción: dicte, grabe la visita o cargue un ejemplo.":"Keine Transkription: diktieren Sie, nehmen Sie den Besuch auf oder laden Sie ein Beispiel.",
+    "El motor de redacción EscribaMed se está iniciando en su ordenador. Espere unos segundos y vuelva a pulsar.":"Die EscribaMed-Schreibengine startet auf Ihrem Computer. Warten Sie einige Sekunden und drücken Sie erneut.",
+    "Redactando…":"Verfasse…",
+    "La IA local no ha respondido.":"Die lokale KI hat nicht geantwortet.",
+    "Informe redactado por el motor EscribaMed en su ordenador":"Bericht von der EscribaMed-Engine auf Ihrem Computer verfasst",
+    "apartados":"Abschnitte",
+    "Revíselo SIEMPRE antes de imprimir o firmar.":"Prüfen Sie ihn IMMER vor dem Drucken oder Unterschreiben.",
+    "No se ha podido contactar con la IA local.":"Die lokale KI ist nicht erreichbar.",
+    "agente local EscribaMed: conectado":"lokaler EscribaMed-Agent: verbunden",
+    " · sin identificación de voces":" · ohne Stimmerkennung",
+    "agente local: ":"lokaler Agent: ",
+    "buscando…":"suche…",
+    "no detectado":"nicht erkannt",
+    "error":"Fehler",
+    "bloqueado":"blockiert",
+    "Voz":"Stimme",
+    "Médico":"Arzt",
+    "Paciente ":"Patient",
+    "Acompañante":"Begleitperson"
+  };
+  function TX(s){ if(LANG==='ca')return TR[s]!==undefined?TR[s]:s; if(LANG==='de')return TR_DE[s]!==undefined?TR_DE[s]:s; return s; }
   var HTMLT = {
     "avis-priv":{
       es:'🔒 <strong>Beta privada de demostración.</strong> No introduzca datos reales de pacientes. El reconocimiento de voz lo realiza el servicio de su navegador (Chrome). Informe siempre al paciente antes de dictar en su presencia.',
-      ca:'🔒 <strong>Beta privada de demostració.</strong> No introdueixi dades reals de pacients. El reconeixement de veu el fa el servei del seu navegador (Chrome). Informi sempre el pacient abans de dictar en presència seva.'
+      ca:'🔒 <strong>Beta privada de demostració.</strong> No introdueixi dades reals de pacients. El reconeixement de veu el fa el servei del seu navegador (Chrome). Informi sempre el pacient abans de dictar en presència seva.',
+      de:'🔒 <strong>Private Demo-Beta.</strong> Geben Sie keine echten Patientendaten ein. Die Spracherkennung erfolgt über den Dienst Ihres Browsers (Chrome). Informieren Sie den Patienten stets, bevor Sie in seiner Anwesenheit diktieren.'
     },
     "ajuda-dictat":{
       es:'<strong>Truco:</strong> diga el nombre de cada apartado mientras dicta — «<em>motivo de consulta…</em>», «<em>anamnesis…</em>», «<em>exploración…</em>», «<em>diagnóstico…</em>», «<em>tratamiento…</em>», «<em>recomendaciones…</em>» — y EscribaMed ordenará solo el informe. La versión final lo hará sin necesidad de decirlos.',
-      ca:'<strong>Truc:</strong> digui el nom de cada apartat mentre dicta — «<em>motiu de consulta…</em>», «<em>anamnesi…</em>», «<em>exploració…</em>», «<em>diagnòstic…</em>», «<em>tractament…</em>», «<em>recomanacions…</em>» — i EscribaMed ordenarà sol l\'informe. La versió final ho farà sense necessitat de dir-los.'
+      ca:'<strong>Truc:</strong> digui el nom de cada apartat mentre dicta — «<em>motiu de consulta…</em>», «<em>anamnesi…</em>», «<em>exploració…</em>», «<em>diagnòstic…</em>», «<em>tractament…</em>», «<em>recomanacions…</em>» — i EscribaMed ordenarà sol l\'informe. La versió final ho farà sense necessitat de dir-los.',
+      de:'<strong>Tipp:</strong> Nennen Sie den Namen jedes Abschnitts beim Diktieren — «<em>Vorstellungsgrund…</em>», «<em>Anamnese…</em>», «<em>Untersuchung…</em>», «<em>Diagnose…</em>», «<em>Therapie…</em>», «<em>Empfehlungen…</em>» — und EscribaMed ordnet den Bericht von selbst. Die finale Version schafft das ohne diese Nennungen.'
     },
     "p-visita-info":{
       es:'Grabe la visita entera y el <strong>agente local EscribaMed</strong> la transcribe e identifica quién habla — todo <strong>dentro de su ordenador</strong>: el audio nunca sale de la consulta.',
-      ca:'Gravi la visita sencera i l\'<strong>agent local EscribaMed</strong> la transcriu i identifica qui parla — tot <strong>dins del seu ordinador</strong>: l\'àudio no surt mai de la consulta.'
+      ca:'Gravi la visita sencera i l\'<strong>agent local EscribaMed</strong> la transcriu i identifica qui parla — tot <strong>dins del seu ordinador</strong>: l\'àudio no surt mai de la consulta.',
+      de:'Nehmen Sie den gesamten Besuch auf und der <strong>lokale EscribaMed-Agent</strong> transkribiert ihn und erkennt, wer spricht — alles <strong>auf Ihrem Computer</strong>: der Ton verlässt nie das Sprechzimmer.'
     },
     "agent-off-p":{
       es:'Agente no detectado. En la beta, la instalación la asiste ConsultaMed (un solo comando, 5 minutos). Una vez instalado y arrancado, este panel se activa solo.',
-      ca:'Agent no detectat. A la beta, la instal·lació l\'assisteix ConsultaMed (una sola ordre, 5 minuts). Un cop instal·lat i engegat, aquest panell s\'activa sol.'
+      ca:'Agent no detectat. A la beta, la instal·lació l\'assisteix ConsultaMed (una sola ordre, 5 minuts). Un cop instal·lat i engegat, aquest panell s\'activa sol.',
+      de:'Agent nicht erkannt. In der Beta unterstützt ConsultaMed die Installation (ein einziger Befehl, 5 Minuten). Nach Installation und Start aktiviert sich dieses Feld von selbst.'
     },
     "ajuda-veus":{
       es:'<strong>¿Quién es quién?</strong> Revise la asignación automática y corrija si hace falta:',
-      ca:'<strong>Qui és qui?</strong> Revisi l\'assignació automàtica i corregeixi si cal:'
+      ca:'<strong>Qui és qui?</strong> Revisi l\'assignació automàtica i corregeixi si cal:',
+      de:'<strong>Wer ist wer?</strong> Prüfen Sie die automatische Zuordnung und korrigieren Sie bei Bedarf:'
     },
     "p-informe-nota":{
       es:'El informe es siempre revisable y editable por el médico antes de imprimir o facturar. Los datos se guardan solo en este dispositivo.',
-      ca:'L\'informe sempre és revisable i editable pel metge abans d\'imprimir o facturar. Les dades es desen només en aquest dispositiu.'
+      ca:'L\'informe sempre és revisable i editable pel metge abans d\'imprimir o facturar. Les dades es desen només en aquest dispositiu.',
+      de:'Der Bericht ist stets vom Arzt prüf- und bearbeitbar, bevor er gedruckt oder abgerechnet wird. Die Daten werden nur auf diesem Gerät gespeichert.'
     }
   };
   var refrescaEstatMic=function(){};
   function aplicaIdioma(lang){
-    LANG = lang==='ca' ? 'ca' : 'es';
+    LANG = (lang==='ca'||lang==='de') ? lang : 'es';
     try{localStorage.setItem('em_idioma_ui',LANG)}catch(e){}
     document.documentElement.lang=LANG;
     document.querySelectorAll('[data-t]').forEach(function(el){
@@ -419,8 +537,8 @@
     });
     document.querySelectorAll('[data-ttitle]').forEach(function(el){ el.title=TX(el.getAttribute('data-ttitle')); });
     Object.keys(HTMLT).forEach(function(id){ var el=$(id); if(el)el.innerHTML=HTMLT[id][LANG]; });
-    var be=$('lang-es'),bc=$('lang-ca'); if(be)be.classList.toggle('actiu',LANG==='es'); if(bc)bc.classList.toggle('actiu',LANG==='ca');
-    if($('d-lang'))$('d-lang').value = LANG==='ca' ? 'ca-ES' : 'es-ES';
+    var be=$('lang-es'),bc=$('lang-ca'),bd=$('lang-de'); if(be)be.classList.toggle('actiu',LANG==='es'); if(bc)bc.classList.toggle('actiu',LANG==='ca'); if(bd)bd.classList.toggle('actiu',LANG==='de');
+    if($('d-lang'))$('d-lang').value = LANG==='ca' ? 'ca-ES' : LANG==='de' ? 'de-DE' : 'es-ES';
     if($('e-idioma')){ $('e-idioma').value=LANG; try{localStorage.setItem('em_idioma',LANG)}catch(e){} }
     safe(refrescaEstatMic,'refrescMic');
     safe(function(){pintaLlista()},'refrescLlista');
@@ -435,11 +553,13 @@
   var CAMPS=['e-motivo','e-anamnesis','e-antecedentes','e-exploracion','e-pruebas','e-diagnostico','e-tratamiento','e-recomendaciones','e-transcripcion'];
   var TITOLS_ES={'e-motivo':'Motivo de consulta','e-anamnesis':'Anamnesis / enfermedad actual','e-antecedentes':'Antecedentes','e-exploracion':'Exploración física','e-pruebas':'Pruebas complementarias','e-diagnostico':'Diagnóstico','e-tratamiento':'Tratamiento','e-recomendaciones':'Recomendaciones y seguimiento','e-transcripcion':'Transcripción de la visita (anexo)'};
   var TITOLS_CA={'e-motivo':'Motiu de consulta','e-anamnesis':'Anamnesi / malaltia actual','e-antecedentes':'Antecedents','e-exploracion':'Exploració física','e-pruebas':'Proves complementàries','e-diagnostico':'Diagnòstic','e-tratamiento':'Tractament','e-recomendaciones':'Recomanacions i seguiment','e-transcripcion':'Transcripció de la visita (annex)'};
+  var TITOLS_DE={'e-motivo':'Vorstellungsgrund','e-anamnesis':'Anamnese / aktuelle Beschwerden','e-antecedentes':'Vorgeschichte','e-exploracion':'Körperliche Untersuchung','e-pruebas':'Zusatzuntersuchungen','e-diagnostico':'Diagnose','e-tratamiento':'Therapie','e-recomendaciones':'Empfehlungen und Verlauf','e-transcripcion':'Transkription des Besuchs (Anhang)'};
   var PRT={
     es:{doc:'Informe clínico',pacient:'Paciente: ',firma:'Firma del facultativo',legal:'Documento generado con EscribaMed (beta privada) · ConsultaMed. Contenido dictado y revisado por el facultativo. Demostración con datos ficticios — sin validez clínica ni legal.'},
-    ca:{doc:'Informe clínic',pacient:'Pacient: ',firma:'Signatura del facultatiu',legal:'Document generat amb EscribaMed (beta privada) · ConsultaMed. Contingut dictat i revisat pel facultatiu. Demostració amb dades fictícies — sense validesa clínica ni legal.'}
+    ca:{doc:'Informe clínic',pacient:'Pacient: ',firma:'Signatura del facultatiu',legal:'Document generat amb EscribaMed (beta privada) · ConsultaMed. Contingut dictat i revisat pel facultatiu. Demostració amb dades fictícies — sense validesa clínica ni legal.'},
+    de:{doc:'Arztbericht',pacient:'Patient: ',firma:'Unterschrift des Arztes',legal:'Erstellt mit EscribaMed (private Beta) · ConsultaMed. Vom Arzt diktierter und geprüfter Inhalt. Demonstration mit fiktiven Daten — ohne klinische oder rechtliche Gültigkeit.'}
   };
-  function TIT(){return $('e-idioma').value==='ca'?TITOLS_CA:TITOLS_ES}
+  function TIT(){var v=$('e-idioma').value;return v==='ca'?TITOLS_CA:v==='de'?TITOLS_DE:TITOLS_ES}
 
   // ---------- textarea auto-alçada ----------
   function autoAlta(t){t.style.height='auto';t.style.height=Math.min(t.scrollHeight+2,340)+'px'}
@@ -553,16 +673,21 @@
   // ---------- exemple i netejar ----------
   var EXEMPLE='Motivo de consulta dolor lumbar de tres semanas de evolución. Anamnesis paciente de cuarenta y cinco años sin alergias medicamentosas conocidas refiere dolor lumbar de características mecánicas que empeora al final del día no irradiado a extremidades sin pérdida de fuerza niega fiebre ni síndrome constitucional. Antecedentes hipertensión arterial en tratamiento con enalapril diez miligramos. Exploración física dolor a la palpación de la musculatura paravertebral lumbar Lasègue negativo bilateral fuerza y sensibilidad conservadas reflejos presentes y simétricos. Diagnóstico lumbalgia mecánica inespecífica. Tratamiento ibuprofeno seiscientos miligramos cada ocho horas durante cinco días con protección gástrica y calor local. Recomendaciones evitar el reposo prolongado en cama ejercicio suave y progresivo control en dos semanas si no mejora o antes si aparece fiebre pérdida de fuerza o alteración de esfínteres.';
   var EXEMPLE2='Dr.: Buenos días qué le trae por aquí\nPac.: Desde hace unos tres días me duele mucho la garganta y me cuesta tragar\nDr.: Tiene fiebre o tos\nPac.: Ayer por la noche llegué a treinta y ocho y medio pero tos no tengo\nDr.: Alguna alergia a medicamentos\nPac.: No ninguna que yo sepa\nDr.: Anamnesis paciente que refiere odinofagia de tres días de evolución con fiebre de hasta treinta y ocho y medio sin tos ni clínica respiratoria\nDr.: Exploración faringe hiperémica con exudado amigdalar bilateral adenopatías laterocervicales dolorosas auscultación sin hallazgos\nDr.: Diagnóstico faringoamigdalitis aguda de probable origen bacteriano\nDr.: Tratamiento amoxicilina quinientos miligramos cada ocho horas durante siete días y paracetamol si fiebre o dolor\nDr.: Recomendaciones hidratación abundante reposo relativo y control en cuarenta y ocho horas si no hay mejoría';
+  var EXEMPLE_DE='Vorstellungsgrund Rückenschmerzen seit drei Wochen. Anamnese fünfundvierzigjähriger Patient ohne bekannte Medikamentenallergien berichtet über mechanische Rückenschmerzen die sich am Abend verschlimmern nicht in die Beine ausstrahlend ohne Kraftverlust kein Fieber kein Gewichtsverlust. Vorgeschichte arterielle Hypertonie unter Behandlung mit Enalapril zehn Milligramm. Körperliche Untersuchung Druckschmerz der paravertebralen Lendenmuskulatur Lasègue beidseits negativ Kraft und Sensibilität erhalten Reflexe seitengleich. Diagnose unspezifische mechanische Lumbalgie. Therapie Ibuprofen sechshundert Milligramm alle acht Stunden für fünf Tage mit Magenschutz und lokale Wärme. Empfehlungen längere Bettruhe vermeiden sanfte progressive Bewegung Kontrolle in zwei Wochen bei ausbleibender Besserung oder früher bei Fieber Kraftverlust oder Blasenstörung.';
+  var EXEMPLE2_DE='Dr.: Guten Tag was führt Sie zu mir\nPac.: Seit etwa drei Tagen habe ich starke Halsschmerzen und Schluckbeschwerden\nDr.: Haben Sie Fieber oder Husten\nPac.: Gestern Abend hatte ich achtunddreißig fünf aber Husten habe ich nicht\nDr.: Irgendeine Medikamentenallergie\nPac.: Nein keine die ich wüsste\nDr.: Anamnese Patient berichtet über Halsschmerzen seit drei Tagen mit Fieber bis achtunddreißig fünf ohne Husten ohne respiratorische Symptomatik\nDr.: Körperliche Untersuchung gerötete Rachenschleimhaut mit beidseitigem Tonsillenexsudat schmerzhafte zervikale Lymphknoten Auskultation unauffällig\nDr.: Diagnose akute Tonsillopharyngitis wahrscheinlich bakteriell\nDr.: Therapie Amoxicillin fünfhundert Milligramm alle acht Stunden für sieben Tage und Paracetamol bei Fieber oder Schmerzen\nDr.: Empfehlungen reichlich Flüssigkeit relative Schonung Kontrolle in achtundvierzig Stunden bei ausbleibender Besserung';
+  function nomDemo(){return LANG==='de'?'Testpatient':'Paciente de Prueba'}
   safe(function(){
     $('b-exemple').addEventListener('click',function(){
-      $('d-transcripcio').value=EXEMPLE;textFinal=EXEMPLE+' ';autoAlta($('d-transcripcio'));
-      if(!$('d-pacient').value)$('d-pacient').value='Paciente de Prueba';
+      var ex=LANG==='de'?EXEMPLE_DE:EXEMPLE;
+      $('d-transcripcio').value=ex;textFinal=ex+' ';autoAlta($('d-transcripcio'));
+      if(!$('d-pacient').value)$('d-pacient').value=nomDemo();
       avis('ok','Ejemplo cargado. Pulse «🧠 Estructurar dictado» para generar el informe.');
     });
     $('b-exemple2').addEventListener('click',function(){
       mode='conversa';$('m-conversa').click();
-      $('d-transcripcio').value=EXEMPLE2;textFinal=EXEMPLE2+'\n';autoAlta($('d-transcripcio'));
-      if(!$('d-pacient').value)$('d-pacient').value='Paciente de Prueba';
+      var ex=LANG==='de'?EXEMPLE2_DE:EXEMPLE2;
+      $('d-transcripcio').value=ex;textFinal=ex+'\n';autoAlta($('d-transcripcio'));
+      if(!$('d-pacient').value)$('d-pacient').value=nomDemo();
       avis('ok','Conversación de ejemplo cargada. Pulse «🧠 Estructurar dictado»: los apartados se rellenan con lo que dice el médico y el diálogo completo queda como anexo.');
     });
     $('b-netejar').addEventListener('click',function(){
@@ -573,14 +698,14 @@
 
   // ---------- estructurar: transcripció → seccions ----------
   var MARCADORS=[
-    {id:'e-motivo',re:'motivo de (la )?consulta|motiu de (la )?consulta'},
-    {id:'e-antecedentes',re:'antecedentes( personales| familiares)?|antecedents( personals| familiars)?'},
-    {id:'e-anamnesis',re:'anamnesis|anamnesi|enfermedad actual|historia actual|hist[oò]ria actual|malaltia actual'},
-    {id:'e-exploracion',re:'exploraci[oó]n?( f[ií]sica)?'},
-    {id:'e-pruebas',re:'pruebas( complementarias)?|proves( complement[aà]ries)?'},
-    {id:'e-diagnostico',re:'diagn[oó]stico|diagn[oò]stic|impresi[oó]n diagn[oó]stica|impressi[oó] diagn[oò]stica|juicio cl[ií]nico'},
-    {id:'e-tratamiento',re:'tratamiento|tractament|prescripci[oó]n'},
-    {id:'e-recomendaciones',re:'recomendaciones|recomanacions|seguimiento|seguiment|pr[oó]xima visita|propera visita|plan de seguimiento'}
+    {id:'e-motivo',re:'motivo de (la )?consulta|motiu de (la )?consulta|vorstellungsgrund|konsultationsgrund|beratungsanlass'},
+    {id:'e-antecedentes',re:'antecedentes( personales| familiares)?|antecedents( personals| familiars)?|vorgeschichte|vorerkrankungen'},
+    {id:'e-anamnesis',re:'anamnesis|anamnese|anamnesi|enfermedad actual|historia actual|hist[oò]ria actual|malaltia actual|aktuelle beschwerden|krankengeschichte'},
+    {id:'e-exploracion',re:'exploraci[oó]n?( f[ií]sica)?|k[oö]rperliche untersuchung|untersuchungsbefund|klinischer befund|befund'},
+    {id:'e-pruebas',re:'pruebas( complementarias)?|proves( complement[aà]ries)?|zusatzuntersuchungen|technische untersuchungen|laborbefunde|diagnostik'},
+    {id:'e-diagnostico',re:'diagn[oó]stico|diagn[oò]stic|impresi[oó]n diagn[oó]stica|impressi[oó] diagn[oò]stica|juicio cl[ií]nico|diagnose|beurteilung'},
+    {id:'e-tratamiento',re:'tratamiento|tractament|prescripci[oó]n|therapie|behandlung|medikation|verordnung'},
+    {id:'e-recomendaciones',re:'recomendaciones|recomanacions|seguimiento|seguiment|pr[oó]xima visita|propera visita|plan de seguimiento|empfehlungen|procedere|prozedere|weiteres vorgehen|kontrolle'}
   ];
   function netejaFrag(s){
     s=String(s||'').replace(/^[\s:,.;]+/,'').replace(/[\s]+$/,'');
@@ -595,7 +720,7 @@
       var re=new RegExp('\\b('+mrc.re+')\\b','gi'),m;
       while((m=re.exec(text))!==null){
         var abans=text.slice(Math.max(0,m.index-16),m.index);
-        if(/\b(en|el|la|los|las|del|de|al|un|una|su|sus|con|sin|por|para|els|les|amb|sense|per)\s+$/i.test(abans))continue;
+        if(/\b(en|el|la|los|las|del|de|al|un|una|su|sus|con|sin|por|para|els|les|amb|sense|per|unter|mit|im|in|bei|zur|zum|ohne|von|für|auf|und|der|die|das|den|eine|einer|einem|keine)\s+$/i.test(abans))continue;
         talls.push({pos:m.index,fi:m.index+m[0].length,id:mrc.id});
       }
     });
@@ -772,7 +897,7 @@
     $('b-gravar').addEventListener('click',function(){gravantVisita?aturaGravacio():comencaGravacio()});
 
     function enviaAudio(blob){
-      var idi=$('d-lang').value==='ca-ES'?'ca':'es';
+      var idi=$('d-lang').value==='ca-ES'?'ca':$('d-lang').value==='de-DE'?'de':'es';
       var n=$('v-parlants').value;
       $('agent-progres').textContent='⚙️ '+TX('Procesando en su ordenador')+' ('+Math.round(blob.size/1024)+' KB)… '+TX('puede tardar 1-3 min según la duración.');
       fetch(AGENT+'/transcriu?idioma='+idi+'&parlants='+n,{
@@ -875,6 +1000,7 @@
   safe(function(){
     $('lang-es').addEventListener('click',function(){aplicaIdioma('es')});
     $('lang-ca').addEventListener('click',function(){aplicaIdioma('ca')});
+    $('lang-de').addEventListener('click',function(){aplicaIdioma('de')});
     aplicaIdioma(LANG);
   },'i18n');
 })();

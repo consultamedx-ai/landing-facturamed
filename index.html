@@ -31,6 +31,8 @@
   .lang{font-size:.82rem;font-weight:600;color:var(--boira);text-decoration:none}
   .nav-cta{background:var(--verd);color:#fff;text-decoration:none;font-weight:600;font-size:.9rem;padding:10px 18px;border-radius:99px;transition:transform .15s ease, background .15s ease}
   .nav-cta:hover{background:var(--verd-fosc);transform:translateY(-1px)}
+  .nav-login{font-size:.88rem;font-weight:600;color:var(--blau);text-decoration:none;padding:8px 15px;border:1.5px solid var(--linia);border-radius:99px;transition:background .15s}
+  .nav-login:hover{background:var(--gasa)}
   header{position:relative;overflow:hidden;padding:84px 0 96px;
     background:
       radial-gradient(600px 380px at 85% 8%, rgba(20,184,166,.14), transparent 60%),
@@ -126,6 +128,7 @@
     <div class="nav-dreta">
       <a class="lang" href="ca.html">CAT</a>
       <a class="lang" href="precios" style="display:none"></a>
+      <a class="nav-login" href="app.html">Iniciar sesión</a>
       <a class="nav-cta" href="#registro">Crear cuenta</a>
     </div>
   </div>
@@ -321,6 +324,7 @@
       </div>
       <button class="btn" type="submit">Crear mi cuenta y entrar</button>
       <p class="micro" style="text-align:center;margin-top:14px">Beta abierta · hoy no se cobra nada · 50 €/mes cuando actives la facturación real</p>
+      <p class="micro" style="text-align:center;margin-top:8px">¿Ya tienes cuenta? <a href="app.html" style="color:var(--verd);font-weight:600">Entra a FacturaMed →</a></p>
     </form>
     <div id="gracias">
       <h3>✅ Cuenta creada</h3>

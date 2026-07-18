@@ -118,10 +118,12 @@
           <input id="f-pacient" list="dl-pacients" placeholder="Escriba o elija (se creará si es nuevo)" autocomplete="off">
           <datalist id="dl-pacients"></datalist>
           <label for="f-concepte">Concepto</label>
-          <select id="f-concepte">
+          <input id="f-concepte" list="dl-concepte" value="Consulta médica" placeholder="Escriba el concepto o elija uno" autocomplete="off">
+          <datalist id="dl-concepte">
             <option>Consulta médica</option><option>Primera visita</option><option>Revisión</option>
             <option>Cura / procedimiento</option><option>Informe médico</option><option>Otro servicio sanitario</option>
-          </select>
+            <option>Consulta de urgencia</option><option>Certificado médico</option><option>Sesión de seguimiento</option>
+          </datalist>
           <div class="fila">
             <div><label for="f-import">Importe (€)</label><input id="f-import" type="number" min="0.01" step="0.01" value="90"></div>
             <div><label for="f-serie">Serie</label><select id="f-serie"></select></div>
@@ -421,8 +423,9 @@
       var ps=pacients(),p=ps.find(function(x){return x.nom.toLowerCase()===nomP.toLowerCase()});
       if(!p){p={nom:nomP,nif:'',contacte:''};ps.push(p);desa(K.pac,ps)}
       var ex=$('f-exempta').checked;
+      var concepte=$('f-concepte').value.trim()||'Consulta médica';
       await emet({serie:$('f-serie').value,tipo:'F1',pacientNom:p.nom,pacientNif:p.nif,
-        concepte:$('f-concepte').value,base:imp,quota:ex?0:imp*0.21,exempta:ex});
+        concepte:concepte,base:imp,quota:ex?0:imp*0.21,exempta:ex});
     });
   },'crear');
 
@@ -648,18 +651,18 @@
   safe(function(){
     var q=new URLSearchParams(location.search);
     if(q.get('benvinguda')==='1'){
-      avis('ok','👋 Bienvenido/a a FacturaMed (beta). Primer paso: pestaña Configuración — nombre, NIF y serie. Después emita su primera factura en 20 segundos.');
       var c=conf();
-      if(!c||!c.nom)document.querySelector('[data-v="config"]').click();
+      if(!c||!c.nom){
+        avis('ok','👋 Bienvenido/a a FacturaMed (beta). Primer paso: pestaña Configuración — nombre, NIF y serie. Después emita su primera factura en 20 segundos.');
+        document.querySelector('[data-v="config"]').click();
+      }else{
+        avis('ok','👋 Bienvenido/a a FacturaMed (beta). Su nombre y NIF ya están configurados — revíselos en «Configuración» (y añada nº de colegiado o dirección si quiere). Ya puede emitir su primera factura.');
+      }
     }
     if(q.get('facturar')==='1'){
       if(q.get('nom'))$('f-pacient').value=q.get('nom');
       var val=q.get('concepte');
-      if(val){
-        var sel=$('f-concepte'),trobat=false;
-        for(var i=0;i<sel.options.length;i++){if(sel.options[i].text===val){sel.selectedIndex=i;trobat=true;break}}
-        if(!trobat){var o=document.createElement('option');o.text=val;sel.add(o);sel.value=val}
-      }
+      if(val)$('f-concepte').value=val;
       if(q.get('import'))$('f-import').value=q.get('import');
       document.querySelector('[data-v="facturar"]').click();
       avis('ok','📝 Visita recibida de EscribaMed — revise los datos y pulse «Emitir factura».');

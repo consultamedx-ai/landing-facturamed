@@ -286,6 +286,8 @@
       <input id="nombre" name="nombre" type="text" required autocomplete="name" placeholder="Dra. Marta Ferrer">
       <label for="email">Email</label>
       <input id="email" name="email" type="email" required autocomplete="email" placeholder="marta@suclinica.es">
+      <label for="nif">NIF (aparecerá en sus facturas)</label>
+      <input id="nif" name="nif" type="text" required autocomplete="off" maxlength="9" placeholder="12345678Z" style="text-transform:uppercase">
       <label for="especialidad">Especialidad</label>
       <select id="especialidad" name="especialidad" required>
         <option value="" disabled selected>Seleccione…</option>
@@ -355,6 +357,17 @@
     form.addEventListener('submit',function(ev){
       ev.preventDefault();
       var dades=new FormData(form);
+      safe(function(){
+        var cfg=null;try{cfg=JSON.parse(localStorage.getItem('fm2_config'))}catch(e){}
+        if(!cfg||!cfg.nom){
+          localStorage.setItem('fm2_config',JSON.stringify({
+            nom:(dades.get('nombre')||'').trim(),
+            nif:(dades.get('nif')||'').trim().toUpperCase(),
+            colegiat:'',adreca:'',
+            series:[{codi:String(new Date().getFullYear()),seguent:1}]
+          }));
+        }
+      },'preconfig');
       var acaba=function(){
         form.style.display='none';ok.style.display='block';
         setTimeout(function(){window.location.href='app.html?benvinguda=1'},1600);

@@ -1000,8 +1000,12 @@
         var r=rs[i];
         var previ=window.__aeatEstats[r.num];
         if(previ&&(previ.estat==='acceptat'||previ.estat==='encuat')){saltades++;continue}
-        if(r.tipo==='R1'){saltades++;continue} // rectificatives: fase següent
         var ps=pacients(),p=ps.find(function(x){return x.nom===r.pacientNom})||{};
+        var rectificada=null;
+        if(r.rectificaA){
+          var orig=rs.find(function(x){return x.num===r.rectificaA});
+          rectificada={nifEmisor:r.nifEmisor,numSerieFactura:r.rectificaA,fechaExpedicion:orig?orig.fecha:r.fecha};
+        }
         var payload={
           registre:{
             nifEmisor:r.nifEmisor,numSerieFactura:r.num,fechaExpedicion:r.fecha,
@@ -1010,6 +1014,7 @@
             tipoIVA:r.exempta?'Exenta (art. 20.Uno.3\u00ba LIVA)':'21%',
             huellaAnterior:r.anterior||'',esPrimerRegistro:!!r.esPrimer,
             fechaHoraHusoGenRegistro:r.gen,tipoHuella:'01',huella:r.huella,
+            rectificada:rectificada,
             destinatari:(r.tipo==='F1'&&(r.pacientNif||p.nif))?{nombre:r.pacientNom,nif:r.pacientNif||p.nif}:null
           },
           emissor:{nifEmisor:c.nif,nombreEmisor:c.nom}

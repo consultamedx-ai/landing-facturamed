@@ -129,6 +129,11 @@
         <label for="d-pacient" data-t>Paciente</label>
         <input id="d-pacient" list="dl-pacients" placeholder="Nombre del paciente (ficticio)" data-tph autocomplete="off">
         <datalist id="dl-pacients"></datalist>
+        <div id="ultima-visita" class="ajuda" style="display:none;margin-top:8px"></div>
+        <div id="metge-wrap" style="display:none">
+          <label for="d-metge" data-t>Médico</label>
+          <select id="d-metge"></select>
+        </div>
         <label for="d-lang" data-t>Idioma del dictado</label>
         <select id="d-lang">
           <option value="es-ES" selected data-t>Español</option>
@@ -375,6 +380,7 @@
     "error":"error",
     "bloqueado":"bloquejat",
     "Voz":"Veu",
+    "Última visita":"Última visita",
     "Médico":"Metge",
     "Paciente ":"Pacient",
     "Acompañante":"Acompanyant"
@@ -485,6 +491,7 @@
     "error":"Fehler",
     "bloqueado":"blockiert",
     "Voz":"Stimme",
+    "Última visita":"Letzter Besuch",
     "Médico":"Arzt",
     "Paciente ":"Patient",
     "Acompañante":"Begleitperson"
@@ -576,6 +583,38 @@
       var o=document.createElement('option');o.value=p.nom||p;dl.appendChild(o);
     });
   },'pacients');
+
+  // ---------- ultima visita del pacient ----------
+  var informeUV=null;
+  safe(function(){
+    function pintaUV(){
+      var nom=$('d-pacient').value.trim().toLowerCase(),box=$('ultima-visita');
+      informeUV=null;
+      if(!nom){box.style.display='none';return}
+      var l=llegeix(K.inf,[]).filter(function(i){return (i.pacient||'').toLowerCase()===nom});
+      if(!l.length){box.style.display='none';return}
+      informeUV=l[l.length-1];
+      var dx=(informeUV.camps&&(informeUV.camps['e-diagnostico']||informeUV.camps['e-motivo']))||'';
+      box.innerHTML='📋 <strong>'+esc(TX('Última visita'))+':</strong> '+esc(informeUV.dataTxt)+(dx?' · '+esc(dx.length>60?dx.slice(0,60)+'…':dx):'')+' <button class="btn sec mini" id="b-uv" type="button" style="margin-left:6px">'+esc(TX('Ver'))+'</button>';
+      box.style.display='block';
+      $('b-uv').addEventListener('click',function(){if(informeUV)obreModal(informeUV.pacient,informeUV.dataTxt,informeUV.camps)});
+    }
+    $('d-pacient').addEventListener('input',pintaUV);
+    $('d-pacient').addEventListener('change',pintaUV);
+  },'ultimavisita');
+
+  // ---------- metge actiu (mode centre medic) ----------
+  safe(function(){
+    var c=llegeix(K.conf,null);
+    if(c&&c.centre&&c.centre.actiu&&(c.centre.metges||[]).length){
+      var sel=$('d-metge');sel.innerHTML='';
+      c.centre.metges.forEach(function(m){var o=document.createElement('option');o.value=m;o.textContent=m;sel.appendChild(o)});
+      var g=localStorage.getItem('em_metge');
+      if(g&&c.centre.metges.indexOf(g)>=0)sel.value=g;
+      sel.addEventListener('change',function(){localStorage.setItem('em_metge',this.value)});
+      $('metge-wrap').style.display='block';
+    }
+  },'metgeactiu');
 
   // ---------- mode i parlant ----------
   var mode='dictat',parlant='dr';
@@ -772,12 +811,19 @@
   // ---------- modal imprimible ----------
   function obreModal(pacient,dataTxt,camps){
     var c=llegeix(K.conf,null)||{},idi=$('e-idioma').value,T=TIT(),P=PRT[idi]||PRT.es;
-    $('p-metge').textContent=c.nom||'Dr./Dra.';
-    $('p-metge-detall').textContent=[c.nif?('NIF '+c.nif):'',c.colegiat?('Col. '+c.colegiat):'',c.adreca||''].filter(Boolean).join(' · ');
+    var centre=c.centre&&c.centre.actiu&&c.centre.nom;
+    var metge=($('metge-wrap').style.display!=='none'&&$('d-metge').value)||c.nom||'';
+    if(centre){
+      $('p-metge').textContent=c.centre.nom;
+      $('p-metge-detall').textContent=[metge?('Dr./Dra. '+metge.replace(/^Dr\.?a?\.?\s*/i,'')):'',c.nif?('NIF '+c.nif):'',c.adreca||''].filter(Boolean).join(' · ');
+    }else{
+      $('p-metge').textContent=c.nom||'Dr./Dra.';
+      $('p-metge-detall').textContent=[c.nif?('NIF '+c.nif):'',c.colegiat?('Col. '+c.colegiat):'',c.adreca||''].filter(Boolean).join(' · ');
+    }
     $('p-doc-titol').textContent=P.doc;
     $('p-data').textContent=dataTxt;
     $('p-pacient').textContent=pacient?(P.pacient+pacient):'';
-    $('p-firma').textContent=P.firma;
+    $('p-firma').textContent=P.firma+(centre&&metge?(' — '+metge):'');
     $('p-legal').textContent=P.legal;
     var cont=$('p-seccions');cont.innerHTML='';
     CAMPS.forEach(function(id){

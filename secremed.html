@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; form-action 'self'">
+<meta name="referrer" content="no-referrer">
+<title>SecreMed · Beta privada — La recepción, automática</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--blau:#0D3B66;--teal:#14B8A6;--verd:#059669;--verd-fosc:#047857;--violeta:#6366F1;--violeta-fosc:#4F46E5;--gasa:#F7FAFC;--grafit:#1F2937;--boira:#94A3B8;--linia:#E2E8F0;--vermell:#DC2626;--ambre:#D97706}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Inter',system-ui,sans-serif;background:var(--gasa);color:var(--grafit);line-height:1.55;-webkit-font-smoothing:antialiased}
+  h1,h2,h3{font-family:'Sora',sans-serif;color:var(--blau)}
+  .wrap{max-width:1100px;margin:0 auto;padding:0 20px}
+  nav{position:sticky;top:0;z-index:40;background:rgba(247,250,252,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--linia)}
+  .nav-in{display:flex;align-items:center;justify-content:space-between;height:58px;gap:12px;flex-wrap:wrap}
+  .logo{font-family:'Sora';font-weight:700;font-size:1.08rem;color:var(--blau);white-space:nowrap}
+  .logo em{font-style:normal;color:var(--violeta)}
+  .logo small{font-size:.66rem;color:var(--boira);font-weight:500}
+  .beta-chip{background:#EEF2FF;border:1px solid #C7D2FE;color:var(--violeta-fosc);font-size:.68rem;font-weight:700;padding:4px 10px;border-radius:99px;letter-spacing:.03em}
+  .nav-dreta{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .nav-enllac{font-size:.8rem;font-weight:600;color:var(--violeta);text-decoration:none}
+  .tabs{display:flex;gap:4px;background:#fff;border:1px solid var(--linia);border-radius:99px;padding:4px}
+  .tab{border:none;background:none;font:inherit;font-size:.85rem;font-weight:600;color:#64748B;padding:7px 15px;border-radius:99px;cursor:pointer}
+  .tab.actiu{background:var(--violeta);color:#fff}
+  main{padding:22px 0 70px}
+  .vista{display:none}.vista.actiu{display:block}
+  .card{background:#fff;border:1px solid var(--linia);border-radius:14px;padding:20px;margin-bottom:18px}
+  .card h2{font-size:1rem;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+  label{display:block;font-size:.78rem;font-weight:600;margin:11px 0 4px}
+  input,select,textarea{width:100%;padding:9px 12px;border:1px solid var(--linia);border-radius:9px;font:inherit;font-size:.9rem;background:var(--gasa)}
+  input:focus,select:focus,textarea:focus{outline:2px solid var(--violeta);background:#fff}
+  .fila{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .fila3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+  .btn{display:inline-block;background:var(--violeta);color:#fff;border:none;cursor:pointer;font-family:inherit;font-weight:600;font-size:.92rem;padding:11px 20px;border-radius:99px;margin-top:14px;transition:background .15s;text-decoration:none}
+  .btn:hover{background:var(--violeta-fosc)}
+  .btn.verd{background:var(--verd)}.btn.verd:hover{background:var(--verd-fosc)}
+  .btn.sec{background:#fff;color:var(--blau);border:1.5px solid var(--linia)}
+  .btn.sec:hover{background:var(--gasa)}
+  .btn.mini{padding:6px 12px;font-size:.77rem;margin:0}
+  .btn.perill{background:#fff;color:var(--vermell);border:1.5px solid #FECACA}
+  .grid{display:grid;grid-template-columns:360px 1fr;gap:22px;align-items:start}
+  .banner{border-radius:11px;padding:11px 15px;font-size:.86rem;margin-bottom:14px;display:none}
+  .banner.ok{display:block;background:#ECFDF5;border:1px solid #A7F3D0;color:var(--verd-fosc)}
+  .banner.err{display:block;background:#FEF2F2;border:1px solid #FECACA;color:#B91C1C}
+  .avis-priv{background:#EEF2FF;border:1px solid #C7D2FE;color:var(--violeta-fosc);border-radius:11px;padding:10px 14px;font-size:.78rem;margin-bottom:16px}
+  .buit{color:var(--boira);font-size:.87rem;text-align:center;padding:22px 0}
+  .cita{display:flex;align-items:center;gap:12px;padding:11px 12px;border:1px solid var(--linia);border-radius:11px;margin-bottom:8px;background:#fff}
+  .cita .hora{font-family:'Sora';font-weight:700;color:var(--blau);font-size:1.05rem;min-width:52px}
+  .cita .cos{flex:1;min-width:0}
+  .cita .nom{font-weight:600}
+  .cita .motiu{font-size:.8rem;color:#64748B}
+  .cita .accions{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end}
+  .estat{font-size:.66rem;font-weight:700;padding:3px 9px;border-radius:99px;white-space:nowrap}
+  .estat.pendent{background:#FEF3C7;color:#92400E}
+  .estat.confirmada{background:#DBEAFE;color:#1E40AF}
+  .estat.vinguda{background:#ECFDF5;color:var(--verd-fosc)}
+  .estat.noshow{background:#FEF2F2;color:#B91C1C}
+  .estat.cancelada{background:#F1F5F9;color:#64748B}
+  .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:18px}
+  .kpi{background:#fff;border:1px solid var(--linia);border-radius:12px;padding:14px 16px}
+  .kpi .v{font-family:'Sora';font-weight:700;font-size:1.35rem;color:var(--blau)}
+  .kpi .l{font-size:.72rem;color:var(--boira);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+  table{width:100%;border-collapse:collapse;font-size:.84rem}
+  th{text-align:left;background:var(--blau);color:#fff;padding:8px 10px;font-weight:600;white-space:nowrap}
+  td{padding:8px 10px;border-bottom:1px solid var(--linia);vertical-align:middle}
+  .accions-fila{display:flex;gap:6px;flex-wrap:wrap}
+  .ajuda{font-size:.76rem;color:#475569;background:var(--gasa);border:1px dashed var(--linia);border-radius:10px;padding:10px 13px;margin-top:12px}
+  @media(max-width:920px){.grid{grid-template-columns:1fr}.kpis{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+
+<nav><div class="wrap nav-in">
+  <span class="logo">Secre<em>Med</em> <small>by ConsultaMed</small></span>
+  <div class="nav-dreta">
+    <span class="beta-chip">BETA PRIVADA · solo datos ficticios</span>
+    <div class="tabs" id="tabs">
+      <button class="tab actiu" data-v="agenda" type="button">Agenda</button>
+      <button class="tab" data-v="safata" type="button">Llamadas</button>
+      <button class="tab" data-v="pacients" type="button">Pacientes</button>
+    </div>
+    <a class="nav-enllac" href="escriba.html">EscribaMed →</a>
+  </div>
+</div></nav>
+
+<main class="wrap">
+  <div class="banner" id="banner"></div>
+  <div class="avis-priv">🔒 <strong>Beta privada de demostración.</strong> No introduzca datos reales de pacientes. Todo se guarda solo en este dispositivo. La recepcionista telefónica con IA (contestar llamadas automáticamente) llegará en la fase con servidor.</div>
+
+  <!-- ============ AGENDA ============ -->
+  <section class="vista actiu" id="v-agenda">
+    <div class="kpis">
+      <div class="kpi"><div class="v" id="k-hoy">0</div><div class="l">Citas del día</div></div>
+      <div class="kpi"><div class="v" id="k-pend">0</div><div class="l">Por confirmar</div></div>
+      <div class="kpi"><div class="v" id="k-noshow">0</div><div class="l">No-shows (histórico)</div></div>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <h2>Nueva cita</h2>
+        <label for="a-pac">Paciente</label>
+        <input id="a-pac" list="dl-pac" placeholder="Nombre (se crea ficha si es nuevo)" autocomplete="off">
+        <datalist id="dl-pac"></datalist>
+        <div class="fila">
+          <div><label for="a-data">Fecha</label><input type="date" id="a-data"></div>
+          <div><label for="a-hora">Hora</label><input type="time" id="a-hora" value="09:00"></div>
+        </div>
+        <label for="a-motiu">Motivo</label>
+        <input id="a-motiu" placeholder="Revisión, primera visita…" autocomplete="off">
+        <label for="a-tel">Teléfono (para recordatorios)</label>
+        <input id="a-tel" placeholder="+34 600 000 000" autocomplete="off">
+        <div id="a-metge-wrap" style="display:none">
+          <label for="a-metge">Médico</label>
+          <select id="a-metge"></select>
+        </div>
+        <button class="btn" id="b-cita" type="button">＋ Añadir cita</button>
+      </div>
+      <div class="card">
+        <h2>Agenda del día
+          <input type="date" id="a-veure" style="width:auto">
+        </h2>
+        <div id="llista-cites"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SAFATA DE TRUCADES ============ -->
+  <section class="vista" id="v-safata">
+    <div class="grid">
+      <div class="card">
+        <h2>Anotar llamada / mensaje</h2>
+        <p style="font-size:.8rem;color:#475569;margin-bottom:4px">Cuando no puedes atender el teléfono, anota aquí lo que pide el paciente. Queda pendiente y luego se confirma con una cita.</p>
+        <label for="s-nom">Nombre</label>
+        <input id="s-nom" placeholder="Nombre del paciente" autocomplete="off">
+        <label for="s-tel">Teléfono</label>
+        <input id="s-tel" placeholder="+34 600 000 000" autocomplete="off">
+        <label for="s-motiu">Motivo de la llamada</label>
+        <input id="s-motiu" placeholder="Quiere hora para revisión…" autocomplete="off">
+        <label for="s-quan">Cuándo le iría bien</label>
+        <input id="s-quan" placeholder="Mañanas, jueves, cuanto antes…" autocomplete="off">
+        <button class="btn" id="b-safata" type="button">＋ Anotar</button>
+      </div>
+      <div class="card">
+        <h2>Pendientes de confirmar (<span id="s-compte">0</span>)</h2>
+        <div id="llista-safata"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PACIENTS ============ -->
+  <section class="vista" id="v-pacients">
+    <div class="card">
+      <h2>Pacientes (<span id="p-compte">0</span>) <span style="font-size:.72rem;color:var(--boira);font-weight:500">— compartidos con FacturaMed y EscribaMed</span></h2>
+      <div id="llista-pac" style="overflow-x:auto"></div>
+    </div>
+  </section>
+</main>
+
+<script>
+(function(){
+  'use strict';
+  function $(id){return document.getElementById(id)}
+  function safe(fn,n){try{fn()}catch(e){try{console.error('[SecreMed]',n,e)}catch(_){}}}
+  var K={cites:'sm_cites',safata:'sm_safata',pac:'fm2_pacients',conf:'fm2_config'};
+  function llegeix(k,d){try{return JSON.parse(localStorage.getItem(k))||d}catch(e){return d}}
+  function desa(k,v){localStorage.setItem(k,JSON.stringify(v))}
+  function esc(s){return String(s??'').replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+  function avis(t,m){var b=$('banner');b.className='banner '+t;b.textContent=m;window.scrollTo({top:0,behavior:'smooth'});setTimeout(function(){b.className='banner'},6000)}
+  function isoAvui(){var d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+  function dataLlegible(iso){var p=iso.split('-');return p.length===3?p[2]+'/'+p[1]+'/'+p[0]:iso}
+
+  function pacients(){return llegeix(K.pac,[])}
+  function cites(){return llegeix(K.cites,[])}
+  function safata(){return llegeix(K.safata,[])}
+  function conf(){return llegeix(K.conf,null)}
+  function esCentre(){var c=conf();return !!(c&&c.centre&&c.centre.actiu&&(c.centre.metges||[]).length)}
+
+  // ---------- navegació ----------
+  safe(function(){
+    $('tabs').addEventListener('click',function(e){
+      var b=e.target.closest('.tab');if(!b)return;
+      document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('actiu')});
+      document.querySelectorAll('.vista').forEach(function(v){v.classList.remove('actiu')});
+      b.classList.add('actiu');$('v-'+b.dataset.v).classList.add('actiu');
+    });
+  },'nav');
+
+  // ---------- pacients (compartits) ----------
+  function assegurraPacient(nom,tel){
+    nom=nom.trim();if(!nom)return;
+    var ps=pacients();
+    if(!ps.some(function(p){return p.nom.toLowerCase()===nom.toLowerCase()})){
+      ps.push({nom:nom,nif:'',contacte:tel||''});desa(K.pac,ps);
+    }
+  }
+  function pintaPacients(){
+    var ps=pacients();$('p-compte').textContent=ps.length;
+    var dl=$('dl-pac');dl.innerHTML='';
+    ps.forEach(function(p){var o=document.createElement('option');o.value=p.nom;dl.appendChild(o)});
+    var el=$('llista-pac');
+    if(!ps.length){el.innerHTML='<div class="buit">Aún no hay pacientes. Se crean solos al añadir citas.</div>';return}
+    var cs=cites();
+    var h='<table><thead><tr><th>Nombre</th><th>Contacto</th><th>Próxima cita</th></tr></thead><tbody>';
+    ps.slice().sort(function(a,b){return a.nom.localeCompare(b.nom)}).forEach(function(p){
+      var futures=cs.filter(function(c){return c.pacient===p.nom&&c.data>=isoAvui()&&c.estat!=='cancelada'}).sort(function(a,b){return (a.data+a.hora).localeCompare(b.data+b.hora)});
+      var prox=futures.length?dataLlegible(futures[0].data)+' '+futures[0].hora:'—';
+      h+='<tr><td><strong>'+esc(p.nom)+'</strong></td><td>'+esc(p.contacte||'—')+'</td><td>'+esc(prox)+'</td></tr>';
+    });
+    el.innerHTML=h+'</tbody></table>';
+  }
+
+  // ---------- metge (centre) ----------
+  function pintaMetgeSel(){
+    if(esCentre()){
+      var sel=$('a-metge');sel.innerHTML='';
+      conf().centre.metges.forEach(function(m){var o=document.createElement('option');o.value=m;o.textContent=m;sel.appendChild(o)});
+      $('a-metge-wrap').style.display='block';
+    }else{$('a-metge-wrap').style.display='none'}
+  }
+
+  // ---------- agenda ----------
+  function pintaAgenda(){
+    var dia=$('a-veure').value||isoAvui();
+    var cs=cites().filter(function(c){return c.data===dia}).sort(function(a,b){return a.hora.localeCompare(b.hora)});
+    var el=$('llista-cites');
+    if(!cs.length){el.innerHTML='<div class="buit">Sin citas para este día.</div>';}
+    else{
+      el.innerHTML='';
+      cs.forEach(function(c){
+        var d=document.createElement('div');d.className='cita';
+        d.innerHTML='<span class="hora">'+esc(c.hora)+'</span>'+
+          '<span class="cos"><div class="nom">'+esc(c.pacient)+(esCentre()&&c.metge?' <span style="font-size:.72rem;color:var(--boira)">· '+esc(c.metge)+'</span>':'')+'</div>'+
+          '<div class="motiu">'+esc(c.motiu||'Consulta')+(c.tel?' · '+esc(c.tel):'')+'</div></span>'+
+          '<span class="estat '+c.estat+'">'+({pendent:'Por confirmar',confirmada:'Confirmada',vinguda:'Vino',noshow:'No vino',cancelada:'Cancelada'}[c.estat]||c.estat)+'</span>'+
+          '<span class="accions" data-id="'+c.id+'"></span>';
+        var ac=d.querySelector('.accions');
+        function boto(txt,cls,fn){var b=document.createElement('button');b.className='btn '+cls+' mini';b.type='button';b.textContent=txt;b.addEventListener('click',fn);ac.appendChild(b);}
+        if(c.estat==='pendent'||c.estat==='confirmada'){
+          if(c.tel)boto('🔔 Recordar','sec',function(){recordatori(c)});
+          boto('✔ Vino','sec',function(){canviaEstat(c.id,'vinguda')});
+          boto('✕ No vino','perill',function(){canviaEstat(c.id,'noshow')});
+        }
+        if(c.estat==='pendent')boto('Confirmar','sec',function(){canviaEstat(c.id,'confirmada')});
+        boto('▶ Visita','sec',function(){window.location.href='escriba.html'});
+        boto('💶 Facturar','verd',function(){var p=new URLSearchParams({facturar:'1',nom:c.pacient,concepte:c.motiu||'Consulta médica'});window.location.href='app.html?'+p.toString()});
+        el.appendChild(d);
+      });
+    }
+    // KPIs
+    $('k-hoy').textContent=cites().filter(function(c){return c.data===isoAvui()&&c.estat!=='cancelada'}).length;
+    $('k-pend').textContent=cites().filter(function(c){return c.estat==='pendent'}).length + safata().filter(function(s){return s.estat==='pendent'}).length;
+    $('k-noshow').textContent=cites().filter(function(c){return c.estat==='noshow'}).length;
+  }
+  function canviaEstat(id,estat){
+    var cs=cites();var c=cs.find(function(x){return x.id===id});if(!c)return;c.estat=estat;desa(K.cites,cs);pintaTot();
+  }
+  function recordatori(c){
+    var cf=conf()||{};var lloc=cf.nom||(cf.centre&&cf.centre.nom)||'la consulta';
+    var msg='Hola '+c.pacient+', le recordamos su cita el '+dataLlegible(c.data)+' a las '+c.hora+' en '+lloc+'. Por favor, confirme respondiendo a este mensaje. Gracias.';
+    var tel=(c.tel||'').replace(/[^0-9+]/g,'');
+    if(tel){window.open('https://wa.me/'+tel.replace('+','')+'?text='+encodeURIComponent(msg),'_blank');}
+    else{avis('err','Esta cita no tiene teléfono. Añádelo para poder recordar.');return}
+    avis('ok','Recordatorio abierto en WhatsApp — solo tienes que enviarlo.');
+  }
+  safe(function(){
+    $('a-data').value=isoAvui();$('a-veure').value=isoAvui();
+    $('a-veure').addEventListener('change',pintaAgenda);
+    $('b-cita').addEventListener('click',function(){
+      var nom=$('a-pac').value.trim();if(!nom){avis('err','Indica el paciente.');return}
+      var data=$('a-data').value,hora=$('a-hora').value;
+      if(!data||!hora){avis('err','Indica fecha y hora.');return}
+      assegurraPacient(nom,$('a-tel').value.trim());
+      var cs=cites();
+      cs.push({id:Date.now(),data:data,hora:hora,pacient:nom,motiu:$('a-motiu').value.trim(),tel:$('a-tel').value.trim(),metge:esCentre()?$('a-metge').value:'',estat:'pendent'});
+      desa(K.cites,cs);
+      $('a-pac').value='';$('a-motiu').value='';$('a-tel').value='';
+      $('a-veure').value=data;pintaTot();
+      avis('ok','Cita añadida el '+dataLlegible(data)+' a las '+hora+'.');
+    });
+  },'agenda');
+
+  // ---------- safata ----------
+  function pintaSafata(){
+    var l=safata();$('s-compte').textContent=l.filter(function(s){return s.estat==='pendent'}).length;
+    var el=$('llista-safata');
+    var pend=l.filter(function(s){return s.estat==='pendent'});
+    if(!pend.length){el.innerHTML='<div class="buit">Nada pendiente. Cuando anotes una llamada aparecerá aquí.</div>';return}
+    el.innerHTML='';
+    pend.slice().reverse().forEach(function(s){
+      var d=document.createElement('div');d.className='cita';
+      d.innerHTML='<span class="cos"><div class="nom">'+esc(s.nom)+(s.tel?' <span style="font-size:.72rem;color:var(--boira)">· '+esc(s.tel)+'</span>':'')+'</div>'+
+        '<div class="motiu">'+esc(s.motiu||'')+(s.quan?' · <em>'+esc(s.quan)+'</em>':'')+'</div></span>'+
+        '<span class="accions"></span>';
+      var ac=d.querySelector('.accions');
+      var b1=document.createElement('button');b1.className='btn mini';b1.type='button';b1.textContent='→ Convertir en cita';
+      b1.addEventListener('click',function(){
+        $('a-pac').value=s.nom;$('a-motiu').value=s.motiu||'';$('a-tel').value=s.tel||'';
+        s.estat='confirmada';desa(K.safata,safata().map(function(x){return x.id===s.id?s:x}));
+        document.querySelector('[data-v="agenda"]').click();$('a-hora').focus();pintaTot();
+        avis('ok','Datos pasados a «Nueva cita». Pon fecha y hora y añádela.');
+      });
+      var b2=document.createElement('button');b2.className='btn perill mini';b2.type='button';b2.textContent='Descartar';
+      b2.addEventListener('click',function(){desa(K.safata,safata().filter(function(x){return x.id!==s.id}));pintaTot()});
+      ac.appendChild(b1);ac.appendChild(b2);
+      el.appendChild(d);
+    });
+  }
+  safe(function(){
+    $('b-safata').addEventListener('click',function(){
+      var nom=$('s-nom').value.trim();if(!nom){avis('err','Indica el nombre.');return}
+      var l=safata();
+      l.push({id:Date.now(),nom:nom,tel:$('s-tel').value.trim(),motiu:$('s-motiu').value.trim(),quan:$('s-quan').value.trim(),estat:'pendent'});
+      desa(K.safata,l);
+      $('s-nom').value='';$('s-tel').value='';$('s-motiu').value='';$('s-quan').value='';
+      pintaTot();avis('ok','Anotado. Está en «Pendientes de confirmar».');
+    });
+  },'safata');
+
+  // ---------- init ----------
+  function pintaTot(){safe(pintaPacients,'pac');safe(pintaMetgeSel,'metge');safe(pintaAgenda,'ag');safe(pintaSafata,'saf')}
+  pintaTot();
+})();
+</script>
+</body>
+</html>

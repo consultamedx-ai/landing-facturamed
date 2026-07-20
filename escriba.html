@@ -145,20 +145,13 @@
         <label data-t>Modo</label>
         <div class="modes">
           <button type="button" class="mode actiu" id="m-dictat" data-t>🎙 Dictado</button>
-          <button type="button" class="mode" id="m-conversa" data-t>👥 Conversación</button>
-        </div>
-        <div id="parlants" style="display:none">
-          <label data-t>¿Quién habla ahora? (toque para cambiar)</label>
-          <div class="modes">
-            <button type="button" class="mode parlant actiu" id="p-dr" data-t>🩺 Médico</button>
-            <button type="button" class="mode parlant" id="p-pac" data-t>🧑 Paciente</button>
-          </div>
+          <button type="button" class="mode" id="m-visita" data-t>🎧 Visita completa</button>
         </div>
         <div class="check">
           <input type="checkbox" id="d-consent">
           <label for="d-consent" style="margin:0;font-weight:400" data-t>He informado al paciente y cuento con su consentimiento para el dictado (datos ficticios en beta).</label>
         </div>
-        <div class="mic-zona">
+        <div class="mic-zona" id="zona-dictat">
           <button id="b-mic" type="button" disabled title="Marque primero la casilla de consentimiento" data-ttitle="Marque primero la casilla de consentimiento">🎙️</button>
           <div id="estat-mic">Marque la casilla para activar el micrófono</div>
           <div id="interim"></div>
@@ -167,7 +160,6 @@
         <textarea id="d-transcripcio" rows="7" placeholder="Aquí aparecerá lo que dicte…" data-tph></textarea>
         <div class="accions-fila" style="margin-top:12px">
           <button class="btn sec mini" id="b-exemple" type="button" data-t>✨ Ejemplo dictado</button>
-          <button class="btn sec mini" id="b-exemple2" type="button" data-t>👥 Ejemplo conversación</button>
           <button class="btn perill mini" id="b-netejar" type="button" data-t>Limpiar</button>
         </div>
         <div class="ajuda" id="ajuda-dictat">
@@ -175,7 +167,7 @@
         </div>
       </div>
 
-      <div class="card">
+      <div class="card" id="card-visita">
         <h2><span data-t>Visita completa</span> <span class="chip-agent" id="chip-agent">⬤ agente local: buscando…</span></h2>
         <p style="font-size:.8rem;color:#475569;margin-bottom:4px" id="p-visita-info">Grabe la visita entera y el <strong>agente local EscribaMed</strong> la transcribe e identifica quién habla — todo <strong>dentro de su ordenador</strong>: el audio nunca sale de la consulta.</p>
         <div id="agent-off" style="display:none">
@@ -205,8 +197,7 @@
       <div class="card">
         <h2><span data-t>2 · Informe clínico</span>
           <span class="accions-fila">
-            <button class="btn mini" id="b-ia" type="button" style="display:none" data-t>🤖 Redactar (IA local)</button>
-            <button class="btn mini" id="b-estructurar" type="button" data-t>🧠 Estructurar dictado</button>
+            <button class="btn mini" id="b-ia" type="button" data-t>🤖 Redactar (IA local)</button>
             <button class="btn sec mini" id="b-copiar" type="button" data-t>⧉ Copiar</button>
           </span>
         </h2>
@@ -414,6 +405,7 @@
     "2 — médico y paciente":"2 — Arzt und Patient",
     "3 — médico, paciente y acompañante":"3 — Arzt, Patient und Begleitperson",
     "⏺ Grabar visita":"⏺ Besuch aufnehmen",
+    "🎧 Visita completa":"🎧 Kompletter Besuch",
     "Aplicar etiquetas":"Zuordnung übernehmen",
     "2 · Informe clínico":"2 · Arztbericht",
     "🤖 Redactar (IA local)":"🤖 Verfassen (lokale KI)",
@@ -619,21 +611,19 @@
   },'metgeactiu');
 
   // ---------- mode i parlant ----------
-  var mode='dictat',parlant='dr';
+  var mode='dictat';
   safe(function(){
     function pintaMode(){
-      $('m-dictat').classList.toggle('actiu',mode==='dictat');
-      $('m-conversa').classList.toggle('actiu',mode==='conversa');
-      $('parlants').style.display=mode==='conversa'?'block':'none';
+      var d=mode==='dictat';
+      $('m-dictat').classList.toggle('actiu',d);
+      $('m-visita').classList.toggle('actiu',!d);
+      $('zona-dictat').style.display=d?'':'none';
+      var aj=$('ajuda-dictat');if(aj)aj.style.display=d?'':'none';
+      $('card-visita').style.display=d?'none':'';
     }
     $('m-dictat').addEventListener('click',function(){mode='dictat';pintaMode()});
-    $('m-conversa').addEventListener('click',function(){mode='conversa';pintaMode()});
-    function pintaParlant(){
-      $('p-dr').classList.toggle('actiu',parlant==='dr');
-      $('p-pac').classList.toggle('actiu',parlant==='pac');
-    }
-    $('p-dr').addEventListener('click',function(){parlant='dr';pintaParlant()});
-    $('p-pac').addEventListener('click',function(){parlant='pac';pintaParlant()});
+    $('m-visita').addEventListener('click',function(){mode='visita';pintaMode()});
+    pintaMode();
   },'mode');
 
   // ---------- dictat (Web Speech API) ----------
@@ -668,14 +658,11 @@
           if(ev.results[i].isFinal){
             var seg=tr.trim();
             if(!seg)continue;
-            if(mode==='conversa'){
-              if(textFinal&&!/\n$/.test(textFinal))textFinal+='\n';
-              textFinal+=(parlant==='dr'?'Dr.: ':'Pac.: ')+seg+'\n';
-            }else{textFinal+=seg+' ';}
+            textFinal+=seg+' ';
           }else{mig+=tr;}
         }
         ta.value=textFinal;autoAlta(ta);
-        interim.textContent=mig?((mode==='conversa'?(parlant==='dr'?'🩺 ':'🧑 '):'')+'… '+mig):'';
+        interim.textContent=mig?('… '+mig):'';
       };
       r.onerror=function(ev){
         if(ev.error==='no-speech')return;
@@ -722,14 +709,7 @@
       var ex=LANG==='de'?EXEMPLE_DE:EXEMPLE;
       $('d-transcripcio').value=ex;textFinal=ex+' ';autoAlta($('d-transcripcio'));
       if(!$('d-pacient').value)$('d-pacient').value=nomDemo();
-      avis('ok','Ejemplo cargado. Pulse «🧠 Estructurar dictado» para generar el informe.');
-    });
-    $('b-exemple2').addEventListener('click',function(){
-      mode='conversa';$('m-conversa').click();
-      var ex=LANG==='de'?EXEMPLE2_DE:EXEMPLE2;
-      $('d-transcripcio').value=ex;textFinal=ex+'\n';autoAlta($('d-transcripcio'));
-      if(!$('d-pacient').value)$('d-pacient').value=nomDemo();
-      avis('ok','Conversación de ejemplo cargada. Pulse «🧠 Estructurar dictado»: los apartados se rellenan con lo que dice el médico y el diálogo completo queda como anexo.');
+      avis('ok','Ejemplo cargado. Pulse «🤖 Redactar (IA local)» para generar el informe.');
     });
     $('b-netejar').addEventListener('click',function(){
       $('d-transcripcio').value='';textFinal='';$('interim').textContent='';
@@ -776,23 +756,7 @@
     }
     return out;
   }
-  safe(function(){
-    $('b-estructurar').addEventListener('click',function(){
-      var t=$('d-transcripcio').value.trim();
-      if(!t){avis('err','No hay nada que estructurar: dicte o cargue un ejemplo primero.');return}
-      var esConversa=/^(Dr|Pac|Acomp)\.:/m.test(t),out,n=0;
-      if(esConversa){
-        var nomesDr=t.split('\n').filter(function(l){return /^Dr\.:/i.test(l)}).map(function(l){return l.replace(/^Dr\.:\s*/i,'')}).join(' ');
-        out=estructura(nomesDr,true);
-        out['e-transcripcion']=t;
-      }else{
-        out=estructura(t,false);
-      }
-      CAMPS.forEach(function(id){if(out[id]){$(id).value=out[id];autoAlta($(id));n++}});
-      if(n){avis('ok','🧠 '+TX('Informe estructurado en')+' '+n+' '+TX('apartado(s)')+(esConversa?' '+TX('+ transcripción anexa'):'')+'. '+TX('Revíselo y complete lo que falte.'));}
-      else{avis('err','No se han reconocido apartados. Diga los nombres de las secciones al dictar.');}
-    });
-  },'estructurar');
+  // (Estructurar dictado eliminado: la redacción la hace «Redactar (IA local)», con estructuración local de respaldo)
 
   // ---------- copiar ----------
   function textInforme(){
@@ -907,7 +871,6 @@
         chip(true,'');
         var extra=(d.veus?'':TX(' · sin identificación de voces'))+(d.ia?' · IA ✓':'');
         $('chip-agent').textContent='⬤ '+TX('agente local EscribaMed: conectado')+extra;
-        $('b-ia').style.display=d.ia?'inline-block':'none';
         if(!clau)fetch(AGENT+'/clau').then(function(r){return r.json()}).then(function(k){clau=k.clau}).catch(function(){});
       }).catch(function(){clearTimeout(tm);estatAgent=null;chip(false,'no detectado')});
     }
@@ -1004,17 +967,24 @@
       if(acum)linies.push(acum);
       $('d-transcripcio').value=linies.join('\n');textFinal=$('d-transcripcio').value+'\n';
       autoAlta($('d-transcripcio'));
-      mode='conversa';$('m-conversa')&&$('m-conversa').click&&$('m-conversa').click();
-      avis('ok','🎧 Visita transcrita e identificada en su ordenador. Revise «¿quién es quién?» y pulse «🧠 Estructurar dictado».');
+      avis('ok','🎧 Visita transcrita e identificada en su ordenador. Revise «¿quién es quién?» y pulse «🤖 Redactar (IA local)».');
     }
     $('b-aplicar-veus').addEventListener('click',aplicaEtiquetes);
 
     // --- redaccio automatica de l informe amb la IA local ---
     var MAPA_IA={motivo:'e-motivo',anamnesis:'e-anamnesis',antecedentes:'e-antecedentes',exploracion:'e-exploracion',pruebas:'e-pruebas',diagnostico:'e-diagnostico',tratamiento:'e-tratamiento',recomendaciones:'e-recomendaciones'};
+    function redaccioLocal(t){
+      var esConversa=/^(Dr|Pac|Acomp)\.:/m.test(t),out,n=0;
+      if(esConversa){var nomesDr=t.split('\n').filter(function(l){return /^Dr\.:/i.test(l)}).map(function(l){return l.replace(/^Dr\.:\s*/i,'')}).join(' ');out=estructura(nomesDr,true);out['e-transcripcion']=t;}
+      else{out=estructura(t,false);}
+      CAMPS.forEach(function(id){if(out[id]){$(id).value=out[id];autoAlta($(id));n++}});
+      if(n)avis('ok','🧠 '+TX('Informe estructurado en')+' '+n+' '+TX('apartado(s)')+'. '+TX('Revíselo y complete lo que falte.'));
+      else avis('err','No se han reconocido apartados. Diga los nombres de las secciones al dictar.');
+    }
     $('b-ia').addEventListener('click',function(){
       var t=$('d-transcripcio').value.trim();
       if(!t){avis('err','No hay transcripción: dicte, grabe la visita o cargue un ejemplo.');return}
-      if(!estatAgent||!estatAgent.ia){avis('err','El motor de redacción EscribaMed se está iniciando en su ordenador. Espere unos segundos y vuelva a pulsar.');return}
+      if(!estatAgent||!estatAgent.ia){redaccioLocal(t);return}
       var b=$('b-ia');b.disabled=true;b.textContent='🤖 '+TX('Redactando…');
       var tini=Date.now();
       var cron2=setInterval(function(){b.textContent='🤖 '+TX('Redactando…')+' '+Math.round((Date.now()-tini)/1000)+' s'},1000);
@@ -1043,6 +1013,12 @@
       window.location.href='app.html?'+p.toString();
     });
   },'facturar');
+
+  // ---------- pacient automàtic si venim de SecreMed ----------
+  safe(function(){
+    var nom=new URLSearchParams(location.search).get('nom');
+    if(nom){var i=$('d-pacient');i.value=nom;i.dispatchEvent(new Event('input'));}
+  },'param-nom');
 
   // ---------- selector d'idioma (aplica-ho tot) ----------
   safe(function(){

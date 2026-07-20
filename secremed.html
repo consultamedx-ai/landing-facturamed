@@ -247,7 +247,7 @@
           boto('✕ No vino','perill',function(){canviaEstat(c.id,'noshow')});
         }
         if(c.estat==='pendent')boto('Confirmar','sec',function(){canviaEstat(c.id,'confirmada')});
-        boto('▶ Visita','sec',function(){window.location.href='escriba.html'});
+        boto('▶ Visita','sec',function(){window.location.href='escriba.html?nom='+encodeURIComponent(c.pacient)});
         boto('💶 Facturar','verd',function(){var p=new URLSearchParams({facturar:'1',nom:c.pacient,concepte:c.motiu||'Consulta médica'});window.location.href='app.html?'+p.toString()});
         el.appendChild(d);
       });

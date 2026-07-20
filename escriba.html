@@ -115,6 +115,7 @@
   <div class="nav-dreta">
     <span class="beta-chip" data-t>BETA PRIVADA · solo datos ficticios</span>
     <span class="lang-tog"><button class="lang-b" id="lang-es" type="button">ESP</button><button class="lang-b" id="lang-ca" type="button">CAT</button><button class="lang-b" id="lang-de" type="button">DE</button></span>
+    <a class="nav-enllac" href="hub.html">◀ Panel</a>
     <a class="nav-enllac" href="app.html">FacturaMed →</a>
   </div>
 </div></nav>
@@ -1014,11 +1015,22 @@
     });
   },'facturar');
 
-  // ---------- pacient automàtic si venim de SecreMed ----------
+  // ---------- esborrany automàtic + pacient de SecreMed (no perdre dades) ----------
   safe(function(){
-    var nom=new URLSearchParams(location.search).get('nom');
-    if(nom){var i=$('d-pacient');i.value=nom;i.dispatchEvent(new Event('input'));}
-  },'param-nom');
+    var K='em_esborrany';
+    var ids=['d-pacient','d-transcripcio'].concat(CAMPS);
+    var nomParam=new URLSearchParams(location.search).get('nom');
+    function desa(){var o={};ids.forEach(function(id){var e=$(id);if(e)o[id]=e.value});try{localStorage.setItem(K,JSON.stringify(o))}catch(e){}}
+    var o=null;try{o=JSON.parse(localStorage.getItem(K))}catch(e){}
+    var mateix=!nomParam||!o||!o['d-pacient']||nomParam.trim()===String(o['d-pacient']).trim();
+    if(o&&!mateix){try{localStorage.removeItem(K)}catch(e){}o=null;}
+    if(o){ids.forEach(function(id){var e=$(id);if(e&&o[id])e.value=o[id]});}
+    if(nomParam&&$('d-pacient'))$('d-pacient').value=nomParam;
+    ids.forEach(function(id){var e=$(id);if(e){if(typeof autoAlta==='function')autoAlta(e);e.addEventListener('input',desa);}});
+    if($('d-pacient'))$('d-pacient').dispatchEvent(new Event('input'));
+    window.addEventListener('pagehide',desa);
+    var net=$('b-netejar');if(net)net.addEventListener('click',function(){try{localStorage.removeItem(K)}catch(e){}});
+  },'esborrany');
 
   // ---------- selector d'idioma (aplica-ho tot) ----------
   safe(function(){

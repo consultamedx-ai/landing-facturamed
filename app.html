@@ -124,12 +124,12 @@
   <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
     <a href="hub.html" style="font-size:.8rem;font-weight:600;color:#94A3B8;text-decoration:none">◀ Panel</a>
     <a href="escriba.html" style="font-size:.8rem;font-weight:600;color:#8B2DA5;text-decoration:none">EscribaMed →</a>
-    <span class="beta-chip">BETA · remisión AEAT solo a PRUEBAS — no usar para facturas reales</span>
   </div>
 </div></nav>
 
 <main class="wrap">
   <div class="banner" id="banner"></div>
+  <div class="avis-priv" style="background:#FEF3C7;border:1px solid #FCD34D;color:#92400E;border-radius:11px;padding:9px 14px;font-size:.82rem;margin-bottom:14px">BETA · remisión AEAT solo a PRUEBAS — no usar para facturas reales</div>
 
   <!-- ============ FACTURAR ============ -->
   <section class="vista actiu" id="v-facturar">
@@ -792,19 +792,21 @@
 
   // ---------- verificar integritat ----------
   safe(function(){
-    $('b-verificar').addEventListener('click',async function(){
+    async function verificaCadena(silenci){
       var rs=registres();
-      if(!rs.length){avis('err','No hay registros que verificar.');return}
+      if(!rs.length){$('k-cadena').textContent='—';if(!silenci)avis('err','No hay registros que verificar.');return}
       var ant='';
       for(var i=0;i<rs.length;i++){
         var r=rs[i];
-        if((r.anterior||'')!==ant){avis('err','⛓️‍💥 Cadena rota en '+r.num+'.');$('k-cadena').textContent='ROTA';return}
-        if(await huellaAlta(r)!==r.huella){avis('err','⚠️ Registro '+r.num+' ALTERADO: la huella no coincide.');$('k-cadena').textContent='ALTERADA';return}
+        if((r.anterior||'')!==ant){if(!silenci)avis('err','⛓️‍💥 Cadena rota en '+r.num+'.');$('k-cadena').textContent='ROTA';return}
+        if(await huellaAlta(r)!==r.huella){if(!silenci)avis('err','⚠️ Registro '+r.num+' ALTERADO: la huella no coincide.');$('k-cadena').textContent='ALTERADA';return}
         ant=r.huella;
       }
       $('k-cadena').textContent='ÍNTEGRA ✓';
-      avis('ok','🔗 Cadena íntegra: '+rs.length+' registro(s) verificados.');
-    });
+      if(!silenci)avis('ok','🔗 Cadena íntegra: '+rs.length+' registro(s) verificados.');
+    }
+    $('b-verificar').addEventListener('click',function(){verificaCadena(false)});
+    verificaCadena(true);
   },'verificar');
 
   // ---------- export CSV gestoria ----------

@@ -229,7 +229,7 @@
       </div>
 
       <div class="card">
-        <h2 data-t>Informes guardados</h2>
+        <h2 id="h-informes" data-t>Informes guardados</h2>
         <div id="llista-informes"></div>
       </div>
     </div>
@@ -345,6 +345,8 @@
     "No se ha podido copiar.":"No s'ha pogut copiar.",
     "Este navegador no permite copiar automáticamente.":"Aquest navegador no permet copiar automàticament.",
     "Todavía no hay informes guardados.":"Encara no hi ha informes desats.",
+    "Este paciente no tiene informes guardados.":"Aquest pacient no té informes desats.",
+    "¿Borrar este informe? No se puede deshacer.":"Esborrar aquest informe? No es pot desfer.",
     "Fecha":"Data",
     "Ver":"Veure",
     "💾 Informe guardado en este dispositivo.":"💾 Informe desat en aquest dispositiu.",
@@ -452,6 +454,8 @@
     "No se ha podido copiar.":"Couldn't copy.",
     "Este navegador no permite copiar automáticamente.":"This browser doesn't allow automatic copying.",
     "Todavía no hay informes guardados.":"No saved reports yet.",
+    "Este paciente no tiene informes guardados.":"This patient has no saved reports.",
+    "¿Borrar este informe? No se puede deshacer.":"Delete this report? This can't be undone.",
     "Fecha":"Date","Ver":"View",
     "💾 Informe guardado en este dispositivo.":"💾 Report saved on this device.",
     "Indique el nombre del paciente antes de facturar.":"Enter the patient's name before invoicing.",
@@ -556,6 +560,8 @@
     "No se ha podido copiar.":"Kopieren nicht möglich.",
     "Este navegador no permite copiar automáticamente.":"Dieser Browser erlaubt kein automatisches Kopieren.",
     "Todavía no hay informes guardados.":"Noch keine gespeicherten Berichte.",
+    "Este paciente no tiene informes guardados.":"Dieser Patient hat keine gespeicherten Berichte.",
+    "¿Borrar este informe? No se puede deshacer.":"Diesen Bericht löschen? Nicht rückgängig zu machen.",
     "Fecha":"Datum",
     "Ver":"Ansehen",
     "💾 Informe guardado en este dispositivo.":"💾 Bericht auf diesem Gerät gespeichert.",
@@ -923,13 +929,16 @@
 
   // ---------- guardar + llista ----------
   function pintaLlista(){
-    var l=llegeix(K.inf,[]),cont=$('llista-informes');
-    if(!cont)return;
-    if(!l.length){cont.innerHTML='<div class="buit">'+esc(TX('Todavía no hay informes guardados.'))+'</div>';return}
-    var h='<table><thead><tr><th>'+esc(TX('Fecha'))+'</th><th>'+esc(TX('Paciente'))+'</th><th>'+esc(TX('Diagnóstico'))+'</th><th></th></tr></thead><tbody>';
+    var cont=$('llista-informes'); if(!cont)return;
+    var pac=($('d-pacient')?$('d-pacient').value.trim():'');
+    var tot=llegeix(K.inf,[]);
+    var l=pac?tot.filter(function(i){return (i.pacient||'').toLowerCase()===pac.toLowerCase()}):tot;
+    var h2=$('h-informes'); if(h2)h2.textContent=TX('Informes guardados')+(pac?(' · '+pac):'');
+    if(!l.length){cont.innerHTML='<div class="buit">'+esc(pac?TX('Este paciente no tiene informes guardados.'):TX('Todavía no hay informes guardados.'))+'</div>';return}
+    var h='<table><thead><tr><th>'+esc(TX('Fecha'))+'</th>'+(pac?'':'<th>'+esc(TX('Paciente'))+'</th>')+'<th>'+esc(TX('Diagnóstico'))+'</th><th></th></tr></thead><tbody>';
     l.slice().reverse().slice(0,25).forEach(function(inf){
       var dx=(inf.camps['e-diagnostico']||inf.camps['e-motivo']||'—');
-      h+='<tr><td>'+esc(inf.dataTxt)+'</td><td>'+esc(inf.pacient||'—')+'</td><td>'+esc(dx.length>52?dx.slice(0,52)+'…':dx)+'</td>'+
+      h+='<tr><td>'+esc(inf.dataTxt)+'</td>'+(pac?'':'<td>'+esc(inf.pacient||'—')+'</td>')+'<td>'+esc(dx.length>52?dx.slice(0,52)+'…':dx)+'</td>'+
          '<td style="white-space:nowrap"><button class="btn sec mini" data-obre="'+inf.id+'" type="button">'+esc(TX('Ver'))+'</button> '+
          '<button class="btn perill mini" data-esborra="'+inf.id+'" type="button">✕</button></td></tr>';
     });
@@ -953,11 +962,13 @@
         if(inf)obreModal(inf.pacient,inf.dataTxt,inf.camps);
       }
       if(b.dataset.esborra){
+        if(!confirm(TX('¿Borrar este informe? No se puede deshacer.')))return;
         desa(K.inf,l.filter(function(x){return String(x.id)!==b.dataset.esborra}));
         pintaLlista();
       }
     });
     pintaLlista();
+    if($('d-pacient')){$('d-pacient').addEventListener('input',pintaLlista);$('d-pacient').addEventListener('change',pintaLlista);}
   },'guardar');
 
   // ---------- AGENT LOCAL (visita completa: whisper + identificacio de veus) ----------

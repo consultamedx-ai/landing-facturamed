@@ -99,7 +99,7 @@
   <section class="vista actiu" id="v-agenda">
     <div class="kpis">
       <div class="kpi"><div class="v" id="k-hoy">0</div><div class="l">Citas del día</div></div>
-      <div class="kpi" id="kpi-pend" style="cursor:pointer" title="Ver los pendientes"><div class="v" id="k-pend">0</div><div class="l">Por confirmar ▸</div></div>
+      <div class="kpi" id="kpi-pend" style="cursor:pointer" title="Ver los pendientes"><div class="v" id="k-pend">0</div><div class="l">Por confirmar</div></div>
       <div class="kpi"><div class="v" id="k-noshow">0</div><div class="l">No-shows (histórico)</div></div>
     </div>
     <div class="grid">
@@ -204,6 +204,20 @@
   function safata(){return llegeix(K.safata,[])}
   function conf(){return llegeix(K.conf,null)}
   function esCentre(){var c=conf();return !!(c&&c.centre&&c.centre.actiu&&(c.centre.metges||[]).length)}
+  var LBLidx={es:0,ca:1,de:2,en:3};
+  function idi(){var l=localStorage.getItem('em_idioma_ui');return LBLidx[l]!==undefined?l:'es';}
+  var LBL={
+    estat:{pendent:['Por confirmar','Per confirmar','Zu bestätigen','To confirm'],confirmada:['Confirmada','Confirmada','Bestätigt','Confirmed'],vinguda:['Vino','Ha vingut','Erschienen','Attended'],noshow:['No vino','No ha vingut','Nicht erschienen','No-show'],cancelada:['Cancelada','Cancel·lada','Storniert','Cancelled']},
+    recordar:['🔔 Recordar','🔔 Recordar','🔔 Erinnern','🔔 Remind'],
+    vino:['✔ Vino','✔ Ha vingut','✔ Erschienen','✔ Attended'],
+    novino:['✕ No vino','✕ No ha vingut','✕ Nicht ersch.','✕ No-show'],
+    confirmar:['Confirmar','Confirmar','Bestätigen','Confirm'],
+    visita:['▶ Visita','▶ Visita','▶ Besuch','▶ Visit'],
+    facturar:['💶 Facturar','💶 Facturar','💶 Abrechnen','💶 Invoice'],
+    sincitas:['Sin citas para este día.','Sense cites per a aquest dia.','Keine Termine für diesen Tag.','No appointments for this day.']
+  };
+  function L(k){return LBL[k][LBLidx[idi()]]}
+  function Le(k){return LBL.estat[k]?LBL.estat[k][LBLidx[idi()]]:k}
 
   // ---------- navegació ----------
   safe(function(){
@@ -253,7 +267,7 @@
     var dia=$('a-veure').value||isoAvui();
     var cs=cites().filter(function(c){return c.data===dia}).sort(function(a,b){return a.hora.localeCompare(b.hora)});
     var el=$('llista-cites');
-    if(!cs.length){el.innerHTML='<div class="buit">Sin citas para este día.</div>';}
+    if(!cs.length){el.innerHTML='<div class="buit">'+L('sincitas')+'</div>';}
     else{
       el.innerHTML='';
       cs.forEach(function(c){
@@ -261,18 +275,18 @@
         d.innerHTML='<span class="hora">'+esc(c.hora)+'</span>'+
           '<span class="cos"><div class="nom">'+esc(c.pacient)+(esCentre()&&c.metge?' <span style="font-size:.72rem;color:var(--boira)">· '+esc(c.metge)+'</span>':'')+'</div>'+
           '<div class="motiu">'+esc(c.motiu||'Consulta')+(c.tel?' · '+esc(c.tel):'')+'</div></span>'+
-          '<span class="estat '+c.estat+'">'+({pendent:'Por confirmar',confirmada:'Confirmada',vinguda:'Vino',noshow:'No vino',cancelada:'Cancelada'}[c.estat]||c.estat)+'</span>'+
+          '<span class="estat '+c.estat+'">'+esc(Le(c.estat))+'</span>'+
           '<span class="accions" data-id="'+c.id+'"></span>';
         var ac=d.querySelector('.accions');
         function boto(txt,cls,fn){var b=document.createElement('button');b.className='btn '+cls+' mini';b.type='button';b.textContent=txt;b.addEventListener('click',fn);ac.appendChild(b);}
         if(c.estat==='pendent'||c.estat==='confirmada'){
-          if(c.tel)boto('🔔 Recordar','sec',function(){recordatori(c)});
-          boto('✔ Vino','sec',function(){canviaEstat(c.id,'vinguda')});
-          boto('✕ No vino','perill',function(){canviaEstat(c.id,'noshow')});
+          if(c.tel)boto(L('recordar'),'sec',function(){recordatori(c)});
+          boto(L('vino'),'sec',function(){canviaEstat(c.id,'vinguda')});
+          boto(L('novino'),'perill',function(){canviaEstat(c.id,'noshow')});
         }
-        if(c.estat==='pendent')boto('Confirmar','sec',function(){canviaEstat(c.id,'confirmada')});
-        boto('▶ Visita','sec',function(){window.location.href='escriba.html?nom='+encodeURIComponent(c.pacient)});
-        boto('💶 Facturar','verd',function(){var p=new URLSearchParams({facturar:'1',nom:c.pacient,concepte:c.motiu||'Consulta médica'});window.location.href='app.html?'+p.toString()});
+        if(c.estat==='pendent')boto(L('confirmar'),'sec',function(){canviaEstat(c.id,'confirmada')});
+        boto(L('visita'),'sec',function(){window.location.href='escriba.html?nom='+encodeURIComponent(c.pacient)});
+        boto(L('facturar'),'verd',function(){var p=new URLSearchParams({facturar:'1',nom:c.pacient,concepte:c.motiu||'Consulta médica'});window.location.href='app.html?'+p.toString()});
         el.appendChild(d);
       });
     }
@@ -366,7 +380,7 @@
     var h='';
     if(cs.length){
       h+='<h3 style="font-size:.85rem;color:var(--blau);margin:6px 0">Citas por confirmar ('+cs.length+')</h3>';
-      cs.forEach(function(c){h+='<div class="cita"><span class="hora">'+esc(c.hora)+'</span><span class="cos"><div class="nom">'+esc(c.pacient)+'</div><div class="motiu">'+esc(dataLlegible(c.data))+(c.motiu?' · '+esc(c.motiu):'')+'</div></span><span class="accions"><button class="btn sec mini" type="button" data-conf="'+c.id+'">Confirmar</button></span></div>';});
+      cs.forEach(function(c){h+='<div class="cita"><span class="hora">'+esc(c.hora)+'</span><span class="cos"><div class="nom">'+esc(c.pacient)+'</div><div class="motiu">'+esc(dataLlegible(c.data))+(c.motiu?' · '+esc(c.motiu):'')+'</div></span><span class="accions"><button class="btn sec mini" type="button" data-conf="'+c.id+'">'+L('confirmar')+'</button></span></div>';});
     }
     if(calls.length){
       h+='<h3 style="font-size:.85rem;color:var(--blau);margin:12px 0 6px">Llamadas pendientes ('+calls.length+')</h3>';
@@ -385,6 +399,7 @@
 
   // ---------- init ----------
   function pintaTot(){safe(pintaPacients,'pac');safe(pintaMetgeSel,'metge');safe(pintaAgenda,'ag');safe(pintaSafata,'saf')}
+  window.__reRender=pintaTot;
   pintaTot();
 })();
 </script>
@@ -410,7 +425,7 @@
     var etiq={es:'ESP',ca:'CAT',de:'DE',en:'EN'};var lc=document.getElementById('t-lang-cur');if(lc)lc.textContent=etiq[lang]+' \u25be';
     document.querySelectorAll('#t-lang-menu button').forEach(function(b){b.style.background=(b.getAttribute('data-l')===lang)?'#F7FAFC':'#fff';});
     try{localStorage.setItem('em_idioma_ui',lang)}catch(e){}
-    window.__traduir=traduir;
+    window.__traduir=traduir;if(window.__reRender){try{window.__reRender()}catch(e){}}
   }
   function crea(){
     var w=document.createElement('span');w.style.cssText='position:relative;display:inline-block';

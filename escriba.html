@@ -25,9 +25,12 @@
   .nav-dreta{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
   .beta-chip{background:#FEF3C7;border:1px solid #FCD34D;color:#92400E;font-size:.68rem;font-weight:700;padding:4px 10px;border-radius:99px;letter-spacing:.03em}
   .nav-enllac{font-size:.8rem;font-weight:600;color:var(--verd);text-decoration:none}
-  .lang-tog{display:inline-flex;border:1px solid var(--linia);border-radius:99px;overflow:hidden;background:#fff}
-  .lang-b{border:none;background:#fff;font:inherit;font-size:.72rem;font-weight:700;color:var(--boira);padding:5px 11px;cursor:pointer;transition:all .12s}
-  .lang-b.actiu{background:var(--blau);color:#fff}
+  .lang{position:relative;display:inline-block}
+  .lang-cur{border:1px solid var(--linia);background:#fff;color:var(--blau);font:inherit;font-weight:700;font-size:.72rem;padding:6px 12px;border-radius:99px;cursor:pointer}
+  .lang-menu{position:absolute;right:0;top:calc(100% + 6px);background:#fff;border:1px solid var(--linia);border-radius:10px;box-shadow:0 10px 26px rgba(13,59,102,.12);display:none;overflow:hidden;z-index:60;min-width:120px}
+  .lang-menu.obert{display:block}
+  .lang-menu button{display:block;width:100%;text-align:left;border:none;background:#fff;font:inherit;font-size:.82rem;font-weight:600;color:#475569;padding:8px 14px;cursor:pointer}
+  .lang-menu button:hover,.lang-menu button.on{background:var(--gasa);color:var(--blau)}
   main{padding:24px 0 70px}
   .grid{display:grid;grid-template-columns:400px 1fr;gap:22px;align-items:start}
   .card{background:#fff;border:1px solid var(--linia);border-radius:14px;padding:20px;margin-bottom:18px}
@@ -114,7 +117,7 @@
   <span class="logo"><img class="logo-img" src="escribamed.png" alt="EscribaMed"><small>by ConsultaMed</small></span>
   <div class="nav-dreta">
     <span class="beta-chip" data-t>BETA PRIVADA · solo datos ficticios</span>
-    <span class="lang-tog"><button class="lang-b" id="lang-es" type="button">ESP</button><button class="lang-b" id="lang-ca" type="button">CAT</button><button class="lang-b" id="lang-de" type="button">DE</button></span>
+    <span class="lang" id="lang-dd"><button class="lang-cur" id="lang-cur" type="button">ESP ▾</button><span class="lang-menu" id="lang-menu"><button data-l="es" type="button">Español</button><button data-l="ca" type="button">Català</button><button data-l="de" type="button">Deutsch</button><button data-l="en" type="button">English</button></span></span>
     <a class="nav-enllac" href="hub.html">◀ Panel</a>
     <a class="nav-enllac" href="app.html">FacturaMed →</a>
   </div>
@@ -142,6 +145,7 @@
           <option value="es-ES" selected data-t>Español</option>
           <option value="ca-ES" data-t>Català</option>
           <option value="de-DE" data-t>Alemán</option>
+          <option value="en-US" data-t>Inglés</option>
         </select>
         <label data-t>Modo</label>
         <div class="modes">
@@ -213,7 +217,7 @@
         <div class="sec-informe"><label for="e-transcripcion" data-t>Transcripción de la visita (anexo · modo conversación)</label><textarea id="e-transcripcion" rows="2"></textarea></div>
         <div class="fila" style="margin-top:10px">
           <div><label for="e-idioma" data-t>Idioma del informe impreso</label>
-            <select id="e-idioma"><option value="es" selected data-t>Español</option><option value="ca" data-t>Català</option><option value="de" data-t>Alemán</option></select></div>
+            <select id="e-idioma"><option value="es" selected data-t>Español</option><option value="ca" data-t>Català</option><option value="de" data-t>Alemán</option><option value="en" data-t>Inglés</option></select></div>
           <div></div>
         </div>
         <div class="accions-fila" style="margin-top:16px">
@@ -268,7 +272,7 @@
 
   // ============ i18n (interfície CAT/ESP) ============
   var _g0 = localStorage.getItem('em_idioma_ui');
-  var LANG = (_g0==='ca'||_g0==='de') ? _g0 : 'es';
+  var LANG = (_g0==='ca'||_g0==='de'||_g0==='en') ? _g0 : 'es';
   var TR = {
     "BETA PRIVADA · solo datos ficticios":"BETA PRIVADA · només dades fictícies",
     "1 · Dicte la visita":"1 · Dicti la visita",
@@ -277,6 +281,8 @@
     "Idioma del dictado":"Idioma del dictat",
     "Español":"Espanyol",
     "Català":"Català",
+    "Alemán":"Alemany",
+    "Inglés":"Anglès",
     "Modo":"Mode",
     "🎙 Dictado":"🎙 Dictat",
     "👥 Conversación":"👥 Conversa",
@@ -378,6 +384,105 @@
     "Médico":"Metge",
     "Paciente ":"Pacient",
     "Acompañante":"Acompanyant"
+  };
+  var TR_EN = {
+    "BETA PRIVADA · solo datos ficticios":"PRIVATE BETA · dummy data only",
+    "1 · Dicte la visita":"1 · Dictate the visit",
+    "Paciente":"Patient",
+    "Nombre del paciente (ficticio)":"Patient name (fictitious)",
+    "Idioma del dictado":"Dictation language",
+    "Español":"Spanish","Català":"Catalan","Alemán":"German","Inglés":"English",
+    "Modo":"Mode",
+    "🎙 Dictado":"🎙 Dictation",
+    "👥 Conversación":"👥 Conversation",
+    "¿Quién habla ahora? (toque para cambiar)":"Who's speaking now? (tap to switch)",
+    "🩺 Médico":"🩺 Doctor","🧑 Paciente":"🧑 Patient",
+    "He informado al paciente y cuento con su consentimiento para el dictado (datos ficticios en beta).":"I have informed the patient and have their consent for the dictation (dummy data in beta).",
+    "Marque primero la casilla de consentimiento":"Tick the consent box first",
+    "Transcripción (editable)":"Transcription (editable)",
+    "Aquí aparecerá lo que dicte…":"What you dictate will appear here…",
+    "✨ Ejemplo dictado":"✨ Dictation example",
+    "👥 Ejemplo conversación":"👥 Conversation example",
+    "Limpiar":"Clear",
+    "Visita completa":"Full visit",
+    "Personas en la consulta":"People in the room",
+    "2 — médico y paciente":"2 — doctor and patient",
+    "3 — médico, paciente y acompañante":"3 — doctor, patient and companion",
+    "⏺ Grabar visita":"⏺ Record visit",
+    "Aplicar etiquetas":"Apply labels",
+    "2 · Informe clínico":"2 · Clinical report",
+    "🤖 Redactar (IA local)":"🤖 Write report (local AI)",
+    "🧠 Estructurar dictado":"🧠 Structure dictation",
+    "⧉ Copiar":"⧉ Copy",
+    "Motivo de consulta":"Reason for visit",
+    "Anamnesis / enfermedad actual":"History / present illness",
+    "Antecedentes":"Medical history",
+    "Exploración física":"Physical examination",
+    "Pruebas complementarias":"Complementary tests",
+    "Diagnóstico":"Diagnosis","Tratamiento":"Treatment",
+    "Recomendaciones y seguimiento":"Recommendations and follow-up",
+    "Transcripción de la visita (anexo · modo conversación)":"Visit transcription (appendix)",
+    "Idioma del informe impreso":"Printed report language",
+    "🖨 Ver / imprimir informe":"🖨 View / print report",
+    "💾 Guardar":"💾 Save",
+    "💶 Facturar esta visita":"💶 Invoice this visit",
+    "Informes guardados":"Saved reports",
+    "DEMO · SIN VALIDEZ CLÍNICA":"DEMO · NOT CLINICALLY VALID",
+    "🖨 Imprimir / guardar PDF":"🖨 Print / save PDF",
+    "Cerrar":"Close",
+    "Pulse el micrófono y empiece a dictar":"Press the microphone and start dictating",
+    "Marque la casilla para activar el micrófono":"Tick the box to enable the microphone",
+    "Este navegador no soporta dictado por voz — use Google Chrome":"This browser doesn't support voice dictation — use Google Chrome",
+    "Micrófono bloqueado. Pulse el candado de la barra de direcciones y permita el micrófono para consultamed.es.":"Microphone blocked. Click the padlock in the address bar and allow the microphone for consultamed.es.",
+    "El dictado necesita conexión a internet.":"Dictation needs an internet connection.",
+    "No se ha encontrado ningún micrófono.":"No microphone was found.",
+    "No se ha podido iniciar el dictado. Recargue la página.":"Couldn't start dictation. Reload the page.",
+    "🔴 Escuchando… hable con normalidad":"🔴 Listening… speak normally",
+    "Dictado en pausa — pulse para continuar":"Dictation paused — press to continue",
+    "Ejemplo cargado. Pulse «🧠 Estructurar dictado» para generar el informe.":"Example loaded. Press «🤖 Write report (local AI)» to generate the report.",
+    "Conversación de ejemplo cargada. Pulse «🧠 Estructurar dictado»: los apartados se rellenan con lo que dice el médico y el diálogo completo queda como anexo.":"Example loaded. Press «🤖 Write report (local AI)» to generate the report.",
+    "No hay nada que estructurar: dicte o cargue un ejemplo primero.":"Nothing to process: dictate or load an example first.",
+    "Informe estructurado en":"Report structured into",
+    "apartado(s)":"section(s)",
+    "+ transcripción anexa":"+ attached transcription",
+    "Revíselo y complete lo que falte.":"Review it and fill in what's missing.",
+    "No se han reconocido apartados. Diga los nombres de las secciones al dictar.":"No sections recognized. Say the section names while dictating.",
+    "El informe está vacío.":"The report is empty.",
+    "⧉ Informe copiado al portapapeles — péguelo donde quiera.":"⧉ Report copied to clipboard — paste it wherever you like.",
+    "No se ha podido copiar.":"Couldn't copy.",
+    "Este navegador no permite copiar automáticamente.":"This browser doesn't allow automatic copying.",
+    "Todavía no hay informes guardados.":"No saved reports yet.",
+    "Fecha":"Date","Ver":"View",
+    "💾 Informe guardado en este dispositivo.":"💾 Report saved on this device.",
+    "Indique el nombre del paciente antes de facturar.":"Enter the patient's name before invoicing.",
+    "Marque primero la casilla de consentimiento.":"Tick the consent box first.",
+    "Pare primero el dictado por micrófono.":"Stop the microphone dictation first.",
+    "No se ha podido acceder al micrófono.":"Couldn't access the microphone.",
+    "⏹ Finalizar y transcribir":"⏹ Finish and transcribe",
+    "Grabando":"Recording",
+    "pulse ⏹ al terminar la visita":"press ⏹ when the visit ends",
+    "Procesando en su ordenador":"Processing on your computer",
+    "puede tardar 1-3 min según la duración.":"may take 1-3 min depending on length.",
+    "Error del agente local.":"Local agent error.",
+    "s de audio · transcripción lista":"s of audio · transcription ready",
+    "voces identificadas":"voices identified",
+    "sin separación de voces":"no voice separation",
+    "Transcripción hecha en local. Sin identificación de voces (instale los modelos de voz para activarla).":"Transcription done locally. No voice identification (install the voice models to enable it).",
+    "No se ha podido contactar con el agente local.":"Couldn't reach the local agent.",
+    "🎧 Visita transcrita e identificada en su ordenador. Revise «¿quién es quién?» y pulse «🧠 Estructurar dictado».":"🎧 Visit transcribed and identified on your computer. Check «who's who?» and press «🤖 Write report (local AI)».",
+    "No hay transcripción: dicte, grabe la visita o cargue un ejemplo.":"No transcription: dictate, record the visit or load an example.",
+    "El motor de redacción EscribaMed se está iniciando en su ordenador. Espere unos segundos y vuelva a pulsar.":"The EscribaMed writing engine is starting on your computer. Wait a few seconds and press again.",
+    "Redactando…":"Writing…",
+    "La IA local no ha respondido.":"The local AI didn't respond.",
+    "Informe redactado por el motor EscribaMed en su ordenador":"Report written by the EscribaMed engine on your computer",
+    "apartados":"sections",
+    "Revíselo SIEMPRE antes de imprimir o firmar.":"ALWAYS review it before printing or signing.",
+    "No se ha podido contactar con la IA local.":"Couldn't reach the local AI.",
+    "agente local EscribaMed: conectado":"EscribaMed local agent: connected",
+    " · sin identificación de voces":" · no voice identification",
+    "agente local: ":"local agent: ",
+    "buscando…":"searching…","no detectado":"not detected","error":"error","bloqueado":"blocked",
+    "Voz":"Voice","Última visita":"Last visit","Médico":"Doctor","Paciente ":"Patient","Acompañante":"Companion"
   };
   var TR_DE = {
     "BETA PRIVADA · solo datos ficticios":"PRIVATE BETA · nur fiktive Daten",
@@ -491,42 +596,48 @@
     "Paciente ":"Patient",
     "Acompañante":"Begleitperson"
   };
-  function TX(s){ if(LANG==='ca')return TR[s]!==undefined?TR[s]:s; if(LANG==='de')return TR_DE[s]!==undefined?TR_DE[s]:s; return s; }
+  function TX(s){ if(LANG==='ca')return TR[s]!==undefined?TR[s]:s; if(LANG==='de')return TR_DE[s]!==undefined?TR_DE[s]:s; if(LANG==='en')return TR_EN[s]!==undefined?TR_EN[s]:s; return s; }
   var HTMLT = {
     "avis-priv":{
       es:'🔒 <strong>Beta privada de demostración.</strong> No introduzca datos reales de pacientes. El reconocimiento de voz lo realiza el servicio de su navegador (Chrome). Informe siempre al paciente antes de dictar en su presencia.',
       ca:'🔒 <strong>Beta privada de demostració.</strong> No introdueixi dades reals de pacients. El reconeixement de veu el fa el servei del seu navegador (Chrome). Informi sempre el pacient abans de dictar en presència seva.',
-      de:'🔒 <strong>Private Demo-Beta.</strong> Geben Sie keine echten Patientendaten ein. Die Spracherkennung erfolgt über den Dienst Ihres Browsers (Chrome). Informieren Sie den Patienten stets, bevor Sie in seiner Anwesenheit diktieren.'
+      de:'🔒 <strong>Private Demo-Beta.</strong> Geben Sie keine echten Patientendaten ein. Die Spracherkennung erfolgt über den Dienst Ihres Browsers (Chrome). Informieren Sie den Patienten stets, bevor Sie in seiner Anwesenheit diktieren.',
+      en:'🔒 <strong>Private demo beta.</strong> Do not enter real patient data. Voice recognition is done by your browser\'s service (Chrome). Always inform the patient before dictating in their presence.'
     },
     "ajuda-dictat":{
       es:'<strong>Truco:</strong> diga el nombre de cada apartado mientras dicta — «<em>motivo de consulta…</em>», «<em>anamnesis…</em>», «<em>exploración…</em>», «<em>diagnóstico…</em>», «<em>tratamiento…</em>», «<em>recomendaciones…</em>» — y EscribaMed ordenará solo el informe. La versión final lo hará sin necesidad de decirlos.',
       ca:'<strong>Truc:</strong> digui el nom de cada apartat mentre dicta — «<em>motiu de consulta…</em>», «<em>anamnesi…</em>», «<em>exploració…</em>», «<em>diagnòstic…</em>», «<em>tractament…</em>», «<em>recomanacions…</em>» — i EscribaMed ordenarà sol l\'informe. La versió final ho farà sense necessitat de dir-los.',
-      de:'<strong>Tipp:</strong> Nennen Sie den Namen jedes Abschnitts beim Diktieren — «<em>Vorstellungsgrund…</em>», «<em>Anamnese…</em>», «<em>Untersuchung…</em>», «<em>Diagnose…</em>», «<em>Therapie…</em>», «<em>Empfehlungen…</em>» — und EscribaMed ordnet den Bericht von selbst. Die finale Version schafft das ohne diese Nennungen.'
+      de:'<strong>Tipp:</strong> Nennen Sie den Namen jedes Abschnitts beim Diktieren — «<em>Vorstellungsgrund…</em>», «<em>Anamnese…</em>», «<em>Untersuchung…</em>», «<em>Diagnose…</em>», «<em>Therapie…</em>», «<em>Empfehlungen…</em>» — und EscribaMed ordnet den Bericht von selbst. Die finale Version schafft das ohne diese Nennungen.',
+      en:'<strong>Tip:</strong> say the name of each section while you dictate — «<em>reason for visit…</em>», «<em>history…</em>», «<em>examination…</em>», «<em>diagnosis…</em>», «<em>treatment…</em>», «<em>recommendations…</em>» — and EscribaMed will order the report on its own. The final version does it without you naming them.'
     },
     "p-visita-info":{
       es:'Grabe la visita entera y el <strong>agente local EscribaMed</strong> la transcribe e identifica quién habla — todo <strong>dentro de su ordenador</strong>: el audio nunca sale de la consulta.',
       ca:'Gravi la visita sencera i l\'<strong>agent local EscribaMed</strong> la transcriu i identifica qui parla — tot <strong>dins del seu ordinador</strong>: l\'àudio no surt mai de la consulta.',
-      de:'Nehmen Sie den gesamten Besuch auf und der <strong>lokale EscribaMed-Agent</strong> transkribiert ihn und erkennt, wer spricht — alles <strong>auf Ihrem Computer</strong>: der Ton verlässt nie das Sprechzimmer.'
+      de:'Nehmen Sie den gesamten Besuch auf und der <strong>lokale EscribaMed-Agent</strong> transkribiert ihn und erkennt, wer spricht — alles <strong>auf Ihrem Computer</strong>: der Ton verlässt nie das Sprechzimmer.',
+      en:'Record the whole visit and the <strong>local EscribaMed agent</strong> transcribes it and identifies who is speaking — all <strong>inside your computer</strong>: the audio never leaves the office.'
     },
     "agent-off-p":{
       es:'Agente no detectado. En la beta, la instalación la asiste ConsultaMed (un solo comando, 5 minutos). Una vez instalado y arrancado, este panel se activa solo.',
       ca:'Agent no detectat. A la beta, la instal·lació l\'assisteix ConsultaMed (una sola ordre, 5 minuts). Un cop instal·lat i engegat, aquest panell s\'activa sol.',
-      de:'Agent nicht erkannt. In der Beta unterstützt ConsultaMed die Installation (ein einziger Befehl, 5 Minuten). Nach Installation und Start aktiviert sich dieses Feld von selbst.'
+      de:'Agent nicht erkannt. In der Beta unterstützt ConsultaMed die Installation (ein einziger Befehl, 5 Minuten). Nach Installation und Start aktiviert sich dieses Feld von selbst.',
+      en:'Agent not detected. In the beta, ConsultaMed assists the installation (a single command, 5 minutes). Once installed and started, this panel activates on its own.'
     },
     "ajuda-veus":{
       es:'<strong>¿Quién es quién?</strong> Revise la asignación automática y corrija si hace falta:',
       ca:'<strong>Qui és qui?</strong> Revisi l\'assignació automàtica i corregeixi si cal:',
-      de:'<strong>Wer ist wer?</strong> Prüfen Sie die automatische Zuordnung und korrigieren Sie bei Bedarf:'
+      de:'<strong>Wer ist wer?</strong> Prüfen Sie die automatische Zuordnung und korrigieren Sie bei Bedarf:',
+      en:'<strong>Who is who?</strong> Check the automatic assignment and correct if needed:'
     },
     "p-informe-nota":{
       es:'El informe es siempre revisable y editable por el médico antes de imprimir o facturar. Los datos se guardan solo en este dispositivo.',
       ca:'L\'informe sempre és revisable i editable pel metge abans d\'imprimir o facturar. Les dades es desen només en aquest dispositiu.',
-      de:'Der Bericht ist stets vom Arzt prüf- und bearbeitbar, bevor er gedruckt oder abgerechnet wird. Die Daten werden nur auf diesem Gerät gespeichert.'
+      de:'Der Bericht ist stets vom Arzt prüf- und bearbeitbar, bevor er gedruckt oder abgerechnet wird. Die Daten werden nur auf diesem Gerät gespeichert.',
+      en:'The report is always reviewable and editable by the doctor before printing or invoicing. Data is stored only on this device.'
     }
   };
   var refrescaEstatMic=function(){};
   function aplicaIdioma(lang){
-    LANG = (lang==='ca'||lang==='de') ? lang : 'es';
+    LANG = (lang==='ca'||lang==='de'||lang==='en') ? lang : 'es';
     try{localStorage.setItem('em_idioma_ui',LANG)}catch(e){}
     document.documentElement.lang=LANG;
     document.querySelectorAll('[data-t]').forEach(function(el){
@@ -538,9 +649,9 @@
       el.setAttribute('placeholder',TX(el.getAttribute('data-origph')));
     });
     document.querySelectorAll('[data-ttitle]').forEach(function(el){ el.title=TX(el.getAttribute('data-ttitle')); });
-    Object.keys(HTMLT).forEach(function(id){ var el=$(id); if(el)el.innerHTML=HTMLT[id][LANG]; });
-    var be=$('lang-es'),bc=$('lang-ca'),bd=$('lang-de'); if(be)be.classList.toggle('actiu',LANG==='es'); if(bc)bc.classList.toggle('actiu',LANG==='ca'); if(bd)bd.classList.toggle('actiu',LANG==='de');
-    if($('d-lang'))$('d-lang').value = LANG==='ca' ? 'ca-ES' : LANG==='de' ? 'de-DE' : 'es-ES';
+    Object.keys(HTMLT).forEach(function(id){ var el=$(id); if(el)el.innerHTML=HTMLT[id][LANG]||HTMLT[id].es; });
+    var etiq={es:'ESP',ca:'CAT',de:'DE',en:'EN'};var lc=$('lang-cur');if(lc)lc.textContent=etiq[LANG]+' \u25be';document.querySelectorAll('#lang-menu button').forEach(function(b){b.classList.toggle('on',b.getAttribute('data-l')===LANG);});
+    if($('d-lang'))$('d-lang').value = LANG==='ca' ? 'ca-ES' : LANG==='de' ? 'de-DE' : LANG==='en' ? 'en-US' : 'es-ES';
     if($('e-idioma')){ $('e-idioma').value=LANG; try{localStorage.setItem('em_idioma',LANG)}catch(e){} }
     safe(refrescaEstatMic,'refrescMic');
     safe(function(){pintaLlista()},'refrescLlista');
@@ -550,7 +661,7 @@
   function desa(k,v){localStorage.setItem(k,JSON.stringify(v))}
   function avis(tipus,m){var b=$('banner');b.className='banner '+tipus;b.textContent=TX(m);window.scrollTo({top:0,behavior:'smooth'});setTimeout(function(){b.className='banner'},7000)}
   function esc(s){return String(s??'').replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
-  function dateLoc(){return new Date().toLocaleDateString(LANG==='ca'?'ca-ES':'es-ES')}
+  function dateLoc(){return new Date().toLocaleDateString(LANG==='ca'?'ca-ES':LANG==='de'?'de-DE':LANG==='en'?'en-GB':'es-ES')}
 
   var CAMPS=['e-motivo','e-anamnesis','e-antecedentes','e-exploracion','e-pruebas','e-diagnostico','e-tratamiento','e-recomendaciones','e-transcripcion'];
   var TITOLS_ES={'e-motivo':'Motivo de consulta','e-anamnesis':'Anamnesis / enfermedad actual','e-antecedentes':'Antecedentes','e-exploracion':'Exploración física','e-pruebas':'Pruebas complementarias','e-diagnostico':'Diagnóstico','e-tratamiento':'Tratamiento','e-recomendaciones':'Recomendaciones y seguimiento','e-transcripcion':'Transcripción de la visita (anexo)'};
@@ -1034,9 +1145,9 @@
 
   // ---------- selector d'idioma (aplica-ho tot) ----------
   safe(function(){
-    $('lang-es').addEventListener('click',function(){aplicaIdioma('es')});
-    $('lang-ca').addEventListener('click',function(){aplicaIdioma('ca')});
-    $('lang-de').addEventListener('click',function(){aplicaIdioma('de')});
+    var lcur=$('lang-cur');if(lcur)lcur.addEventListener('click',function(e){e.stopPropagation();var m=$('lang-menu');if(m)m.classList.toggle('obert');});
+    document.querySelectorAll('#lang-menu button').forEach(function(b){b.addEventListener('click',function(){var m=$('lang-menu');if(m)m.classList.remove('obert');aplicaIdioma(b.getAttribute('data-l'));});});
+    document.addEventListener('click',function(){var m=$('lang-menu');if(m)m.classList.remove('obert');});
     aplicaIdioma(LANG);
   },'i18n');
 })();

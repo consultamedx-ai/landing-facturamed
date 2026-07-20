@@ -20,6 +20,8 @@
   .nav-in{display:flex;align-items:center;justify-content:space-between;height:58px;gap:12px;flex-wrap:wrap}
   .logo{font-family:'Sora';font-weight:700;font-size:1.08rem;color:var(--blau);white-space:nowrap}
   .logo em{font-style:normal;color:var(--verd)}
+  .logo{display:inline-flex;align-items:center;gap:9px}
+  .logo-img{height:29px;width:auto;display:block}
   .beta-chip{background:#FEF3C7;border:1px solid #FCD34D;color:#92400E;font-size:.68rem;font-weight:700;padding:4px 10px;border-radius:99px;letter-spacing:.03em}
   .tabs{display:flex;gap:4px;background:#fff;border:1px solid var(--linia);border-radius:99px;padding:4px}
   .tab{border:none;background:none;font:inherit;font-size:.85rem;font-weight:600;color:#64748B;padding:7px 16px;border-radius:99px;cursor:pointer}
@@ -112,7 +114,7 @@
 </head>
 <body>
 <nav><div class="wrap nav-in">
-  <span class="logo">Factura<em>Med</em> <span style="font-size:.66rem;color:var(--boira);font-weight:500">by ConsultaMed</span></span>
+  <span class="logo"><img class="logo-img" src="facturamed.png" alt="FacturaMed"><span style="font-size:.66rem;color:var(--boira);font-weight:500">by ConsultaMed</span></span>
   <div class="tabs" id="tabs">
     <button class="tab actiu" data-v="facturar" type="button">Facturar</button>
     <button class="tab" data-v="registre" type="button">Registro</button>

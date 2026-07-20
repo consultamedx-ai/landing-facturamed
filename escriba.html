@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
 <style>
-  :root{--blau:#0D3B66;--teal:#14B8A6;--teal-fosc:#0F766E;--verd:#059669;--verd-fosc:#047857;--gasa:#F7FAFC;--grafit:#1F2937;--boira:#94A3B8;--linia:#E2E8F0;--vermell:#DC2626}
+  :root{--blau:#0D3B66;--teal:#8B2DA5;--teal-fosc:#6F2184;--verd:#059669;--verd-fosc:#047857;--gasa:#F7FAFC;--grafit:#1F2937;--boira:#94A3B8;--linia:#E2E8F0;--vermell:#DC2626}
   *{margin:0;padding:0;box-sizing:border-box}
   body{font-family:'Inter',system-ui,sans-serif;background:var(--gasa);color:var(--grafit);line-height:1.55;-webkit-font-smoothing:antialiased}
   h1,h2,h3{font-family:'Sora',sans-serif;color:var(--blau)}
@@ -20,6 +20,8 @@
   .logo{font-family:'Sora';font-weight:700;font-size:1.08rem;color:var(--blau);white-space:nowrap}
   .logo em{font-style:normal;color:var(--teal)}
   .logo small{font-size:.66rem;color:var(--boira);font-weight:500}
+  .logo{display:inline-flex;align-items:center;gap:9px}
+  .logo-img{height:29px;width:auto;display:block}
   .nav-dreta{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
   .beta-chip{background:#FEF3C7;border:1px solid #FCD34D;color:#92400E;font-size:.68rem;font-weight:700;padding:4px 10px;border-radius:99px;letter-spacing:.03em}
   .nav-enllac{font-size:.8rem;font-weight:600;color:var(--verd);text-decoration:none}
@@ -62,7 +64,7 @@
   .avis-priv{background:#FEF3C7;border:1px solid #FCD34D;color:#92400E;border-radius:11px;padding:10px 14px;font-size:.78rem;margin-bottom:16px}
   /* mic */
   .mic-zona{text-align:center;padding:6px 0 2px}
-  #b-mic{width:92px;height:92px;border-radius:50%;border:none;cursor:pointer;font-size:2.1rem;background:var(--teal);color:#fff;box-shadow:0 10px 26px rgba(20,184,166,.35);transition:transform .12s,background .15s}
+  #b-mic{width:92px;height:92px;border-radius:50%;border:none;cursor:pointer;font-size:2.1rem;background:var(--teal);color:#fff;box-shadow:0 10px 26px rgba(139,45,165,.35);transition:transform .12s,background .15s}
   #b-mic:hover{transform:scale(1.05)}
   #b-mic.gravant{background:var(--vermell);box-shadow:0 10px 26px rgba(220,38,38,.35);animation:bat 1.4s infinite}
   #b-mic[disabled]{background:var(--boira);box-shadow:none;transform:none;cursor:not-allowed}
@@ -109,7 +111,7 @@
 <body>
 
 <nav><div class="wrap nav-in">
-  <span class="logo">Escriba<em>Med</em> <small>by ConsultaMed</small></span>
+  <span class="logo"><img class="logo-img" src="escribamed.png" alt="EscribaMed"><small>by ConsultaMed</small></span>
   <div class="nav-dreta">
     <span class="beta-chip" data-t>BETA PRIVADA · solo datos ficticios</span>
     <span class="lang-tog"><button class="lang-b" id="lang-es" type="button">ESP</button><button class="lang-b" id="lang-ca" type="button">CAT</button><button class="lang-b" id="lang-de" type="button">DE</button></span>

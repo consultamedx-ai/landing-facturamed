@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root{--blau:#0D3B66;--teal:#14B8A6;--verd:#059669;--verd-fosc:#047857;--violeta:#6366F1;--violeta-fosc:#4F46E5;--gasa:#F7FAFC;--grafit:#1F2937;--boira:#94A3B8;--linia:#E2E8F0;--vermell:#DC2626;--ambre:#D97706}
+  :root{--blau:#0D3B66;--teal:#14B8A6;--verd:#059669;--verd-fosc:#047857;--violeta:#EA7317;--violeta-fosc:#C2410C;--gasa:#F7FAFC;--grafit:#1F2937;--boira:#94A3B8;--linia:#E2E8F0;--vermell:#DC2626;--ambre:#D97706}
   *{margin:0;padding:0;box-sizing:border-box}
   body{font-family:'Inter',system-ui,sans-serif;background:var(--gasa);color:var(--grafit);line-height:1.55;-webkit-font-smoothing:antialiased}
   h1,h2,h3{font-family:'Sora',sans-serif;color:var(--blau)}
@@ -20,7 +20,9 @@
   .logo{font-family:'Sora';font-weight:700;font-size:1.08rem;color:var(--blau);white-space:nowrap}
   .logo em{font-style:normal;color:var(--violeta)}
   .logo small{font-size:.66rem;color:var(--boira);font-weight:500}
-  .beta-chip{background:#EEF2FF;border:1px solid #C7D2FE;color:var(--violeta-fosc);font-size:.68rem;font-weight:700;padding:4px 10px;border-radius:99px;letter-spacing:.03em}
+  .logo{display:inline-flex;align-items:center;gap:9px}
+  .logo-img{height:29px;width:auto;display:block}
+  .beta-chip{background:#FFF7ED;border:1px solid #FED7AA;color:var(--violeta-fosc);font-size:.68rem;font-weight:700;padding:4px 10px;border-radius:99px;letter-spacing:.03em}
   .nav-dreta{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
   .nav-enllac{font-size:.8rem;font-weight:600;color:var(--violeta);text-decoration:none}
   .tabs{display:flex;gap:4px;background:#fff;border:1px solid var(--linia);border-radius:99px;padding:4px}
@@ -46,7 +48,7 @@
   .banner{border-radius:11px;padding:11px 15px;font-size:.86rem;margin-bottom:14px;display:none}
   .banner.ok{display:block;background:#ECFDF5;border:1px solid #A7F3D0;color:var(--verd-fosc)}
   .banner.err{display:block;background:#FEF2F2;border:1px solid #FECACA;color:#B91C1C}
-  .avis-priv{background:#EEF2FF;border:1px solid #C7D2FE;color:var(--violeta-fosc);border-radius:11px;padding:10px 14px;font-size:.78rem;margin-bottom:16px}
+  .avis-priv{background:#FFF7ED;border:1px solid #FED7AA;color:var(--violeta-fosc);border-radius:11px;padding:10px 14px;font-size:.78rem;margin-bottom:16px}
   .buit{color:var(--boira);font-size:.87rem;text-align:center;padding:22px 0}
   .cita{display:flex;align-items:center;gap:12px;padding:11px 12px;border:1px solid var(--linia);border-radius:11px;margin-bottom:8px;background:#fff}
   .cita .hora{font-family:'Sora';font-weight:700;color:var(--blau);font-size:1.05rem;min-width:52px}
@@ -75,7 +77,7 @@
 <body>
 
 <nav><div class="wrap nav-in">
-  <span class="logo">Secre<em>Med</em> <small>by ConsultaMed</small></span>
+  <span class="logo"><img class="logo-img" src="secremed.png" alt="SecreMed"><small>by ConsultaMed</small></span>
   <div class="nav-dreta">
     <span class="beta-chip">BETA PRIVADA · solo datos ficticios</span>
     <div class="tabs" id="tabs">

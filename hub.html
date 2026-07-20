@@ -72,7 +72,7 @@
 
   <div class="brief">
     <div class="brief-top">
-      <div class="brief-tit" data-k="brief_tit">La teva agenda d'avui<small id="brief-data"></small></div>
+      <div class="brief-tit"><span data-k="brief_tit">La teva agenda d'avui</span><small id="brief-data"></small></div>
       <div class="brief-kpis" id="brief-kpis"></div>
     </div>
     <div class="cites" id="cites"></div>
@@ -166,7 +166,7 @@
     document.getElementById('sub').textContent=centre?(centre+' · '+t.sub.charAt(0).toLowerCase()+t.sub.slice(1)):(nom?t.sub:t.sub_no);
     // data
     var d=new Date();
-    document.getElementById('brief-data').textContent=t.dies[d.getDay()]+', '+d.getDate()+' '+t.de+' '+t.mesos[d.getMonth()];
+    var bd=document.getElementById('brief-data'); if(bd) bd.textContent=t.dies[d.getDay()]+', '+d.getDate()+' '+t.de+' '+t.mesos[d.getMonth()];
     // agenda
     var cites=(get('sm_cites')||[]).filter(function(c){return c.data===isoAvui()&&c.estat!=='cancelada'})
                .sort(function(a,b){return String(a.hora).localeCompare(String(b.hora))});

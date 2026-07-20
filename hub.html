@@ -64,14 +64,7 @@
 <nav class="nav">
   <span class="logo"><img class="logo-img" src="consultamed.png" alt="ConsultaMed"></span>
   <div class="nav-dreta">
-    <div class="lang" id="lang-dd">
-      <button class="lang-cur" id="lang-cur" type="button">CAT ▾</button>
-      <div class="lang-menu" id="lang-menu">
-        <button data-l="ca" type="button">Català</button>
-        <button data-l="es" type="button">Español</button>
-        <button data-l="en" type="button">English</button>
-      </div>
-    </div>
+    <a class="logout" href="app.html?config=1">⚙ Configuració</a>
     <a class="logout" href="index.html" data-k="logout">Tancar sessió</a>
   </div>
 </nav>
@@ -227,13 +220,13 @@
     }
   })();
 
-  var lang=localStorage.getItem('cm_hub_idioma')||'ca';
-  if(lang!=='ca'&&lang!=='es') lang='ca';
+  var lang=localStorage.getItem('em_idioma_ui')||'ca';
+  if(lang!=='ca'&&lang!=='es'&&lang!=='en') lang='ca';
   render(lang);
   var lcur=document.getElementById('lang-cur');
   if(lcur)lcur.addEventListener('click',function(e){e.stopPropagation();var m=document.getElementById('lang-menu');if(m)m.classList.toggle('obert');});
   document.querySelectorAll('#lang-menu button').forEach(function(b){
-    b.addEventListener('click',function(){lang=b.getAttribute('data-l');localStorage.setItem('cm_hub_idioma',lang);var m=document.getElementById('lang-menu');if(m)m.classList.remove('obert');render(lang);});
+    b.addEventListener('click',function(){lang=b.getAttribute('data-l');localStorage.setItem('em_idioma_ui',lang);var m=document.getElementById('lang-menu');if(m)m.classList.remove('obert');render(lang);});
   });
   document.addEventListener('click',function(){var m=document.getElementById('lang-menu');if(m)m.classList.remove('obert');});
 })();

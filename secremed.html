@@ -444,8 +444,7 @@
   }
   try{
     var _l=localStorage.getItem('em_idioma_ui');var lang=(_l==='ca'||_l==='de'||_l==='en')?_l:'es';
-    var panel=document.querySelector('a[href="hub.html"]');
-    if(panel&&panel.parentNode){panel.parentNode.insertBefore(crea(),panel);}
+    /* selector idioma només a Configuració (obert des del hub) */
     traduir(lang);
   }catch(e){}
 })();

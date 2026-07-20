@@ -29,6 +29,7 @@
   main{padding:24px 0 70px}
   .vista{display:none}
   .vista.actiu{display:block}
+  .cfg-l{border:none;background:#fff;color:#64748B;font:inherit;font-weight:700;font-size:.72rem;padding:6px 11px;cursor:pointer}
   .grid{display:grid;grid-template-columns:390px 1fr;gap:22px;align-items:start}
   .card{background:#fff;border:1px solid var(--linia);border-radius:14px;padding:20px;margin-bottom:18px}
   .card h2{font-size:1rem;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
@@ -119,7 +120,6 @@
     <button class="tab actiu" data-v="facturar" type="button">Facturar</button>
     <button class="tab" data-v="registre" type="button">Registro</button>
     <button class="tab" data-v="pacients" type="button">Pacientes</button>
-    <button class="tab" data-v="config" type="button">Configuración</button>
   </div>
   <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
     <a href="hub.html" style="font-size:.8rem;font-weight:600;color:#94A3B8;text-decoration:none">◀ Panel</a>
@@ -266,6 +266,10 @@
 
   <!-- ============ CONFIG ============ -->
   <section class="vista" id="v-config">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px">
+      <a href="hub.html" style="font-size:.85rem;font-weight:600;color:#94A3B8;text-decoration:none">◀ Panel</a>
+      <span style="display:inline-flex;align-items:center;gap:7px"><span style="font-size:1rem">🌐</span><span id="cfg-lang" style="display:inline-flex;border:1px solid #E2E8F0;border-radius:99px;overflow:hidden"><button type="button" data-cl="es" class="cfg-l">ES</button><button type="button" data-cl="ca" class="cfg-l">CAT</button><button type="button" data-cl="de" class="cfg-l">DE</button><button type="button" data-cl="en" class="cfg-l">EN</button></span></span>
+    </div>
     <div class="grid">
       <div>
         <div class="card">
@@ -459,6 +463,7 @@
     }
   },'migracio');
 
+  function mostraConfig(){document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('actiu')});document.querySelectorAll('.vista').forEach(function(v){v.classList.remove('actiu')});var c=$('v-config');if(c)c.classList.add('actiu');window.scrollTo({top:0,behavior:'smooth'});}
   // ---------- navegació ----------
   safe(function(){
     $('tabs').addEventListener('click',function(e){
@@ -468,6 +473,10 @@
       b.classList.add('actiu');$('v-'+b.dataset.v).classList.add('actiu');
     });
     $('b-anar-registre').addEventListener('click',function(){document.querySelector('[data-v="registre"]').click()});
+    function marcaCfg(l){document.querySelectorAll('.cfg-l').forEach(function(b){var on=b.getAttribute('data-cl')===l;b.style.background=on?'#0D3B66':'#fff';b.style.color=on?'#fff':'#64748B';});}
+    document.querySelectorAll('.cfg-l').forEach(function(b){b.addEventListener('click',function(){var l=b.getAttribute('data-cl');if(window.__traduir)window.__traduir(l);marcaCfg(l);});});
+    var _cl=localStorage.getItem('em_idioma_ui');marcaCfg((_cl==='ca'||_cl==='de'||_cl==='en')?_cl:'es');
+    if(new URLSearchParams(location.search).get('config')==='1')mostraConfig();
   },'tabs');
 
   // ---------- config ----------
@@ -710,7 +719,7 @@
   safe(function(){
     $('b-crear').addEventListener('click',async function(){
       var c=conf();
-      if(!c||!c.nom){avis('err','Primero configure su consulta (pestaña Configuración).');document.querySelector('[data-v="config"]').click();return}
+      if(!c||!c.nom){avis('err','Primero configure su consulta (pestaña Configuración).');mostraConfig();return}
       var nomP=$('f-pacient').value;
       var p=pacients().find(function(x){return x.nom===nomP});
       if(!p){avis('err','Cree primero la ficha del paciente (pestaña Pacientes).');document.querySelector('[data-v="pacients"]').click();$('p-nom').focus();return}
@@ -1053,7 +1062,7 @@
       var c=conf();
       if(!c||!c.nom){
         avis('ok','👋 Bienvenido/a a FacturaMed (beta). Primer paso: pestaña Configuración — nombre, NIF y serie. Después emita su primera factura en 20 segundos.');
-        document.querySelector('[data-v="config"]').click();
+        mostraConfig();
       }else{
         avis('ok','👋 Bienvenido/a a FacturaMed (beta). Su nombre y NIF ya están configurados — revíselos en «Configuración» (y añada nº de colegiado o dirección si quiere). Ya puede emitir su primera factura.');
       }
@@ -1121,8 +1130,7 @@
   }
   try{
     var _l=localStorage.getItem('em_idioma_ui');var lang=(_l==='ca'||_l==='de'||_l==='en')?_l:'es';
-    var panel=document.querySelector('a[href="hub.html"]');
-    if(panel&&panel.parentNode){panel.parentNode.insertBefore(crea(),panel);}
+    /* selector idioma només a Configuració (obert des del hub) */
     traduir(lang);
   }catch(e){}
 })();

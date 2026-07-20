@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; form-action 'self'">
+<meta name="robots" content="noindex,nofollow">
+<title>ConsultaMed — Panel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--blau:#0D3B66;--teal:#14B8A6;--verd:#059669;--violeta:#8B2DA5;--taronja:#EA7317;--cian:#0891B2;--gasa:#F7FAFC;--grafit:#1F2937;--boira:#94A3B8;--linia:#E7EDF3}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',system-ui,sans-serif;color:var(--grafit);background:var(--gasa);line-height:1.5}
+  img{max-width:100%}
+  .nav{display:flex;align-items:center;justify-content:space-between;padding:14px 26px;background:#fff;border-bottom:1px solid var(--linia);position:sticky;top:0;z-index:10}
+  .logo{display:inline-flex;align-items:center;gap:9px}
+  .logo-img{height:30px;width:auto;display:block}
+  .logout{font-size:.82rem;font-weight:600;color:var(--boira);text-decoration:none;border:1px solid var(--linia);padding:7px 14px;border-radius:99px;transition:.15s}
+  .logout:hover{color:var(--blau);border-color:var(--blau)}
+  .wrap{max-width:980px;margin:0 auto;padding:34px 22px 60px}
+  .hola{font-family:'Sora';font-weight:800;font-size:1.9rem;color:var(--blau);letter-spacing:-.5px}
+  .sub{color:#5B6B7C;margin-top:5px;font-size:1.02rem}
+  /* Briefing */
+  .brief{background:#fff;border:1px solid var(--linia);border-left:5px solid var(--taronja);border-radius:14px;padding:18px 20px;margin-top:26px;box-shadow:0 1px 3px rgba(13,59,102,.05)}
+  .brief-top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  .brief-tit{font-family:'Sora';font-weight:700;color:var(--blau);font-size:1.05rem}
+  .brief-tit small{display:block;font-family:'Inter';font-weight:500;color:var(--boira);font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;margin-top:2px}
+  .brief-kpis{font-size:.9rem;color:#5B6B7C}
+  .brief-kpis b{color:var(--taronja)}
+  .cites{margin-top:14px;display:flex;flex-direction:column;gap:2px}
+  .cita{display:flex;align-items:center;gap:12px;padding:9px 4px;border-top:1px solid var(--linia)}
+  .cita .hora{font-family:'Sora';font-weight:700;color:var(--blau);min-width:50px}
+  .cita .cos{flex:1;min-width:0}
+  .cita .nom{font-weight:600;font-size:.94rem}
+  .cita .motiu{font-size:.8rem;color:#64748B}
+  .estat{font-size:.66rem;font-weight:700;padding:3px 9px;border-radius:99px;white-space:nowrap}
+  .estat.pendent{background:#FEF3C7;color:#92400E}.estat.confirmada{background:#DBEAFE;color:#1E40AF}
+  .estat.vinguda{background:#ECFDF5;color:#047857}.estat.noshow{background:#FEF2F2;color:#B91C1C}
+  .brief-link{display:inline-block;margin-top:14px;font-weight:600;color:var(--taronja);text-decoration:none;font-size:.9rem}
+  .buit{color:#64748B;font-size:.94rem;margin-top:6px}
+  /* Productes */
+  .seccio{font-family:'Sora';font-weight:700;color:var(--blau);font-size:1.05rem;margin:34px 0 4px}
+  .seccio small{font-family:'Inter';font-weight:500;color:var(--boira);font-size:.82rem}
+  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:16px}
+  .card{display:block;background:#fff;border:1px solid var(--linia);border-top:4px solid var(--acc,#ccc);border-radius:14px;padding:20px 18px;text-decoration:none;color:inherit;transition:transform .12s,box-shadow .12s;position:relative}
+  .card:hover{transform:translateY(-3px);box-shadow:0 10px 26px rgba(13,59,102,.10)}
+  .card.soon{opacity:.62;pointer-events:none}
+  .card-logo{height:34px;display:flex;align-items:center;margin-bottom:12px}
+  .card-logo img{max-height:32px;width:auto}
+  .card-desc{color:#5B6B7C;font-size:.9rem;margin-top:2px}
+  .card-go{margin-top:12px;font-weight:700;font-size:.88rem;color:var(--acc,#333)}
+  .soon-tag{position:absolute;top:14px;right:14px;font-size:.62rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;background:#F1F5F9;color:#64748B;padding:3px 9px;border-radius:99px}
+  .peu{text-align:center;color:var(--boira);font-size:.76rem;margin-top:40px}
+  @media(max-width:640px){.grid{grid-template-columns:1fr}.hola{font-size:1.55rem}}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <span class="logo"><img class="logo-img" src="consultamed.png" alt="ConsultaMed"></span>
+  <a class="logout" href="index.html">Cerrar sesión</a>
+</nav>
+
+<div class="wrap">
+  <h1 class="hola" id="hola">Bienvenido/a</h1>
+  <p class="sub" id="sub">¿Con qué empezamos hoy?</p>
+
+  <div class="brief" id="brief">
+    <div class="brief-top">
+      <div class="brief-tit">Tu agenda de hoy<small id="brief-data">SecreMed</small></div>
+      <div class="brief-kpis" id="brief-kpis"></div>
+    </div>
+    <div class="cites" id="cites"></div>
+    <a class="brief-link" href="secremed.html">Abrir SecreMed →</a>
+  </div>
+
+  <div class="seccio">Tus productos <small>· elige por dónde empezar</small></div>
+  <div class="grid">
+    <a class="card" style="--acc:var(--verd)" href="app.html">
+      <div class="card-logo"><img src="facturamed.png" alt="FacturaMed"></div>
+      <div class="card-desc">Facturación VeriFactu y mutuas. La factura sale sola, legal y con su QR.</div>
+      <div class="card-go">Abrir →</div>
+    </a>
+    <a class="card" style="--acc:var(--violeta)" href="escriba.html">
+      <div class="card-logo"><img src="escribamed.png" alt="EscribaMed"></div>
+      <div class="card-desc">El informe clínico, escrito solo. Usted habla; la IA redacta. Todo en su ordenador.</div>
+      <div class="card-go">Abrir →</div>
+    </a>
+    <a class="card" style="--acc:var(--taronja)" href="secremed.html">
+      <div class="card-logo"><img src="secremed.png" alt="SecreMed"></div>
+      <div class="card-desc">Agenda, llamadas y recordatorios. La recepción, automática.</div>
+      <div class="card-go">Abrir →</div>
+    </a>
+    <span class="card soon" style="--acc:var(--cian)">
+      <span class="soon-tag">Próximamente</span>
+      <div class="card-logo"><img src="receptmed.png" alt="ReceptMed"></div>
+      <div class="card-desc">Recetas privadas desde la misma visita, firmadas por el médico.</div>
+      <div class="card-go">En camino</div>
+    </span>
+  </div>
+
+  <p class="peu">ConsultaMed · Beta privada · El médico hace de médico. El resto, ConsultaMed.</p>
+</div>
+
+<script>
+(function(){
+  function get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}}
+  function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+  function isoAvui(){var d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+
+  // 1) Salutació
+  var conf=get('fm2_config')||{};
+  var nom=(conf.nom||'').trim();
+  var h=new Date().getHours();
+  var salut=h<13?'Buenos días':(h<20?'Buenas tardes':'Buenas noches');
+  document.getElementById('hola').textContent=nom?(salut+', '+nom):(salut);
+  if(!nom){document.getElementById('sub').textContent='Bienvenido/a a ConsultaMed. ¿Con qué empezamos hoy?';}
+  var centre=conf.centre&&conf.centre.actiu&&conf.centre.nom;
+  if(centre){document.getElementById('sub').textContent=esc(conf.centre.nom)+' · ¿con qué empezamos hoy?';}
+
+  // 2) Briefing del dia (SecreMed → sm_cites)
+  var avui=isoAvui();
+  var d=new Date(), dies=['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+  var mesos=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  document.getElementById('brief-data').textContent=dies[d.getDay()]+', '+d.getDate()+' de '+mesos[d.getMonth()];
+
+  var cites=(get('sm_cites')||[]).filter(function(c){return c.data===avui&&c.estat!=='cancelada'})
+             .sort(function(a,b){return String(a.hora).localeCompare(String(b.hora))});
+  var kpis=document.getElementById('brief-kpis'), cont=document.getElementById('cites');
+  var estatTxt={pendent:'Por confirmar',confirmada:'Confirmada',vinguda:'Vino',noshow:'No vino'};
+
+  if(!cites.length){
+    kpis.innerHTML='';
+    cont.innerHTML='<p class="buit">No hay visitas programadas para hoy. Cuando cargues citas en SecreMed, aquí verás tu día de un vistazo.</p>';
+  }else{
+    var pend=cites.filter(function(c){return c.estat==='pendent'}).length;
+    kpis.innerHTML='<b>'+cites.length+'</b> '+(cites.length===1?'visita':'visitas')+' hoy'+(pend?' · <b>'+pend+'</b> por confirmar':'');
+    var prox=cites.slice(0,4).map(function(c){
+      return '<div class="cita"><span class="hora">'+esc(c.hora)+'</span>'+
+        '<span class="cos"><div class="nom">'+esc(c.pacient||'—')+'</div>'+
+        '<div class="motiu">'+esc(c.motiu||'Consulta')+'</div></span>'+
+        '<span class="estat '+esc(c.estat)+'">'+(estatTxt[c.estat]||esc(c.estat))+'</span></div>';
+    }).join('');
+    var mes=cites.length>4?'<div class="buit" style="margin-top:8px">+'+(cites.length-4)+' más en la agenda</div>':'';
+    cont.innerHTML=prox+mes;
+  }
+})();
+</script>
+</body>
+</html>

@@ -130,7 +130,7 @@
     <div class="nav-dreta">
       <a class="lang" href="ca.html">CAT</a>
       <a class="lang" href="precios" style="display:none"></a>
-      <a class="nav-login" href="app.html">Iniciar sesión</a>
+      <a class="nav-login" href="hub.html">Iniciar sesión</a>
       <a class="nav-cta" href="#registro">Crear cuenta</a>
     </div>
   </div>
@@ -139,7 +139,7 @@
 <header>
   <div class="wrap hero">
     <div>
-      <span class="badge"><span class="dot"></span>VeriFactu: obligatorio para médicos autónomos desde el 1 de julio de 2026</span>
+      <span class="badge"><span class="dot"></span>VeriFactu: obligatorio para médicos autónomos el 1 de julio de 2027</span>
       <h1>Su consulta factura sola.<br>Y cumple <span class="marca">VeriFactu</span> desde el primer día.</h1>
       <p class="sub">FacturaMed emite cada factura con su hash y QR VeriFactu, prepara las remesas para las mutuas y reclama los impagos por usted. Usted solo pasa consulta.</p>
       <div class="cta-row">
@@ -182,7 +182,7 @@
       <div class="card reveal">
         <div class="ic">⚖️</div>
         <h3>VeriFactu ya es ley</h3>
-        <p>Desde el 1 de julio de 2026, cada factura de un médico autónomo debe llevar hash encadenado, QR y trazabilidad ante la AEAT. Word y Excel ya no valen. Las sanciones son reales.</p>
+        <p>A partir del 1 de julio de 2027, cada factura de un médico autónomo deberá llevar hash encadenado, QR y trazabilidad ante la AEAT. Word y Excel ya no valdrán y las sanciones son reales. Con FacturaMed llega preparado, sin prisas.</p>
       </div>
       <div class="card reveal">
         <div class="ic">🏥</div>
@@ -273,7 +273,7 @@
     <details class="reveal"><summary>¿Puedo usarlo ya?</summary><p>Sí. Cree su cuenta y accederá inmediatamente a la beta de FacturaMed: facturas con hash y QR VeriFactu, rectificativas, pacientes y export para gestoría. La remisión a la AEAT funciona en entorno de pruebas oficial mientras completamos la homologación.</p></details>
     <details class="reveal"><summary>¿Cuánto cuesta y cuándo se paga?</summary><p>50 € + IVA al mes, o 500 € + IVA al año (2 meses gratis). Durante la beta no se cobra nada: el pago se activa cuando usted decida pasar a facturación real, con aviso previo. Sin permanencia.</p></details>
     <details class="reveal"><summary>Ya tengo un programa de gestión en la clínica. ¿Me sirve FacturaMed?</summary><p>Si su programa ya cumple VeriFactu y le gestiona las mutuas, quizá no nos necesite. Si solo le lleva la agenda o la historia clínica, FacturaMed se ocupa de la parte económica y convive sin problema.</p></details>
-    <details class="reveal"><summary>Soy autónomo / tengo una sociedad. ¿Me afecta VeriFactu?</summary><p>Sí en ambos casos: a las sociedades desde el 1 de enero de 2026 y a los autónomos desde el 1 de julio de 2026. Las facturas a mutuas y aseguradoras también están incluidas — y las cobradas en efectivo, también.</p></details>
+    <details class="reveal"><summary>Soy autónomo / tengo una sociedad. ¿Me afecta VeriFactu?</summary><p>Sí en ambos casos: a las sociedades desde el 1 de enero de 2027 y a los autónomos desde el 1 de julio de 2027. Las facturas a mutuas y aseguradoras también están incluidas — y las cobradas en efectivo, también.</p></details>
     <details class="reveal"><summary>¿Qué pasa con los datos de mis pacientes?</summary><p>Se tratan cifrados y bajo RGPD sanitario, con contrato de encargo de tratamiento (art. 28 RGPD). Nunca se usan para entrenar modelos de IA y puede exportarlos o borrarlos cuando quiera.</p></details>
   </div>
 </section>
@@ -331,7 +331,7 @@
       </div>
       <button class="btn" type="submit">Crear mi cuenta y entrar</button>
       <p class="micro" style="text-align:center;margin-top:14px">Beta abierta · hoy no se cobra nada · 50 €/mes cuando actives la facturación real</p>
-      <p class="micro" style="text-align:center;margin-top:8px">¿Ya tienes cuenta? <a href="app.html" style="color:var(--verd);font-weight:600">Entra a FacturaMed →</a></p>
+      <p class="micro" style="text-align:center;margin-top:8px">¿Ya tienes cuenta? <a href="hub.html" style="color:var(--verd);font-weight:600">Entra a ConsultaMed →</a></p>
     </form>
     <div id="gracias">
       <h3>✅ Cuenta creada</h3>
@@ -381,7 +381,7 @@
       },'preconfig');
       var acaba=function(){
         form.style.display='none';ok.style.display='block';
-        setTimeout(function(){window.location.href='app.html?benvinguda=1'},1600);
+        setTimeout(function(){window.location.href='hub.html?benvinguda=1'},1600);
       };
       if(window.fetch){
         fetch(form.action,{method:'POST',body:dades,headers:{'Accept':'application/json'}})

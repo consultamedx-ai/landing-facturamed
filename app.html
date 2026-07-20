@@ -476,7 +476,15 @@
     function marcaCfg(l){document.querySelectorAll('.cfg-l').forEach(function(b){var on=b.getAttribute('data-cl')===l;b.style.background=on?'#0D3B66':'#fff';b.style.color=on?'#fff':'#64748B';});}
     document.querySelectorAll('.cfg-l').forEach(function(b){b.addEventListener('click',function(){var l=b.getAttribute('data-cl');if(window.__traduir)window.__traduir(l);marcaCfg(l);});});
     var _cl=localStorage.getItem('em_idioma_ui');marcaCfg((_cl==='ca'||_cl==='de'||_cl==='en')?_cl:'es');
-    if(new URLSearchParams(location.search).get('config')==='1')mostraConfig();
+    if(new URLSearchParams(location.search).get('config')==='1'){
+      mostraConfig();
+      var lg=document.querySelector('.logo img');if(lg){lg.src='consultamed.png';lg.alt='ConsultaMed';}
+      var by=document.querySelector('.logo span');if(by)by.style.display='none';
+      var tb=$('tabs');if(tb)tb.style.display='none';
+      var bn=document.querySelector('.avis-priv');if(bn)bn.style.display='none';
+      var np=document.querySelector('nav a[href="hub.html"]');if(np&&np.parentNode)np.parentNode.style.display='none';
+      try{document.title='ConsultaMed — Configuración'}catch(e){}
+    }
   },'tabs');
 
   // ---------- config ----------

@@ -53,8 +53,9 @@
   .cita{display:flex;align-items:center;gap:12px;padding:11px 12px;border:1px solid var(--linia);border-radius:11px;margin-bottom:8px;background:#fff}
   .cita .hora{font-family:'Sora';font-weight:700;color:var(--blau);font-size:1.05rem;min-width:52px}
   .cita .cos{flex:1;min-width:0}
-  .cita .nom{font-weight:600}
-  .cita .motiu{font-size:.8rem;color:#64748B}
+  .cita .nom{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .cita .motiu{font-size:.8rem;color:#64748B;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .cita{flex-wrap:wrap}
   .cita .accions{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end}
   .estat{font-size:.66rem;font-weight:700;padding:3px 9px;border-radius:99px;white-space:nowrap}
   .estat.pendent{background:#FEF3C7;color:#92400E}

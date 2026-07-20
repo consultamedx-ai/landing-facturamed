@@ -5,14 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://formspree.io; form-action 'self' https://formspree.io">
 <meta name="referrer" content="no-referrer">
-<title>FacturaMed — Facturación VeriFactu y mutuas para médicos | 50 €/mes</title>
-<meta name="description" content="Facturación VeriFactu para consultas médicas privadas: hash, QR y remisión a la AEAT. Cree su cuenta y empiece hoy. 50 €/mes o 500 €/año (2 meses gratis).">
+<title>ConsultaMed — La suite de IA para la consulta privada | 50 €/mes</title>
+<meta name="description" content="ConsultaMed: la factura VeriFactu sale sola con FacturaMed y una IA escribe el informe de la visita con EscribaMed. Todo en su ordenador. 50 €/mes toda la suite.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
     --blau:#0D3B66; --teal:#14B8A6; --verd:#059669; --verd-fosc:#047857;
+    --violeta:#8B2DA5; --taronja:#EA7317; --cian:#0891B2;
     --gasa:#F7FAFC; --grafit:#1F2937; --boira:#94A3B8; --linia:#E2E8F0;
     --radius:14px; --max:1080px;
   }
@@ -24,10 +25,7 @@
   .wrap{max-width:var(--max);margin:0 auto;padding:0 24px}
   nav{position:sticky;top:0;z-index:50;background:rgba(247,250,252,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--linia)}
   .nav-in{display:flex;align-items:center;justify-content:space-between;height:64px}
-  .logo{font-family:'Sora';font-weight:700;font-size:1.15rem;color:var(--blau);text-decoration:none}
-  .logo em{font-style:normal;color:var(--verd)}
-  .logo small{display:block;font-family:'Inter';font-weight:500;font-size:.62rem;letter-spacing:.08em;color:var(--boira);text-transform:uppercase}
-  .logo{display:inline-flex;align-items:center;gap:9px}
+  .logo{display:inline-flex;align-items:center;gap:9px;text-decoration:none}
   .logo-img{height:30px;width:auto;display:block}
   .nav-dreta{display:flex;align-items:center;gap:14px}
   .lang{font-size:.82rem;font-weight:600;color:var(--boira);text-decoration:none}
@@ -65,6 +63,16 @@
   .kicker{display:block;font-size:.78rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--verd);margin-bottom:10px}
   h2{font-size:clamp(1.5rem,3vw,2.1rem);margin-bottom:14px}
   .lead{color:#475569;max-width:44em;margin-bottom:40px}
+  /* Productes de la suite */
+  .prods{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+  .prod{background:#fff;border:1px solid var(--linia);border-top:4px solid var(--pacc,#ccc);border-radius:18px;padding:30px;box-shadow:0 8px 30px rgba(13,59,102,.05)}
+  .prod .plogo{height:34px;margin-bottom:14px}
+  .prod .plogo img{height:34px;width:auto;display:block}
+  .prod p{color:#475569;font-size:.95rem;margin-bottom:16px}
+  .prod ul{list-style:none}
+  .prod li{font-size:.89rem;padding:7px 0 7px 26px;position:relative;border-bottom:1px dashed var(--linia)}
+  .prod li::before{content:"✓";position:absolute;left:0;color:var(--pacc,var(--verd));font-weight:700}
+  .prod .estat-chip{display:inline-block;margin-top:16px;font-size:.72rem;font-weight:700;letter-spacing:.03em;text-transform:uppercase;padding:5px 12px;border-radius:99px;background:#ECFDF5;color:var(--verd-fosc)}
   .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
   .card{background:#fff;border:1px solid var(--linia);border-radius:var(--radius);padding:26px}
   .card .ic{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;background:#ECFDF5;margin-bottom:16px;font-size:1.2rem}
@@ -78,7 +86,6 @@
   .paso::before{content:"0" counter(pasos);font-family:'Sora';font-weight:700;font-size:.85rem;color:var(--teal);display:block;margin-bottom:10px}
   .paso p{font-size:.9rem;color:#B9CBDD}
   #como .grid3{counter-reset:pasos}
-  /* preus */
   .preus{display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:760px;margin:0 auto}
   .preu-card{background:#fff;border:1.5px solid var(--linia);border-radius:18px;padding:32px;position:relative;display:flex;flex-direction:column}
   .preu-card.destacat{border:2px solid var(--verd);box-shadow:0 24px 60px rgba(5,150,105,.14)}
@@ -115,6 +122,7 @@
   .reveal.vist{opacity:1;transform:none}
   @media(max-width:860px){
     .hero{grid-template-columns:1fr;gap:44px}
+    .prods{grid-template-columns:1fr}
     .grid3{grid-template-columns:1fr}
     .preus{grid-template-columns:1fr}
     header{padding:56px 0 70px}
@@ -126,10 +134,9 @@
 
 <nav>
   <div class="wrap nav-in">
-    <a class="logo" href="#"><img class="logo-img" src="facturamed.png" alt="FacturaMed"><small>by ConsultaMed</small></a>
+    <a class="logo" href="#"><img class="logo-img" src="consultamed.png" alt="ConsultaMed"></a>
     <div class="nav-dreta">
       <a class="lang" href="ca.html">CAT</a>
-      <a class="lang" href="precios" style="display:none"></a>
       <a class="nav-login" href="hub.html">Iniciar sesión</a>
       <a class="nav-cta" href="#registro">Crear cuenta</a>
     </div>
@@ -140,11 +147,11 @@
   <div class="wrap hero">
     <div>
       <span class="badge"><span class="dot"></span>VeriFactu: obligatorio para médicos autónomos el 1 de julio de 2027</span>
-      <h1>Su consulta factura sola.<br>Y cumple <span class="marca">VeriFactu</span> desde el primer día.</h1>
-      <p class="sub">FacturaMed emite cada factura con su hash y QR VeriFactu, prepara las remesas para las mutuas y reclama los impagos por usted. Usted solo pasa consulta.</p>
+      <h1>El médico hace de médico.<br>El resto, <span class="marca">ConsultaMed</span>.</h1>
+      <p class="sub">La suite para la consulta privada: la factura VeriFactu sale sola y una IA escribe el informe de la visita. Todo en su ordenador, sin que los datos salgan a ningún sitio.</p>
       <div class="cta-row">
         <a class="btn" href="#registro">Crear cuenta y empezar ahora</a>
-        <span class="micro">Beta abierta · acceso inmediato<br><strong>50 €/mes</strong> o 500 €/año (2 meses gratis)</span>
+        <span class="micro">Beta abierta · acceso inmediato<br><strong>50 €/mes</strong> toda la suite</span>
       </div>
     </div>
     <div class="mock">
@@ -153,7 +160,7 @@
         <h3>Factura 2026-0341 <span class="f-ok">VeriFactu</span></h3>
         <div class="f-line"><span>Consulta dermatología</span><span>90,00 €</span></div>
         <div class="f-line"><span>Paciente · Adeslas</span><span>remesa oct.</span></div>
-        <div class="f-line"><span>Recordatorio de pago</span><span>automático</span></div>
+        <div class="f-line"><span>Informe de la visita</span><span>escrito por IA</span></div>
         <div class="f-tot"><span>Estado</span><span style="color:var(--verd)">Cobrada</span></div>
       </div>
       <div class="f-qr">
@@ -173,26 +180,58 @@
   </div>
 </header>
 
-<section id="problema">
+<section id="suite">
+  <div class="wrap">
+    <span class="kicker reveal">La suite</span>
+    <h2 class="reveal">Dos productos hoy. Toda la consulta, sin papeleo.</h2>
+    <p class="lead reveal">ConsultaMed reúne lo que hoy le roba tiempo. En el lanzamiento estrenamos dos productos, y la suite seguirá creciendo.</p>
+    <div class="prods">
+      <div class="prod reveal" style="--pacc:var(--verd)">
+        <div class="plogo"><img src="facturamed.png" alt="FacturaMed"></div>
+        <p>La factura sale sola al acabar la visita: hash, QR y remisión a la AEAT. Cumple VeriFactu desde el primer día y prepara las remesas de cada mutua.</p>
+        <ul>
+          <li>Facturas VeriFactu ilimitadas (hash + QR + AEAT)</li>
+          <li>Remesas a mutuas y aseguradoras</li>
+          <li>Rectificativas con rastro legal</li>
+          <li>Export para su gestoría en un clic</li>
+        </ul>
+        <span class="estat-chip">Disponible en la beta</span>
+      </div>
+      <div class="prod reveal" style="--pacc:var(--violeta)">
+        <div class="plogo"><img src="escribamed.png" alt="EscribaMed"></div>
+        <p>Usted habla con el paciente y una IA escribe el informe de la visita. Y lo más importante: el audio y los datos <strong>nunca salen de su ordenador</strong>.</p>
+        <ul>
+          <li>El informe clínico, redactado solo</li>
+          <li>Castellano, catalán y alemán</li>
+          <li>100% local: nada viaja a la nube</li>
+          <li>Del informe a la factura, en un clic</li>
+        </ul>
+        <span class="estat-chip" style="background:#F5E8FA;color:var(--violeta)">Disponible en la beta</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="problema" style="padding-top:0">
   <div class="wrap">
     <span class="kicker reveal">Por qué ahora</span>
-    <h2 class="reveal">Tres problemas. Una sola herramienta.</h2>
+    <h2 class="reveal">Tres motivos para dar el paso hoy</h2>
     <p class="lead reveal">Diseñada solo para consultas médicas privadas. No es un programa de contabilidad genérico.</p>
     <div class="grid3">
       <div class="card reveal">
         <div class="ic">⚖️</div>
-        <h3>VeriFactu ya es ley</h3>
-        <p>A partir del 1 de julio de 2027, cada factura de un médico autónomo deberá llevar hash encadenado, QR y trazabilidad ante la AEAT. Word y Excel ya no valdrán y las sanciones son reales. Con FacturaMed llega preparado, sin prisas.</p>
+        <h3>VeriFactu llega en 2027</h3>
+        <p>A partir del 1 de julio de 2027, cada factura de un médico autónomo deberá llevar hash encadenado, QR y trazabilidad ante la AEAT. Con FacturaMed llega preparado, sin prisas.</p>
       </div>
       <div class="card reveal">
-        <div class="ic">🏥</div>
-        <h3>Las mutuas pagan tarde</h3>
-        <p>Cada aseguradora exige su formato, su portal y sus plazos. FacturaMed genera cada remesa exactamente como la quiere cada mutua y persigue el cobro hasta el final.</p>
+        <div class="ic">🔒</div>
+        <h3>Sus datos no salen de aquí</h3>
+        <p>EscribaMed procesa la voz y los datos del paciente en su propio ordenador. Los programas de IA americanos suben sus visitas a la nube; ConsultaMed, nunca. Secreto médico por diseño.</p>
       </div>
       <div class="card reveal">
         <div class="ic">⏱️</div>
         <h3>Su tiempo vale más</h3>
-        <p>Una visita son 60-90 €. FacturaMed cuesta 50 € al mes: menos que una visita. Cada hora de papeleo que elimina se paga sola.</p>
+        <p>Entre facturar e informar se van horas cada semana. La suite completa cuesta 50 € al mes: menos que una visita. Cada hora de papeleo que elimina se paga sola.</p>
       </div>
     </div>
   </div>
@@ -202,19 +241,19 @@
   <div class="wrap">
     <span class="kicker reveal">Cómo funciona</span>
     <h2 class="reveal">De la visita al cobro, sin tocar nada</h2>
-    <p class="lead reveal">Cree su cuenta, configure su consulta en 2 minutos y emita su primera factura hoy mismo.</p>
+    <p class="lead reveal">Cree su cuenta, configure su consulta en 2 minutos y pruebe la suite hoy mismo.</p>
     <div class="grid3">
       <div class="paso reveal">
         <h3>Termina la visita</h3>
-        <p>Un clic y la factura se genera con la serie, el hash y el QR VeriFactu correctos, lista para remitirse a la AEAT.</p>
+        <p>Usted habla con el paciente y EscribaMed escribe el informe clínico solo, en su idioma, sin que el audio salga del ordenador.</p>
       </div>
       <div class="paso reveal">
-        <h3>El paciente o la mutua reciben lo suyo</h3>
-        <p>Al paciente: su factura con QR verificable. A la mutua: remesa mensual en su formato exacto, validada antes de enviarse.</p>
+        <h3>Un clic y la factura sale</h3>
+        <p>Desde el informe, FacturaMed emite la factura con la serie, el hash y el QR VeriFactu correctos, y prepara la remesa de la mutua.</p>
       </div>
       <div class="paso reveal">
         <h3>Usted ve el dinero llegar</h3>
-        <p>Registro encadenado e inalterable, export para su gestoría en un clic y recordatorios que salen solos.</p>
+        <p>Registro encadenado e inalterable, export para su gestoría en un clic y recordatorios de cobro que salen solos.</p>
       </div>
     </div>
   </div>
@@ -224,20 +263,20 @@
   <div class="wrap">
     <div style="text-align:center">
       <span class="kicker reveal">Precio</span>
-      <h2 class="reveal">Simple: un plan, dos formas de pagarlo</h2>
-      <p class="lead reveal" style="margin-left:auto;margin-right:auto">Todo incluido. Sin permanencia. Sus datos siempre son suyos.</p>
+      <h2 class="reveal">Toda la suite, un solo precio</h2>
+      <p class="lead reveal" style="margin-left:auto;margin-right:auto">FacturaMed y EscribaMed incluidos. Sin permanencia. Sus datos siempre son suyos.</p>
     </div>
     <div class="preus">
       <div class="preu-card reveal">
         <h3>Mensual</h3>
         <div class="preu">50 €<small>/mes</small></div>
-        <div class="preu-nota">+ IVA · sin permanencia, cancele cuando quiera</div>
+        <div class="preu-nota">+ IVA · toda la suite · sin permanencia</div>
         <ul>
-          <li>Facturas VeriFactu ilimitadas (hash + QR + remisión AEAT)</li>
-          <li>Rectificativas con rastro legal</li>
+          <li>FacturaMed: facturación VeriFactu completa</li>
+          <li>EscribaMed: informes con IA local</li>
           <li>Pacientes y series ilimitados</li>
           <li>Export para su gestoría en un clic</li>
-          <li>Datos en la UE · RGPD sanitario</li>
+          <li>Datos en su ordenador · RGPD por diseño</li>
         </ul>
         <a class="btn" href="#registro">Empezar con mensual</a>
       </div>
@@ -248,19 +287,19 @@
         <div class="preu-nota">+ IVA · equivale a 41,67 €/mes</div>
         <span class="estalvi">Ahorra 100 € al año</span>
         <ul>
-          <li>Todo lo del plan mensual</li>
-          <li>Precio congelado durante toda la suscripción</li>
+          <li>Toda la suite del plan mensual</li>
+          <li>Precio congelado durante la suscripción</li>
           <li>Alta acompañada y migración de sus series</li>
           <li>Soporte prioritario por email</li>
         </ul>
         <a class="btn" href="#registro">Empezar con anual</a>
       </div>
     </div>
-    <div class="beta-nota reveal"><strong>Estamos en beta abierta:</strong> cree su cuenta hoy y use FacturaMed sin pagar nada. El cobro se activa solo cuando usted decida pasar a facturación real, avisándole antes. Sin sorpresas.</div>
+    <div class="beta-nota reveal"><strong>Estamos en beta abierta:</strong> cree su cuenta hoy y use ConsultaMed sin pagar nada. El cobro se activa solo cuando usted decida pasar a uso real, avisándole antes. ¿Centro médico con varios médicos? Desde 149 €/mes.</div>
     <div class="trust reveal">
-      <span class="pill">🇪🇺 Datos alojados en la UE</span>
-      <span class="pill">🔒 Cifrado extremo a extremo</span>
-      <span class="pill">📄 Contrato RGPD (DPA) incluido</span>
+      <span class="pill">💻 Datos en su ordenador</span>
+      <span class="pill">🔒 El audio nunca sube a la nube</span>
+      <span class="pill">📄 RGPD sanitario por diseño</span>
       <span class="pill">🚪 Sin permanencia</span>
     </div>
   </div>
@@ -270,11 +309,11 @@
   <div class="wrap" style="max-width:760px">
     <span class="kicker reveal">Preguntas frecuentes</span>
     <h2 class="reveal" style="margin-bottom:28px">Lo que nos preguntan los médicos</h2>
-    <details class="reveal"><summary>¿Puedo usarlo ya?</summary><p>Sí. Cree su cuenta y accederá inmediatamente a la beta de FacturaMed: facturas con hash y QR VeriFactu, rectificativas, pacientes y export para gestoría. La remisión a la AEAT funciona en entorno de pruebas oficial mientras completamos la homologación.</p></details>
-    <details class="reveal"><summary>¿Cuánto cuesta y cuándo se paga?</summary><p>50 € + IVA al mes, o 500 € + IVA al año (2 meses gratis). Durante la beta no se cobra nada: el pago se activa cuando usted decida pasar a facturación real, con aviso previo. Sin permanencia.</p></details>
-    <details class="reveal"><summary>Ya tengo un programa de gestión en la clínica. ¿Me sirve FacturaMed?</summary><p>Si su programa ya cumple VeriFactu y le gestiona las mutuas, quizá no nos necesite. Si solo le lleva la agenda o la historia clínica, FacturaMed se ocupa de la parte económica y convive sin problema.</p></details>
+    <details class="reveal"><summary>¿Qué incluye ConsultaMed?</summary><p>En el lanzamiento, dos productos: <strong>FacturaMed</strong> (facturación VeriFactu y mutuas) y <strong>EscribaMed</strong> (el informe de la visita escrito por una IA que corre en su ordenador). Ambos están en la beta y entran con la misma cuenta.</p></details>
+    <details class="reveal"><summary>¿De verdad los datos no salen de mi ordenador?</summary><p>Sí. EscribaMed transcribe y redacta con un motor de IA instalado en su propio equipo. El audio de la visita y los datos del paciente no viajan a ningún servidor. Es la diferencia con los programas de IA americanos, que suben todo a su nube.</p></details>
+    <details class="reveal"><summary>¿Puedo usarlo ya?</summary><p>Sí. Cree su cuenta y accederá inmediatamente a la beta. La remisión a la AEAT funciona en el entorno de pruebas oficial mientras completamos la homologación.</p></details>
+    <details class="reveal"><summary>¿Cuánto cuesta y cuándo se paga?</summary><p>50 € + IVA al mes por toda la suite, o 500 € + IVA al año (2 meses gratis). Durante la beta no se cobra nada: el pago se activa cuando usted decida pasar a uso real, con aviso previo. Sin permanencia.</p></details>
     <details class="reveal"><summary>Soy autónomo / tengo una sociedad. ¿Me afecta VeriFactu?</summary><p>Sí en ambos casos: a las sociedades desde el 1 de enero de 2027 y a los autónomos desde el 1 de julio de 2027. Las facturas a mutuas y aseguradoras también están incluidas — y las cobradas en efectivo, también.</p></details>
-    <details class="reveal"><summary>¿Qué pasa con los datos de mis pacientes?</summary><p>Se tratan cifrados y bajo RGPD sanitario, con contrato de encargo de tratamiento (art. 28 RGPD). Nunca se usan para entrenar modelos de IA y puede exportarlos o borrarlos cuando quiera.</p></details>
   </div>
 </section>
 
@@ -282,11 +321,11 @@
   <div class="wrap">
     <div style="text-align:center;max-width:620px;margin:0 auto 34px">
       <span class="kicker">Crear cuenta</span>
-      <h2>Empiece a facturar hoy</h2>
+      <h2>Empiece hoy con ConsultaMed</h2>
       <p class="lead" style="margin-bottom:0">Acceso inmediato a la beta. Sin tarjeta, sin compromiso.</p>
     </div>
     <form id="registre" action="https://formspree.io/f/xrenbbza" method="POST">
-      <input type="hidden" name="_subject" value="Nuevo registro FacturaMed">
+      <input type="hidden" name="_subject" value="Nuevo registro ConsultaMed">
       <label for="nombre">Nombre y apellidos</label>
       <input id="nombre" name="nombre" type="text" required autocomplete="name" placeholder="Dra. Marta Ferrer">
       <label for="email">Email</label>
@@ -330,12 +369,12 @@
         <label for="privacidad" style="margin:0;font-weight:400">Acepto que ConsultaMed use estos datos para crear mi cuenta y comunicarse conmigo sobre el servicio. Podré darme de baja en cualquier momento.</label>
       </div>
       <button class="btn" type="submit">Crear mi cuenta y entrar</button>
-      <p class="micro" style="text-align:center;margin-top:14px">Beta abierta · hoy no se cobra nada · 50 €/mes cuando actives la facturación real</p>
+      <p class="micro" style="text-align:center;margin-top:14px">Beta abierta · hoy no se cobra nada · 50 €/mes cuando actives el uso real</p>
       <p class="micro" style="text-align:center;margin-top:8px">¿Ya tienes cuenta? <a href="hub.html" style="color:var(--verd);font-weight:600">Entra a ConsultaMed →</a></p>
     </form>
     <div id="gracias">
       <h3>✅ Cuenta creada</h3>
-      <p>Entrando en FacturaMed…</p>
+      <p>Entrando en ConsultaMed…</p>
     </div>
   </div>
 </section>

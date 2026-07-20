@@ -70,7 +70,7 @@
   <h1 class="hola" id="hola">Benvingut/da</h1>
   <p class="sub" id="sub"></p>
 
-  <div class="brief">
+  <div class="brief" id="brief-box">
     <div class="brief-top">
       <div class="brief-tit"><span data-k="brief_tit">La teva agenda d'avui</span><small id="brief-data"></small></div>
       <div class="brief-kpis" id="brief-kpis"></div>
@@ -81,7 +81,7 @@
 
   <div class="seccio"><span data-k="prod_tit">Els teus productes</span> <small data-k="prod_sub">· tria per on començar</small></div>
   <div class="grid">
-    <a class="card" style="--acc:var(--taronja)" href="secremed.html">
+    <a class="card" id="card-secre" style="--acc:var(--taronja)" href="secremed.html">
       <div class="card-logo"><img src="secremed.png" alt="SecreMed"></div>
       <div class="card-desc" data-k="d_secre"></div>
       <div class="card-go" data-k="obrir"></div>
@@ -96,7 +96,7 @@
       <div class="card-desc" data-k="d_factura"></div>
       <div class="card-go" data-k="obrir"></div>
     </a>
-    <span class="card soon" style="--acc:var(--cian)">
+    <span class="card soon" id="card-recept" style="--acc:var(--cian)">
       <span class="soon-tag" data-k="soon"></span>
       <div class="card-logo"><img src="receptmed.png" alt="ReceptMed"></div>
       <div class="card-desc" data-k="d_recept"></div>
@@ -185,6 +185,21 @@
       cont.innerHTML=prox+(cites.length>4?'<div class="buit" style="margin-top:8px">+'+(cites.length-4)+' '+t.mesmes+'</div>':'');
     }
   }
+
+  // Mode preview: SecreMed i ReceptMed només visibles per a Roger (?preview=1)
+  (function(){
+    var q=new URLSearchParams(location.search);
+    if(q.get('preview')==='1') localStorage.setItem('cm_preview','1');
+    if(q.get('preview')==='0') localStorage.removeItem('cm_preview');
+    var preview=localStorage.getItem('cm_preview')==='1';
+    if(!preview){
+      ['card-secre','card-recept','brief-box'].forEach(function(id){var e=document.getElementById(id); if(e) e.style.display='none';});
+    }else{
+      var w=document.querySelector('.wrap');
+      if(w){var b=document.createElement('div');b.textContent='● Mode preview actiu · SecreMed i ReceptMed només visibles per a tu';
+        b.style.cssText='color:#94A3B8;font-size:.74rem;font-weight:600;margin-bottom:-14px';w.insertBefore(b,w.firstChild);}
+    }
+  })();
 
   var lang=localStorage.getItem('cm_hub_idioma')||'ca';
   if(lang!=='ca'&&lang!=='es') lang='ca';

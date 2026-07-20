@@ -99,7 +99,7 @@
   <section class="vista actiu" id="v-agenda">
     <div class="kpis">
       <div class="kpi"><div class="v" id="k-hoy">0</div><div class="l">Citas del día</div></div>
-      <div class="kpi"><div class="v" id="k-pend">0</div><div class="l">Por confirmar</div></div>
+      <div class="kpi" id="kpi-pend" style="cursor:pointer" title="Ver los pendientes"><div class="v" id="k-pend">0</div><div class="l">Por confirmar ▸</div></div>
       <div class="kpi"><div class="v" id="k-noshow">0</div><div class="l">No-shows (histórico)</div></div>
     </div>
     <div class="grid">
@@ -156,12 +156,35 @@
 
   <!-- ============ PACIENTS ============ -->
   <section class="vista" id="v-pacients">
-    <div class="card">
-      <h2>Pacientes (<span id="p-compte">0</span>) <span style="font-size:.72rem;color:var(--boira);font-weight:500">— compartidos con FacturaMed y EscribaMed</span></h2>
-      <div id="llista-pac" style="overflow-x:auto"></div>
+    <div class="grid">
+      <div class="card">
+        <h2>Nueva ficha de paciente</h2>
+        <p style="font-size:.8rem;color:#475569;margin-bottom:4px">Crea la ficha del paciente. Queda compartida con FacturaMed y EscribaMed.</p>
+        <label for="np-nom">Nombre y apellidos</label>
+        <input id="np-nom" placeholder="Nombre del paciente" autocomplete="off">
+        <label for="np-nif">NIF (opcional)</label>
+        <input id="np-nif" placeholder="12345678Z" autocomplete="off" style="text-transform:uppercase">
+        <label for="np-tel">Contacto (teléfono / email)</label>
+        <input id="np-tel" placeholder="+34 600 000 000" autocomplete="off">
+        <button class="btn" id="b-nova-fitxa" type="button">＋ Crear ficha</button>
+      </div>
+      <div class="card">
+        <h2>Pacientes (<span id="p-compte">0</span>) <span style="font-size:.72rem;color:var(--boira);font-weight:500">— compartidos con FacturaMed y EscribaMed</span></h2>
+        <div id="llista-pac" style="overflow-x:auto"></div>
+      </div>
     </div>
   </section>
 </main>
+
+<div id="modal-pend" style="display:none;position:fixed;inset:0;background:rgba(13,59,102,.35);z-index:60;padding:20px;overflow:auto">
+  <div style="max-width:640px;margin:40px auto;background:#fff;border-radius:16px;padding:24px;box-shadow:0 24px 60px rgba(0,0,0,.2)">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:10px">
+      <h2 style="margin:0">Pendientes de confirmar</h2>
+      <button id="mp-x" class="btn sec mini" type="button">✕ Cerrar</button>
+    </div>
+    <div id="mp-cont"></div>
+  </div>
+</div>
 
 <script>
 (function(){
@@ -207,11 +230,11 @@
     var el=$('llista-pac');
     if(!ps.length){el.innerHTML='<div class="buit">Aún no hay pacientes. Se crean solos al añadir citas.</div>';return}
     var cs=cites();
-    var h='<table><thead><tr><th>Nombre</th><th>Contacto</th><th>Próxima cita</th></tr></thead><tbody>';
+    var h='<table><thead><tr><th>Nombre</th><th>NIF</th><th>Contacto</th><th>Próxima cita</th></tr></thead><tbody>';
     ps.slice().sort(function(a,b){return a.nom.localeCompare(b.nom)}).forEach(function(p){
       var futures=cs.filter(function(c){return c.pacient===p.nom&&c.data>=isoAvui()&&c.estat!=='cancelada'}).sort(function(a,b){return (a.data+a.hora).localeCompare(b.data+b.hora)});
       var prox=futures.length?dataLlegible(futures[0].data)+' '+futures[0].hora:'—';
-      h+='<tr><td><strong>'+esc(p.nom)+'</strong></td><td>'+esc(p.contacte||'—')+'</td><td>'+esc(prox)+'</td></tr>';
+      h+='<tr><td><strong>'+esc(p.nom)+'</strong></td><td>'+esc(p.nif||'—')+'</td><td>'+esc(p.contacte||'—')+'</td><td>'+esc(prox)+'</td></tr>';
     });
     el.innerHTML=h+'</tbody></table>';
   }
@@ -322,6 +345,43 @@
       pintaTot();avis('ok','Anotado. Está en «Pendientes de confirmar».');
     });
   },'safata');
+
+  // ---------- nova fitxa de pacient ----------
+  safe(function(){
+    $('b-nova-fitxa').addEventListener('click',function(){
+      var nom=$('np-nom').value.trim();if(!nom){avis('err','Indica el nombre.');return}
+      var ps=pacients();
+      if(ps.some(function(p){return p.nom.toLowerCase()===nom.toLowerCase()})){avis('err','Ya existe una ficha con ese nombre.');return}
+      ps.push({nom:nom,nif:$('np-nif').value.trim().toUpperCase(),contacte:$('np-tel').value.trim()});
+      desa(K.pac,ps);
+      $('np-nom').value='';$('np-nif').value='';$('np-tel').value='';
+      pintaTot();avis('ok','Ficha creada. Ya puedes darle cita o facturarle.');
+    });
+  },'novafitxa');
+
+  // ---------- pendientes de confirmar (clic al KPI) ----------
+  function obrePendents(){
+    var cs=cites().filter(function(c){return c.estat==='pendent'}).sort(function(a,b){return (a.data+a.hora).localeCompare(b.data+b.hora)});
+    var calls=safata().filter(function(s){return s.estat==='pendent'});
+    var h='';
+    if(cs.length){
+      h+='<h3 style="font-size:.85rem;color:var(--blau);margin:6px 0">Citas por confirmar ('+cs.length+')</h3>';
+      cs.forEach(function(c){h+='<div class="cita"><span class="hora">'+esc(c.hora)+'</span><span class="cos"><div class="nom">'+esc(c.pacient)+'</div><div class="motiu">'+esc(dataLlegible(c.data))+(c.motiu?' · '+esc(c.motiu):'')+'</div></span><span class="accions"><button class="btn sec mini" type="button" data-conf="'+c.id+'">Confirmar</button></span></div>';});
+    }
+    if(calls.length){
+      h+='<h3 style="font-size:.85rem;color:var(--blau);margin:12px 0 6px">Llamadas pendientes ('+calls.length+')</h3>';
+      calls.slice().reverse().forEach(function(s){h+='<div class="cita"><span class="cos"><div class="nom">'+esc(s.nom)+'</div><div class="motiu">'+esc(s.motiu||'')+(s.quan?' · '+esc(s.quan):'')+'</div></span></div>';});
+    }
+    if(!cs.length&&!calls.length)h='<div class="buit">No hay nada pendiente de confirmar. 🎉</div>';
+    $('mp-cont').innerHTML=h;
+    $('mp-cont').querySelectorAll('[data-conf]').forEach(function(b){b.addEventListener('click',function(){canviaEstat(parseInt(b.dataset.conf,10),'confirmada');obrePendents();});});
+    $('modal-pend').style.display='block';
+  }
+  safe(function(){
+    var k=$('kpi-pend');if(k)k.addEventListener('click',obrePendents);
+    var x=$('mp-x');if(x)x.addEventListener('click',function(){$('modal-pend').style.display='none'});
+    var m=$('modal-pend');if(m)m.addEventListener('click',function(e){if(e.target===m)m.style.display='none'});
+  },'pendents');
 
   // ---------- init ----------
   function pintaTot(){safe(pintaPacients,'pac');safe(pintaMetgeSel,'metge');safe(pintaAgenda,'ag');safe(pintaSafata,'saf')}

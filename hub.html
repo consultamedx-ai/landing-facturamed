@@ -17,9 +17,12 @@
   .logo{display:inline-flex;align-items:center;gap:9px}
   .logo-img{height:30px;width:auto;display:block}
   .nav-dreta{display:flex;align-items:center;gap:12px}
-  .lang{display:inline-flex;border:1px solid var(--linia);border-radius:99px;overflow:hidden}
-  .lang button{border:none;background:#fff;color:var(--boira);font-family:inherit;font-weight:700;font-size:.72rem;letter-spacing:.03em;padding:6px 11px;cursor:pointer}
-  .lang button.on{background:var(--blau);color:#fff}
+  .lang{position:relative}
+  .lang-cur{border:1px solid var(--linia);background:#fff;color:var(--blau);font-family:inherit;font-weight:700;font-size:.72rem;letter-spacing:.03em;padding:7px 13px;border-radius:99px;cursor:pointer}
+  .lang-menu{position:absolute;right:0;top:calc(100% + 6px);background:#fff;border:1px solid var(--linia);border-radius:10px;box-shadow:0 10px 26px rgba(13,59,102,.12);display:none;overflow:hidden;z-index:20;min-width:118px}
+  .lang-menu.obert{display:block}
+  .lang-menu button{display:block;width:100%;text-align:left;border:none;background:#fff;font-family:inherit;font-size:.82rem;font-weight:600;color:#475569;padding:9px 14px;cursor:pointer}
+  .lang-menu button:hover,.lang-menu button.on{background:var(--gasa);color:var(--blau)}
   .logout{font-size:.82rem;font-weight:600;color:var(--boira);text-decoration:none;border:1px solid var(--linia);padding:7px 14px;border-radius:99px;transition:.15s}
   .logout:hover{color:var(--blau);border-color:var(--blau)}
   .wrap{max-width:980px;margin:0 auto;padding:34px 22px 60px}
@@ -61,7 +64,14 @@
 <nav class="nav">
   <span class="logo"><img class="logo-img" src="consultamed.png" alt="ConsultaMed"></span>
   <div class="nav-dreta">
-    <div class="lang"><button id="l-ca" data-l="ca">CAT</button><button id="l-es" data-l="es">ESP</button></div>
+    <div class="lang" id="lang-dd">
+      <button class="lang-cur" id="lang-cur" type="button">CAT ▾</button>
+      <div class="lang-menu" id="lang-menu">
+        <button data-l="ca" type="button">Català</button>
+        <button data-l="es" type="button">Español</button>
+        <button data-l="en" type="button">English</button>
+      </div>
+    </div>
     <a class="logout" href="index.html" data-k="logout">Tancar sessió</a>
   </div>
 </nav>
@@ -143,7 +153,22 @@
         peu:"ConsultaMed · Beta privada · El médico hace de médico. El resto, ConsultaMed.",
         dies:["domingo","lunes","martes","miércoles","jueves","viernes","sábado"],
         mesos:["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"],
-        estat:{pendent:"Por confirmar",confirmada:"Confirmada",vinguda:"Vino",noshow:"No vino"}, de:"de"}
+        estat:{pendent:"Por confirmar",confirmada:"Confirmada",vinguda:"Vino",noshow:"No vino"}, de:"de"},
+    en:{logout:"Log out", salut:["Good morning","Good afternoon","Good evening"], benvingut:"Welcome",
+        sub:"What shall we start with today?", sub_no:"Welcome to ConsultaMed. What shall we start with today?",
+        brief_tit:"Your agenda today", brief_link:"Open SecreMed \u2192",
+        buit:"No appointments scheduled for today. When you add appointments in SecreMed, you'll see your day at a glance here.",
+        visita:"visit", visites:"visits", avui:"today", conf:"to confirm", mesmes:"more in the agenda",
+        prod_tit:"Your products", prod_sub:"\u00b7 choose where to start", obrir:"Open \u2192",
+        soon:"Soon", soon_go:"Coming",
+        d_factura:"VeriFactu invoicing and insurers. The invoice comes out on its own \u2014 legal, with its QR.",
+        d_escriba:"The clinical report, written for you. You talk; the AI writes. All on your computer.",
+        d_secre:"Scheduling, calls and reminders. Reception, automated.",
+        d_recept:"Private prescriptions from the visit itself, signed by the doctor.",
+        peu:"ConsultaMed \u00b7 Private beta \u00b7 The doctor does medicine. ConsultaMed does the rest.",
+        dies:["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],
+        mesos:["January","February","March","April","May","June","July","August","September","October","November","December"],
+        estat:{pendent:"To confirm",confirmada:"Confirmed",vinguda:"Attended",noshow:"No-show"}, de:""}
   };
 
   var conf=get('fm2_config')||{};
@@ -157,8 +182,9 @@
     document.querySelectorAll('[data-k]').forEach(function(el){var k=el.getAttribute('data-k'); if(t[k]!=null) el.textContent=t[k];});
     document.getElementById('brief-link').textContent=t.brief_link;
     // botons idioma
-    document.getElementById('l-ca').classList.toggle('on',lang==='ca');
-    document.getElementById('l-es').classList.toggle('on',lang==='es');
+    var etiq={ca:'CAT',es:'ESP',en:'ENG'};
+    var lc=document.getElementById('lang-cur');if(lc)lc.textContent=etiq[lang]+' \u25be';
+    document.querySelectorAll('#lang-menu button').forEach(function(b){b.classList.toggle('on',b.getAttribute('data-l')===lang);});
     // salutació
     var h=new Date().getHours();
     var s=h<13?t.salut[0]:(h<20?t.salut[1]:t.salut[2]);
@@ -166,7 +192,7 @@
     document.getElementById('sub').textContent=centre?(centre+' · '+t.sub.charAt(0).toLowerCase()+t.sub.slice(1)):(nom?t.sub:t.sub_no);
     // data
     var d=new Date();
-    var bd=document.getElementById('brief-data'); if(bd) bd.textContent=t.dies[d.getDay()]+', '+d.getDate()+' '+t.de+' '+t.mesos[d.getMonth()];
+    var bd=document.getElementById('brief-data'); if(bd){var sep=t.de?(' '+t.de+' '):' ';bd.textContent=t.dies[d.getDay()]+', '+d.getDate()+sep+t.mesos[d.getMonth()];}
     // agenda
     var cites=(get('sm_cites')||[]).filter(function(c){return c.data===isoAvui()&&c.estat!=='cancelada'})
                .sort(function(a,b){return String(a.hora).localeCompare(String(b.hora))});
@@ -204,9 +230,12 @@
   var lang=localStorage.getItem('cm_hub_idioma')||'ca';
   if(lang!=='ca'&&lang!=='es') lang='ca';
   render(lang);
-  document.querySelectorAll('.lang button').forEach(function(b){
-    b.addEventListener('click',function(){lang=b.getAttribute('data-l');localStorage.setItem('cm_hub_idioma',lang);render(lang);});
+  var lcur=document.getElementById('lang-cur');
+  if(lcur)lcur.addEventListener('click',function(e){e.stopPropagation();var m=document.getElementById('lang-menu');if(m)m.classList.toggle('obert');});
+  document.querySelectorAll('#lang-menu button').forEach(function(b){
+    b.addEventListener('click',function(){lang=b.getAttribute('data-l');localStorage.setItem('cm_hub_idioma',lang);var m=document.getElementById('lang-menu');if(m)m.classList.remove('obert');render(lang);});
   });
+  document.addEventListener('click',function(){var m=document.getElementById('lang-menu');if(m)m.classList.remove('obert');});
 })();
 </script>
 </body>

@@ -204,7 +204,7 @@
     <a href="#top"><img class="logo-img" src="consultamed.png" alt="ConsultaMed"></a>
     <div class="nav-r">
       <a class="nav-lang" href="ca.html">CAT</a>
-      <a class="nav-login" href="hub.html">Iniciar sessió</a>
+      <a class="nav-login" href="hub-v2.html">Iniciar sessió</a>
       <a class="nav-cta" href="#registre">Crear compte</a>
     </div>
   </div>
@@ -379,7 +379,7 @@
       <div class="check"><input id="priv" type="checkbox" required><label for="priv" style="margin:0;font-weight:400">Accepto que ConsultaMed faci servir aquestes dades per crear el meu compte i comunicar-se amb mi sobre el servei. Em podré donar de baixa en qualsevol moment.</label></div>
       <button class="cta" type="submit">Crear el meu compte i entrar</button>
       <p class="micro">Beta oberta · avui no es cobra res · 50 €/mes quan activis l'ús real</p>
-      <p class="micro" style="margin-top:6px">Ja tens compte? <a href="hub.html" style="color:var(--teal);font-weight:700">Entra a ConsultaMed →</a></p>
+      <p class="micro" style="margin-top:6px">Ja tens compte? <a href="hub-v2.html" style="color:var(--teal);font-weight:700">Entra a ConsultaMed →</a></p>
     </form>
     <div id="gracies"><h3>✅ Compte creat</h3><p>Entrant a ConsultaMed…</p></div>
   </div>
@@ -455,7 +455,7 @@
       safe(function(){var c=null;try{c=JSON.parse(localStorage.getItem('fm2_config'))}catch(e){}
         if(!c||!c.nom)localStorage.setItem('fm2_config',JSON.stringify({nom:(d.get('nombre')||'').trim(),nif:(d.get('nif')||'').trim().toUpperCase(),colegiat:'',adreca:'',series:[{codi:String(new Date().getFullYear()),seguent:1}]}));
       },'pre');
-      var go=function(){form.style.display='none';ok.style.display='block';setTimeout(function(){window.location.href='hub.html?benvinguda=1'},1500)};
+      var go=function(){form.style.display='none';ok.style.display='block';setTimeout(function(){window.location.href='hub-v2.html?benvinguda=1'},1500)};
       if(window.fetch)fetch(form.action,{method:'POST',body:d,headers:{'Accept':'application/json'}}).then(go).catch(go);else go();
     });
   },'reg');

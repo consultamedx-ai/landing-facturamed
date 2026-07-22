@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; form-action 'self'">
+<meta name="robots" content="noindex,nofollow">
+<title>ConsultaMed — Panell</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--blau:#0D3B66;--blau2:#0A2E52;--teal:#14B8A6;--verd:#059669;--violeta:#8B2DA5;--taronja:#EA7317;--cian:#0891B2;--gasa:#F7FAFC;--grafit:#1F2937;--boira:#94A3B8;--linia:#E7EDF3}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:'Inter',system-ui,sans-serif;color:var(--grafit);line-height:1.5;min-height:100vh;position:relative;
+    background:radial-gradient(1100px 620px at 10% -8%,rgba(20,184,166,.12),transparent 58%),radial-gradient(1000px 640px at 102% -2%,rgba(13,59,102,.13),transparent 56%),var(--gasa);background-attachment:fixed}
+  img{max-width:100%}
+  /* aurora subtil de fons */
+  .bg{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
+  .bg i{position:absolute;border-radius:50%;filter:blur(70px);opacity:.16;animation:drift 26s ease-in-out infinite}
+  .bg .a{width:460px;height:460px;background:var(--teal);top:-140px;left:-80px}
+  .bg .b{width:420px;height:420px;background:var(--blau);top:-120px;right:-90px;animation-delay:-8s}
+  .bg .c{width:360px;height:360px;background:var(--taronja);bottom:-160px;left:26%;opacity:.09;animation-delay:-14s}
+  @keyframes drift{0%,100%{transform:translate(0,0)}50%{transform:translate(28px,34px)}}
+  @media(prefers-reduced-motion:reduce){.bg i{animation:none}}
+  .nav{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 26px;background:rgba(255,255,255,.72);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid rgba(13,59,102,.08);position:sticky;top:0;z-index:10}
+  .logo{display:inline-flex;align-items:center;gap:9px}
+  .logo-img{height:28px;width:auto;display:block}
+  .nav-dreta{display:flex;align-items:center;gap:10px}
+  .logout{font-size:.82rem;font-weight:600;color:#5B6B7C;text-decoration:none;border:1px solid var(--linia);padding:8px 15px;border-radius:99px;transition:.16s;background:rgba(255,255,255,.6)}
+  .logout:hover{color:var(--blau);border-color:var(--blau);box-shadow:0 4px 14px rgba(13,59,102,.10)}
+  .wrap{max-width:1000px;margin:0 auto;padding:40px 22px 64px}
+  .hola{font-family:'Sora';font-weight:800;font-size:2.2rem;color:var(--blau);letter-spacing:-.6px;line-height:1.08;opacity:0;animation:up .6s .05s both}
+  .hola .dot{color:var(--teal)}
+  .sub{color:#5B6B7C;margin-top:7px;font-size:1.05rem;opacity:0;animation:up .6s .12s both}
+  @keyframes up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  .brief{background:rgba(255,255,255,.82);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(13,59,102,.08);border-left:5px solid var(--taronja);border-radius:18px;padding:20px 22px;margin-top:28px;box-shadow:0 10px 34px rgba(13,59,102,.08);opacity:0;animation:up .6s .2s both}
+  .brief-top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  .brief-tit{font-family:'Sora';font-weight:700;color:var(--blau);font-size:1.08rem}
+  .brief-tit small{display:block;font-family:'Inter';font-weight:500;color:var(--boira);font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;margin-top:2px}
+  .brief-kpis{font-size:.9rem;color:#5B6B7C}
+  .brief-kpis b{color:var(--taronja)}
+  .cites{margin-top:14px;display:flex;flex-direction:column;gap:2px}
+  .cita{display:flex;align-items:center;gap:12px;padding:10px 4px;border-top:1px solid var(--linia)}
+  .cita .hora{font-family:'Sora';font-weight:700;color:var(--blau);min-width:50px}
+  .cita .cos{flex:1;min-width:0}
+  .cita .nom{font-weight:600;font-size:.94rem}
+  .cita .motiu{font-size:.8rem;color:#64748B}
+  .estat{font-size:.66rem;font-weight:700;padding:3px 9px;border-radius:99px;white-space:nowrap}
+  .estat.pendent{background:#FEF3C7;color:#92400E}.estat.confirmada{background:#DBEAFE;color:#1E40AF}
+  .estat.vinguda{background:#ECFDF5;color:#047857}.estat.noshow{background:#FEF2F2;color:#B91C1C}
+  .brief-link{display:inline-block;margin-top:15px;font-weight:700;color:var(--taronja);text-decoration:none;font-size:.9rem;transition:.15s}
+  .brief-link:hover{transform:translateX(3px)}
+  .buit{color:#64748B;font-size:.94rem;margin-top:6px}
+  .seccio{font-family:'Sora';font-weight:700;color:var(--blau);font-size:1.1rem;margin:38px 0 4px;opacity:0;animation:up .6s .28s both}
+  .seccio small{font-family:'Inter';font-weight:500;color:var(--boira);font-size:.82rem}
+  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:18px}
+  .card{display:block;background:rgba(255,255,255,.78);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(13,59,102,.08);border-radius:20px;padding:24px 22px;text-decoration:none;color:inherit;transition:transform .18s cubic-bezier(.2,.7,.2,1),box-shadow .18s;position:relative;overflow:hidden;opacity:0;animation:up .55s both}
+  .card::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--acc,#ccc),transparent 85%)}
+  .card::after{content:"";position:absolute;top:-40px;right:-40px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,var(--acc,#ccc),transparent 68%);opacity:0;transition:opacity .25s}
+  .card:hover{transform:translateY(-5px);box-shadow:0 22px 48px rgba(13,59,102,.14)}
+  .card:hover::after{opacity:.13}
+  #card-secre{animation-delay:.3s}.grid a:nth-child(2){animation-delay:.37s}.grid a:nth-child(3){animation-delay:.44s}#card-recept{animation-delay:.51s}
+  .card.soon{opacity:.66;pointer-events:none}
+  .card-logo{height:36px;display:flex;align-items:center;margin-bottom:14px}
+  .card-logo img{max-height:33px;width:auto}
+  .card-desc{color:#5B6B7C;font-size:.92rem;margin-top:2px;position:relative}
+  .card-go{margin-top:14px;font-weight:700;font-size:.9rem;color:var(--acc,#333);position:relative;display:inline-flex;gap:5px;transition:gap .18s}
+  .card:hover .card-go{gap:10px}
+  .soon-tag{position:absolute;top:16px;right:16px;font-size:.62rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;background:#EEF2F7;color:#64748B;padding:4px 10px;border-radius:99px}
+  .peu{text-align:center;color:var(--boira);font-size:.76rem;margin-top:44px}
+  @media(max-width:640px){.grid{grid-template-columns:1fr}.hola{font-size:1.7rem}}
+</style>
+</head>
+<body>
+<div class="bg"><i class="a"></i><i class="b"></i><i class="c"></i></div>
+<nav class="nav">
+  <span class="logo"><img class="logo-img" src="consultamed.png" alt="ConsultaMed"></span>
+  <div class="nav-dreta">
+    <a class="logout" href="app-v2.html?config=1">⚙ Configuració</a>
+    <a class="logout" href="index-v2.html" data-k="logout">Tancar sessió</a>
+  </div>
+</nav>
+
+<div class="wrap">
+  <h1 class="hola" id="hola">Benvingut/da</h1>
+  <p class="sub" id="sub"></p>
+
+  <div class="brief" id="brief-box">
+    <div class="brief-top">
+      <div class="brief-tit"><span data-k="brief_tit">La teva agenda d'avui</span><small id="brief-data"></small></div>
+      <div class="brief-kpis" id="brief-kpis"></div>
+    </div>
+    <div class="cites" id="cites"></div>
+    <a class="brief-link" href="secremed-v2.html" id="brief-link">Obrir SecreMed →</a>
+  </div>
+
+  <div class="seccio"><span data-k="prod_tit">Els teus productes</span> <small data-k="prod_sub">· tria per on començar</small></div>
+  <div class="grid">
+    <a class="card" id="card-secre" style="--acc:var(--taronja)" href="secremed-v2.html">
+      <div class="card-logo"><img src="secremed.png" alt="SecreMed"></div>
+      <div class="card-desc" data-k="d_secre"></div>
+      <div class="card-go" data-k="obrir"></div>
+    </a>
+    <a class="card" style="--acc:var(--violeta)" href="escriba-v2.html">
+      <div class="card-logo"><img src="escribamed.png" alt="EscribaMed"></div>
+      <div class="card-desc" data-k="d_escriba"></div>
+      <div class="card-go" data-k="obrir"></div>
+    </a>
+    <a class="card" style="--acc:var(--verd)" href="app-v2.html">
+      <div class="card-logo"><img src="facturamed.png" alt="FacturaMed"></div>
+      <div class="card-desc" data-k="d_factura"></div>
+      <div class="card-go" data-k="obrir"></div>
+    </a>
+    <span class="card soon" id="card-recept" style="--acc:var(--cian)">
+      <span class="soon-tag" data-k="soon"></span>
+      <div class="card-logo"><img src="receptmed.png" alt="ReceptMed"></div>
+      <div class="card-desc" data-k="d_recept"></div>
+      <div class="card-go" data-k="soon_go"></div>
+    </span>
+  </div>
+
+  <p class="peu" data-k="peu"></p>
+</div>
+
+<script>
+(function(){
+  function get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}}
+  function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+  function isoAvui(){var d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+
+  var T={
+    ca:{logout:"Tancar sessió", salut:["Bon dia","Bona tarda","Bona nit"], benvingut:"Benvingut/da",
+        sub:"Per on comencem avui?", sub_no:"Benvingut/da a ConsultaMed. Per on comencem avui?",
+        brief_tit:"La teva agenda d'avui", brief_link:"Obrir SecreMed →",
+        buit:"No tens visites programades per avui. Quan carreguis cites a SecreMed, aquí veuràs el teu dia d'un cop d'ull.",
+        visita:"visita", visites:"visites", avui:"avui", conf:"per confirmar", mesmes:"més a l'agenda",
+        prod_tit:"Els teus productes", prod_sub:"· tria per on començar", obrir:"Obrir →",
+        soon:"Aviat", soon_go:"En camí",
+        d_factura:"Facturació VeriFactu i mútues. La factura surt sola, legal i amb el seu QR.",
+        d_escriba:"L'informe clínic, escrit sol. Vostè parla; la IA redacta. Tot al seu ordinador.",
+        d_secre:"Agenda, trucades i recordatoris. La recepció, automàtica.",
+        d_recept:"Receptes privades des de la mateixa visita, signades pel metge.",
+        peu:"ConsultaMed · Beta privada · El metge fa de metge. La resta, ConsultaMed.",
+        dies:["diumenge","dilluns","dimarts","dimecres","dijous","divendres","dissabte"],
+        mesos:["gener","febrer","març","abril","maig","juny","juliol","agost","setembre","octubre","novembre","desembre"],
+        estat:{pendent:"Per confirmar",confirmada:"Confirmada",vinguda:"Ha vingut",noshow:"No ha vingut"}, de:"de"},
+    es:{logout:"Cerrar sesión", salut:["Buenos días","Buenas tardes","Buenas noches"], benvingut:"Bienvenido/a",
+        sub:"¿Con qué empezamos hoy?", sub_no:"Bienvenido/a a ConsultaMed. ¿Con qué empezamos hoy?",
+        brief_tit:"Tu agenda de hoy", brief_link:"Abrir SecreMed →",
+        buit:"No hay visitas programadas para hoy. Cuando cargues citas en SecreMed, aquí verás tu día de un vistazo.",
+        visita:"visita", visites:"visitas", avui:"hoy", conf:"por confirmar", mesmes:"más en la agenda",
+        prod_tit:"Tus productos", prod_sub:"· elige por dónde empezar", obrir:"Abrir →",
+        soon:"Próximamente", soon_go:"En camino",
+        d_factura:"Facturación VeriFactu y mutuas. La factura sale sola, legal y con su QR.",
+        d_escriba:"El informe clínico, escrito solo. Usted habla; la IA redacta. Todo en su ordenador.",
+        d_secre:"Agenda, llamadas y recordatorios. La recepción, automática.",
+        d_recept:"Recetas privadas desde la misma visita, firmadas por el médico.",
+        peu:"ConsultaMed · Beta privada · El médico hace de médico. El resto, ConsultaMed.",
+        dies:["domingo","lunes","martes","miércoles","jueves","viernes","sábado"],
+        mesos:["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"],
+        estat:{pendent:"Por confirmar",confirmada:"Confirmada",vinguda:"Vino",noshow:"No vino"}, de:"de"},
+    en:{logout:"Log out", salut:["Good morning","Good afternoon","Good evening"], benvingut:"Welcome",
+        sub:"What shall we start with today?", sub_no:"Welcome to ConsultaMed. What shall we start with today?",
+        brief_tit:"Your agenda today", brief_link:"Open SecreMed →",
+        buit:"No appointments scheduled for today. When you add appointments in SecreMed, you'll see your day at a glance here.",
+        visita:"visit", visites:"visits", avui:"today", conf:"to confirm", mesmes:"more in the agenda",
+        prod_tit:"Your products", prod_sub:"· choose where to start", obrir:"Open →",
+        soon:"Soon", soon_go:"Coming",
+        d_factura:"VeriFactu invoicing and insurers. The invoice comes out on its own — legal, with its QR.",
+        d_escriba:"The clinical report, written for you. You talk; the AI writes. All on your computer.",
+        d_secre:"Scheduling, calls and reminders. Reception, automated.",
+        d_recept:"Private prescriptions from the visit itself, signed by the doctor.",
+        peu:"ConsultaMed · Private beta · The doctor does medicine. ConsultaMed does the rest.",
+        dies:["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],
+        mesos:["January","February","March","April","May","June","July","August","September","October","November","December"],
+        estat:{pendent:"To confirm",confirmada:"Confirmed",vinguda:"Attended",noshow:"No-show"}, de:""}
+  };
+
+  var conf=get('fm2_config')||{};
+  var nom=(conf.nom||'').trim();
+  var centre=(conf.centre&&conf.centre.actiu&&conf.centre.nom)?conf.centre.nom:'';
+
+  function render(lang){
+    var t=T[lang];
+    document.documentElement.lang=lang;
+    document.querySelectorAll('[data-k]').forEach(function(el){var k=el.getAttribute('data-k'); if(t[k]!=null) el.textContent=t[k];});
+    document.getElementById('brief-link').textContent=t.brief_link;
+    var etiq={ca:'CAT',es:'ESP',en:'ENG'};
+    var lc=document.getElementById('lang-cur');if(lc)lc.textContent=etiq[lang]+' ▾';
+    document.querySelectorAll('#lang-menu button').forEach(function(b){b.classList.toggle('on',b.getAttribute('data-l')===lang);});
+    var h=new Date().getHours();
+    var s=h<13?t.salut[0]:(h<20?t.salut[1]:t.salut[2]);
+    document.getElementById('hola').innerHTML=(nom?(esc(s)+', '+esc(nom)):esc(s))+'<span class="dot">.</span>';
+    document.getElementById('sub').textContent=centre?(centre+' · '+t.sub.charAt(0).toLowerCase()+t.sub.slice(1)):(nom?t.sub:t.sub_no);
+    var d=new Date();
+    var bd=document.getElementById('brief-data'); if(bd){var sep=t.de?(' '+t.de+' '):' ';bd.textContent=t.dies[d.getDay()]+', '+d.getDate()+sep+t.mesos[d.getMonth()];}
+    var cites=(get('sm_cites')||[]).filter(function(c){return c.data===isoAvui()&&c.estat!=='cancelada'})
+               .sort(function(a,b){return String(a.hora).localeCompare(String(b.hora))});
+    var kpis=document.getElementById('brief-kpis'), cont=document.getElementById('cites');
+    if(!cites.length){
+      kpis.innerHTML=''; cont.innerHTML='<p class="buit">'+t.buit+'</p>';
+    }else{
+      var pend=cites.filter(function(c){return c.estat==='pendent'}).length;
+      kpis.innerHTML='<b>'+cites.length+'</b> '+(cites.length===1?t.visita:t.visites)+' '+t.avui+(pend?' · <b>'+pend+'</b> '+t.conf:'');
+      var prox=cites.slice(0,4).map(function(c){
+        return '<div class="cita"><span class="hora">'+esc(c.hora)+'</span>'+
+          '<span class="cos"><div class="nom">'+esc(c.pacient||'—')+'</div>'+
+          '<div class="motiu">'+esc(c.motiu||'')+'</div></span>'+
+          '<span class="estat '+esc(c.estat)+'">'+(t.estat[c.estat]||esc(c.estat))+'</span></div>';
+      }).join('');
+      cont.innerHTML=prox+(cites.length>4?'<div class="buit" style="margin-top:8px">+'+(cites.length-4)+' '+t.mesmes+'</div>':'');
+    }
+  }
+
+  (function(){
+    var q=new URLSearchParams(location.search);
+    if(q.get('preview')==='1') localStorage.setItem('cm_preview','1');
+    if(q.get('preview')==='0') localStorage.removeItem('cm_preview');
+    var preview=localStorage.getItem('cm_preview')==='1';
+    if(!preview){
+      ['card-secre','card-recept','brief-box'].forEach(function(id){var e=document.getElementById(id); if(e) e.style.display='none';});
+    }else{
+      var w=document.querySelector('.wrap');
+      if(w){var b=document.createElement('div');b.textContent='● Mode preview actiu · SecreMed i ReceptMed només visibles per a tu';
+        b.style.cssText='color:#94A3B8;font-size:.74rem;font-weight:600;margin-bottom:-14px';w.insertBefore(b,w.firstChild);}
+    }
+  })();
+
+  var lang=localStorage.getItem('em_idioma_ui')||'ca';
+  if(lang!=='ca'&&lang!=='es'&&lang!=='en') lang='ca';
+  render(lang);
+  var lcur=document.getElementById('lang-cur');
+  if(lcur)lcur.addEventListener('click',function(e){e.stopPropagation();var m=document.getElementById('lang-menu');if(m)m.classList.toggle('obert');});
+  document.querySelectorAll('#lang-menu button').forEach(function(b){
+    b.addEventListener('click',function(){lang=b.getAttribute('data-l');localStorage.setItem('em_idioma_ui',lang);var m=document.getElementById('lang-menu');if(m)m.classList.remove('obert');render(lang);});
+  });
+  document.addEventListener('click',function(){var m=document.getElementById('lang-menu');if(m)m.classList.remove('obert');});
+})();
+</script>
+</body>
+</html>

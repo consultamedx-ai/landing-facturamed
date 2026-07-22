@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://formspree.io; form-action 'self' https://formspree.io">
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="noindex,nofollow">
+<title>ConsultaMed — La suite d'IA per a la consulta privada</title>
+<meta name="description" content="El metge fa de metge. La resta, ConsultaMed: la factura VeriFactu surt sola i una IA escriu l'informe de la visita. Tot al teu ordinador.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blau:#0D3B66; --blau2:#0A2E52; --teal:#14B8A6; --verd:#059669; --violeta:#8B2DA5;
+    --taronja:#EA7317; --cian:#0891B2; --gasa:#F7FAFC; --grafit:#1F2937; --boira:#94A3B8;
+    --linia:#E7EDF3; --max:1120px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:'Inter',system-ui,sans-serif;color:var(--grafit);background:var(--gasa);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  h1,h2,h3{font-family:'Sora',sans-serif;line-height:1.08;letter-spacing:-.02em}
+  a{text-decoration:none;color:inherit}
+  img{max-width:100%;display:block}
+  .wrap{max-width:var(--max);margin:0 auto;padding:0 26px}
+  .reveal{opacity:0;transform:translateY(30px);transition:opacity .9s cubic-bezier(.16,1,.3,1),transform .9s cubic-bezier(.16,1,.3,1)}
+  .reveal.vist{opacity:1;transform:none}
+  .d1{transition-delay:.08s}.d2{transition-delay:.16s}.d3{transition-delay:.24s}.d4{transition-delay:.32s}
+  @media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none}}
+
+  /* ===== NAV ===== */
+  nav{position:fixed;top:0;left:0;right:0;z-index:60;transition:background .3s,box-shadow .3s,padding .3s;padding:18px 0}
+  nav.scrolled{background:rgba(247,250,252,.82);backdrop-filter:blur(16px) saturate(1.4);box-shadow:0 1px 0 rgba(13,59,102,.06);padding:11px 0}
+  .nav-in{display:flex;align-items:center;justify-content:space-between}
+  .logo-img{height:30px;width:auto;transition:filter .3s}
+  nav:not(.scrolled) .logo-img{filter:brightness(0) invert(1)}
+  .nav-r{display:flex;align-items:center;gap:18px}
+  .nav-lang,.nav-login{font-size:.86rem;font-weight:600;transition:opacity .2s,color .3s}
+  nav:not(.scrolled) .nav-lang,nav:not(.scrolled) .nav-login{color:rgba(255,255,255,.85)}
+  nav.scrolled .nav-lang{color:var(--boira)} nav.scrolled .nav-login{color:var(--blau)}
+  .nav-login{padding:8px 16px;border:1.5px solid currentColor;border-radius:99px;opacity:.9}
+  .nav-cta{background:var(--teal);color:#04201d;font-weight:700;font-size:.88rem;padding:10px 20px;border-radius:99px;transition:transform .2s,box-shadow .2s;box-shadow:0 8px 24px rgba(20,184,166,.35)}
+  .nav-cta:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(20,184,166,.5)}
+
+  /* ===== HERO (dark, aurora) ===== */
+  header{position:relative;min-height:100vh;display:flex;align-items:center;background:var(--blau2);overflow:hidden;padding:120px 0 80px}
+  .aurora{position:absolute;inset:-20% -10%;z-index:0;filter:blur(70px);opacity:.9}
+  .blob{position:absolute;border-radius:50%;mix-blend-mode:screen;animation:drift 22s ease-in-out infinite}
+  .b1{width:52vw;height:52vw;left:-8vw;top:-12vw;background:radial-gradient(circle,rgba(20,184,166,.9),transparent 62%)}
+  .b2{width:44vw;height:44vw;right:-6vw;top:6vw;background:radial-gradient(circle,rgba(8,145,178,.75),transparent 62%);animation-duration:27s}
+  .b3{width:40vw;height:40vw;left:26vw;bottom:-18vw;background:radial-gradient(circle,rgba(139,45,165,.55),transparent 62%);animation-duration:31s}
+  .b4{width:26vw;height:26vw;right:16vw;bottom:2vw;background:radial-gradient(circle,rgba(5,150,105,.5),transparent 62%);animation-duration:19s}
+  @keyframes drift{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(6%,4%) scale(1.12)}66%{transform:translate(-5%,-3%) scale(.94)}}
+  .glow{position:absolute;inset:0;z-index:1;background:radial-gradient(420px circle at var(--mx,50%) var(--my,32%),rgba(20,184,166,.18),transparent 60%);transition:background .2s;pointer-events:none}
+  .grain{position:absolute;inset:0;z-index:1;opacity:.05;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+  .hero{position:relative;z-index:2;display:grid;grid-template-columns:1.08fr .92fr;gap:60px;align-items:center;width:100%}
+  .h-badge{display:inline-flex;align-items:center;gap:9px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);color:#CFF3EC;font-size:.78rem;font-weight:600;padding:8px 15px;border-radius:99px;margin-bottom:26px;backdrop-filter:blur(8px)}
+  .h-badge .dot{width:7px;height:7px;border-radius:50%;background:var(--teal);box-shadow:0 0 0 0 rgba(20,184,166,.7);animation:pulse 2s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(20,184,166,.6)}70%{box-shadow:0 0 0 9px rgba(20,184,166,0)}100%{box-shadow:0 0 0 0 rgba(20,184,166,0)}}
+  h1{font-size:clamp(2.5rem,5.4vw,4.1rem);font-weight:800;color:#fff;margin-bottom:22px}
+  h1 .grad{background:linear-gradient(100deg,var(--teal),#5EEAD4 60%,var(--cian));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .h-sub{font-size:1.17rem;color:#B9CBDD;max-width:30em;margin-bottom:34px}
+  .h-cta{display:flex;flex-wrap:wrap;align-items:center;gap:18px}
+  .btn-main{position:relative;background:linear-gradient(100deg,var(--teal),#0FA396);color:#04201d;font-weight:700;font-size:1.02rem;padding:16px 32px;border-radius:99px;box-shadow:0 14px 34px rgba(20,184,166,.4);transition:transform .2s,box-shadow .2s;overflow:hidden}
+  .btn-main:hover{transform:translateY(-3px);box-shadow:0 20px 44px rgba(20,184,166,.55)}
+  .btn-main::after{content:"";position:absolute;top:0;left:-120%;width:60%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.5),transparent);transform:skewX(-20deg);transition:left .6s}
+  .btn-main:hover::after{left:130%}
+  .h-micro{font-size:.86rem;color:#8FA6BD}
+  .h-micro b{color:#fff}
+
+  /* Hero mock (glass, floating) */
+  .mock{position:relative;perspective:1400px}
+  .card-glass{background:rgba(255,255,255,.9);border:1px solid rgba(255,255,255,.6);border-radius:20px;box-shadow:0 40px 90px rgba(4,20,40,.5);padding:24px;backdrop-filter:blur(6px);animation:float 7s ease-in-out infinite;will-change:transform}
+  @keyframes float{0%,100%{transform:translateY(0) rotateX(4deg) rotateY(-6deg)}50%{transform:translateY(-16px) rotateX(2deg) rotateY(-4deg)}}
+  .cg-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+  .cg-h strong{font-family:'Sora';color:var(--blau);font-size:.98rem}
+  .chip-vf{font-size:.66rem;font-weight:700;background:#ECFDF5;color:var(--verd);border:1px solid #A7F3D0;padding:3px 9px;border-radius:99px}
+  .cg-l{display:flex;justify-content:space-between;font-size:.83rem;color:#475569;padding:9px 0;border-bottom:1px dashed var(--linia)}
+  .cg-t{display:flex;justify-content:space-between;font-weight:700;color:var(--blau);padding-top:12px}
+  .cg-t .ok{color:var(--verd)}
+  .qr{position:absolute;right:-16px;bottom:-20px;background:#fff;border:1px solid var(--linia);border-radius:14px;padding:11px;box-shadow:0 18px 40px rgba(4,20,40,.35);transform:rotate(-4deg);animation:float 7s ease-in-out infinite .6s}
+  .qr span{display:block;text-align:center;font-size:.56rem;font-weight:700;color:var(--boira);margin-top:5px;letter-spacing:.06em}
+  .pill-ai{position:absolute;left:-22px;top:-16px;background:var(--violeta);color:#fff;font-size:.72rem;font-weight:700;padding:9px 15px;border-radius:99px;box-shadow:0 14px 30px rgba(139,45,165,.45);animation:float 7s ease-in-out infinite .3s}
+
+  /* ===== STATS strip ===== */
+  .stats{background:var(--blau);color:#fff;position:relative;z-index:3}
+  .stats-in{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;padding:34px 0}
+  .stat{text-align:center;border-right:1px solid rgba(255,255,255,.12)}
+  .stat:last-child{border:none}
+  .stat .n{font-family:'Sora';font-weight:800;font-size:2rem;color:#fff;background:linear-gradient(100deg,#fff,#9FE7DD);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .stat .l{font-size:.78rem;color:#9FB4CC;text-transform:uppercase;letter-spacing:.06em;margin-top:2px}
+
+  /* ===== SECTIONS ===== */
+  section{padding:100px 0;position:relative}
+  .kicker{display:inline-block;font-size:.76rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);margin-bottom:14px}
+  h2{font-size:clamp(1.9rem,3.6vw,2.7rem);font-weight:700;color:var(--blau);margin-bottom:16px}
+  .lead{color:#51617A;max-width:40em;font-size:1.05rem;margin-bottom:52px}
+
+  /* Suite products */
+  .prods{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+  .prod{position:relative;background:#fff;border:1px solid var(--linia);border-radius:22px;padding:34px;overflow:hidden;transition:transform .35s cubic-bezier(.16,1,.3,1),box-shadow .35s}
+  .prod::before{content:"";position:absolute;inset:0;border-radius:22px;padding:1.5px;background:linear-gradient(130deg,var(--pa),transparent 55%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:0;transition:opacity .35s}
+  .prod:hover{transform:translateY(-8px);box-shadow:0 30px 70px rgba(13,59,102,.14)}
+  .prod:hover::before{opacity:1}
+  .prod .halo{position:absolute;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,var(--pa),transparent 65%);opacity:.14;top:-70px;right:-60px;filter:blur(6px);transition:opacity .35s}
+  .prod:hover .halo{opacity:.28}
+  .prod-logo{height:34px;margin-bottom:18px;position:relative}
+  .prod-logo img{height:34px;width:auto}
+  .prod p{color:#51617A;font-size:.96rem;margin-bottom:18px;position:relative}
+  .prod ul{list-style:none;position:relative}
+  .prod li{font-size:.9rem;color:#3B4A5E;padding:7px 0 7px 26px;position:relative}
+  .prod li::before{content:"";position:absolute;left:2px;top:13px;width:8px;height:8px;border-radius:50%;background:var(--pa)}
+  .estat-chip{display:inline-flex;align-items:center;gap:7px;margin-top:20px;font-size:.72rem;font-weight:700;letter-spacing:.03em;text-transform:uppercase;padding:6px 13px;border-radius:99px;background:var(--pa-l);color:var(--pa);position:relative}
+  .suite-more{text-align:center;margin-top:36px;font-size:.95rem;color:var(--boira)}
+  .suite-more b{color:var(--blau)}
+
+  /* Value cards */
+  .vals{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+  .val{background:#fff;border:1px solid var(--linia);border-radius:18px;padding:30px}
+  .val .ic{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:18px;background:linear-gradient(135deg,var(--vc),var(--vc2));box-shadow:0 12px 26px var(--vsh)}
+  .val h3{font-size:1.1rem;color:var(--blau);margin-bottom:9px}
+  .val p{font-size:.92rem;color:#51617A}
+
+  /* Privacy moat (dark spotlight) */
+  .moat{background:radial-gradient(120% 130% at 80% 0%,#123a5f,var(--blau2));color:#fff;border-radius:32px;padding:70px 60px;position:relative;overflow:hidden}
+  .moat::after{content:"";position:absolute;width:520px;height:520px;border-radius:50%;background:radial-gradient(circle,rgba(20,184,166,.35),transparent 60%);right:-140px;top:-160px;filter:blur(30px)}
+  .moat .in{position:relative;z-index:2;max-width:34em}
+  .moat h2{color:#fff}
+  .moat p{color:#C6D6E6;font-size:1.08rem;margin-top:14px}
+  .moat .tag{display:inline-flex;gap:8px;margin-top:26px;flex-wrap:wrap}
+  .moat .tag span{background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.16);border-radius:99px;padding:8px 15px;font-size:.82rem;font-weight:600}
+
+  /* Steps */
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;counter-reset:s}
+  .step{position:relative;padding-top:16px}
+  .step::before{counter-increment:s;content:"0" counter(s);font-family:'Sora';font-weight:800;font-size:3.2rem;background:linear-gradient(120deg,var(--teal),var(--cian));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;display:block;margin-bottom:8px;opacity:.9}
+  .step h3{color:var(--blau);font-size:1.18rem;margin-bottom:8px}
+  .step p{color:#51617A;font-size:.95rem}
+
+  /* Pricing */
+  .preus{display:grid;grid-template-columns:1fr 1fr;gap:26px;max-width:800px;margin:0 auto}
+  .preu{position:relative;background:#fff;border:1.5px solid var(--linia);border-radius:22px;padding:36px;display:flex;flex-direction:column}
+  .preu.top{border:0;background:linear-gradient(180deg,#fff,#fff) padding-box,linear-gradient(130deg,var(--teal),var(--cian)) border-box;border:2px solid transparent;box-shadow:0 30px 70px rgba(20,184,166,.16)}
+  .preu .tag{position:absolute;top:-15px;left:32px;background:linear-gradient(100deg,var(--teal),var(--cian));color:#04201d;font-size:.72rem;font-weight:800;letter-spacing:.05em;padding:7px 15px;border-radius:99px;text-transform:uppercase}
+  .preu h3{font-size:1.05rem;color:var(--blau);margin-bottom:8px}
+  .preu .p{font-family:'Sora';font-weight:800;font-size:3rem;color:var(--blau);margin:6px 0}
+  .preu .p small{font-size:1rem;color:var(--boira);font-weight:600}
+  .preu .note{font-size:.82rem;color:var(--boira);margin-bottom:16px}
+  .preu ul{list-style:none;margin:8px 0 24px}
+  .preu li{font-size:.9rem;padding:8px 0 8px 26px;position:relative;border-bottom:1px dashed var(--linia);color:#3B4A5E}
+  .preu li::before{content:"✓";position:absolute;left:0;color:var(--teal);font-weight:800}
+  .preu .cta{margin-top:auto;text-align:center;background:var(--blau);color:#fff;font-weight:700;padding:14px;border-radius:99px;transition:background .2s,transform .2s}
+  .preu.top .cta{background:linear-gradient(100deg,var(--teal),#0FA396);color:#04201d}
+  .preu .cta:hover{transform:translateY(-2px)}
+  .trust{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:30px}
+  .trust span{background:#fff;border:1px solid var(--linia);border-radius:99px;font-size:.82rem;font-weight:500;color:#51617A;padding:9px 16px}
+
+  /* FAQ */
+  .faqs{max-width:780px;margin:0 auto}
+  details{background:#fff;border:1px solid var(--linia);border-radius:16px;padding:6px 24px;margin-bottom:12px;transition:box-shadow .2s}
+  details[open]{box-shadow:0 14px 40px rgba(13,59,102,.08)}
+  summary{font-family:'Sora';font-weight:600;color:var(--blau);cursor:pointer;font-size:1rem;padding:18px 0;list-style:none;display:flex;justify-content:space-between;align-items:center}
+  summary::-webkit-details-marker{display:none}
+  summary::after{content:"+";font-size:1.4rem;color:var(--teal);transition:transform .25s}
+  details[open] summary::after{transform:rotate(45deg)}
+  details p{color:#51617A;font-size:.94rem;padding:0 0 20px}
+
+  /* Registre */
+  #registre{background:linear-gradient(180deg,#fff,var(--gasa))}
+  form{background:#fff;border:1px solid var(--linia);border-radius:24px;padding:40px;max-width:580px;margin:0 auto;box-shadow:0 34px 80px rgba(13,59,102,.10)}
+  label{display:block;font-size:.83rem;font-weight:600;margin:16px 0 6px;color:var(--blau)}
+  input,select{width:100%;padding:13px 15px;border:1px solid var(--linia);border-radius:12px;font:inherit;font-size:.95rem;background:var(--gasa);transition:border .2s,box-shadow .2s}
+  input:focus,select:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 3px rgba(20,184,166,.15);background:#fff}
+  .check{display:flex;gap:10px;align-items:flex-start;margin:18px 0;font-size:.8rem;color:#51617A}
+  .check input{width:auto;margin-top:3px}
+  form .cta{width:100%;background:linear-gradient(100deg,var(--teal),#0FA396);color:#04201d;font-weight:700;font-size:1.02rem;padding:15px;border-radius:99px;border:none;cursor:pointer;transition:transform .2s,box-shadow .2s;box-shadow:0 14px 30px rgba(20,184,166,.3)}
+  form .cta:hover{transform:translateY(-2px);box-shadow:0 20px 40px rgba(20,184,166,.45)}
+  .micro{font-size:.82rem;color:var(--boira);text-align:center;margin-top:12px}
+  #gracies{display:none;text-align:center;padding:30px 10px}
+  #gracies h3{color:var(--verd);margin-bottom:8px}
+
+  footer{background:var(--blau2);color:#8FA6BD;padding:50px 0;font-size:.84rem}
+  footer .wrap{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;align-items:center}
+  footer strong{color:#fff;font-family:'Sora'}
+  footer .logo-img{filter:brightness(0) invert(1);opacity:.9}
+
+  @media(max-width:900px){
+    .hero{grid-template-columns:1fr;gap:50px}
+    .stats-in{grid-template-columns:1fr 1fr;gap:26px}.stat:nth-child(2){border:none}
+    .prods,.vals,.steps,.preus{grid-template-columns:1fr}
+    .moat{padding:48px 30px}
+    header{min-height:auto;padding:130px 0 70px}
+    .mock{max-width:420px;margin:0 auto}
+    .nav-login,.nav-lang{display:none}
+  }
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <div class="wrap nav-in">
+    <a href="#top"><img class="logo-img" src="consultamed.png" alt="ConsultaMed"></a>
+    <div class="nav-r">
+      <a class="nav-lang" href="ca.html">CAT</a>
+      <a class="nav-login" href="hub.html">Iniciar sessió</a>
+      <a class="nav-cta" href="#registre">Crear compte</a>
+    </div>
+  </div>
+</nav>
+
+<header id="top">
+  <div class="aurora"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div><div class="blob b4"></div></div>
+  <div class="glow" id="glow"></div>
+  <div class="grain"></div>
+  <div class="wrap hero">
+    <div>
+      <span class="h-badge reveal"><span class="dot"></span>VeriFactu · obligatori per a metges autònoms l'1 de juliol de 2027</span>
+      <h1 class="reveal d1">El metge fa de metge.<br>La resta, <span class="grad">ConsultaMed</span>.</h1>
+      <p class="h-sub reveal d2">La suite d'IA per a la consulta privada: la factura VeriFactu surt sola i una IA escriu l'informe de la visita. Tot al teu ordinador — les dades no surten enlloc.</p>
+      <div class="h-cta reveal d3">
+        <a class="btn-main" href="#registre">Crear compte i començar</a>
+        <span class="h-micro">Beta oberta · accés immediat<br><b>50 €/mes</b> tota la suite</span>
+      </div>
+    </div>
+    <div class="mock reveal d2">
+      <span class="pill-ai">✍️ Informe escrit per IA</span>
+      <div class="card-glass" id="tilt">
+        <div class="cg-h"><strong>Factura 2026-0341</strong><span class="chip-vf">VeriFactu ✓</span></div>
+        <div class="cg-l"><span>Consulta dermatologia</span><span>90,00 €</span></div>
+        <div class="cg-l"><span>Pacient · Adeslas</span><span>remesa oct.</span></div>
+        <div class="cg-l"><span>Informe de la visita</span><span>generat sol</span></div>
+        <div class="cg-t"><span>Estat</span><span class="ok">Cobrada</span></div>
+      </div>
+      <div class="qr">
+        <svg width="66" height="66" viewBox="0 0 74 74" aria-hidden="true"><rect width="74" height="74" fill="#fff"/><g fill="#0D3B66"><rect x="4" y="4" width="20" height="20"/><rect x="50" y="4" width="20" height="20"/><rect x="4" y="50" width="20" height="20"/><rect x="9" y="9" width="10" height="10" fill="#fff"/><rect x="55" y="9" width="10" height="10" fill="#fff"/><rect x="9" y="55" width="10" height="10" fill="#fff"/><rect x="30" y="8" width="6" height="6"/><rect x="40" y="16" width="6" height="6"/><rect x="30" y="28" width="6" height="6"/><rect x="44" y="30" width="6" height="6"/><rect x="54" y="38" width="6" height="6"/><rect x="30" y="42" width="6" height="6"/><rect x="40" y="50" width="6" height="6"/><rect x="52" y="52" width="6" height="6"/><rect x="62" y="30" width="6" height="6"/><rect x="36" y="60" width="6" height="6"/><rect x="62" y="62" width="6" height="6"/></g></svg>
+        <span>QR VERIFACTU</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="stats"><div class="wrap stats-in">
+  <div class="stat"><div class="n" data-count="50" data-suf=" €/mes">0</div><div class="l">Tota la suite</div></div>
+  <div class="stat"><div class="n" data-count="0" data-suf="">0</div><div class="l">Dades al núvol</div></div>
+  <div class="stat"><div class="n" data-count="2" data-suf=" min">0</div><div class="l">Per emetre una factura</div></div>
+  <div class="stat"><div class="n" data-count="100" data-suf="%">0</div><div class="l">VeriFactu validat</div></div>
+</div></div>
+
+<section id="suite">
+  <div class="wrap">
+    <span class="kicker reveal">La suite</span>
+    <h2 class="reveal">Dos productes avui.<br>Tota la consulta, sense paperassa.</h2>
+    <p class="lead reveal">ConsultaMed reuneix el que ara et roba temps. Al llançament estrenem dos productes, i la suite seguirà creixent.</p>
+    <div class="prods">
+      <div class="prod reveal" style="--pa:var(--verd);--pa-l:#ECFDF5">
+        <div class="halo"></div>
+        <div class="prod-logo"><img src="facturamed.png" alt="FacturaMed"></div>
+        <p>La factura surt sola en acabar la visita: hash, QR i remissió a l'AEAT. Compleix VeriFactu des del primer dia i prepara les remeses de cada mútua.</p>
+        <ul><li>Factures VeriFactu il·limitades</li><li>Remeses a mútues i asseguradores</li><li>Rectificatives amb rastre legal</li><li>Export per a la teva gestoria</li></ul>
+        <span class="estat-chip">● Disponible a la beta</span>
+      </div>
+      <div class="prod reveal d1" style="--pa:var(--violeta);--pa-l:#F5E8FA">
+        <div class="halo"></div>
+        <div class="prod-logo"><img src="escribamed.png" alt="EscribaMed"></div>
+        <p>Parles amb el pacient i una IA escriu l'informe de la visita. I el més important: l'àudio i les dades <strong>mai surten del teu ordinador</strong>.</p>
+        <ul><li>L'informe clínic, redactat sol</li><li>Català, castellà, alemany i anglès</li><li>Historial, imatges (ECG, ECO) i seguiment</li><li>De l'informe a la factura, en un clic</li></ul>
+        <span class="estat-chip">● Disponible a la beta</span>
+      </div>
+    </div>
+    <p class="suite-more reveal">I la suite creix: <b>recepció</b> i <b>receptes privades</b> arriben aviat, amb la mateixa filosofia — tot dins del teu ordinador.</p>
+  </div>
+</section>
+
+<section id="perque" style="padding-top:0">
+  <div class="wrap">
+    <span class="kicker reveal">Per què ara</span>
+    <h2 class="reveal">Tres motius per fer el pas</h2>
+    <p class="lead reveal">Dissenyada només per a consultes mèdiques privades. No és un programa de comptabilitat genèric.</p>
+    <div class="vals">
+      <div class="val reveal" style="--vc:#059669;--vc2:#34D399;--vsh:rgba(5,150,105,.28)">
+        <div class="ic">⚖️</div><h3>VeriFactu arriba el 2027</h3>
+        <p>A partir de l'1 de juliol de 2027, cada factura d'un metge autònom haurà de portar hash, QR i traçabilitat davant l'AEAT. Amb FacturaMed hi arribes preparat, sense presses.</p>
+      </div>
+      <div class="val reveal d1" style="--vc:#0D3B66;--vc2:#14B8A6;--vsh:rgba(13,59,102,.28)">
+        <div class="ic">🔒</div><h3>Les teves dades no surten d'aquí</h3>
+        <p>EscribaMed processa la veu i les dades del pacient al teu propi ordinador. Els programes d'IA americans les pugen al núvol; ConsultaMed, mai. Secret mèdic per disseny.</p>
+      </div>
+      <div class="val reveal d2" style="--vc:#EA7317;--vc2:#FB923C;--vsh:rgba(234,115,23,.28)">
+        <div class="ic">⏱️</div><h3>El teu temps val més</h3>
+        <p>Entre facturar i informar se'n van hores cada setmana. La suite completa costa 50 € al mes: menys que una visita. Cada hora que elimines es paga sola.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding-top:0">
+  <div class="wrap">
+    <div class="moat reveal">
+      <div class="in">
+        <span class="kicker" style="color:#5EEAD4">El fossat</span>
+        <h2>L'àudio de la visita<br>no surt mai de la consulta.</h2>
+        <p>Mentre els altres pugen les converses dels teus pacients al seu núvol, EscribaMed transcriu i redacta amb una IA que corre dins del teu ordinador. És la diferència entre "confiança" i confiança de veritat: secret mèdic i RGPD per disseny, no com a promesa.</p>
+        <div class="tag"><span>💻 Processament local</span><span>🔒 Res al núvol</span><span>📄 RGPD per disseny</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="com">
+  <div class="wrap">
+    <span class="kicker reveal">Com funciona</span>
+    <h2 class="reveal">De la visita al cobrament, sense tocar res</h2>
+    <p class="lead reveal">Crea el compte, configura la consulta en 2 minuts i prova la suite avui mateix.</p>
+    <div class="steps">
+      <div class="step reveal"><h3>Acaba la visita</h3><p>Parles amb el pacient i EscribaMed escriu l'informe clínic sol, en el teu idioma, sense que l'àudio surti de l'ordinador.</p></div>
+      <div class="step reveal d1"><h3>Un clic i la factura surt</h3><p>Des de l'informe, FacturaMed emet la factura amb la sèrie, el hash i el QR VeriFactu correctes, i prepara la remesa de la mútua.</p></div>
+      <div class="step reveal d2"><h3>Veus arribar els diners</h3><p>Registre encadenat i inalterable, export per a la gestoria en un clic i recordatoris de cobrament que surten sols.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="preus-sec" style="padding-top:0">
+  <div class="wrap" style="text-align:center">
+    <span class="kicker reveal">Preu</span>
+    <h2 class="reveal">Tota la suite, un sol preu</h2>
+    <p class="lead reveal" style="margin:0 auto 52px">FacturaMed i EscribaMed inclosos. Sense permanència. Les teves dades sempre són teves.</p>
+    <div class="preus">
+      <div class="preu reveal">
+        <h3>Mensual</h3><div class="p">50 €<small>/mes</small></div>
+        <div class="note">+ IVA · tota la suite · sense permanència</div>
+        <ul><li>FacturaMed: facturació VeriFactu completa</li><li>EscribaMed: informes amb IA local</li><li>Pacients i sèries il·limitats</li><li>Dades al teu ordinador · RGPD</li></ul>
+        <a class="cta" href="#registre">Començar amb mensual</a>
+      </div>
+      <div class="preu top reveal d1">
+        <span class="tag">2 mesos gratis</span>
+        <h3>Anual</h3><div class="p">500 €<small>/any</small></div>
+        <div class="note">+ IVA · equival a 41,67 €/mes</div>
+        <ul><li>Tota la suite del pla mensual</li><li>Preu congelat durant la subscripció</li><li>Alta acompanyada i migració de sèries</li><li>Suport prioritari</li></ul>
+        <a class="cta" href="#registre">Començar amb anual</a>
+      </div>
+    </div>
+    <div class="trust reveal"><span>💻 Dades al teu ordinador</span><span>🔒 L'àudio mai puja al núvol</span><span>📄 RGPD per disseny</span><span>🚪 Sense permanència</span></div>
+  </div>
+</section>
+
+<section id="faq" style="padding-top:0">
+  <div class="wrap">
+    <span class="kicker reveal" style="display:block;text-align:center">Preguntes freqüents</span>
+    <h2 class="reveal" style="text-align:center;margin-bottom:44px">El que ens pregunten els metges</h2>
+    <div class="faqs">
+      <details class="reveal"><summary>Què inclou ConsultaMed?</summary><p>Al llançament, dos productes: <strong>FacturaMed</strong> (facturació VeriFactu i mútues) i <strong>EscribaMed</strong> (l'informe de la visita escrit per una IA que corre al teu ordinador). Tots dos entren amb el mateix compte.</p></details>
+      <details class="reveal"><summary>De veritat les dades no surten del meu ordinador?</summary><p>Sí. EscribaMed transcriu i redacta amb un motor d'IA instal·lat al teu propi equip. L'àudio de la visita i les dades del pacient no viatgen a cap servidor. És la diferència amb els programes d'IA americans, que ho pugen tot al seu núvol.</p></details>
+      <details class="reveal"><summary>Ja el puc fer servir?</summary><p>Sí. Crea el compte i hi accediràs immediatament a la beta. La remissió a l'AEAT funciona a l'entorn de proves oficial mentre completem l'homologació.</p></details>
+      <details class="reveal"><summary>Quant costa i quan es paga?</summary><p>50 € + IVA al mes per tota la suite, o 500 € + IVA a l'any (2 mesos gratis). Durant la beta no es cobra res: el pagament s'activa quan decideixis passar a ús real, amb avís previ. Sense permanència.</p></details>
+      <details class="reveal"><summary>Soc autònom / tinc una societat. M'afecta VeriFactu?</summary><p>Sí en tots dos casos: a les societats des de l'1 de gener de 2027 i als autònoms des de l'1 de juliol de 2027. Les factures a mútues i asseguradores també hi estan incloses.</p></details>
+    </div>
+  </div>
+</section>
+
+<section id="registre">
+  <div class="wrap">
+    <div style="text-align:center;max-width:600px;margin:0 auto 36px">
+      <span class="kicker">Crear compte</span>
+      <h2>Comença avui amb ConsultaMed</h2>
+      <p class="lead" style="margin:8px auto 0">Accés immediat a la beta. Sense targeta, sense compromís.</p>
+    </div>
+    <form id="reg" action="https://formspree.io/f/xrenbbza" method="POST">
+      <input type="hidden" name="_subject" value="Nou registre ConsultaMed (v2)">
+      <label for="nom">Nom i cognoms</label>
+      <input id="nom" name="nombre" type="text" required autocomplete="name" placeholder="Dra. Marta Ferrer">
+      <label for="email">Email</label>
+      <input id="email" name="email" type="email" required autocomplete="email" placeholder="marta@latevaconsulta.cat">
+      <label for="nif">NIF (apareixerà a les teves factures)</label>
+      <input id="nif" name="nif" type="text" required maxlength="9" placeholder="12345678Z" style="text-transform:uppercase">
+      <label for="modo">Tipus de compte</label>
+      <select id="modo" name="modo" required><option selected>Consulta privada (1 metge) — 50 €/mes</option><option>Centre mèdic (diversos metges) — des de 149 €/mes</option></select>
+      <div class="check"><input id="priv" type="checkbox" required><label for="priv" style="margin:0;font-weight:400">Accepto que ConsultaMed faci servir aquestes dades per crear el meu compte i comunicar-se amb mi sobre el servei. Em podré donar de baixa en qualsevol moment.</label></div>
+      <button class="cta" type="submit">Crear el meu compte i entrar</button>
+      <p class="micro">Beta oberta · avui no es cobra res · 50 €/mes quan activis l'ús real</p>
+      <p class="micro" style="margin-top:6px">Ja tens compte? <a href="hub.html" style="color:var(--teal);font-weight:700">Entra a ConsultaMed →</a></p>
+    </form>
+    <div id="gracies"><h3>✅ Compte creat</h3><p>Entrant a ConsultaMed…</p></div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div style="display:flex;align-items:center;gap:12px"><img class="logo-img" src="consultamed.png" alt="ConsultaMed" style="height:24px"><span>· El metge fa de metge. La resta, ConsultaMed.</span></div>
+    <div><a href="mailto:consultamedx@gmail.com" style="color:#8FA6BD">consultamedx@gmail.com</a> · © 2026</div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  'use strict';
+  function safe(fn,n){try{fn()}catch(e){try{console.warn('v2:'+n,e)}catch(_){}}}
+
+  // nav scroll state
+  safe(function(){
+    var nav=document.getElementById('nav');
+    function onScroll(){nav.classList.toggle('scrolled',window.scrollY>40)}
+    window.addEventListener('scroll',onScroll,{passive:true});onScroll();
+  },'nav');
+
+  // reveals + 6s safety net
+  safe(function(){
+    var els=document.querySelectorAll('.reveal');
+    if(!('IntersectionObserver' in window)){els.forEach(function(e){e.classList.add('vist')});return}
+    var io=new IntersectionObserver(function(en){en.forEach(function(x){if(x.isIntersecting){x.target.classList.add('vist');io.unobserve(x.target)}})},{threshold:0.04,rootMargin:'0px 0px -8% 0px'});
+    els.forEach(function(e){io.observe(e)});
+    setTimeout(function(){els.forEach(function(e){e.classList.add('vist')})},6000);
+  },'reveal');
+
+  // hero mouse-reactive glow + subtle tilt
+  safe(function(){
+    var glow=document.getElementById('glow'),tilt=document.getElementById('tilt'),hd=document.querySelector('header');
+    if(!hd)return;
+    hd.addEventListener('mousemove',function(e){
+      var r=hd.getBoundingClientRect(),x=(e.clientX-r.left)/r.width*100,y=(e.clientY-r.top)/r.height*100;
+      if(glow){glow.style.setProperty('--mx',x+'%');glow.style.setProperty('--my',y+'%')}
+      if(tilt){var dx=(e.clientX-r.left-r.width/2)/r.width,dy=(e.clientY-r.top-r.height/2)/r.height;tilt.style.transform='rotateX('+(4-dy*8)+'deg) rotateY('+(-6+dx*10)+'deg)'}
+    });
+    hd.addEventListener('mouseleave',function(){if(tilt)tilt.style.transform=''});
+  },'glow');
+
+  // parallax hero mock
+  safe(function(){
+    var m=document.querySelector('.mock');if(!m)return;
+    window.addEventListener('scroll',function(){var y=window.scrollY;if(y<800)m.style.transform='translateY('+(y*0.06)+'px)'},{passive:true});
+  },'parallax');
+
+  // count-up stats
+  safe(function(){
+    var done=false;
+    function run(){if(done)return;done=true;
+      document.querySelectorAll('[data-count]').forEach(function(el){
+        var to=parseInt(el.getAttribute('data-count'),10),suf=el.getAttribute('data-suf')||'',t0=Date.now(),dur=1400;
+        (function tick(){var p=Math.min(1,(Date.now()-t0)/dur),e=1-Math.pow(1-p,3);el.textContent=Math.round(to*e)+suf;if(p<1)requestAnimationFrame(tick)})();
+      });
+    }
+    var s=document.querySelector('.stats');
+    if(s&&'IntersectionObserver' in window){var io=new IntersectionObserver(function(en){en.forEach(function(x){if(x.isIntersecting)run()})},{threshold:.4});io.observe(s);}
+    else run();
+    setTimeout(run,5000);
+  },'counters');
+
+  // registre → hub (preconfigura)
+  safe(function(){
+    var form=document.getElementById('reg'),ok=document.getElementById('gracies');
+    if(!form)return;
+    form.addEventListener('submit',function(ev){
+      ev.preventDefault();var d=new FormData(form);
+      safe(function(){var c=null;try{c=JSON.parse(localStorage.getItem('fm2_config'))}catch(e){}
+        if(!c||!c.nom)localStorage.setItem('fm2_config',JSON.stringify({nom:(d.get('nombre')||'').trim(),nif:(d.get('nif')||'').trim().toUpperCase(),colegiat:'',adreca:'',series:[{codi:String(new Date().getFullYear()),seguent:1}]}));
+      },'pre');
+      var go=function(){form.style.display='none';ok.style.display='block';setTimeout(function(){window.location.href='hub.html?benvinguda=1'},1500)};
+      if(window.fetch)fetch(form.action,{method:'POST',body:d,headers:{'Accept':'application/json'}}).then(go).catch(go);else go();
+    });
+  },'reg');
+})();
+</script>
+</body>
+</html>

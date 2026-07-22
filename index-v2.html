@@ -32,8 +32,9 @@
   nav{position:fixed;top:0;left:0;right:0;z-index:60;transition:background .3s,box-shadow .3s,padding .3s;padding:18px 0}
   nav.scrolled{background:rgba(247,250,252,.82);backdrop-filter:blur(16px) saturate(1.4);box-shadow:0 1px 0 rgba(13,59,102,.06);padding:11px 0}
   .nav-in{display:flex;align-items:center;justify-content:space-between}
-  .logo-img{height:30px;width:auto;transition:filter .3s}
-  nav:not(.scrolled) .logo-img{filter:brightness(0) invert(1)}
+  .logo-img{height:26px;width:auto;display:block}
+  .nav-in>a:first-child{background:#fff;border-radius:10px;padding:7px 12px;box-shadow:0 6px 18px rgba(4,20,40,.14);transition:box-shadow .3s;line-height:0}
+  nav.scrolled .nav-in>a:first-child{box-shadow:0 2px 8px rgba(13,59,102,.08)}
   .nav-r{display:flex;align-items:center;gap:18px}
   .nav-lang,.nav-login{font-size:.86rem;font-weight:600;transition:opacity .2s,color .3s}
   nav:not(.scrolled) .nav-lang,nav:not(.scrolled) .nav-login{color:rgba(255,255,255,.85)}
@@ -182,7 +183,8 @@
   footer{background:var(--blau2);color:#8FA6BD;padding:50px 0;font-size:.84rem}
   footer .wrap{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;align-items:center}
   footer strong{color:#fff;font-family:'Sora'}
-  footer .logo-img{filter:brightness(0) invert(1);opacity:.9}
+  footer .foot-logo{background:#fff;border-radius:9px;padding:8px 12px;display:inline-flex;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+  footer .foot-logo img{height:24px;display:block}
 
   @media(max-width:900px){
     .hero{grid-template-columns:1fr;gap:50px}
@@ -385,7 +387,7 @@
 
 <footer>
   <div class="wrap">
-    <div style="display:flex;align-items:center;gap:12px"><img class="logo-img" src="consultamed.png" alt="ConsultaMed" style="height:24px"><span>· El metge fa de metge. La resta, ConsultaMed.</span></div>
+    <div style="display:flex;align-items:center;gap:14px"><span class="foot-logo"><img src="consultamed.png" alt="ConsultaMed"></span><span>· El metge fa de metge. La resta, ConsultaMed.</span></div>
     <div><a href="mailto:consultamedx@gmail.com" style="color:#8FA6BD">consultamedx@gmail.com</a> · © 2026</div>
   </div>
 </footer>

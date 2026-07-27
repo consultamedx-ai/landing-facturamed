@@ -64,6 +64,13 @@
   .estat.vinguda{background:#ECFDF5;color:var(--verd-fosc)}
   .estat.noshow{background:#FEF2F2;color:#B91C1C}
   .estat.cancelada{background:#F1F5F9;color:#64748B}
+  .estat-wrap{position:relative;display:inline-block}
+  button.estat{border:none;cursor:pointer;font-family:inherit}
+  .estat .car{font-size:.58rem;opacity:.7}
+  .estat-menu{position:absolute;right:0;top:calc(100% + 4px);background:#fff;border:1px solid var(--linia);border-radius:10px;box-shadow:0 12px 30px rgba(13,59,102,.16);display:none;z-index:30;min-width:150px;overflow:hidden}
+  .estat-menu.obert{display:block}
+  .estat-menu button{display:block;width:100%;text-align:left;background:#fff;border:none;font:inherit;font-size:.8rem;font-weight:600;color:#475569;padding:9px 13px;cursor:pointer}
+  .estat-menu button:hover{background:var(--gasa);color:var(--blau)}
   .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:18px}
   .kpi{background:#fff;border:1px solid var(--linia);border-radius:12px;padding:14px 16px}
   .kpi .v{font-family:'Sora';font-weight:700;font-size:1.35rem;color:var(--blau)}
@@ -312,24 +319,23 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
         d.innerHTML='<span class="hora">'+esc(c.hora)+'</span>'+
           '<span class="cos"><div class="nom">'+esc(c.pacient)+(esCentre()&&c.metge?' <span style="font-size:.72rem;color:var(--boira)">· '+esc(c.metge)+'</span>':'')+'</div>'+
           '<div class="motiu">'+esc(c.motiu||'Consulta')+(c.tel?' · '+esc(c.tel):'')+'</div></span>'+
-          '<span class="estat '+c.estat+'">'+esc(Le(c.estat))+'</span>'+
+          '<span class="estat-wrap"><button type="button" class="estat '+c.estat+'" aria-haspopup="true">'+esc(Le(c.estat))+' <span class="car">▾</span></button><div class="estat-menu"></div></span>'+
           '<span class="accions" data-id="'+c.id+'"></span>';
         var ac=d.querySelector('.accions');
         function boto(txt,cls,fn){var b=document.createElement('button');b.className='btn '+cls+' mini';b.type='button';b.textContent=txt;b.addEventListener('click',fn);ac.appendChild(b);}
-        if(c.estat==='pendent'||c.estat==='confirmada'){
-          if(c.tel)boto(L('recordar'),'sec',function(){recordatori(c)});
-          boto(L('vino'),'sec',function(){canviaEstat(c.id,'vinguda')});
-          boto(L('novino'),'perill',function(){canviaEstat(c.id,'noshow')});
-        }
-        if(c.estat==='vinguda'){
-          boto(L('novino'),'perill',function(){canviaEstat(c.id,'noshow')});
-          boto(L('desfer'),'sec',function(){canviaEstat(c.id,'confirmada')});
-        }
-        if(c.estat==='noshow'){
-          boto(L('vino'),'sec',function(){canviaEstat(c.id,'vinguda')});
-          boto(L('desfer'),'sec',function(){canviaEstat(c.id,'confirmada')});
-        }
-        if(c.estat==='pendent')boto(L('confirmar'),'sec',function(){canviaEstat(c.id,'confirmada')});
+        // desplegable d'estat: clic a l'etiqueta → tria l'estat que vulguis
+        var mb=d.querySelector('button.estat'),mm=d.querySelector('.estat-menu');
+        ['pendent','confirmada','vinguda','noshow','cancelada'].forEach(function(st){
+          if(st===c.estat)return;
+          var o=document.createElement('button');o.type='button';o.textContent=Le(st);
+          o.addEventListener('click',function(ev){ev.stopPropagation();canviaEstat(c.id,st)});
+          mm.appendChild(o);
+        });
+        mb.addEventListener('click',function(ev){ev.stopPropagation();
+          document.querySelectorAll('.estat-menu.obert').forEach(function(m){if(m!==mm)m.classList.remove('obert')});
+          mm.classList.toggle('obert');
+        });
+        if((c.estat==='pendent'||c.estat==='confirmada')&&c.tel)boto(L('recordar'),'sec',function(){recordatori(c)});
         boto(L('visita'),'sec',function(){window.location.href='escriba.html?nom='+encodeURIComponent(c.pacient)});
         boto(L('facturar'),'verd',function(){var p=new URLSearchParams({facturar:'1',nom:c.pacient,concepte:c.motiu||'Consulta médica'});window.location.href='app.html?'+p.toString()});
         el.appendChild(d);
@@ -343,6 +349,7 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
   function canviaEstat(id,estat){
     var cs=cites();var c=cs.find(function(x){return x.id===id});if(!c)return;c.estat=estat;desa(K.cites,cs);pintaTot();
   }
+  document.addEventListener('click',function(){document.querySelectorAll('.estat-menu.obert').forEach(function(m){m.classList.remove('obert')})});
   function recordatori(c){
     var cf=conf()||{};var lloc=cf.nom||(cf.centre&&cf.centre.nom)||'la consulta';
     var msg='Hola '+c.pacient+', le recordamos su cita el '+dataLlegible(c.data)+' a las '+c.hora+' en '+lloc+'. Por favor, confirme respondiendo a este mensaje. Gracias.';

@@ -112,7 +112,7 @@
   }
   .tab-esc{border:none;background:none;font:inherit;font-size:.85rem;font-weight:600;color:#64748B;padding:7px 15px;border-radius:99px;cursor:pointer}
   .tab-esc.actiu{background:#8B2DA5;color:#fff}
-  #tabs-esc{display:inline-flex;gap:4px;background:#fff;border:1px solid var(--linia);border-radius:99px;padding:4px;margin-bottom:16px}
+  #tabs-esc{display:inline-flex;gap:4px;background:#fff;border:1px solid var(--linia);border-radius:99px;padding:4px}
   .vista-esc{display:none}.vista-esc.actiu{display:block}
   .hist-card{border:1px solid var(--linia);border-radius:11px;padding:12px 14px;margin-bottom:10px;background:#fff}
   .imgover{position:fixed;inset:0;background:rgba(13,59,102,.82);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;cursor:zoom-out}
@@ -159,8 +159,12 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
 
 <nav><div class="wrap nav-in">
   <span class="logo"><img class="logo-img" src="escribamed.png" alt="EscribaMed"><small>by ConsultaMed</small></span>
+  <div id="tabs-esc">
+    <button class="tab-esc actiu" data-v="visita" type="button" data-t>Visita</button>
+    <button class="tab-esc" data-v="historial" type="button" data-t>Historial clínico</button>
+    <button class="tab-esc" data-v="seguiment" type="button" data-t>Seguimiento</button>
+  </div>
   <div class="nav-dreta">
-    <span class="beta-chip" data-t>BETA PRIVADA · solo datos ficticios</span>
     <a class="nav-enllac" href="hub.html">◀ Panel</a>
     <a class="nav-enllac" href="app.html">FacturaMed →</a>
   </div>
@@ -169,12 +173,6 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
 <main class="wrap">
   <div class="banner" id="banner"></div>
   <div class="avis-priv" id="avis-priv">🔒 <strong>Beta privada de demostración.</strong> No introduzca datos reales de pacientes. El reconocimiento de voz lo realiza el servicio de su navegador (Chrome). Informe siempre al paciente antes de dictar en su presencia.</div>
-
-  <div id="tabs-esc">
-    <button class="tab-esc actiu" data-v="visita" type="button" data-t>Visita</button>
-    <button class="tab-esc" data-v="historial" type="button" data-t>Historial clínico</button>
-    <button class="tab-esc" data-v="seguiment" type="button" data-t>Seguimiento</button>
-  </div>
 
   <section class="vista-esc actiu" id="v-visita">
   <div class="grid">

@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://formspree.io; form-action 'self' https://formspree.io">
+<script src="cmstore.js"></script>
+<meta name="referrer" content="no-referrer">
+<title>ConsultaMed — La suite de IA para la consulta privada | 50 €/mes</title>
+<meta name="description" content="ConsultaMed: la factura VeriFactu sale sola con FacturaMed y una IA escribe el informe de la visita con EscribaMed. Todo en su ordenador. 50 €/mes toda la suite.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blau:#0D3B66; --teal:#14B8A6; --verd:#059669; --verd-fosc:#047857;
+    --violeta:#8B2DA5; --taronja:#EA7317; --cian:#0891B2;
+    --gasa:#F7FAFC; --grafit:#1F2937; --boira:#94A3B8; --linia:#E2E8F0;
+    --radius:14px; --max:1080px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:'Inter',system-ui,sans-serif;color:var(--grafit);background:var(--gasa);line-height:1.6;-webkit-font-smoothing:antialiased}
+  h1,h2,h3{font-family:'Sora',sans-serif;color:var(--blau);line-height:1.15}
+  a{color:var(--verd)}
+  .wrap{max-width:var(--max);margin:0 auto;padding:0 24px}
+  nav{position:sticky;top:0;z-index:50;background:rgba(247,250,252,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--linia)}
+  .nav-in{display:flex;align-items:center;justify-content:space-between;height:64px}
+  .logo{display:inline-flex;align-items:center;gap:9px;text-decoration:none}
+  .logo-img{height:30px;width:auto;display:block}
+  .nav-dreta{display:flex;align-items:center;gap:14px}
+  .lang{font-size:.82rem;font-weight:600;color:var(--boira);text-decoration:none}
+  .nav-cta{background:var(--verd);color:#fff;text-decoration:none;font-weight:600;font-size:.9rem;padding:10px 18px;border-radius:99px;transition:transform .15s ease, background .15s ease}
+  .nav-cta:hover{background:var(--verd-fosc);transform:translateY(-1px)}
+  .nav-login{font-size:.88rem;font-weight:600;color:var(--blau);text-decoration:none;padding:8px 15px;border:1.5px solid var(--linia);border-radius:99px;transition:background .15s}
+  .nav-login:hover{background:var(--gasa)}
+  header{position:relative;overflow:hidden;padding:84px 0 96px;
+    background:
+      radial-gradient(600px 380px at 85% 8%, rgba(20,184,166,.14), transparent 60%),
+      radial-gradient(700px 460px at 8% 90%, rgba(13,59,102,.10), transparent 60%),
+      var(--gasa)}
+  .hero{display:grid;grid-template-columns:1.15fr .85fr;gap:56px;align-items:center}
+  .badge{display:inline-flex;align-items:center;gap:8px;background:#FEF3C7;border:1px solid #FCD34D;color:#92400E;font-size:.8rem;font-weight:600;padding:7px 14px;border-radius:99px;margin-bottom:22px}
+  .badge .dot{width:8px;height:8px;border-radius:50%;background:#D97706;animation:puls 1.8s infinite}
+  @keyframes puls{0%,100%{opacity:1}50%{opacity:.35}}
+  h1{font-size:clamp(2rem,4.6vw,3.15rem);margin-bottom:20px}
+  h1 .marca{color:var(--verd)}
+  .sub{font-size:1.13rem;color:#475569;max-width:34em;margin-bottom:30px}
+  .cta-row{display:flex;flex-wrap:wrap;align-items:center;gap:16px}
+  .btn{display:inline-block;background:var(--verd);color:#fff;text-decoration:none;font-weight:600;font-size:1.02rem;padding:15px 30px;border-radius:99px;box-shadow:0 10px 24px rgba(5,150,105,.28);transition:transform .15s ease, box-shadow .15s ease;border:none;cursor:pointer;font-family:inherit}
+  .btn:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(5,150,105,.36)}
+  .micro{font-size:.84rem;color:var(--boira)}
+  .mock{position:relative}
+  .factura{background:#fff;border:1px solid var(--linia);border-radius:var(--radius);box-shadow:0 24px 60px rgba(13,59,102,.14);padding:26px;transform:rotate(1.5deg)}
+  .factura h3{font-size:.95rem;display:flex;justify-content:space-between;align-items:center}
+  .f-ok{font-size:.68rem;background:#ECFDF5;color:var(--verd-fosc);border:1px solid #A7F3D0;padding:3px 9px;border-radius:99px;font-family:'Inter';font-weight:600}
+  .f-line{display:flex;justify-content:space-between;font-size:.82rem;color:#475569;padding:9px 0;border-bottom:1px dashed var(--linia)}
+  .f-tot{display:flex;justify-content:space-between;font-weight:700;color:var(--blau);padding-top:12px}
+  .f-qr{position:absolute;right:-14px;bottom:-18px;background:#fff;border:1px solid var(--linia);border-radius:12px;padding:10px;box-shadow:0 12px 28px rgba(13,59,102,.16);transform:rotate(-3deg)}
+  .f-qr svg{display:block}
+  .f-qr span{display:block;text-align:center;font-size:.58rem;font-weight:600;color:var(--boira);margin-top:4px;letter-spacing:.05em}
+  .f-chip{position:absolute;left:-16px;top:-16px;z-index:3;background:var(--verd);color:#fff;font-size:.72rem;font-weight:600;padding:8px 14px;border-radius:99px;box-shadow:0 10px 24px rgba(5,150,105,.3);transform:rotate(-2deg)}
+  section{padding:78px 0}
+  .kicker{display:block;font-size:.78rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--verd);margin-bottom:10px}
+  h2{font-size:clamp(1.5rem,3vw,2.1rem);margin-bottom:14px}
+  .lead{color:#475569;max-width:44em;margin-bottom:40px}
+  /* Productes de la suite */
+  .prods{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+  .prod{background:#fff;border:1px solid var(--linia);border-top:4px solid var(--pacc,#ccc);border-radius:18px;padding:30px;box-shadow:0 8px 30px rgba(13,59,102,.05)}
+  .prod .plogo{height:34px;margin-bottom:14px}
+  .prod .plogo img{height:34px;width:auto;display:block}
+  .prod p{color:#475569;font-size:.95rem;margin-bottom:16px}
+  .prod ul{list-style:none}
+  .prod li{font-size:.89rem;padding:7px 0 7px 26px;position:relative;border-bottom:1px dashed var(--linia)}
+  .prod li::before{content:"✓";position:absolute;left:0;color:var(--pacc,var(--verd));font-weight:700}
+  .prod .estat-chip{display:inline-block;margin-top:16px;font-size:.72rem;font-weight:700;letter-spacing:.03em;text-transform:uppercase;padding:5px 12px;border-radius:99px;background:#ECFDF5;color:var(--verd-fosc)}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+  .card{background:#fff;border:1px solid var(--linia);border-radius:var(--radius);padding:26px}
+  .card .ic{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;background:#ECFDF5;margin-bottom:16px;font-size:1.2rem}
+  .card h3{font-size:1.02rem;margin-bottom:8px}
+  .card p{font-size:.9rem;color:#475569}
+  .fosc{background:var(--blau)}
+  .fosc .kicker{color:var(--teal)}
+  .fosc h2,.fosc h3{color:#fff}
+  .fosc .lead{color:#B9CBDD}
+  .paso{counter-increment:pasos;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:var(--radius);padding:26px;position:relative}
+  .paso::before{content:"0" counter(pasos);font-family:'Sora';font-weight:700;font-size:.85rem;color:var(--teal);display:block;margin-bottom:10px}
+  .paso p{font-size:.9rem;color:#B9CBDD}
+  #como .grid3{counter-reset:pasos}
+  .preus{display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:760px;margin:0 auto}
+  .preu-card{background:#fff;border:1.5px solid var(--linia);border-radius:18px;padding:32px;position:relative;display:flex;flex-direction:column}
+  .preu-card.destacat{border:2px solid var(--verd);box-shadow:0 24px 60px rgba(5,150,105,.14)}
+  .preu-card .tag{position:absolute;top:-14px;left:26px;background:var(--verd);color:#fff;font-size:.72rem;font-weight:700;letter-spacing:.06em;padding:6px 14px;border-radius:99px;text-transform:uppercase}
+  .preu-card h3{font-size:1.05rem;margin-bottom:6px}
+  .preu{font-family:'Sora';font-weight:700;font-size:2.7rem;color:var(--blau);margin:10px 0 2px}
+  .preu small{font-size:1rem;color:var(--boira);font-weight:600}
+  .preu-nota{font-size:.82rem;color:var(--boira);margin-bottom:14px}
+  .estalvi{display:inline-block;background:#ECFDF5;border:1px solid #A7F3D0;color:var(--verd-fosc);font-size:.76rem;font-weight:700;padding:4px 11px;border-radius:99px;margin-bottom:12px}
+  .preu-card ul{list-style:none;margin:12px 0 20px}
+  .preu-card li{font-size:.89rem;padding:7px 0 7px 26px;position:relative;border-bottom:1px dashed var(--linia)}
+  .preu-card li::before{content:"✓";position:absolute;left:0;color:var(--verd);font-weight:700}
+  .preu-card .btn{margin-top:auto;text-align:center}
+  .beta-nota{max-width:760px;margin:18px auto 0;background:#ECFDF5;border:1px solid #A7F3D0;border-radius:12px;font-size:.87rem;color:var(--verd-fosc);padding:13px 16px;text-align:center}
+  .trust{display:flex;flex-wrap:wrap;gap:14px;margin-top:26px;justify-content:center}
+  .pill{background:#fff;border:1px solid var(--linia);border-radius:99px;font-size:.8rem;font-weight:500;color:#475569;padding:9px 16px}
+  details{background:#fff;border:1px solid var(--linia);border-radius:12px;padding:18px 22px;margin-bottom:12px}
+  summary{font-weight:600;color:var(--blau);cursor:pointer;font-size:.97rem}
+  details p{font-size:.9rem;color:#475569;margin-top:10px}
+  #registro{background:linear-gradient(180deg,#fff 0%,var(--gasa) 100%);border-top:1px solid var(--linia)}
+  form{background:#fff;border:1px solid var(--linia);border-radius:18px;padding:34px;max-width:560px;margin:0 auto;box-shadow:0 24px 60px rgba(13,59,102,.10)}
+  label{display:block;font-size:.84rem;font-weight:600;margin:16px 0 6px}
+  input,select{width:100%;padding:12px 14px;border:1px solid var(--linia);border-radius:10px;font:inherit;font-size:.95rem;background:var(--gasa)}
+  input:focus,select:focus{outline:2px solid var(--teal);background:#fff}
+  .check{display:flex;gap:10px;align-items:flex-start;margin:18px 0;font-size:.8rem;color:#475569}
+  .check input{width:auto;margin-top:3px}
+  form .btn{width:100%}
+  #gracias{display:none;text-align:center;padding:30px 10px}
+  #gracias h3{color:var(--verd-fosc);margin-bottom:8px}
+  footer{background:var(--blau);color:#B9CBDD;padding:44px 0;font-size:.82rem}
+  footer .wrap{display:flex;flex-wrap:wrap;gap:18px;justify-content:space-between;align-items:center}
+  footer strong{color:#fff;font-family:'Sora'}
+  .reveal{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease}
+  .reveal.vist{opacity:1;transform:none}
+  @media(max-width:860px){
+    .hero{grid-template-columns:1fr;gap:44px}
+    .prods{grid-template-columns:1fr}
+    .grid3{grid-template-columns:1fr}
+    .preus{grid-template-columns:1fr}
+    header{padding:56px 0 70px}
+    .mock{max-width:420px;margin:0 auto}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap nav-in">
+    <a class="logo" href="#"><img class="logo-img" src="consultamed.png" alt="ConsultaMed"></a>
+    <div class="nav-dreta">
+      <a class="lang" href="ca.html">CAT</a>
+      <a class="nav-login" href="hub.html">Iniciar sesión</a>
+      <a class="nav-cta" href="#registro">Crear cuenta</a>
+    </div>
+  </div>
+</nav>
+
+<header>
+  <div class="wrap hero">
+    <div>
+      <span class="badge"><span class="dot"></span>VeriFactu: obligatorio para médicos autónomos el 1 de julio de 2027</span>
+      <h1>El médico hace de médico.<br>El resto, <span class="marca">ConsultaMed</span>.</h1>
+      <p class="sub">La suite para la consulta privada: la factura VeriFactu sale sola y una IA escribe el informe de la visita. Todo en su ordenador, sin que los datos salgan a ningún sitio.</p>
+      <div class="cta-row">
+        <a class="btn" href="#registro">Crear cuenta y empezar ahora</a>
+        <span class="micro">Beta abierta · acceso inmediato<br><strong>50 €/mes</strong> toda la suite</span>
+      </div>
+    </div>
+    <div class="mock">
+      <span class="f-chip">Enviada a la AEAT ✓</span>
+      <div class="factura">
+        <h3>Factura 2026-0341 <span class="f-ok">VeriFactu</span></h3>
+        <div class="f-line"><span>Consulta dermatología</span><span>90,00 €</span></div>
+        <div class="f-line"><span>Paciente · Adeslas</span><span>remesa oct.</span></div>
+        <div class="f-line"><span>Informe de la visita</span><span>escrito por IA</span></div>
+        <div class="f-tot"><span>Estado</span><span style="color:var(--verd)">Cobrada</span></div>
+      </div>
+      <div class="f-qr">
+        <svg width="74" height="74" viewBox="0 0 74 74" aria-hidden="true">
+          <rect width="74" height="74" fill="#fff"/>
+          <g fill="#0D3B66">
+            <rect x="4" y="4" width="20" height="20"/><rect x="50" y="4" width="20" height="20"/><rect x="4" y="50" width="20" height="20"/>
+            <rect x="9" y="9" width="10" height="10" fill="#fff"/><rect x="55" y="9" width="10" height="10" fill="#fff"/><rect x="9" y="55" width="10" height="10" fill="#fff"/>
+            <rect x="30" y="8" width="6" height="6"/><rect x="40" y="16" width="6" height="6"/><rect x="30" y="28" width="6" height="6"/><rect x="44" y="30" width="6" height="6"/>
+            <rect x="54" y="38" width="6" height="6"/><rect x="30" y="42" width="6" height="6"/><rect x="40" y="50" width="6" height="6"/><rect x="52" y="52" width="6" height="6"/>
+            <rect x="62" y="30" width="6" height="6"/><rect x="36" y="60" width="6" height="6"/><rect x="62" y="62" width="6" height="6"/>
+          </g>
+        </svg>
+        <span>QR VERIFACTU</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section id="suite">
+  <div class="wrap">
+    <span class="kicker reveal">La suite</span>
+    <h2 class="reveal">Dos productos hoy. Toda la consulta, sin papeleo.</h2>
+    <p class="lead reveal">ConsultaMed reúne lo que hoy le roba tiempo. En el lanzamiento estrenamos dos productos, y la suite seguirá creciendo.</p>
+    <div class="prods">
+      <div class="prod reveal" style="--pacc:var(--verd)">
+        <div class="plogo"><img src="facturamed.png" alt="FacturaMed"></div>
+        <p>La factura sale sola al acabar la visita: hash, QR y remisión a la AEAT. Cumple VeriFactu desde el primer día y prepara las remesas de cada mutua.</p>
+        <ul>
+          <li>Facturas VeriFactu ilimitadas (hash + QR + AEAT)</li>
+          <li>Remesas a mutuas y aseguradoras</li>
+          <li>Rectificativas con rastro legal</li>
+          <li>Export para su gestoría en un clic</li>
+        </ul>
+        <span class="estat-chip">Disponible en la beta</span>
+      </div>
+      <div class="prod reveal" style="--pacc:var(--violeta)">
+        <div class="plogo"><img src="escribamed.png" alt="EscribaMed"></div>
+        <p>Usted habla con el paciente y una IA escribe el informe de la visita. Y lo más importante: el audio y los datos <strong>nunca salen de su ordenador</strong>.</p>
+        <ul>
+          <li>El informe clínico, redactado solo</li>
+          <li>Castellano, catalán y alemán</li>
+          <li>100% local: nada viaja a la nube</li>
+          <li>Del informe a la factura, en un clic</li>
+        </ul>
+        <span class="estat-chip" style="background:#F5E8FA;color:var(--violeta)">Disponible en la beta</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="problema" style="padding-top:0">
+  <div class="wrap">
+    <span class="kicker reveal">Por qué ahora</span>
+    <h2 class="reveal">Tres motivos para dar el paso hoy</h2>
+    <p class="lead reveal">Diseñada solo para consultas médicas privadas. No es un programa de contabilidad genérico.</p>
+    <div class="grid3">
+      <div class="card reveal">
+        <div class="ic">⚖️</div>
+        <h3>VeriFactu llega en 2027</h3>
+        <p>A partir del 1 de julio de 2027, cada factura de un médico autónomo deberá llevar hash encadenado, QR y trazabilidad ante la AEAT. Con FacturaMed llega preparado, sin prisas.</p>
+      </div>
+      <div class="card reveal">
+        <div class="ic">🔒</div>
+        <h3>Sus datos no salen de aquí</h3>
+        <p>EscribaMed procesa la voz y los datos del paciente en su propio ordenador. Los programas de IA americanos suben sus visitas a la nube; ConsultaMed, nunca. Secreto médico por diseño.</p>
+      </div>
+      <div class="card reveal">
+        <div class="ic">⏱️</div>
+        <h3>Su tiempo vale más</h3>
+        <p>Entre facturar e informar se van horas cada semana. La suite completa cuesta 50 € al mes: menos que una visita. Cada hora de papeleo que elimina se paga sola.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="como" class="fosc">
+  <div class="wrap">
+    <span class="kicker reveal">Cómo funciona</span>
+    <h2 class="reveal">De la visita al cobro, sin tocar nada</h2>
+    <p class="lead reveal">Cree su cuenta, configure su consulta en 2 minutos y pruebe la suite hoy mismo.</p>
+    <div class="grid3">
+      <div class="paso reveal">
+        <h3>Termina la visita</h3>
+        <p>Usted habla con el paciente y EscribaMed escribe el informe clínico solo, en su idioma, sin que el audio salga del ordenador.</p>
+      </div>
+      <div class="paso reveal">
+        <h3>Un clic y la factura sale</h3>
+        <p>Desde el informe, FacturaMed emite la factura con la serie, el hash y el QR VeriFactu correctos, y prepara la remesa de la mutua.</p>
+      </div>
+      <div class="paso reveal">
+        <h3>Usted ve el dinero llegar</h3>
+        <p>Registro encadenado e inalterable, export para su gestoría en un clic y recordatorios de cobro que salen solos.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="precios">
+  <div class="wrap">
+    <div style="text-align:center">
+      <span class="kicker reveal">Precio</span>
+      <h2 class="reveal">Toda la suite, un solo precio</h2>
+      <p class="lead reveal" style="margin-left:auto;margin-right:auto">FacturaMed y EscribaMed incluidos. Sin permanencia. Sus datos siempre son suyos.</p>
+    </div>
+    <div class="preus">
+      <div class="preu-card reveal">
+        <h3>Mensual</h3>
+        <div class="preu">50 €<small>/mes</small></div>
+        <div class="preu-nota">+ IVA · toda la suite · sin permanencia</div>
+        <ul>
+          <li>FacturaMed: facturación VeriFactu completa</li>
+          <li>EscribaMed: informes con IA local</li>
+          <li>Pacientes y series ilimitados</li>
+          <li>Export para su gestoría en un clic</li>
+          <li>Datos en su ordenador · RGPD por diseño</li>
+        </ul>
+        <a class="btn" href="#registro">Empezar con mensual</a>
+      </div>
+      <div class="preu-card destacat reveal">
+        <span class="tag">2 meses gratis</span>
+        <h3>Anual</h3>
+        <div class="preu">500 €<small>/año</small></div>
+        <div class="preu-nota">+ IVA · equivale a 41,67 €/mes</div>
+        <span class="estalvi">Ahorra 100 € al año</span>
+        <ul>
+          <li>Toda la suite del plan mensual</li>
+          <li>Precio congelado durante la suscripción</li>
+          <li>Alta acompañada y migración de sus series</li>
+          <li>Soporte prioritario por email</li>
+        </ul>
+        <a class="btn" href="#registro">Empezar con anual</a>
+      </div>
+    </div>
+    <div class="beta-nota reveal"><strong>Estamos en beta abierta:</strong> cree su cuenta hoy y use ConsultaMed sin pagar nada. El cobro se activa solo cuando usted decida pasar a uso real, avisándole antes. ¿Centro médico con varios médicos? Desde 149 €/mes.</div>
+    <div class="trust reveal">
+      <span class="pill">💻 Datos en su ordenador</span>
+      <span class="pill">🔒 El audio nunca sube a la nube</span>
+      <span class="pill">📄 RGPD sanitario por diseño</span>
+      <span class="pill">🚪 Sin permanencia</span>
+    </div>
+  </div>
+</section>
+
+<section id="faq" style="padding-top:0">
+  <div class="wrap" style="max-width:760px">
+    <span class="kicker reveal">Preguntas frecuentes</span>
+    <h2 class="reveal" style="margin-bottom:28px">Lo que nos preguntan los médicos</h2>
+    <details class="reveal"><summary>¿Qué incluye ConsultaMed?</summary><p>En el lanzamiento, dos productos: <strong>FacturaMed</strong> (facturación VeriFactu y mutuas) y <strong>EscribaMed</strong> (el informe de la visita escrito por una IA que corre en su ordenador). Ambos están en la beta y entran con la misma cuenta.</p></details>
+    <details class="reveal"><summary>¿De verdad los datos no salen de mi ordenador?</summary><p>Sí. EscribaMed transcribe y redacta con un motor de IA instalado en su propio equipo. El audio de la visita y los datos del paciente no viajan a ningún servidor. Es la diferencia con los programas de IA americanos, que suben todo a su nube.</p></details>
+    <details class="reveal"><summary>¿Puedo usarlo ya?</summary><p>Sí. Cree su cuenta y accederá inmediatamente a la beta. La remisión a la AEAT funciona en el entorno de pruebas oficial mientras completamos la homologación.</p></details>
+    <details class="reveal"><summary>¿Cuánto cuesta y cuándo se paga?</summary><p>50 € + IVA al mes por toda la suite, o 500 € + IVA al año (2 meses gratis). Durante la beta no se cobra nada: el pago se activa cuando usted decida pasar a uso real, con aviso previo. Sin permanencia.</p></details>
+    <details class="reveal"><summary>Soy autónomo / tengo una sociedad. ¿Me afecta VeriFactu?</summary><p>Sí en ambos casos: a las sociedades desde el 1 de enero de 2027 y a los autónomos desde el 1 de julio de 2027. Las facturas a mutuas y aseguradoras también están incluidas — y las cobradas en efectivo, también.</p></details>
+  </div>
+</section>
+
+<section id="registro">
+  <div class="wrap">
+    <div style="text-align:center;max-width:620px;margin:0 auto 34px">
+      <span class="kicker">Crear cuenta</span>
+      <h2>Empiece hoy con ConsultaMed</h2>
+      <p class="lead" style="margin-bottom:0">Acceso inmediato a la beta. Sin tarjeta, sin compromiso.</p>
+    </div>
+    <form id="registre" action="https://formspree.io/f/xrenbbza" method="POST">
+      <input type="hidden" name="_subject" value="Nuevo registro ConsultaMed">
+      <label for="nombre">Nombre y apellidos</label>
+      <input id="nombre" name="nombre" type="text" required autocomplete="name" placeholder="Dra. Marta Ferrer">
+      <label for="email">Email</label>
+      <input id="email" name="email" type="email" required autocomplete="email" placeholder="marta@suclinica.es">
+      <label for="nif">NIF (aparecerá en sus facturas)</label>
+      <input id="nif" name="nif" type="text" required autocomplete="off" maxlength="9" placeholder="12345678Z" style="text-transform:uppercase">
+      <label for="especialidad">Especialidad</label>
+      <select id="especialidad" name="especialidad" required>
+        <option value="" disabled selected>Seleccione…</option>
+        <option>Alergología</option><option>Análisis clínicos</option><option>Anatomía patológica</option>
+        <option>Anestesiología y reanimación</option><option>Angiología y cirugía vascular</option><option>Aparato digestivo</option>
+        <option>Cardiología</option><option>Cirugía cardiovascular</option><option>Cirugía general y digestiva</option>
+        <option>Cirugía oral y maxilofacial</option><option>Cirugía pediátrica</option><option>Cirugía plástica y estética</option>
+        <option>Cirugía torácica</option><option>Dermatología</option><option>Endocrinología y nutrición</option>
+        <option>Farmacología clínica</option><option>Fisioterapia</option><option>Geriatría</option>
+        <option>Ginecología y obstetricia</option><option>Hematología</option><option>Inmunología</option>
+        <option>Logopedia</option><option>Medicina del trabajo</option><option>Medicina familiar y comunitaria</option>
+        <option>Medicina física y rehabilitación</option><option>Medicina intensiva</option><option>Medicina interna</option>
+        <option>Medicina nuclear</option><option>Medicina preventiva y salud pública</option><option>Microbiología y parasitología</option>
+        <option>Nefrología</option><option>Neumología</option><option>Neurocirugía</option>
+        <option>Neurofisiología clínica</option><option>Neurología</option><option>Nutrición y dietética</option>
+        <option>Odontología / Estomatología</option><option>Oftalmología</option><option>Oncología médica</option>
+        <option>Oncología radioterápica</option><option>Otorrinolaringología (ORL)</option><option>Pediatría</option>
+        <option>Podología</option><option>Psicología clínica</option><option>Psiquiatría</option>
+        <option>Radiodiagnóstico</option><option>Reumatología</option><option>Traumatología y cirugía ortopédica</option>
+        <option>Urología</option><option>Otra</option>
+      </select>
+      <label for="modo">Tipo de cuenta</label>
+      <select id="modo" name="modo" required>
+        <option selected>Consulta privada (1 médico) — 50 €/mes</option>
+        <option>Centro médico (varios médicos) — desde 149 €/mes</option>
+      </select>
+      <label for="plan">Plan preferido</label>
+      <select id="plan" name="plan">
+        <option selected>Mensual — 50 €/mes</option>
+        <option>Anual — 500 €/año (2 meses gratis)</option>
+        <option>Aún no lo sé</option>
+      </select>
+      <div class="check">
+        <input id="privacidad" type="checkbox" required>
+        <label for="privacidad" style="margin:0;font-weight:400">Acepto que ConsultaMed use estos datos para crear mi cuenta y comunicarse conmigo sobre el servicio. Podré darme de baja en cualquier momento.</label>
+      </div>
+      <button class="btn" type="submit">Crear mi cuenta y entrar</button>
+      <p class="micro" style="text-align:center;margin-top:14px">Beta abierta · hoy no se cobra nada · 50 €/mes cuando actives el uso real</p>
+      <p class="micro" style="text-align:center;margin-top:8px">¿Ya tienes cuenta? <a href="hub.html" style="color:var(--verd);font-weight:600">Entra a ConsultaMed →</a></p>
+    </form>
+    <div id="gracias">
+      <h3>✅ Cuenta creada</h3>
+      <p>Entrando en ConsultaMed…</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div><strong>ConsultaMed</strong> · El médico hace de médico. El resto, ConsultaMed.</div>
+    <div><a href="mailto:consultamedx@gmail.com" style="color:#B9CBDD">consultamedx@gmail.com</a> · © 2026</div>
+  </div>
+</footer>
+
+<script defer>
+(function(){
+  'use strict';
+  function safe(fn,nom){try{fn()}catch(e){console.warn('init '+nom,e)}}
+
+  safe(function(){
+    var els=document.querySelectorAll('.reveal');
+    if(!('IntersectionObserver' in window)){els.forEach(function(el){el.classList.add('vist')});return}
+    var io=new IntersectionObserver(function(entries){
+      entries.forEach(function(en){if(en.isIntersecting){en.target.classList.add('vist');io.unobserve(en.target)}})
+    },{threshold:0.05});
+    els.forEach(function(el){io.observe(el)});
+    setTimeout(function(){els.forEach(function(el){el.classList.add('vist')})},6000);
+  },'reveal');
+
+  safe(function(){
+    var form=document.getElementById('registre');
+    var ok=document.getElementById('gracias');
+    form.addEventListener('submit',function(ev){
+      ev.preventDefault();
+      var dades=new FormData(form);
+      safe(function(){
+        var cfg=null;try{cfg=JSON.parse(localStorage.getItem('fm2_config'))}catch(e){}
+        if(!cfg||!cfg.nom){
+          localStorage.setItem('fm2_config',JSON.stringify({
+            nom:(dades.get('nombre')||'').trim(),
+            nif:(dades.get('nif')||'').trim().toUpperCase(),
+            colegiat:'',adreca:'',
+            series:[{codi:String(new Date().getFullYear()),seguent:1}]
+          }));
+        }
+      },'preconfig');
+      var acaba=function(){
+        form.style.display='none';ok.style.display='block';
+        setTimeout(function(){window.location.href='hub.html?benvinguda=1'},1600);
+      };
+      if(window.fetch){
+        fetch(form.action,{method:'POST',body:dades,headers:{'Accept':'application/json'}})
+          .then(function(r){acaba()})
+          .catch(function(){acaba()});
+      }else{acaba()}
+    });
+  },'registre');
+})();
+</script>
+</body>
+</html>

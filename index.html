@@ -14,6 +14,11 @@
 <meta property="og:title" content="ConsultaMed — El metge fa de metge. La resta, ConsultaMed.">
 <meta property="og:description" content="Informe clínic i factura VeriFactu automàtics, amb una IA que no surt del seu ordinador. Beta oberta.">
 <meta property="og:image" content="https://consultamed.es/consultamed.png">
+<link rel="alternate" hreflang="ca" href="https://consultamed.es/index.html">
+<link rel="alternate" hreflang="es" href="https://consultamed.es/es.html">
+<link rel="alternate" hreflang="en" href="https://consultamed.es/en.html">
+<link rel="alternate" hreflang="de" href="https://consultamed.es/de.html">
+<link rel="alternate" hreflang="x-default" href="https://consultamed.es/index.html">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -57,6 +62,15 @@
   .nav-cta{background:var(--teal);color:#04201d;font-weight:700;font-size:.88rem;padding:11px 20px;border-radius:99px;transition:transform .2s,box-shadow .2s;box-shadow:0 8px 24px rgba(20,184,166,.35);min-height:44px;display:inline-flex;align-items:center}
   .nav-cta:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(20,184,166,.5)}
   @media(max-width:560px){.nav-login{display:none}}
+  .lang{position:relative}
+  .lang-b{font:inherit;font-size:.82rem;font-weight:700;letter-spacing:.04em;background:none;border:1.5px solid currentColor;border-radius:99px;padding:9px 15px;cursor:pointer;min-height:44px;transition:color .3s,opacity .2s}
+  nav:not(.scrolled) .lang-b{color:rgba(255,255,255,.85)}
+  nav.scrolled .lang-b{color:var(--blau)}
+  .lang-m{position:absolute;right:0;top:calc(100% + 8px);background:#fff;border:1px solid var(--linia);border-radius:14px;box-shadow:0 16px 40px rgba(13,59,102,.16);display:none;overflow:hidden;min-width:150px;z-index:70}
+  .lang-m.obert{display:block}
+  .lang-m a{display:block;padding:11px 18px;font-size:.88rem;font-weight:600;color:#475569;min-height:44px}
+  .lang-m a:hover{background:var(--gasa);color:var(--blau)}
+  .lang-m a.on{color:var(--teal2);font-weight:700}
 
   /* ===== HERO ===== */
   header{position:relative;min-height:100vh;display:flex;align-items:center;background:var(--blau2);overflow:hidden;padding:130px 0 90px}
@@ -251,6 +265,15 @@
   <div class="wrap nav-in">
     <a class="logo-pill" href="#top" aria-label="ConsultaMed — inici"><img src="consultamed.png" alt="ConsultaMed"></a>
     <div class="nav-r">
+      <div class="lang">
+        <button class="lang-b" id="lang-b" type="button" aria-haspopup="true" aria-expanded="false">CAT ▾</button>
+        <div class="lang-m" id="lang-m">
+          <a href="index.html" class="on" lang="ca">Català</a>
+          <a href="es.html" lang="es">Español</a>
+          <a href="en.html" lang="en">English</a>
+          <a href="de.html" lang="de">Deutsch</a>
+        </div>
+      </div>
       <a class="nav-login" href="hub.html">Iniciar sessió</a>
       <a class="nav-cta" href="#registre">Entrar a la beta</a>
     </div>
@@ -531,7 +554,7 @@
 <footer>
   <div class="wrap">
     <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap"><span class="foot-logo"><img src="consultamed.png" alt="ConsultaMed"></span><span>El metge fa de metge. La resta, ConsultaMed.</span></div>
-    <div><a href="mailto:consultamedx@gmail.com">consultamedx@gmail.com</a> · <a href="es.html">Castellano</a> · © 2026 ConsultaMed</div>
+    <div><a href="mailto:consultamedx@gmail.com">consultamedx@gmail.com</a> · © 2026 ConsultaMed</div>
   </div>
 </footer>
 
@@ -549,6 +572,14 @@
     function onScroll(){nav.classList.toggle('scrolled',window.scrollY>40)}
     window.addEventListener('scroll',onScroll,{passive:true});onScroll();
   },'nav');
+
+  // selector d'idioma
+  safe(function(){
+    var b=document.getElementById('lang-b'),m=document.getElementById('lang-m');
+    if(!b||!m)return;
+    b.addEventListener('click',function(e){e.stopPropagation();var o=m.classList.toggle('obert');b.setAttribute('aria-expanded',o?'true':'false')});
+    document.addEventListener('click',function(){m.classList.remove('obert');b.setAttribute('aria-expanded','false')});
+  },'lang');
 
   // reveals + línia ECG + xarxa de seguretat 6s
   safe(function(){
@@ -615,6 +646,7 @@
       ev.preventDefault();var d=new FormData(form);
       safe(function(){var c=null;try{c=JSON.parse(localStorage.getItem('fm2_config'))}catch(e){}
         if(!c||!c.nom)localStorage.setItem('fm2_config',JSON.stringify({nom:(d.get('nombre')||'').trim(),nif:(d.get('nif')||'').trim().toUpperCase(),colegiat:'',adreca:'',series:[{codi:String(new Date().getFullYear()),seguent:1}]}));
+        localStorage.setItem('em_idioma_ui','ca');
       },'pre');
       var go=function(){form.style.display='none';ok.style.display='block';setTimeout(function(){window.location.href='hub.html?benvinguda=1'},1500)};
       if(window.fetch)fetch(form.action,{method:'POST',body:d,headers:{'Accept':'application/json'}}).then(go).catch(go);else go();

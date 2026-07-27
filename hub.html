@@ -181,7 +181,22 @@
         peu:"ConsultaMed · Private beta · The doctor does medicine. ConsultaMed does the rest.",
         dies:["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],
         mesos:["January","February","March","April","May","June","July","August","September","October","November","December"],
-        estat:{pendent:"To confirm",confirmada:"Confirmed",vinguda:"Attended",noshow:"No-show"}, de:""}
+        estat:{pendent:"To confirm",confirmada:"Confirmed",vinguda:"Attended",noshow:"No-show"}, de:""},
+    de:{logout:"Abmelden", salut:["Guten Morgen","Guten Tag","Guten Abend"], benvingut:"Willkommen",
+        sub:"Womit fangen wir heute an?", sub_no:"Willkommen bei ConsultaMed. Womit fangen wir heute an?",
+        brief_tit:"Ihre Termine heute", brief_link:"SecreMed öffnen →",
+        buit:"Für heute sind keine Termine geplant. Sobald Sie Termine in SecreMed anlegen, sehen Sie hier Ihren Tag auf einen Blick.",
+        visita:"Termin", visites:"Termine", avui:"heute", conf:"zu bestätigen", mesmes:"weitere im Kalender",
+        prod_tit:"Ihre Produkte", prod_sub:"· wählen Sie, womit Sie beginnen", obrir:"Öffnen →",
+        soon:"Bald", soon_go:"In Arbeit",
+        d_factura:"VeriFactu-Rechnungen und Versicherungen. Die Rechnung erstellt sich von selbst — rechtssicher, mit QR.",
+        d_escriba:"Der Arztbericht schreibt sich von selbst. Sie sprechen; die KI schreibt. Alles auf Ihrem Rechner.",
+        d_secre:"Kalender, Anrufe und Erinnerungen. Der Empfang, automatisiert.",
+        d_recept:"Privatrezepte direkt aus dem Termin, vom Arzt signiert.",
+        peu:"ConsultaMed · Private Beta · Der Arzt macht Medizin. Den Rest macht ConsultaMed.",
+        dies:["Sonntag","Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag"],
+        mesos:["Januar","Februar","März","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"],
+        estat:{pendent:"Zu bestätigen",confirmada:"Bestätigt",vinguda:"Erschienen",noshow:"Nicht erschienen"}, de:""}
   };
 
   var conf=get('fm2_config')||{};
@@ -235,7 +250,7 @@
   })();
 
   var lang=localStorage.getItem('em_idioma_ui')||'ca';
-  if(lang!=='ca'&&lang!=='es'&&lang!=='en') lang='ca';
+  if(lang!=='ca'&&lang!=='es'&&lang!=='en'&&lang!=='de') lang='ca';
   render(lang);
   var lcur=document.getElementById('lang-cur');
   if(lcur)lcur.addEventListener('click',function(e){e.stopPropagation();var m=document.getElementById('lang-menu');if(m)m.classList.toggle('obert');});

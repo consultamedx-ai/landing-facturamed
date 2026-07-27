@@ -34,6 +34,10 @@
   .hola{font-family:'Sora';font-weight:800;font-size:2.2rem;color:var(--blau);letter-spacing:-.6px;line-height:1.08;opacity:0;animation:up .6s .05s both}
   .hola .dot{color:var(--teal)}
   .sub{color:#5B6B7C;margin-top:7px;font-size:1.05rem;opacity:0;animation:up .6s .12s both}
+  .puls{display:block;width:210px;margin:16px 0 0;opacity:.9}
+  .puls path{stroke-dasharray:1;stroke-dashoffset:1;animation:pulsdraw 1.5s .45s ease forwards}
+  @keyframes pulsdraw{to{stroke-dashoffset:0}}
+  @media(prefers-reduced-motion:reduce){.puls path{animation:none;stroke-dashoffset:0}}
   @keyframes up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
   .brief{background:rgba(255,255,255,.82);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(13,59,102,.08);border-left:5px solid var(--taronja);border-radius:18px;padding:20px 22px;margin-top:28px;box-shadow:0 10px 34px rgba(13,59,102,.08);opacity:0;animation:up .6s .2s both}
   .brief-top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
@@ -86,10 +90,11 @@
 <div class="wrap">
   <h1 class="hola" id="hola">Benvingut/da</h1>
   <p class="sub" id="sub"></p>
+  <svg class="puls" viewBox="0 0 260 24" aria-hidden="true"><path d="M0 12 H96 L106 12 111 3 117 20 123 12 H160 L168 12 172 7 176 16 180 12 H260" fill="none" stroke="#14B8A6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" pathLength="1"/></svg>
 
   <div class="brief" id="brief-box">
     <div class="brief-top">
-      <div class="brief-tit"><span data-k="brief_tit">La teva agenda d'avui</span><small id="brief-data"></small></div>
+      <div class="brief-tit"><span data-k="brief_tit">La seva agenda d'avui</span><small id="brief-data"></small></div>
       <div class="brief-kpis" id="brief-kpis"></div>
     </div>
     <div class="cites" id="cites"></div>
@@ -134,10 +139,10 @@
   var T={
     ca:{logout:"Tancar sessió", salut:["Bon dia","Bona tarda","Bona nit"], benvingut:"Benvingut/da",
         sub:"Per on comencem avui?", sub_no:"Benvingut/da a ConsultaMed. Per on comencem avui?",
-        brief_tit:"La teva agenda d'avui", brief_link:"Obrir SecreMed →",
-        buit:"No tens visites programades per avui. Quan carreguis cites a SecreMed, aquí veuràs el teu dia d'un cop d'ull.",
+        brief_tit:"La seva agenda d'avui", brief_link:"Obrir SecreMed →",
+        buit:"No té visites programades per avui. Quan carregui cites a SecreMed, aquí veurà el seu dia d'un cop d'ull.",
         visita:"visita", visites:"visites", avui:"avui", conf:"per confirmar", mesmes:"més a l'agenda",
-        prod_tit:"Els teus productes", prod_sub:"· tria per on començar", obrir:"Obrir →",
+        prod_tit:"Els seus productes", prod_sub:"· triï per on començar", obrir:"Obrir →",
         soon:"Aviat", soon_go:"En camí",
         d_factura:"Facturació VeriFactu i mútues. La factura surt sola, legal i amb el seu QR.",
         d_escriba:"L'informe clínic, escrit sol. Vostè parla; la IA redacta. Tot al seu ordinador.",
@@ -149,10 +154,10 @@
         estat:{pendent:"Per confirmar",confirmada:"Confirmada",vinguda:"Ha vingut",noshow:"No ha vingut"}, de:"de"},
     es:{logout:"Cerrar sesión", salut:["Buenos días","Buenas tardes","Buenas noches"], benvingut:"Bienvenido/a",
         sub:"¿Con qué empezamos hoy?", sub_no:"Bienvenido/a a ConsultaMed. ¿Con qué empezamos hoy?",
-        brief_tit:"Tu agenda de hoy", brief_link:"Abrir SecreMed →",
-        buit:"No hay visitas programadas para hoy. Cuando cargues citas en SecreMed, aquí verás tu día de un vistazo.",
+        brief_tit:"Su agenda de hoy", brief_link:"Abrir SecreMed →",
+        buit:"No hay visitas programadas para hoy. Cuando cargue citas en SecreMed, aquí verá su día de un vistazo.",
         visita:"visita", visites:"visitas", avui:"hoy", conf:"por confirmar", mesmes:"más en la agenda",
-        prod_tit:"Tus productos", prod_sub:"· elige por dónde empezar", obrir:"Abrir →",
+        prod_tit:"Sus productos", prod_sub:"· elija por dónde empezar", obrir:"Abrir →",
         soon:"Próximamente", soon_go:"En camino",
         d_factura:"Facturación VeriFactu y mutuas. La factura sale sola, legal y con su QR.",
         d_escriba:"El informe clínico, escrito solo. Usted habla; la IA redacta. Todo en su ordenador.",

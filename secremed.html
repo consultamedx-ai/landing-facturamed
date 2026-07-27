@@ -248,6 +248,7 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
     vino:['✔ Vino','✔ Ha vingut','✔ Erschienen','✔ Attended'],
     novino:['✕ No vino','✕ No ha vingut','✕ Nicht ersch.','✕ No-show'],
     confirmar:['Confirmar','Confirmar','Bestätigen','Confirm'],
+    desfer:['↩ Deshacer','↩ Desfer','↩ Rückgängig','↩ Undo'],
     visita:['▶ Visita','▶ Visita','▶ Besuch','▶ Visit'],
     facturar:['💶 Facturar','💶 Facturar','💶 Abrechnen','💶 Invoice'],
     sincitas:['Sin citas para este día.','Sense cites per a aquest dia.','Keine Termine für diesen Tag.','No appointments for this day.']
@@ -319,6 +320,14 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
           if(c.tel)boto(L('recordar'),'sec',function(){recordatori(c)});
           boto(L('vino'),'sec',function(){canviaEstat(c.id,'vinguda')});
           boto(L('novino'),'perill',function(){canviaEstat(c.id,'noshow')});
+        }
+        if(c.estat==='vinguda'){
+          boto(L('novino'),'perill',function(){canviaEstat(c.id,'noshow')});
+          boto(L('desfer'),'sec',function(){canviaEstat(c.id,'confirmada')});
+        }
+        if(c.estat==='noshow'){
+          boto(L('vino'),'sec',function(){canviaEstat(c.id,'vinguda')});
+          boto(L('desfer'),'sec',function(){canviaEstat(c.id,'confirmada')});
         }
         if(c.estat==='pendent')boto(L('confirmar'),'sec',function(){canviaEstat(c.id,'confirmada')});
         boto(L('visita'),'sec',function(){window.location.href='escriba.html?nom='+encodeURIComponent(c.pacient)});

@@ -537,6 +537,16 @@
       <input id="email" name="email" type="email" required autocomplete="email" placeholder="marta@yourpractice.com">
       <label for="nif">NIF (Spanish tax ID — will appear on your invoices)</label>
       <input id="nif" name="nif" type="text" required maxlength="9" placeholder="12345678Z" style="text-transform:uppercase">
+      <label for="colegiat">Medical license number</label>
+      <input id="colegiat" name="colegiado" type="text" required maxlength="15" placeholder="080834567" autocomplete="off">
+      <label for="pais">Country of practice</label>
+      <select id="pais" name="pais" required>
+        <option value="ES" selected>Spain</option>
+        <option value="DE">Germany (waitlist)</option>
+        <option value="FR">France (waitlist)</option>
+        <option value="UK">United Kingdom (waitlist)</option>
+        <option value="XX">Other country (waitlist)</option>
+      </select>
       <label for="modo">Account type</label>
       <select id="modo" name="modo" required><option selected>Private practice (1 doctor) — €50/month</option><option>Medical centre (several doctors) — from €149/month</option></select>
       <div class="check"><input id="priv" type="checkbox" required><label for="priv" style="margin:0;font-weight:400">I agree that ConsultaMed may use this data to create my account and contact me about the service. I can unsubscribe at any time.</label></div>
@@ -645,7 +655,7 @@
     form.addEventListener('submit',function(ev){
       ev.preventDefault();var d=new FormData(form);
       safe(function(){var c=null;try{c=JSON.parse(localStorage.getItem('fm2_config'))}catch(e){}
-        if(!c||!c.nom)localStorage.setItem('fm2_config',JSON.stringify({nom:(d.get('nombre')||'').trim(),nif:(d.get('nif')||'').trim().toUpperCase(),colegiat:'',adreca:'',series:[{codi:String(new Date().getFullYear()),seguent:1}]}));
+        if(!c||!c.nom)localStorage.setItem('fm2_config',JSON.stringify({nom:(d.get('nombre')||'').trim(),nif:(d.get('nif')||'').trim().toUpperCase(),colegiat:(d.get('colegiado')||'').trim(),pais:(d.get('pais')||'ES'),adreca:'',series:[{codi:String(new Date().getFullYear()),seguent:1}]}));
         localStorage.setItem('em_idioma_ui','en');
       },'pre');
       var go=function(){form.style.display='none';ok.style.display='block';setTimeout(function(){window.location.href='hub.html?benvinguda=1'},1500)};

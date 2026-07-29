@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' http://127.0.0.1:7373 http://localhost:7373; form-action 'self'">
 <script src="cmstore.js"></script>
+<script src="cmsync.js" defer></script>
 <meta name="referrer" content="no-referrer">
 <title>FacturaMed · Beta — Facturación VeriFactu para consultas médicas</title>
 <meta name="robots" content="noindex">
@@ -472,7 +473,7 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
     return 'https://prewww2.aeat.es/wlpl/TIKE-CONT/ValidarQR?'+p.toString();
   }
   function llegeix(k,defecte){try{return JSON.parse(localStorage.getItem(k))||defecte}catch(e){return defecte}}
-  function desa(k,v){localStorage.setItem(k,JSON.stringify(v))}
+  function desa(k,v){localStorage.setItem(k,JSON.stringify(v));window.cmSync&&cmSync.canvi(k)}
   function avis(t,m){var b=$('banner');b.className='banner '+t;b.textContent=m;window.scrollTo({top:0,behavior:'smooth'});setTimeout(function(){b.className='banner'},7000)}
   function esc(s){return String(s??'').replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
   function descarrega(nom,contingut,mime){
@@ -841,6 +842,7 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
     $('k-total').textContent=fmt2(tot)+' €';
   }
   function pintaTot(){pintaConfig();pintaPacients();pintaRegistre();pintaUltimes();pintaKPIs()}
+  window.addEventListener('cm-sync-pull',function(){try{pintaTot()}catch(e){}});
 
   safe(function(){$('r-filtre').addEventListener('input',pintaRegistre)},'filtre');
 

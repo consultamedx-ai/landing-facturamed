@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; form-action 'self'">
 <script src="cmstore.js"></script>
+<script src="cmsync.js" defer></script>
 <meta name="referrer" content="no-referrer">
 <title>SecreMed · Beta privada — La recepción, automática</title>
 <meta name="robots" content="noindex,nofollow">
@@ -236,7 +237,7 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
   function safe(fn,n){try{fn()}catch(e){try{console.error('[SecreMed]',n,e)}catch(_){}}}
   var K={cites:'sm_cites',safata:'sm_safata',pac:'fm2_pacients',conf:'fm2_config'};
   function llegeix(k,d){try{return JSON.parse(localStorage.getItem(k))||d}catch(e){return d}}
-  function desa(k,v){localStorage.setItem(k,JSON.stringify(v))}
+  function desa(k,v){localStorage.setItem(k,JSON.stringify(v));window.cmSync&&cmSync.canvi(k)}
   function esc(s){return String(s??'').replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
   function avis(t,m){var b=$('banner');b.className='banner '+t;b.textContent=m;window.scrollTo({top:0,behavior:'smooth'});setTimeout(function(){b.className='banner'},6000)}
   function isoAvui(){var d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
@@ -451,6 +452,7 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
 
   // ---------- init ----------
   function pintaTot(){safe(pintaPacients,'pac');safe(pintaMetgeSel,'metge');safe(pintaAgenda,'ag');safe(pintaSafata,'saf')}
+  window.addEventListener('cm-sync-pull',function(){try{pintaTot()}catch(e){}});
   window.__reRender=pintaTot;
   pintaTot();
 })();

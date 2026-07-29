@@ -6,7 +6,7 @@
   'use strict';
   var BASE = 'https://app.consultamed.es/api/s';
   var K = { cites: 'sm_cites', pac: 'fm2_pacients' };
-  var org = null, nomUsuari = '', timer = null;
+  var org = null, nomUsuari = '', timer = null, orgs = [], orgNom = '';
 
   // ---- textos (4 idiomes, mateix codi d'idioma que els productes) ----
   var IDX = { es: 0, ca: 1, de: 2, en: 3 };
@@ -51,7 +51,8 @@
       xip.textContent = t('sync'); xip.style.opacity = '1';
     } else if (estat === 'ok') {
       xip.style.background = 'rgba(20,184,166,.12)'; xip.style.color = '#0F9488';
-      xip.textContent = t('ok') + (nomUsuari ? ' · ' + nomUsuari.split(' ')[0] : '');
+      xip.textContent = t('ok') + (orgs.length > 1 ? ' · ' + orgNom + ' ▾' : (nomUsuari ? ' · ' + nomUsuari.split(' ')[0] : ''));
+      xip.style.cursor = orgs.length > 1 ? 'pointer' : 'default';
       xip.style.opacity = '1';
       setTimeout(function () { if (xip) xip.style.opacity = '.45'; }, 2500);
     } else {
@@ -96,14 +97,55 @@
     ara: cicle
   };
 
+  // ---- multi-context: triar organitzacio (doc 15: un metge, N contexts) ----
+  function triaOrg(id) {
+    var o = null;
+    for (var i = 0; i < orgs.length; i++) if (orgs[i].id === id) o = orgs[i];
+    if (!o) o = orgs[0];
+    org = o.id; orgNom = o.nom;
+    try { localStorage.setItem('cm_org', org); } catch (e) {}
+  }
+  function menuOrgs() {
+    var vell = document.getElementById('cm-org-menu');
+    if (vell) { vell.remove(); return; }
+    var m = document.createElement('div');
+    m.id = 'cm-org-menu';
+    m.style.cssText = 'position:fixed;right:14px;bottom:52px;z-index:61;background:#fff;border:1px solid #E7EDF3;' +
+      'border-radius:12px;box-shadow:0 10px 30px rgba(13,59,102,.18);padding:6px;font:600 12.5px Inter,system-ui,sans-serif';
+    orgs.forEach(function (o) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.textContent = (o.id === org ? '✓ ' : '') + o.nom;
+      b.style.cssText = 'display:block;width:100%;text-align:left;border:0;background:none;padding:8px 12px;' +
+        'border-radius:8px;cursor:pointer;font:inherit;color:' + (o.id === org ? '#0F9488' : '#1F2937');
+      b.addEventListener('click', function () {
+        m.remove();
+        if (o.id === org) return;
+        // primer es desa el context actual al servidor; despres es canvia i es baixa el nou
+        pintaXip('sync');
+        push().then(function () { triaOrg(o.id); return pull(); })
+          .then(function () { pintaXip('ok'); })
+          .catch(function () { pintaXip('err'); });
+      });
+      m.appendChild(b);
+    });
+    document.body.appendChild(m);
+  }
+
   // ---- arrencada ----
   function arrenca() {
     api('jo').then(function (r) {
       if (r && r.ok && r.usuari && r.usuari.organitzacions.length) {
         nomUsuari = r.usuari.nom;
-        org = r.usuari.organitzacions[0].id;
+        orgs = r.usuari.organitzacions;
+        var guardada = null;
+        try { guardada = localStorage.getItem('cm_org'); } catch (e) {}
+        triaOrg(guardada);
         cicle();
         setInterval(cicle, 5 * 60 * 1000); // refresc suau cada 5 min
+        if (xip) xip.addEventListener('click', function (e) {
+          if (orgs.length > 1 && !e.target.closest('a')) menuOrgs();
+        });
       } else {
         pintaXip('off');
       }

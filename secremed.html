@@ -156,8 +156,6 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
           <div><label for="a-data">Fecha</label><input type="date" id="a-data"></div>
           <div><label for="a-hora">Hora</label><input type="time" id="a-hora" value="09:00"></div>
         </div>
-        <label for="a-motiu">Motivo</label>
-        <input id="a-motiu" placeholder="Revisión, primera visita…" autocomplete="off">
         <label for="a-tel">Teléfono (para recordatorios)</label>
         <input id="a-tel" placeholder="+34 600 000 000" autocomplete="off">
         <div id="a-metge-wrap" style="display:none">
@@ -319,7 +317,7 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
         var d=document.createElement('div');d.className='cita';
         d.innerHTML='<span class="hora">'+esc(c.hora)+'</span>'+
           '<span class="cos"><div class="nom">'+esc(c.pacient)+(esCentre()&&c.metge?' <span style="font-size:.72rem;color:var(--boira)">· '+esc(c.metge)+'</span>':'')+'</div>'+
-          '<div class="motiu">'+esc(c.motiu||'Consulta')+(c.tel?' · '+esc(c.tel):'')+'</div></span>'+
+          '<div class="motiu">'+esc(c.tel||'')+'</div></span>'+
           '<span class="estat-wrap"><button type="button" class="estat '+c.estat+'" aria-haspopup="true">'+esc(Le(c.estat))+' <span class="car">▾</span></button><div class="estat-menu"></div></span>'+
           '<span class="accions" data-id="'+c.id+'"></span>';
         var ac=d.querySelector('.accions');
@@ -338,7 +336,7 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
         });
         if((c.estat==='pendent'||c.estat==='confirmada')&&c.tel)boto(L('recordar'),'sec',function(){recordatori(c)});
         boto(L('visita'),'sec',function(){window.location.href='escriba.html?nom='+encodeURIComponent(c.pacient)});
-        boto(L('facturar'),'verd',function(){var p=new URLSearchParams({facturar:'1',nom:c.pacient,concepte:c.motiu||'Consulta médica'});window.location.href='app.html?'+p.toString()});
+        boto(L('facturar'),'verd',function(){var p=new URLSearchParams({facturar:'1',nom:c.pacient,concepte:'Consulta médica'});window.location.href='app.html?'+p.toString()});
         el.appendChild(d);
       });
     }
@@ -368,9 +366,9 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
       if(!data||!hora){avis('err','Indica fecha y hora.');return}
       assegurraPacient(nom,$('a-tel').value.trim());
       var cs=cites();
-      cs.push({id:Date.now(),data:data,hora:hora,pacient:nom,motiu:$('a-motiu').value.trim(),tel:$('a-tel').value.trim(),metge:esCentre()?$('a-metge').value:'',estat:'pendent'});
+      cs.push({id:Date.now(),data:data,hora:hora,pacient:nom,tel:$('a-tel').value.trim(),metge:esCentre()?$('a-metge').value:'',estat:'pendent'});
       desa(K.cites,cs);
-      $('a-pac').value='';$('a-motiu').value='';$('a-tel').value='';
+      $('a-pac').value='';$('a-tel').value='';
       $('a-veure').value=data;pintaTot();
       avis('ok','Cita añadida el '+dataLlegible(data)+' a las '+hora+'.');
     });
@@ -391,7 +389,7 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
       var ac=d.querySelector('.accions');
       var b1=document.createElement('button');b1.className='btn mini';b1.type='button';b1.textContent='→ Convertir en cita';
       b1.addEventListener('click',function(){
-        $('a-pac').value=s.nom;$('a-motiu').value=s.motiu||'';$('a-tel').value=s.tel||'';
+        $('a-pac').value=s.nom;$('a-tel').value=s.tel||'';
         s.estat='confirmada';desa(K.safata,safata().map(function(x){return x.id===s.id?s:x}));
         document.querySelector('[data-v="agenda"]').click();$('a-hora').focus();pintaTot();
         avis('ok','Datos pasados a «Nueva cita». Pon fecha y hora y añádela.');
@@ -433,7 +431,7 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
     var h='';
     if(cs.length){
       h+='<h3 style="font-size:.85rem;color:var(--blau);margin:6px 0">Citas por confirmar ('+cs.length+')</h3>';
-      cs.forEach(function(c){h+='<div class="cita"><span class="hora">'+esc(c.hora)+'</span><span class="cos"><div class="nom">'+esc(c.pacient)+'</div><div class="motiu">'+esc(dataLlegible(c.data))+(c.motiu?' · '+esc(c.motiu):'')+'</div></span><span class="accions"><button class="btn sec mini" type="button" data-conf="'+c.id+'">'+L('confirmar')+'</button></span></div>';});
+      cs.forEach(function(c){h+='<div class="cita"><span class="hora">'+esc(c.hora)+'</span><span class="cos"><div class="nom">'+esc(c.pacient)+'</div><div class="motiu">'+esc(dataLlegible(c.data))+'</div></span><span class="accions"><button class="btn sec mini" type="button" data-conf="'+c.id+'">'+L('confirmar')+'</button></span></div>';});
     }
     if(calls.length){
       h+='<h3 style="font-size:.85rem;color:var(--blau);margin:12px 0 6px">Llamadas pendientes ('+calls.length+')</h3>';

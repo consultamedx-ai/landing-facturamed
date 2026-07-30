@@ -59,7 +59,7 @@
   <p>Aquestes condicions es regeixen per la legislació espanyola. Per a qualsevol controvèrsia, les parts se sotmeten als jutjats i tribunals que corresponguin conforme a dret; en el cas de consumidors, els del seu domicili.</p>
 
   <h2 id="privacitat">2 · Política de privacitat</h2>
-  <div class="caixa"><strong>El més important, en una frase:</strong> les dades clíniques i de pacients que es gestionen amb ConsultaMed <strong>no passen pels nostres servidors</strong> — viuen al dispositiu del metge. Nosaltres només tractem les dades de contacte del professional que es registra.</div>
+  <div class="caixa"><strong>El més important, en una frase:</strong> la informació clínica (informes, historials i àudio de les visites) <strong>no surt mai del dispositiu del metge</strong>. Si el professional activa la sincronització, les dades <strong>administratives</strong> de l'agenda i les fitxes sí que es desen al nostre servidor per compartir-les entre els seus dispositius.</div>
   <h3>Responsable del tractament</h3>
   <p>El titular indicat a l'avís legal. Contacte per a privacitat: <a href="mailto:consultamedx@gmail.com">consultamedx@gmail.com</a>.</p>
   <h3>Quines dades tractem i per a què</h3>
@@ -68,11 +68,15 @@
     <li><strong>Correus que ens enviï</strong>: per respondre les seves consultes. Base jurídica: interès legítim en atendre-les (art. 6.1.f).</li>
   </ul>
   <h3>Les dades dels seus pacients</h3>
-  <p>ConsultaMed està dissenyat perquè la informació clínica (informes, historials, àudio de les visites, factures dels pacients) <strong>es processi i es desi exclusivament a l'ordinador del metge</strong>. Aquestes dades no s'envien als nostres servidors i no hi tenim accés. Respecte de les dades dels seus pacients, el professional sanitari és el responsable del tractament conforme al RGPD; ConsultaMed no actua com a encarregat perquè no les tracta. <em>Excepció durant la beta:</em> el mode de dictat de demostració utilitza el servei de reconeixement de veu del navegador (Chrome/Google); per això dins del producte s'adverteix d'usar-lo només amb dades fictícies.</p>
+  <p>ConsultaMed està dissenyat perquè la <strong>informació clínica</strong> (informes, historials clínics, àudio de les visites i factures dels pacients) es processi i es desi <strong>exclusivament a l'ordinador del metge</strong>. Aquestes dades no s'envien mai als nostres servidors i no hi tenim accés.</p>
+  <p><strong>Excepció explícita — la sincronització.</strong> Si el professional inicia sessió amb el seu compte de ConsultaMed i activa la sincronització, les <strong>dades administratives de l'agenda i de les fitxes</strong> (nom del pacient, NIF, telèfon, correu, mútua, data, hora i motiu de la cita) es transmeten xifrades i es desen al nostre servidor, per poder compartir-les entre els dispositius de la mateixa consulta. Respecte d'aquestes dades, el professional sanitari és el <strong>responsable del tractament</strong> i ConsultaMed actua com a <strong>encarregat del tractament</strong> seguint les seves instruccions, amb el contracte d'encarregat corresponent. Sense sincronització activada, cap dada de pacient surt del dispositiu.</p>
+  <p><em>Excepció durant la beta:</em> el mode de dictat de demostració utilitza el servei de reconeixement de veu del navegador (Chrome/Google); per això dins del producte s'adverteix d'usar-lo només amb dades fictícies. <em>Recomanació de seguretat:</em> com que les dades clíniques viuen al seu ordinador, li recomanem tenir activat el xifratge de disc (FileVault a Mac, BitLocker a Windows).</p>
   <h3>Destinataris i proveïdors</h3>
   <ul>
     <li><strong>Formspree, Inc.</strong> (EUA): gestiona el formulari de registre. Tractament emparat en clàusules contractuals tipus de la UE.</li>
     <li><strong>GitHub, Inc. / GitHub Pages</strong> (EUA): allotja aquest lloc web i pot registrar dades tècniques d'accés (adreça IP) com qualsevol servidor web.</li>
+    <li><strong>Vercel Inc.</strong> (EUA): allotja el servidor de sincronització (app.consultamed.es).</li>
+    <li><strong>Neon Inc.</strong> (base de dades allotjada al Regne Unit): desa les dades administratives sincronitzades.</li>
   </ul>
   <p>No venem dades ni les cedim a cap altre tercer.</p>
   <h3>Conservació</h3>

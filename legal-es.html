@@ -59,7 +59,7 @@
   <p>Estas condiciones se rigen por la legislación española. Para cualquier controversia, las partes se someten a los juzgados y tribunales que correspondan conforme a derecho; en el caso de consumidores, los de su domicilio.</p>
 
   <h2 id="privacidad">2 · Política de privacidad</h2>
-  <div class="caixa"><strong>Lo más importante, en una frase:</strong> los datos clínicos y de pacientes que se gestionan con ConsultaMed <strong>no pasan por nuestros servidores</strong> — viven en el dispositivo del médico. Nosotros solo tratamos los datos de contacto del profesional que se registra.</div>
+  <div class="caixa"><strong>Lo más importante, en una frase:</strong> la información clínica (informes, historiales y audio de las visitas) <strong>nunca sale del dispositivo del médico</strong>. Si el profesional activa la sincronización, los datos <strong>administrativos</strong> de la agenda y las fichas sí se guardan en nuestro servidor para compartirlos entre sus dispositivos.</div>
   <h3>Responsable del tratamiento</h3>
   <p>El titular indicado en el aviso legal. Contacto para privacidad: <a href="mailto:consultamedx@gmail.com">consultamedx@gmail.com</a>.</p>
   <h3>Qué datos tratamos y para qué</h3>
@@ -68,11 +68,15 @@
     <li><strong>Correos que nos envíe</strong>: para responder sus consultas. Base jurídica: interés legítimo en atenderlas (art. 6.1.f).</li>
   </ul>
   <h3>Los datos de sus pacientes</h3>
-  <p>ConsultaMed está diseñado para que la información clínica (informes, historiales, audio de las visitas, facturas de los pacientes) <strong>se procese y se guarde exclusivamente en el ordenador del médico</strong>. Estos datos no se envían a nuestros servidores y no tenemos acceso a ellos. Respecto de los datos de sus pacientes, el profesional sanitario es el responsable del tratamiento conforme al RGPD; ConsultaMed no actúa como encargado porque no los trata. <em>Excepción durante la beta:</em> el modo de dictado de demostración utiliza el servicio de reconocimiento de voz del navegador (Chrome/Google); por eso dentro del producto se advierte de usarlo solo con datos ficticios.</p>
+  <p>ConsultaMed está diseñado para que la <strong>información clínica</strong> (informes, historiales clínicos, audio de las visitas y facturas de los pacientes) se procese y se guarde <strong>exclusivamente en el ordenador del médico</strong>. Estos datos no se envían nunca a nuestros servidores y no tenemos acceso a ellos.</p>
+  <p><strong>Excepción explícita — la sincronización.</strong> Si el profesional inicia sesión con su cuenta de ConsultaMed y activa la sincronización, los <strong>datos administrativos de la agenda y de las fichas</strong> (nombre del paciente, NIF, teléfono, correo, mutua, fecha, hora y motivo de la cita) se transmiten cifrados y se guardan en nuestro servidor, para poder compartirlos entre los dispositivos de la misma consulta. Respecto de estos datos, el profesional sanitario es el <strong>responsable del tratamiento</strong> y ConsultaMed actúa como <strong>encargado del tratamiento</strong> siguiendo sus instrucciones, con el correspondiente contrato de encargo. Sin sincronización activada, ningún dato de paciente sale del dispositivo.</p>
+  <p><em>Excepción durante la beta:</em> el modo de dictado de demostración utiliza el servicio de reconocimiento de voz del navegador (Chrome/Google); por eso dentro del producto se advierte de usarlo solo con datos ficticios. <em>Recomendación de seguridad:</em> como los datos clínicos viven en su ordenador, le recomendamos tener activado el cifrado de disco (FileVault en Mac, BitLocker en Windows).</p>
   <h3>Destinatarios y proveedores</h3>
   <ul>
     <li><strong>Formspree, Inc.</strong> (EE. UU.): gestiona el formulario de registro. Tratamiento amparado en cláusulas contractuales tipo de la UE.</li>
     <li><strong>GitHub, Inc. / GitHub Pages</strong> (EE. UU.): aloja este sitio web y puede registrar datos técnicos de acceso (dirección IP) como cualquier servidor web.</li>
+    <li><strong>Vercel Inc.</strong> (EE. UU.): aloja el servidor de sincronización (app.consultamed.es).</li>
+    <li><strong>Neon Inc.</strong> (base de datos alojada en el Reino Unido): almacena los datos administrativos sincronizados.</li>
   </ul>
   <p>No vendemos datos ni los cedemos a ningún otro tercero.</p>
   <h3>Conservación</h3>

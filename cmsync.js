@@ -16,7 +16,9 @@
     entra:['Iniciar sesión', 'Iniciar sessió', 'Anmelden', 'Sign in'],
     sync: ['☁ Sincronizando…', '☁ Sincronitzant…', '☁ Synchronisiere…', '☁ Syncing…'],
     ok:   ['☁ Sincronizado', '☁ Sincronitzat', '☁ Synchronisiert', '☁ Synced'],
-    err:  ['☁ Error de sincronización', '☁ Error de sincronització', '☁ Sync-Fehler', '☁ Sync error']
+    err:  ['☁ Error de sincronización', '☁ Error de sincronització', '☁ Sync-Fehler', '☁ Sync error'],
+    verif:['☁ Confirme su correo', '☁ Confirmi el seu correu', '☁ E-Mail bestätigen', '☁ Confirm your email'],
+    obrir:['Abrir', 'Obrir', 'Öffnen', 'Open']
   };
   function t(k) { return TXT[k][IDX[idi()]]; }
 
@@ -55,6 +57,11 @@
       xip.style.cursor = orgs.length > 1 ? 'pointer' : 'default';
       xip.style.opacity = '1';
       setTimeout(function () { if (xip) xip.style.opacity = '.45'; }, 2500);
+    } else if (estat === 'verifica') {
+      // El servidor accepta la sessio pero encara no el correu: NO es pot dir "sincronitzat".
+      xip.style.background = 'rgba(234,179,8,.15)'; xip.style.color = '#92400E';
+      xip.innerHTML = t('verif') + ' · <a href="https://app.consultamed.es/panell" target="_blank" rel="noopener" style="color:#0F9488;font-weight:700;text-decoration:none">' + t('obrir') + '</a>';
+      xip.style.opacity = '1';
     } else {
       xip.style.background = 'rgba(234,115,23,.12)'; xip.style.color = '#B45309';
       xip.textContent = t('err'); xip.style.opacity = '1';
@@ -68,21 +75,26 @@
     // `complet` indica al servidor que aquest es tot el meu estat i que pot esborrar
     // el que no hi surti. Nomes si tinc dades: un dispositiu buit no ha de buidar res.
     var complet = (pac.length > 0 || cit.length > 0);
-    return api('sync.push', { organitzacioId: org, pacients: pac, cites: cit, complet: complet });
+    return api('sync.push', { organitzacioId: org, pacients: pac, cites: cit, complet: complet })
+      .then(function (r) { if (r && r.ok === false) throw r; return r; });
   }
   function pull() {
     if (!org) return Promise.resolve();
     return api('sync.pull', { organitzacioId: org }).then(function (r) {
+      if (r && r.ok === false) throw r;
       if (!r || !r.ok) return;
       localStorage.setItem(K.pac, JSON.stringify(r.pacients || []));
       localStorage.setItem(K.cites, JSON.stringify(r.cites || []));
       window.dispatchEvent(new Event('cm-sync-pull'));
     });
   }
+  function calVerificar(e) {
+    return !!(e && typeof e.error === 'string' && /correu electronic|correo electr/i.test(e.error));
+  }
   function cicle() {
     pintaXip('sync');
     return push().then(pull).then(function () { pintaXip('ok'); })
-      .catch(function () { pintaXip('err'); });
+      .catch(function (e) { pintaXip(calVerificar(e) ? 'verifica' : 'err'); });
   }
 
   // ---- API publica: els productes criden cmSync.canvi(clau) en desar ----
@@ -95,7 +107,7 @@
       timer = setTimeout(function () {
         pintaXip('sync');
         push().then(function (r) { pintaXip(r && r.ok ? 'ok' : 'err'); })
-          .catch(function () { pintaXip('err'); });
+          .catch(function (e) { pintaXip(calVerificar(e) ? 'verifica' : 'err'); });
       }, 1200);
     },
     ara: cicle
@@ -129,7 +141,7 @@
         pintaXip('sync');
         push().then(function () { triaOrg(o.id); return pull(); })
           .then(function () { pintaXip('ok'); })
-          .catch(function () { pintaXip('err'); });
+          .catch(function (e) { pintaXip(calVerificar(e) ? 'verifica' : 'err'); });
       });
       m.appendChild(b);
     });

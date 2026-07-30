@@ -64,7 +64,11 @@
   // ---- push / pull ----
   function push() {
     if (!org) return Promise.resolve();
-    return api('sync.push', { organitzacioId: org, pacients: llegeix(K.pac), cites: llegeix(K.cites) });
+    var pac = llegeix(K.pac), cit = llegeix(K.cites);
+    // `complet` indica al servidor que aquest es tot el meu estat i que pot esborrar
+    // el que no hi surti. Nomes si tinc dades: un dispositiu buit no ha de buidar res.
+    var complet = (pac.length > 0 || cit.length > 0);
+    return api('sync.push', { organitzacioId: org, pacients: pac, cites: cit, complet: complet });
   }
   function pull() {
     if (!org) return Promise.resolve();

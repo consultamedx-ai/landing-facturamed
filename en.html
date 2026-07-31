@@ -548,11 +548,14 @@
         <option value="UK">United Kingdom (waitlist)</option>
         <option value="XX">Other country (waitlist)</option>
       </select>
-      <label for="modo">Account type</label>
-      <select id="modo" name="modo" required><option selected>Private practice (1 doctor) — €79/month</option><option>Medical centre (several doctors) — from €235/month</option></select>
+      <label for="especialitat">Specialty</label>
+<select id="especialitat" name="especialidad" required><option value="MEDICINA" selected>Medicine</option><option value="ODONTOLOGIA">Dentistry</option><option value="FISIOTERAPIA">Physiotherapy</option><option value="PSICOLOGIA">Psychology</option><option value="PODOLOGIA">Podiatry</option><option value="NUTRICIO">Nutrition</option><option value="ALTRA">Other</option></select>
+<label for="modo">Account type</label>
+      <select id="modo" name="modo" required data-basc="Basic · practice (1 professional) — €59/month" data-base="Basic · centre (several professionals) — from €175/month"><option selected>Private practice (1 professional) — €79/month</option><option>Centre (several professionals) — from €235/month</option></select>
+<p class="micro" id="nota-basic" style="display:none;margin-top:6px;background:#FFF7E6;border:1px solid #F0C14B;border-radius:8px;padding:9px 11px;color:#6B5A38"><b>Basic plan available for your specialty.</b> Includes FacturaMed and SecreMed (and ReceptaMed for dentists), without EscribaMed — the AI scribe your specialty rarely uses.</p>
       <div class="check"><input id="priv" type="checkbox" required><label for="priv" style="margin:0;font-weight:400">I agree that ConsultaMed may use this data to create my account and contact me about the service. I can unsubscribe at any time.</label></div>
       <button class="cta" type="submit">Create my account and sign in</button>
-      <p class="micro">Open beta · nothing is charged today · €79/month (VAT included) once you activate real use</p>
+      <p class="micro">Open beta · nothing is charged today · €79/month, or €59/month on the Basic plan (VAT included) once you activate real use</p>
       <p class="micro" style="margin-top:6px">Already have an account? <a href="hub.html" style="color:var(--teal2);font-weight:700">Sign in to ConsultaMed →</a></p>
     </form>
     <div id="gracies">
@@ -663,6 +666,33 @@
       if(window.fetch)fetch(form.action,{method:'POST',body:d,headers:{'Accept':'application/json'}}).then(go).catch(go);else go();
     });
   },'reg');
+})();
+</script>
+
+<script>
+(function(){
+  var esp=document.getElementById('especialitat'), modo=document.getElementById('modo'),
+      nota=document.getElementById('nota-basic');
+  if(!esp||!modo) return;
+  var BASIC=['FISIOTERAPIA','ODONTOLOGIA'];
+  function refresca(){
+    var pot=BASIC.indexOf(esp.value)>=0, tenim=!!modo.querySelector('option[data-basic]');
+    if(pot&&!tenim){
+      ['BAS_C','BAS_E'].forEach(function(k,i){
+        var o=document.createElement('option');
+        o.setAttribute('data-basic','1');
+        o.textContent=modo.getAttribute(i?'data-base':'data-basc');
+        modo.appendChild(o);
+      });
+    } else if(!pot&&tenim){
+      [].slice.call(modo.querySelectorAll('option[data-basic]')).forEach(function(o){
+        if(o.selected) modo.selectedIndex=0;
+        o.remove();
+      });
+    }
+    if(nota) nota.style.display=pot?'block':'none';
+  }
+  esp.addEventListener('change',refresca); refresca();
 })();
 </script>
 </body>

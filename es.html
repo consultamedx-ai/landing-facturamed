@@ -548,11 +548,14 @@
         <option value="UK">Reino Unido (lista de espera)</option>
         <option value="XX">Otro país (lista de espera)</option>
       </select>
-      <label for="modo">Tipo de cuenta</label>
-      <select id="modo" name="modo" required><option selected>Consulta privada (1 médico) — 79 €/mes</option><option>Centro médico (varios médicos) — desde 235 €/mes</option></select>
+      <label for="especialitat">Especialidad</label>
+<select id="especialitat" name="especialidad" required><option value="MEDICINA" selected>Medicina</option><option value="ODONTOLOGIA">Odontología · dentista</option><option value="FISIOTERAPIA">Fisioterapia</option><option value="PSICOLOGIA">Psicología</option><option value="PODOLOGIA">Podología</option><option value="NUTRICIO">Nutrición</option><option value="ALTRA">Otra</option></select>
+<label for="modo">Tipo de cuenta</label>
+      <select id="modo" name="modo" required data-basc="Básico · consulta (1 profesional) — 59 €/mes" data-base="Básico · centro (varios profesionales) — desde 175 €/mes"><option selected>Consulta privada (1 profesional) — 79 €/mes</option><option>Centro (varios profesionales) — desde 235 €/mes</option></select>
+<p class="micro" id="nota-basic" style="display:none;margin-top:6px;background:#FFF7E6;border:1px solid #F0C14B;border-radius:8px;padding:9px 11px;color:#6B5A38"><b>Plan Básico disponible para su especialidad.</b> Incluye FacturaMed y SecreMed (y ReceptaMed si es dentista), sin EscribaMed — el escriba de IA que su especialidad no suele usar.</p>
       <div class="check"><input id="priv" type="checkbox" required><label for="priv" style="margin:0;font-weight:400">Acepto que ConsultaMed use estos datos para crear mi cuenta y comunicarse conmigo sobre el servicio. Podré darme de baja en cualquier momento.</label></div>
       <button class="cta" type="submit">Crear mi cuenta y entrar</button>
-      <p class="micro">Beta abierta · hoy no se cobra nada · 79 €/mes (IVA incluido) cuando active el uso real</p>
+      <p class="micro">Beta abierta · hoy no se cobra nada · 79 €/mes o 59 €/mes con el plan Básico (IVA incluido) cuando active el uso real</p>
       <p class="micro" style="margin-top:6px">¿Ya tiene cuenta? <a href="hub.html" style="color:var(--teal2);font-weight:700">Entre en ConsultaMed →</a></p>
     </form>
     <div id="gracies">
@@ -663,6 +666,33 @@
       if(window.fetch)fetch(form.action,{method:'POST',body:d,headers:{'Accept':'application/json'}}).then(go).catch(go);else go();
     });
   },'reg');
+})();
+</script>
+
+<script>
+(function(){
+  var esp=document.getElementById('especialitat'), modo=document.getElementById('modo'),
+      nota=document.getElementById('nota-basic');
+  if(!esp||!modo) return;
+  var BASIC=['FISIOTERAPIA','ODONTOLOGIA'];
+  function refresca(){
+    var pot=BASIC.indexOf(esp.value)>=0, tenim=!!modo.querySelector('option[data-basic]');
+    if(pot&&!tenim){
+      ['BAS_C','BAS_E'].forEach(function(k,i){
+        var o=document.createElement('option');
+        o.setAttribute('data-basic','1');
+        o.textContent=modo.getAttribute(i?'data-base':'data-basc');
+        modo.appendChild(o);
+      });
+    } else if(!pot&&tenim){
+      [].slice.call(modo.querySelectorAll('option[data-basic]')).forEach(function(o){
+        if(o.selected) modo.selectedIndex=0;
+        o.remove();
+      });
+    }
+    if(nota) nota.style.display=pot?'block':'none';
+  }
+  esp.addEventListener('change',refresca); refresca();
 })();
 </script>
 </body>

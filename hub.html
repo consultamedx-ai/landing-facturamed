@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://app.consultamed.es; form-action 'self'">
 <script src="cmstore.js"></script>
 <meta name="robots" content="noindex,nofollow">
 <title>ConsultaMed — Panell</title>
@@ -75,6 +75,7 @@
   .soon-tag{position:absolute;top:16px;right:16px;font-size:.62rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;background:#EEF2F7;color:#64748B;padding:4px 10px;border-radius:99px}
   .peu{text-align:center;color:var(--boira);font-size:.76rem;margin-top:44px}
   @media(max-width:640px){.grid{grid-template-columns:1fr}.hola{font-size:1.7rem}}
+  [data-fora-del-pla]{display:none !important}
 </style>
 </head>
 <body>
@@ -108,7 +109,7 @@
       <div class="card-desc" data-k="d_secre"></div>
       <div class="card-go" data-k="obrir"></div>
     </a>
-    <a class="card" style="--acc:var(--violeta)" href="escriba.html">
+    <a class="card" id="card-escriba" style="--acc:var(--violeta)" href="escriba.html">
       <div class="card-logo"><img src="escribamed.png" alt="EscribaMed"></div>
       <div class="card-desc" data-k="d_escriba"></div>
       <div class="card-go" data-k="obrir"></div>
@@ -234,6 +235,47 @@
       cont.innerHTML=prox+(cites.length>4?'<div class="buit" style="margin-top:8px">+'+(cites.length-4)+' '+t.mesmes+'</div>':'');
     }
   }
+
+  // ---- Pla de l'organitzacio: quins productes es veuen ----
+  // El pla BASIC (nomes fisioterapeutes i dentistes) no porta mai EscribaMed.
+  // ReceptaMed nomes si l'especialitat es ODONTOLOGIA. Vegeu 04_Arquitectura, Part A.
+  (function(){
+    function aplica(prods, pla){
+      if(!prods) return;
+      var mapa={escribamed:'card-escriba', secremed:'card-secre', receptamed:'card-recept'};
+      Object.keys(mapa).forEach(function(p){
+        var el=document.getElementById(mapa[p]);
+        if(el && prods.indexOf(p)<0) el.setAttribute('data-fora-del-pla','1');
+      });
+      if(pla==='BASIC'){
+        var w=document.querySelector('.seccio');
+        if(w && !document.getElementById('avis-pla')){
+          var b=document.createElement('small');
+          b.id='avis-pla'; b.style.cssText='display:block;margin-top:6px;color:#94A3B8;font-size:.74rem';
+          b.textContent='Pla Basic · per afegir EscribaMed, passi al pla Complet des de Configuracio';
+          w.appendChild(b);
+        }
+      }
+    }
+    // 1r: el que teniem desat, perque no parpellegi
+    try{
+      var c=JSON.parse(localStorage.getItem('cm_pla')||'null');
+      if(c) aplica(c.productes, c.pla);
+    }catch(e){}
+    // 2n: preguntar-ho al servidor i actualitzar
+    fetch('https://app.consultamed.es/api/s',{method:'POST',credentials:'include',
+      headers:{'Content-Type':'application/json'},body:JSON.stringify({accio:'jo'})})
+      .then(function(r){return r.json();})
+      .then(function(d){
+        if(!d || !d.ok || !d.usuari) return;
+        var orgs=d.usuari.organitzacions||[];
+        var actual=localStorage.getItem('cm_org');
+        var o=orgs.filter(function(x){return x.id===actual;})[0]||orgs[0];
+        if(!o) return;
+        localStorage.setItem('cm_pla',JSON.stringify({pla:o.pla,productes:o.productes}));
+        aplica(o.productes,o.pla);
+      }).catch(function(){});
+  })();
 
   (function(){
     var q=new URLSearchParams(location.search);

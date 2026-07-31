@@ -551,11 +551,10 @@
       <label for="especialitat">Especialitat</label>
 <select id="especialitat" name="especialidad" required><option value="MEDICINA" selected>Medicina</option><option value="ODONTOLOGIA">Odontologia · dentista</option><option value="FISIOTERAPIA">Fisioteràpia</option><option value="PSICOLOGIA">Psicologia</option><option value="PODOLOGIA">Podologia</option><option value="NUTRICIO">Nutrició</option><option value="ALTRA">Una altra</option></select>
 <label for="modo">Tipus de compte</label>
-      <select id="modo" name="modo" required data-basc="Bàsic · consulta (1 professional) — 59 €/mes" data-base="Bàsic · centre (diversos professionals) — des de 175 €/mes"><option selected>Consulta privada (1 professional) — 79 €/mes</option><option>Centre (diversos professionals) — des de 235 €/mes</option></select>
-<p class="micro" id="nota-basic" style="display:none;margin-top:6px;background:#FFF7E6;border:1px solid #F0C14B;border-radius:8px;padding:9px 11px;color:#6B5A38"><b>Pla Bàsic disponible per a la seva especialitat.</b> Inclou FacturaMed i SecreMed (i ReceptaMed si és dentista), sense EscribaMed — l'escriba d'IA que la seva especialitat no acostuma a fer servir.</p>
+      <select id="modo" name="modo" required><option selected>Consulta privada (1 professional) — 79 €/mes</option><option>Centre (diversos professionals) — des de 235 €/mes</option></select>
       <div class="check"><input id="priv" type="checkbox" required><label for="priv" style="margin:0;font-weight:400">Accepto que ConsultaMed faci servir aquestes dades per crear el meu compte i comunicar-se amb mi sobre el servei. Em podré donar de baixa en qualsevol moment.</label></div>
       <button class="cta" type="submit">Crear el meu compte i entrar</button>
-      <p class="micro">Beta oberta · avui no es cobra res · 79 €/mes o 59 €/mes amb el pla Bàsic (IVA inclòs) quan activi l'ús real</p>
+      <p class="micro">Beta oberta · avui no es cobra res · 79 €/mes (IVA inclòs) quan activi l'ús real</p>
       <p class="micro" style="margin-top:6px">Ja té compte? <a href="hub.html" style="color:var(--teal2);font-weight:700">Entri a ConsultaMed →</a></p>
     </form>
     <div id="gracies">
@@ -666,33 +665,6 @@
       if(window.fetch)fetch(form.action,{method:'POST',body:d,headers:{'Accept':'application/json'}}).then(go).catch(go);else go();
     });
   },'reg');
-})();
-</script>
-
-<script>
-(function(){
-  var esp=document.getElementById('especialitat'), modo=document.getElementById('modo'),
-      nota=document.getElementById('nota-basic');
-  if(!esp||!modo) return;
-  var BASIC=['FISIOTERAPIA','ODONTOLOGIA'];
-  function refresca(){
-    var pot=BASIC.indexOf(esp.value)>=0, tenim=!!modo.querySelector('option[data-basic]');
-    if(pot&&!tenim){
-      ['BAS_C','BAS_E'].forEach(function(k,i){
-        var o=document.createElement('option');
-        o.setAttribute('data-basic','1');
-        o.textContent=modo.getAttribute(i?'data-base':'data-basc');
-        modo.appendChild(o);
-      });
-    } else if(!pot&&tenim){
-      [].slice.call(modo.querySelectorAll('option[data-basic]')).forEach(function(o){
-        if(o.selected) modo.selectedIndex=0;
-        o.remove();
-      });
-    }
-    if(nota) nota.style.display=pot?'block':'none';
-  }
-  esp.addEventListener('change',refresca); refresca();
 })();
 </script>
 </body>

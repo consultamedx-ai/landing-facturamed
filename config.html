@@ -114,6 +114,14 @@
       <p class="nota" data-k="n_compte">L'exportació conté només el que hi ha al servidor: compte, equip, agenda i fitxes administratives. Els informes clínics viuen al seu ordinador i s'exporten des d'EscribaMed.</p>
     </div>
 
+    <!-- PRODUCTES -->
+    <div class="seccio" data-k="s_prod">Els meus productes</div>
+    <div class="targeta">
+      <p style="font-size:.93rem;color:#5B6B7C" data-k="n_prod">Té la suite sencera. Si hi ha algun producte que no fa servir, el pot amagar del panell — el preu no canvia i el pot tornar a activar quan vulgui.</p>
+      <div id="productes-zona" style="margin-top:14px"></div>
+      <div class="avis" id="avis-prod"></div>
+    </div>
+
     <!-- FACTURACIÓ -->
     <div class="seccio" data-k="s_fact">Dades de facturació</div>
     <div class="targeta">
@@ -134,7 +142,7 @@
   var esc=function(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})};
 
   var T={
-    ca:{tornar:"← Tornar al panell",sortir:"Tancar sessió",tit:"Configuració",fora_tit:"Configuració",
+    ca:{s_prod:"Els meus productes", n_prod:"Té la suite sencera. Si hi ha algun producte que no fa servir, el pot amagar del panell — el preu no canvia i el pot tornar a activar quan vulgui.", p_desc:{"facturamed": "Facturar amb VeriFactu", "escribamed": "La IA escriu l'informe de la visita", "secremed": "Agenda i recepció", "receptamed": "Receptes privades (aviat)"}, b_prod_desa:"Desar", prod_ok:"Desat", prod_min:"Ha de deixar-ne almenys un de visible", tornar:"← Tornar al panell",sortir:"Tancar sessió",tit:"Configuració",fora_tit:"Configuració",
       fora_sub:"Per gestionar el compte i l'equip cal iniciar sessió.",entrar:"Iniciar sessió",
       s_equip:"Equip i accessos",convidar:"Convidar algú a la consulta",l_correu:"Correu electrònic",l_rol:"Accés",
       o_metge:"Metge",o_recepcio:"Recepció",b_convidar:"Convidar",
@@ -152,7 +160,7 @@
       exportat:"Fitxer descarregat.",contrasenya_env:"Li hem enviat un correu per canviar la contrasenya.",
       confirma_esborra:"Segur que vol esborrar el compte? És irreversible. Les dades del seu ordinador no es toquen.",
       sense_equip:"Encara no hi ha ningú més a la consulta."},
-    es:{tornar:"← Volver al panel",sortir:"Cerrar sesión",tit:"Configuración",fora_tit:"Configuración",
+    es:{s_prod:"Mis productos", n_prod:"Tiene la suite completa. Si hay algún producto que no usa, puede ocultarlo del panel — el precio no cambia y lo puede volver a activar cuando quiera.", p_desc:{"facturamed": "Facturar con VeriFactu", "escribamed": "La IA escribe el informe de la visita", "secremed": "Agenda y recepción", "receptamed": "Recetas privadas (próximamente)"}, b_prod_desa:"Guardar", prod_ok:"Guardado", prod_min:"Debe dejar al menos uno visible", tornar:"← Volver al panel",sortir:"Cerrar sesión",tit:"Configuración",fora_tit:"Configuración",
       fora_sub:"Para gestionar la cuenta y el equipo hay que iniciar sesión.",entrar:"Iniciar sesión",
       s_equip:"Equipo y accesos",convidar:"Invitar a alguien a la consulta",l_correu:"Correo electrónico",l_rol:"Acceso",
       o_metge:"Médico",o_recepcio:"Recepción",b_convidar:"Invitar",
@@ -170,7 +178,7 @@
       exportat:"Archivo descargado.",contrasenya_env:"Le hemos enviado un correo para cambiar la contraseña.",
       confirma_esborra:"¿Seguro que quiere eliminar la cuenta? Es irreversible. Los datos de su ordenador no se tocan.",
       sense_equip:"Todavía no hay nadie más en la consulta."},
-    en:{tornar:"← Back to panel",sortir:"Sign out",tit:"Settings",fora_tit:"Settings",
+    en:{s_prod:"My products", n_prod:"You have the full suite. If there is a product you don't use, you can hide it from the panel — the price doesn't change and you can turn it back on whenever you like.", p_desc:{"facturamed": "VeriFactu invoicing", "escribamed": "AI writes the visit report", "secremed": "Scheduling and reception", "receptamed": "Private prescriptions (soon)"}, b_prod_desa:"Save", prod_ok:"Saved", prod_min:"Keep at least one visible", tornar:"← Back to panel",sortir:"Sign out",tit:"Settings",fora_tit:"Settings",
       fora_sub:"Sign in to manage your account and team.",entrar:"Sign in",
       s_equip:"Team and access",convidar:"Invite someone to the practice",l_correu:"Email",l_rol:"Access",
       o_metge:"Doctor",o_recepcio:"Reception",b_convidar:"Invite",
@@ -188,7 +196,7 @@
       exportat:"File downloaded.",contrasenya_env:"We have emailed you a link to change your password.",
       confirma_esborra:"Delete the account for good? This cannot be undone. Data on your computer is untouched.",
       sense_equip:"Nobody else in the practice yet."},
-    de:{tornar:"← Zurück zum Panel",sortir:"Abmelden",tit:"Einstellungen",fora_tit:"Einstellungen",
+    de:{s_prod:"Meine Produkte", n_prod:"Sie haben die komplette Suite. Produkte, die Sie nicht nutzen, können Sie ausblenden — der Preis ändert sich nicht.", p_desc:{"facturamed": "Rechnungen mit VeriFactu", "escribamed": "Die KI schreibt den Besuchsbericht", "secremed": "Kalender und Empfang", "receptamed": "Privatrezepte (bald)"}, b_prod_desa:"Speichern", prod_ok:"Gespeichert", prod_min:"Mindestens eines muss sichtbar bleiben", tornar:"← Zurück zum Panel",sortir:"Abmelden",tit:"Einstellungen",fora_tit:"Einstellungen",
       fora_sub:"Zum Verwalten von Konto und Team bitte anmelden.",entrar:"Anmelden",
       s_equip:"Team und Zugriff",convidar:"Jemanden in die Praxis einladen",l_correu:"E-Mail",l_rol:"Zugriff",
       o_metge:"Arzt",o_recepcio:"Empfang",b_convidar:"Einladen",
@@ -220,6 +228,47 @@
   function api(accio,dades){
     return fetch(API,{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},
       body:JSON.stringify(Object.assign({accio:accio},dades||{}))}).then(function(r){return r.json()});
+  }
+
+
+  // ---- Els meus productes (preferencia visual; NO canvia el preu) ----
+  var PRODS=['facturamed','escribamed','secremed','receptamed'];
+  var NOMS={facturamed:'FacturaMed',escribamed:'EscribaMed',secremed:'SecreMed',receptamed:'ReceptaMed'};
+  function pintaProductes(ocults){
+    var tt=T[lang]||T.ca, zona=$('productes-zona');
+    if(!zona) return;
+    zona.innerHTML='';
+    PRODS.forEach(function(p){
+      var fila=document.createElement('label');
+      fila.style.cssText='display:flex;align-items:center;gap:11px;padding:11px 2px;border-bottom:1px solid #EEF2F7;cursor:pointer';
+      var cb=document.createElement('input');
+      cb.type='checkbox'; cb.value=p; cb.checked=ocults.indexOf(p)<0;
+      cb.style.cssText='width:18px;height:18px;flex:0 0 auto;accent-color:#0D3B66;margin:0';
+      var txt=document.createElement('span');
+      var b1=document.createElement('b'); b1.textContent=NOMS[p];
+      var s1=document.createElement('span');
+      s1.style.cssText='color:#5B6B7C;font-size:.86rem';
+      s1.textContent=(tt.p_desc&&tt.p_desc[p])||'';
+      txt.appendChild(b1); txt.appendChild(document.createElement('br')); txt.appendChild(s1);
+      fila.appendChild(cb); fila.appendChild(txt); zona.appendChild(fila);
+    });
+    var b=document.createElement('button');
+    b.className='btn'; b.type='button'; b.style.marginTop='13px';
+    b.textContent=(tt.b_prod_desa||'Desar');
+    b.onclick=function(){
+      var fora=[].slice.call(zona.querySelectorAll('input[type=checkbox]'))
+        .filter(function(c){return !c.checked}).map(function(c){return c.value});
+      if(fora.length>=PRODS.length){ avisa('avis-prod',(tt.prod_min||'—'),true); return; }
+      b.disabled=true;
+      api('productes.desa',{ocults:fora}).then(function(r){
+        b.disabled=false;
+        if(r&&r.ok){
+          try{localStorage.setItem('cm_productes',JSON.stringify(r.productes));}catch(e){}
+          avisa('avis-prod',(tt.prod_ok||'Desat'),false);
+        } else avisa('avis-prod',(r&&r.error)||'Error',true);
+      }).catch(function(){b.disabled=false;avisa('avis-prod','Error',true)});
+    };
+    zona.appendChild(b);
   }
 
   var usuari=null, org=null, gestor=false;
@@ -316,6 +365,8 @@
       $('d-email').textContent=usuari.email;
       $('d-col').textContent=usuari.colegiat||'—';
       $('d-org').textContent=org.nom;
+      pintaProductes(usuari.productesOcults||[]);
+      try{localStorage.setItem('cm_productes',JSON.stringify(usuari.productes||PRODS));}catch(e){}
       if(!gestor){ $('bloc-equip').classList.add('amaga'); return; }
       Promise.all([api('membres.llista',{organitzacioId:org.id}),api('invitacions.llista',{organitzacioId:org.id})])
         .then(function(res){

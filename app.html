@@ -353,7 +353,7 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
             <div id="m-llista"></div>
             <div class="fila" style="align-items:end">
               <div><input id="m-nou" placeholder="Dr. Nombre Apellidos"></div>
-              <div><button class="btn sec" id="b-metge" type="button" style="margin-top:0;width:100%">Añadir médico</button></div>
+              <div><a class="btn sec" href="config.html" style="margin-top:0;width:100%;display:inline-block;text-align:center;text-decoration:none">Gestionar el equipo →</a></div>
             </div>
           </div>
         </div>
@@ -603,7 +603,7 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
       desa(K.conf,c);pintaTot();avis('ok','Configuración guardada.');
     });
     $('c-centre').addEventListener('change',function(){$('centre-camps').style.display=this.checked?'block':'none'});
-    $('b-metge').addEventListener('click',function(){
+    var bm=$('b-metge'); if(bm) bm.addEventListener('click',function(){
       var m=$('m-nou').value.trim();if(!m){avis('err','Escriba el nombre del médico.');return}
       var c=conf();if(!c){avis('err','Guarde antes el profesional.');return}
       c.centre=c.centre||{actiu:true,nom:'',metges:[]};

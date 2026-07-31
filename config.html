@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://app.consultamed.es; form-action 'self'">
+<script src="cmstore.js"></script>
+<meta name="robots" content="noindex,nofollow">
+<title>ConsultaMed — Configuració</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--blau:#0D3B66;--teal:#14B8A6;--verd:#059669;--violeta:#8B2DA5;--taronja:#EA7317;--gasa:#F7FAFC;--grafit:#1F2937;--boira:#94A3B8;--linia:#E7EDF3}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',system-ui,sans-serif;color:var(--grafit);line-height:1.5;min-height:100vh;
+    background:radial-gradient(1100px 620px at 10% -8%,rgba(20,184,166,.12),transparent 58%),radial-gradient(1000px 640px at 102% -2%,rgba(13,59,102,.13),transparent 56%),var(--gasa);background-attachment:fixed}
+  img{max-width:100%}
+  .nav{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 26px;background:rgba(255,255,255,.72);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--linia);position:sticky;top:0;z-index:40}
+  .logo-img{height:28px;width:auto;display:block}
+  .nav-dreta{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .logout{font-size:.82rem;font-weight:600;color:#5B6B7C;text-decoration:none;border:1px solid var(--linia);padding:8px 15px;border-radius:99px;background:#fff;cursor:pointer;font-family:inherit}
+  .logout:hover{border-color:var(--teal);color:var(--blau)}
+  .wrap{max-width:840px;margin:0 auto;padding:36px 22px 64px}
+  h1{font-family:'Sora';font-weight:800;font-size:2rem;color:var(--blau);letter-spacing:-.6px}
+  .sub{color:#5B6B7C;margin-top:6px;font-size:1rem}
+  .seccio{font-family:'Sora';font-weight:700;color:var(--blau);font-size:1.08rem;margin:34px 0 10px}
+  .targeta{background:rgba(255,255,255,.82);backdrop-filter:blur(10px);border:1px solid rgba(13,59,102,.08);border-radius:18px;padding:22px 24px;box-shadow:0 2px 14px rgba(13,59,102,.05)}
+  .fila{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:11px 0;border-top:1px solid var(--linia);font-size:.93rem}
+  .fila:first-of-type{border-top:0}
+  .dada{color:#5B6B7C;font-size:.82rem;text-transform:uppercase;letter-spacing:.04em}
+  label{display:block;font-size:.82rem;font-weight:600;color:#5B6B7C;margin:12px 0 5px}
+  input,select{width:100%;padding:11px 13px;border:1px solid var(--linia);border-radius:11px;font:inherit;font-size:.95rem;background:#fff}
+  input:focus,select:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 3px rgba(20,184,166,.14)}
+  .btn{border:none;background:linear-gradient(100deg,var(--teal),#0FA396);color:#04201d;font-family:inherit;font-weight:700;font-size:.93rem;padding:11px 20px;border-radius:99px;cursor:pointer;box-shadow:0 8px 20px rgba(20,184,166,.24)}
+  .btn:hover{filter:brightness(1.05)}
+  .btn.sec{background:#fff;border:1px solid var(--linia);color:#334155;box-shadow:none;font-weight:600}
+  .btn.perill{background:#fff;border:1px solid #FCA5A5;color:#B91C1C;box-shadow:none}
+  .btn.mini{padding:6px 13px;font-size:.8rem}
+  .avis{margin-top:12px;padding:11px 15px;border-radius:11px;font-size:.89rem;font-weight:600;display:none}
+  .avis.ok{background:rgba(20,184,166,.12);color:#0F7A70;display:block}
+  .avis.err{background:rgba(234,115,23,.12);color:#B45309;display:block}
+  .nota{font-size:.8rem;color:var(--boira);line-height:1.6;margin-top:10px}
+  .buit{color:var(--boira);font-size:.9rem;padding:10px 0}
+  .rol{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:3px 9px;border-radius:99px;background:#EEF2F7;color:#5B6B7C}
+  .pill{display:inline-flex;align-items:center;gap:6px}
+  .centrat{max-width:440px;margin:70px auto;text-align:center}
+  a.enllac{color:#0F9488;font-weight:700;text-decoration:none}
+  .amaga{display:none}
+  @media(max-width:640px){h1{font-size:1.6rem}.wrap{padding:26px 16px 50px}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="hub.html"><img class="logo-img" src="consultamed.png" alt="ConsultaMed"></a>
+  <div class="nav-dreta">
+    <a class="logout" href="hub.html" data-k="tornar">← Tornar al panell</a>
+    <button class="logout" id="b-sortir" data-k="sortir" type="button">Tancar sessió</button>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <!-- Sense sessió -->
+  <div id="v-fora" class="centrat amaga">
+    <h1 data-k="fora_tit">Configuració</h1>
+    <p class="sub" data-k="fora_sub">Per gestionar el compte i l'equip cal iniciar sessió.</p>
+    <p style="margin-top:22px"><a class="btn" id="b-entrar" href="#" data-k="entrar" style="text-decoration:none;display:inline-block">Iniciar sessió</a></p>
+  </div>
+
+  <!-- Amb sessió -->
+  <div id="v-dins" class="amaga">
+    <h1 data-k="tit">Configuració</h1>
+    <p class="sub" id="sub"></p>
+
+    <!-- EQUIP -->
+    <div id="bloc-equip">
+      <div class="seccio" data-k="s_equip">Equip i accessos</div>
+      <div class="targeta">
+        <div id="membres"></div>
+
+        <div id="convidar-zona" style="margin-top:18px;border-top:1px solid var(--linia);padding-top:16px">
+          <div style="font-weight:700;color:var(--blau);font-size:.95rem" data-k="convidar">Convidar algú a la consulta</div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-top:8px">
+            <div style="flex:1 1 240px"><label for="c-email" data-k="l_correu">Correu electrònic</label><input id="c-email" type="email" placeholder="metge@exemple.cat" autocomplete="off"></div>
+            <div style="flex:0 1 170px"><label for="c-rol" data-k="l_rol">Accés</label><select id="c-rol"><option value="METGE" data-k="o_metge">Metge</option><option value="RECEPCIO" data-k="o_recepcio">Recepció</option></select></div>
+            <button class="btn" id="b-convidar" type="button" data-k="b_convidar">Convidar</button>
+          </div>
+          <p class="nota" data-k="n_convidar">Rebrà un correu per crear el seu compte. La recepció és gratuïta i mai veu informació clínica. Una consulta privada admet un màxim de 3 metges.</p>
+        </div>
+
+        <div id="pendents-zona" class="amaga" style="margin-top:16px;border-top:1px solid var(--linia);padding-top:14px">
+          <div style="font-weight:700;color:var(--blau);font-size:.92rem" data-k="s_pendents">Invitacions pendents</div>
+          <div id="pendents"></div>
+        </div>
+
+        <div class="avis" id="avis-equip"></div>
+      </div>
+    </div>
+
+    <!-- COMPTE -->
+    <div class="seccio" data-k="s_compte">El meu compte</div>
+    <div class="targeta">
+      <div class="fila"><span class="dada" data-k="l_nom">Nom</span><strong id="d-nom"></strong></div>
+      <div class="fila"><span class="dada" data-k="l_correu2">Correu</span><strong id="d-email"></strong></div>
+      <div class="fila"><span class="dada" data-k="l_col">Nº col·legiat</span><strong id="d-col"></strong></div>
+      <div class="fila"><span class="dada" data-k="l_org">Consulta</span><strong id="d-org"></strong></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px">
+        <button class="btn sec" id="b-exporta" type="button" data-k="b_exporta">⬇ Descarregar les meves dades</button>
+        <button class="btn sec" id="b-contrasenya" type="button" data-k="b_contrasenya">Canviar la contrasenya</button>
+        <button class="btn perill" id="b-esborra" type="button" data-k="b_esborra">Esborrar el compte</button>
+      </div>
+      <div class="avis" id="avis-compte"></div>
+      <p class="nota" data-k="n_compte">L'exportació conté només el que hi ha al servidor: compte, equip, agenda i fitxes administratives. Els informes clínics viuen al seu ordinador i s'exporten des d'EscribaMed.</p>
+    </div>
+
+    <!-- FACTURACIÓ -->
+    <div class="seccio" data-k="s_fact">Dades de facturació</div>
+    <div class="targeta">
+      <p style="font-size:.93rem;color:#5B6B7C" data-k="n_fact">Sèries, logotip, NIF i conceptes habituals es configuren dins de FacturaMed, al costat de les factures.</p>
+      <p style="margin-top:14px"><a class="btn sec" href="app.html?config=1" style="text-decoration:none;display:inline-block" data-k="b_fact">Obrir la configuració de FacturaMed →</a></p>
+    </div>
+
+    <p class="nota" style="margin-top:26px" id="peu-admin"></p>
+  </div>
+</div>
+
+<script src="cmsync.js?v=20260730b" defer></script>
+<script>
+(function(){
+  'use strict';
+  var API='https://app.consultamed.es/api/s', ENTRA='https://app.consultamed.es';
+  var $=function(i){return document.getElementById(i)};
+  var esc=function(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})};
+
+  var T={
+    ca:{tornar:"← Tornar al panell",sortir:"Tancar sessió",tit:"Configuració",fora_tit:"Configuració",
+      fora_sub:"Per gestionar el compte i l'equip cal iniciar sessió.",entrar:"Iniciar sessió",
+      s_equip:"Equip i accessos",convidar:"Convidar algú a la consulta",l_correu:"Correu electrònic",l_rol:"Accés",
+      o_metge:"Metge",o_recepcio:"Recepció",b_convidar:"Convidar",
+      n_convidar:"Rebrà un correu per crear el seu compte. La recepció és gratuïta i mai veu informació clínica. Una consulta privada admet un màxim de 3 metges.",
+      s_pendents:"Invitacions pendents",s_compte:"El meu compte",l_nom:"Nom",l_correu2:"Correu",l_col:"Nº col·legiat",l_org:"Consulta",
+      b_exporta:"⬇ Descarregar les meves dades",b_contrasenya:"Canviar la contrasenya",b_esborra:"Esborrar el compte",
+      n_compte:"L'exportació conté només el que hi ha al servidor: compte, equip, agenda i fitxes administratives. Els informes clínics viuen al seu ordinador i s'exporten des d'EscribaMed.",
+      s_fact:"Dades de facturació",n_fact:"Sèries, logotip, NIF i conceptes habituals es configuren dins de FacturaMed, al costat de les factures.",
+      b_fact:"Obrir la configuració de FacturaMed →",
+      metge:"Metge",recepcio:"Recepció",admin:"Admin del centre",vos:"vostè",baixa:"Donar de baixa",
+      copiar:"Copiar enllaç",anullar:"Anul·lar",caduca:"caduca",pct:"% liquidació",
+      convidada:"Invitació enviada per correu ✓",convidada_no:"Invitació creada, però el correu no ha sortit. Copiï l'enllaç.",
+      copiat:"Enllaç copiat",baixada:"Membre donat de baixa.",anullada:"Invitació anul·lada.",
+      confirma_baixa:"Donar de baixa aquesta persona? El seu compte queda lliure i podrà tornar a ser convidada.",
+      exportat:"Fitxer descarregat.",contrasenya_env:"Li hem enviat un correu per canviar la contrasenya.",
+      confirma_esborra:"Segur que vol esborrar el compte? És irreversible. Les dades del seu ordinador no es toquen.",
+      sense_equip:"Encara no hi ha ningú més a la consulta."},
+    es:{tornar:"← Volver al panel",sortir:"Cerrar sesión",tit:"Configuración",fora_tit:"Configuración",
+      fora_sub:"Para gestionar la cuenta y el equipo hay que iniciar sesión.",entrar:"Iniciar sesión",
+      s_equip:"Equipo y accesos",convidar:"Invitar a alguien a la consulta",l_correu:"Correo electrónico",l_rol:"Acceso",
+      o_metge:"Médico",o_recepcio:"Recepción",b_convidar:"Invitar",
+      n_convidar:"Recibirá un correo para crear su cuenta. La recepción es gratuita y nunca ve información clínica. Una consulta privada admite un máximo de 3 médicos.",
+      s_pendents:"Invitaciones pendientes",s_compte:"Mi cuenta",l_nom:"Nombre",l_correu2:"Correo",l_col:"Nº colegiado",l_org:"Consulta",
+      b_exporta:"⬇ Descargar mis datos",b_contrasenya:"Cambiar la contraseña",b_esborra:"Eliminar la cuenta",
+      n_compte:"La exportación contiene solo lo que hay en el servidor: cuenta, equipo, agenda y fichas administrativas. Los informes clínicos viven en su ordenador y se exportan desde EscribaMed.",
+      s_fact:"Datos de facturación",n_fact:"Series, logotipo, NIF y conceptos habituales se configuran dentro de FacturaMed, junto a las facturas.",
+      b_fact:"Abrir la configuración de FacturaMed →",
+      metge:"Médico",recepcio:"Recepción",admin:"Admin del centro",vos:"usted",baixa:"Dar de baja",
+      copiar:"Copiar enlace",anullar:"Anular",caduca:"caduca",pct:"% liquidación",
+      convidada:"Invitación enviada por correo ✓",convidada_no:"Invitación creada, pero el correo no ha salido. Copie el enlace.",
+      copiat:"Enlace copiado",baixada:"Miembro dado de baja.",anullada:"Invitación anulada.",
+      confirma_baixa:"¿Dar de baja a esta persona? Su cuenta queda libre y podrá volver a ser invitada.",
+      exportat:"Archivo descargado.",contrasenya_env:"Le hemos enviado un correo para cambiar la contraseña.",
+      confirma_esborra:"¿Seguro que quiere eliminar la cuenta? Es irreversible. Los datos de su ordenador no se tocan.",
+      sense_equip:"Todavía no hay nadie más en la consulta."},
+    en:{tornar:"← Back to panel",sortir:"Sign out",tit:"Settings",fora_tit:"Settings",
+      fora_sub:"Sign in to manage your account and team.",entrar:"Sign in",
+      s_equip:"Team and access",convidar:"Invite someone to the practice",l_correu:"Email",l_rol:"Access",
+      o_metge:"Doctor",o_recepcio:"Reception",b_convidar:"Invite",
+      n_convidar:"They will get an email to create their account. Reception is free and never sees clinical information. A private practice allows up to 3 doctors.",
+      s_pendents:"Pending invitations",s_compte:"My account",l_nom:"Name",l_correu2:"Email",l_col:"License no.",l_org:"Practice",
+      b_exporta:"⬇ Download my data",b_contrasenya:"Change password",b_esborra:"Delete account",
+      n_compte:"The export contains only what is on the server: account, team, schedule and administrative records. Clinical reports live on your computer and are exported from EscribaMed.",
+      s_fact:"Invoicing details",n_fact:"Series, logo, tax ID and usual items are configured inside FacturaMed, next to the invoices.",
+      b_fact:"Open FacturaMed settings →",
+      metge:"Doctor",recepcio:"Reception",admin:"Centre admin",vos:"you",baixa:"Remove",
+      copiar:"Copy link",anullar:"Cancel",caduca:"expires",pct:"settlement %",
+      convidada:"Invitation sent by email ✓",convidada_no:"Invitation created, but the email did not go out. Copy the link.",
+      copiat:"Link copied",baixada:"Member removed.",anullada:"Invitation cancelled.",
+      confirma_baixa:"Remove this person? Their account is released and they can be invited again.",
+      exportat:"File downloaded.",contrasenya_env:"We have emailed you a link to change your password.",
+      confirma_esborra:"Delete the account for good? This cannot be undone. Data on your computer is untouched.",
+      sense_equip:"Nobody else in the practice yet."},
+    de:{tornar:"← Zurück zum Panel",sortir:"Abmelden",tit:"Einstellungen",fora_tit:"Einstellungen",
+      fora_sub:"Zum Verwalten von Konto und Team bitte anmelden.",entrar:"Anmelden",
+      s_equip:"Team und Zugriff",convidar:"Jemanden in die Praxis einladen",l_correu:"E-Mail",l_rol:"Zugriff",
+      o_metge:"Arzt",o_recepcio:"Empfang",b_convidar:"Einladen",
+      n_convidar:"Er erhält eine E-Mail zur Kontoerstellung. Der Empfang ist kostenlos und sieht nie klinische Daten. Eine Privatpraxis erlaubt maximal 3 Ärzte.",
+      s_pendents:"Offene Einladungen",s_compte:"Mein Konto",l_nom:"Name",l_correu2:"E-Mail",l_col:"Arztnummer",l_org:"Praxis",
+      b_exporta:"⬇ Meine Daten herunterladen",b_contrasenya:"Passwort ändern",b_esborra:"Konto löschen",
+      n_compte:"Der Export enthält nur, was auf dem Server liegt: Konto, Team, Terminplan und Verwaltungskarten. Arztberichte liegen auf Ihrem Rechner und werden aus EscribaMed exportiert.",
+      s_fact:"Rechnungsdaten",n_fact:"Serien, Logo, Steuernummer und übliche Positionen werden in FacturaMed konfiguriert.",
+      b_fact:"FacturaMed-Einstellungen öffnen →",
+      metge:"Arzt",recepcio:"Empfang",admin:"Zentrum-Admin",vos:"Sie",baixa:"Entfernen",
+      copiar:"Link kopieren",anullar:"Stornieren",caduca:"läuft ab",pct:"% Abrechnung",
+      convidada:"Einladung per E-Mail gesendet ✓",convidada_no:"Einladung erstellt, aber die E-Mail ging nicht raus. Kopieren Sie den Link.",
+      copiat:"Link kopiert",baixada:"Mitglied entfernt.",anullada:"Einladung storniert.",
+      confirma_baixa:"Diese Person entfernen? Das Konto wird frei und kann erneut eingeladen werden.",
+      exportat:"Datei heruntergeladen.",contrasenya_env:"Wir haben Ihnen eine E-Mail zum Ändern des Passworts geschickt.",
+      confirma_esborra:"Konto endgültig löschen? Nicht umkehrbar. Daten auf Ihrem Rechner bleiben unberührt.",
+      sense_equip:"Noch niemand sonst in der Praxis."}
+  };
+  var lang=(function(){var l=null;try{l=localStorage.getItem('em_idioma_ui')}catch(e){}return T[l]?l:'ca'})();
+  var t=T[lang];
+  function tradueix(){
+    document.querySelectorAll('[data-k]').forEach(function(el){
+      var v=t[el.getAttribute('data-k')]; if(v) el.textContent=v;
+    });
+    document.documentElement.lang=lang;
+  }
+  function avisa(id,txt,err){var a=$(id);a.textContent=txt;a.className='avis '+(err?'err':'ok');setTimeout(function(){a.className='avis'},6000)}
+
+  function api(accio,dades){
+    return fetch(API,{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(Object.assign({accio:accio},dades||{}))}).then(function(r){return r.json()});
+  }
+
+  var usuari=null, org=null, gestor=false;
+  var ROLNOM={METGE:'metge',RECEPCIO:'recepcio',ADMIN_CENTRE:'admin'};
+
+  function pintaMembres(membres,invitacions){
+    var c=$('membres'); c.innerHTML='';
+    if(!membres.length){c.innerHTML='<div class="buit">'+esc(t.sense_equip)+'</div>'}
+    membres.forEach(function(m){
+      var jo=m.usuari.id===usuari.id;
+      var d=document.createElement('div'); d.className='fila';
+      var esq=document.createElement('span');
+      esq.innerHTML='<strong>'+esc(m.usuari.nom)+'</strong>'+(jo?' <span class="rol">'+esc(t.vos)+'</span>':'')+
+        '<br><span style="color:#5B6B7C;font-size:.85rem">'+esc(m.usuari.email)+
+        (m.usuari.colegiat?' · '+esc(m.usuari.colegiat):'')+'</span>';
+      var dre=document.createElement('span'); dre.className='pill';
+      dre.innerHTML='<span class="rol">'+esc(t[ROLNOM[m.rol]]||m.rol)+'</span>';
+      if(m.rol==='METGE'&&org.tipus==='CENTRE'){
+        var lab=document.createElement('label');
+        lab.style.cssText='margin:0;display:flex;gap:5px;align-items:center;font-size:.78rem';
+        lab.innerHTML='<span>'+esc(t.pct)+'</span>';
+        var inp=document.createElement('input'); inp.type='number'; inp.min='0'; inp.max='100';
+        inp.value=(m.percentatge==null?'':m.percentatge); inp.style.cssText='width:66px;padding:5px 7px';
+        inp.addEventListener('change',function(){
+          api('membres.percentatge',{organitzacioId:org.id,membreId:m.id,percentatge:this.value===''?null:this.value})
+            .then(function(r){if(!r.ok)avisa('avis-equip',r.error,true)});
+        });
+        lab.appendChild(inp); dre.appendChild(lab);
+      }
+      if(!jo){
+        var b=document.createElement('button'); b.className='btn perill mini'; b.type='button'; b.textContent=t.baixa;
+        b.addEventListener('click',function(){
+          if(!confirm(t.confirma_baixa))return;
+          api('membres.treu',{organitzacioId:org.id,membreId:m.id}).then(function(r){
+            if(r.ok){avisa('avis-equip',t.baixada);carrega()}else avisa('avis-equip',r.error,true);
+          });
+        });
+        dre.appendChild(b);
+      }
+      d.appendChild(esq); d.appendChild(dre); c.appendChild(d);
+    });
+
+    var pz=$('pendents-zona'), p=$('pendents'); p.innerHTML='';
+    if(invitacions&&invitacions.length){
+      pz.classList.remove('amaga');
+      invitacions.forEach(function(i){
+        var d=document.createElement('div'); d.className='fila';
+        d.innerHTML='<span>'+esc(i.email)+' <span class="rol">'+esc(t[ROLNOM[i.rol]]||i.rol)+'</span>'+
+          '<br><span style="color:#94A3B8;font-size:.8rem">'+esc(t.caduca)+' '+new Date(i.expiraEl).toLocaleDateString(lang)+'</span></span>';
+        var dre=document.createElement('span'); dre.className='pill';
+        var bc=document.createElement('button'); bc.className='btn sec mini'; bc.type='button'; bc.textContent=t.copiar;
+        bc.addEventListener('click',function(){
+          var url='https://app.consultamed.es/invitacio?token='+i.token;
+          if(navigator.clipboard)navigator.clipboard.writeText(url);
+          avisa('avis-equip',t.copiat+': '+url);
+        });
+        var ba=document.createElement('button'); ba.className='btn sec mini'; ba.type='button'; ba.textContent=t.anullar;
+        ba.addEventListener('click',function(){
+          api('invitacions.anulla',{organitzacioId:org.id,invitacioId:i.id}).then(function(r){
+            if(r.ok){avisa('avis-equip',t.anullada);carrega()}else avisa('avis-equip',r.error,true);
+          });
+        });
+        dre.appendChild(bc); dre.appendChild(ba); d.appendChild(dre); p.appendChild(d);
+      });
+    } else pz.classList.add('amaga');
+  }
+
+  // Els metges del servidor manen: es copien a la configuracio de FacturaMed
+  // perque les liquidacions i el selector de metge funcionin amb la mateixa llista.
+  function sincronitzaMetgesAFacturaMed(membres){
+    try{
+      var conf=JSON.parse(localStorage.getItem('fm2_config')||'null'); if(!conf)return;
+      var metges=membres.filter(function(m){return m.rol==='METGE'}).map(function(m){return m.usuari.nom});
+      conf.centre=conf.centre||{actiu:false,nom:'',metges:[],pct:{}};
+      conf.centre.metges=metges;
+      conf.centre.pct=conf.centre.pct||{};
+      membres.forEach(function(m){ if(m.rol==='METGE'&&m.percentatge!=null) conf.centre.pct[m.usuari.nom]=m.percentatge; });
+      if(org&&org.tipus==='CENTRE'){ conf.centre.actiu=true; if(!conf.centre.nom) conf.centre.nom=org.nom; }
+      localStorage.setItem('fm2_config',JSON.stringify(conf));
+    }catch(e){}
+  }
+
+  function carrega(){
+    api('jo').then(function(r){
+      if(!r||!r.ok){$('v-fora').classList.remove('amaga');return}
+      usuari=r.usuari;
+      var guardada=null; try{guardada=localStorage.getItem('cm_org')}catch(e){}
+      org=usuari.organitzacions.filter(function(o){return o.id===guardada})[0]||usuari.organitzacions[0];
+      if(!org){$('v-fora').classList.remove('amaga');return}
+      gestor=(org.rol==='METGE'||org.rol==='ADMIN_CENTRE');
+      $('v-dins').classList.remove('amaga');
+      $('sub').textContent=org.nom+' · '+(t[ROLNOM[org.rol]]||org.rol);
+      $('d-nom').textContent=usuari.nom;
+      $('d-email').textContent=usuari.email;
+      $('d-col').textContent=usuari.colegiat||'—';
+      $('d-org').textContent=org.nom;
+      if(!gestor){ $('bloc-equip').classList.add('amaga'); return; }
+      Promise.all([api('membres.llista',{organitzacioId:org.id}),api('invitacions.llista',{organitzacioId:org.id})])
+        .then(function(res){
+          var membres=res[0].ok?res[0].membres:[];
+          pintaMembres(membres,res[1].ok?res[1].invitacions:[]);
+          sincronitzaMetgesAFacturaMed(membres);
+        });
+    }).catch(function(){$('v-fora').classList.remove('amaga')});
+  }
+
+  // ---- accions ----
+  document.addEventListener('DOMContentLoaded',function(){
+    tradueix();
+    $('b-entrar').href=ENTRA;
+    $('b-sortir').addEventListener('click',function(){
+      api('logout').then(function(){location.href='index.html'});
+    });
+    $('b-convidar').addEventListener('click',function(){
+      var email=$('c-email').value.trim(), rol=$('c-rol').value;
+      if(!email){$('c-email').focus();return}
+      api('invitacions.crea',{organitzacioId:org.id,email:email,rol:rol}).then(function(r){
+        if(r.ok){$('c-email').value='';avisa('avis-equip',r.enviat?t.convidada:t.convidada_no,!r.enviat);carrega()}
+        else avisa('avis-equip',r.error,true);
+      });
+    });
+    $('b-exporta').addEventListener('click',function(){
+      api('compte.exporta').then(function(r){
+        if(!r.ok){avisa('avis-compte',r.error,true);return}
+        var b=new Blob([JSON.stringify(r.exportacio,null,2)],{type:'application/json'});
+        var a=document.createElement('a'); a.href=URL.createObjectURL(b);
+        a.download='consultamed-dades-'+new Date().toISOString().slice(0,10)+'.json';
+        a.click(); URL.revokeObjectURL(a.href); avisa('avis-compte',t.exportat);
+      });
+    });
+    $('b-contrasenya').addEventListener('click',function(){
+      api('contrasenya.oblidada',{email:usuari.email}).then(function(){avisa('avis-compte',t.contrasenya_env)});
+    });
+    $('b-esborra').addEventListener('click',function(){
+      if(!confirm(t.confirma_esborra))return;
+      location.href='https://app.consultamed.es/compte';
+    });
+    carrega();
+  });
+})();
+</script>
+</body>
+</html>

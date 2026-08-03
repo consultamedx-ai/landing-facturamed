@@ -110,10 +110,14 @@
           .catch(function (e) { pintaXip(calVerificar(e) ? 'verifica' : 'err'); });
       }, 1200);
     },
-    ara: cicle
+    ara: cicle,
+    // GestorMed: FacturaMed necessita l'organitzacio i poder cridar l'API.
+    // NO obre cap porta nova: es la mateixa sessio i el mateix servidor.
+    org: function () { return org; },
+    api: api
   };
 
-  // ---- multi-context: triar organitzacio (doc 15: un metge, N contexts) ----
+  // ---- multi-context: triar organitzacio (04_Arquitectura: un metge, N contexts) ----
   function triaOrg(id) {
     var o = null;
     for (var i = 0; i < orgs.length; i++) if (orgs[i].id === id) o = orgs[i];

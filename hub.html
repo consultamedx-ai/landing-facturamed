@@ -253,6 +253,24 @@
     }
     // 1r: el que teniem desat, perque no parpellegi
     try{ var c=JSON.parse(localStorage.getItem('cm_productes')||'null'); if(c) aplica(c); }catch(e){}
+    // GestorMed: si l'usuari pertany a una gestoria, li ensenyem la seva porta.
+    fetch('https://app.consultamed.es/api/s',{method:'POST',credentials:'include',
+      headers:{'Content-Type':'application/json'},body:JSON.stringify({accio:'gestoria.meves'})})
+      .then(function(r){return r.json();})
+      .then(function(d){
+        if(!d||!d.ok||!d.gestories||!d.gestories.length) return;
+        if(document.getElementById('card-gestor')) return;
+        var grid=document.querySelector('.grid'); if(!grid) return;
+        var a=document.createElement('a');
+        a.className='card'; a.id='card-gestor'; a.href='gestoria.html';
+        a.style.setProperty('--acc','#0D3B66');
+        a.innerHTML='<div class="card-logo" style="font-family:Sora,system-ui;font-weight:800;'+
+          'font-size:1.5rem;color:#0D3B66">GestorMed</div>'+
+          '<div class="card-desc">'+d.gestories[0].nom+' · el compliment VeriFactu dels seus metges</div>'+
+          '<div class="card-go">Obrir →</div>';
+        grid.appendChild(a);
+      }).catch(function(){});
+
     // 2n: preguntar-ho al servidor
     fetch('https://app.consultamed.es/api/s',{method:'POST',credentials:'include',
       headers:{'Content-Type':'application/json'},body:JSON.stringify({accio:'jo'})})

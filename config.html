@@ -114,6 +114,14 @@
       <p class="nota" data-k="n_compte">L'exportació conté només el que hi ha al servidor: compte, equip, agenda i fitxes administratives. Els informes clínics viuen al seu ordinador i s'exporten des d'EscribaMed.</p>
     </div>
 
+    <!-- GESTORIA -->
+    <div class="seccio" data-k="s_gest">La meva gestoria</div>
+    <div class="targeta">
+      <div id="gestoria-zona"></div>
+      <div class="avis" id="avis-gest"></div>
+      <p class="nota" data-k="n_gest">La seva gestoria veurà <strong>quantes factures emet, la base, l'IVA i si la cadena VeriFactu és íntegra</strong>. No veurà cap nom de pacient ni cap concepte de factura: això no surt mai d'aquest ordinador. Ho pot revocar quan vulgui.</p>
+    </div>
+
     <!-- PRODUCTES -->
     <div class="seccio" data-k="s_prod">Els meus productes</div>
     <div class="targeta">
@@ -142,7 +150,7 @@
   var esc=function(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})};
 
   var T={
-    ca:{s_prod:"Els meus productes", n_prod:"Té la suite sencera. Si hi ha algun producte que no fa servir, el pot amagar del panell — el preu no canvia i el pot tornar a activar quan vulgui.", p_desc:{"facturamed": "Facturar amb VeriFactu", "escribamed": "La IA escriu l'informe de la visita", "secremed": "Agenda i recepció", "receptamed": "Receptes privades (aviat)"}, b_prod_desa:"Desar", prod_ok:"Desat", prod_min:"Ha de deixar-ne almenys un de visible", tornar:"← Tornar al panell",sortir:"Tancar sessió",tit:"Configuració",fora_tit:"Configuració",
+    ca:{s_gest:"La meva gestoria", g_cap:"Encara no té cap gestoria vinculada.", g_lnom:"Nom de la gestoria", g_lmail:"Correu de la gestoria", g_bvinc:"Vincular", g_brev:"Revocar l'accés", g_vinc:"Vinculada", g_pend:"Convit pendent d'acceptar", g_rev:"Vincle revocat", g_env:"Convit enviat", s_prod:"Els meus productes", n_prod:"Té la suite sencera. Si hi ha algun producte que no fa servir, el pot amagar del panell — el preu no canvia i el pot tornar a activar quan vulgui.", p_desc:{"facturamed": "Facturar amb VeriFactu", "escribamed": "La IA escriu l'informe de la visita", "secremed": "Agenda i recepció", "receptamed": "Receptes privades (aviat)"}, b_prod_desa:"Desar", prod_ok:"Desat", prod_min:"Ha de deixar-ne almenys un de visible", tornar:"← Tornar al panell",sortir:"Tancar sessió",tit:"Configuració",fora_tit:"Configuració",
       fora_sub:"Per gestionar el compte i l'equip cal iniciar sessió.",entrar:"Iniciar sessió",
       s_equip:"Equip i accessos",convidar:"Convidar algú a la consulta",l_correu:"Correu electrònic",l_rol:"Accés",
       o_metge:"Metge",o_recepcio:"Recepció",b_convidar:"Convidar",
@@ -160,7 +168,7 @@
       exportat:"Fitxer descarregat.",contrasenya_env:"Li hem enviat un correu per canviar la contrasenya.",
       confirma_esborra:"Segur que vol esborrar el compte? És irreversible. Les dades del seu ordinador no es toquen.",
       sense_equip:"Encara no hi ha ningú més a la consulta."},
-    es:{s_prod:"Mis productos", n_prod:"Tiene la suite completa. Si hay algún producto que no usa, puede ocultarlo del panel — el precio no cambia y lo puede volver a activar cuando quiera.", p_desc:{"facturamed": "Facturar con VeriFactu", "escribamed": "La IA escribe el informe de la visita", "secremed": "Agenda y recepción", "receptamed": "Recetas privadas (próximamente)"}, b_prod_desa:"Guardar", prod_ok:"Guardado", prod_min:"Debe dejar al menos uno visible", tornar:"← Volver al panel",sortir:"Cerrar sesión",tit:"Configuración",fora_tit:"Configuración",
+    es:{s_gest:"Mi gestoría", g_cap:"Todavía no tiene ninguna gestoría vinculada.", g_lnom:"Nombre de la gestoría", g_lmail:"Correo de la gestoría", g_bvinc:"Vincular", g_brev:"Revocar el acceso", g_vinc:"Vinculada", g_pend:"Invitación pendiente de aceptar", g_rev:"Vínculo revocado", g_env:"Invitación enviada", s_prod:"Mis productos", n_prod:"Tiene la suite completa. Si hay algún producto que no usa, puede ocultarlo del panel — el precio no cambia y lo puede volver a activar cuando quiera.", p_desc:{"facturamed": "Facturar con VeriFactu", "escribamed": "La IA escribe el informe de la visita", "secremed": "Agenda y recepción", "receptamed": "Recetas privadas (próximamente)"}, b_prod_desa:"Guardar", prod_ok:"Guardado", prod_min:"Debe dejar al menos uno visible", tornar:"← Volver al panel",sortir:"Cerrar sesión",tit:"Configuración",fora_tit:"Configuración",
       fora_sub:"Para gestionar la cuenta y el equipo hay que iniciar sesión.",entrar:"Iniciar sesión",
       s_equip:"Equipo y accesos",convidar:"Invitar a alguien a la consulta",l_correu:"Correo electrónico",l_rol:"Acceso",
       o_metge:"Médico",o_recepcio:"Recepción",b_convidar:"Invitar",
@@ -178,7 +186,7 @@
       exportat:"Archivo descargado.",contrasenya_env:"Le hemos enviado un correo para cambiar la contraseña.",
       confirma_esborra:"¿Seguro que quiere eliminar la cuenta? Es irreversible. Los datos de su ordenador no se tocan.",
       sense_equip:"Todavía no hay nadie más en la consulta."},
-    en:{s_prod:"My products", n_prod:"You have the full suite. If there is a product you don't use, you can hide it from the panel — the price doesn't change and you can turn it back on whenever you like.", p_desc:{"facturamed": "VeriFactu invoicing", "escribamed": "AI writes the visit report", "secremed": "Scheduling and reception", "receptamed": "Private prescriptions (soon)"}, b_prod_desa:"Save", prod_ok:"Saved", prod_min:"Keep at least one visible", tornar:"← Back to panel",sortir:"Sign out",tit:"Settings",fora_tit:"Settings",
+    en:{s_gest:"My accountant", g_cap:"No accountant linked yet.", g_lnom:"Accountant name", g_lmail:"Accountant email", g_bvinc:"Link", g_brev:"Revoke access", g_vinc:"Linked", g_pend:"Invitation pending", g_rev:"Access revoked", g_env:"Invitation sent", s_prod:"My products", n_prod:"You have the full suite. If there is a product you don't use, you can hide it from the panel — the price doesn't change and you can turn it back on whenever you like.", p_desc:{"facturamed": "VeriFactu invoicing", "escribamed": "AI writes the visit report", "secremed": "Scheduling and reception", "receptamed": "Private prescriptions (soon)"}, b_prod_desa:"Save", prod_ok:"Saved", prod_min:"Keep at least one visible", tornar:"← Back to panel",sortir:"Sign out",tit:"Settings",fora_tit:"Settings",
       fora_sub:"Sign in to manage your account and team.",entrar:"Sign in",
       s_equip:"Team and access",convidar:"Invite someone to the practice",l_correu:"Email",l_rol:"Access",
       o_metge:"Doctor",o_recepcio:"Reception",b_convidar:"Invite",
@@ -196,7 +204,7 @@
       exportat:"File downloaded.",contrasenya_env:"We have emailed you a link to change your password.",
       confirma_esborra:"Delete the account for good? This cannot be undone. Data on your computer is untouched.",
       sense_equip:"Nobody else in the practice yet."},
-    de:{s_prod:"Meine Produkte", n_prod:"Sie haben die komplette Suite. Produkte, die Sie nicht nutzen, können Sie ausblenden — der Preis ändert sich nicht.", p_desc:{"facturamed": "Rechnungen mit VeriFactu", "escribamed": "Die KI schreibt den Besuchsbericht", "secremed": "Kalender und Empfang", "receptamed": "Privatrezepte (bald)"}, b_prod_desa:"Speichern", prod_ok:"Gespeichert", prod_min:"Mindestens eines muss sichtbar bleiben", tornar:"← Zurück zum Panel",sortir:"Abmelden",tit:"Einstellungen",fora_tit:"Einstellungen",
+    de:{s_gest:"Mein Steuerberater", g_cap:"Noch kein Steuerberater verknüpft.", g_lnom:"Name der Kanzlei", g_lmail:"E-Mail der Kanzlei", g_bvinc:"Verknüpfen", g_brev:"Zugriff widerrufen", g_vinc:"Verknüpft", g_pend:"Einladung offen", g_rev:"Zugriff widerrufen", g_env:"Einladung gesendet", s_prod:"Meine Produkte", n_prod:"Sie haben die komplette Suite. Produkte, die Sie nicht nutzen, können Sie ausblenden — der Preis ändert sich nicht.", p_desc:{"facturamed": "Rechnungen mit VeriFactu", "escribamed": "Die KI schreibt den Besuchsbericht", "secremed": "Kalender und Empfang", "receptamed": "Privatrezepte (bald)"}, b_prod_desa:"Speichern", prod_ok:"Gespeichert", prod_min:"Mindestens eines muss sichtbar bleiben", tornar:"← Zurück zum Panel",sortir:"Abmelden",tit:"Einstellungen",fora_tit:"Einstellungen",
       fora_sub:"Zum Verwalten von Konto und Team bitte anmelden.",entrar:"Anmelden",
       s_equip:"Team und Zugriff",convidar:"Jemanden in die Praxis einladen",l_correu:"E-Mail",l_rol:"Zugriff",
       o_metge:"Arzt",o_recepcio:"Empfang",b_convidar:"Einladen",
@@ -269,6 +277,68 @@
       }).catch(function(){b.disabled=false;avisa('avis-prod','Error',true)});
     };
     zona.appendChild(b);
+  }
+
+
+  // ---- La meva gestoria (GestorMed) ----
+  // El metge mana: vincula qui vol i ho revoca quan vol. Nomes es comparteix el semafor.
+  function pintaGestoria(){
+    var tt=T[lang]||T.ca, zona=$('gestoria-zona');
+    if(!zona||!org) return;
+    api('encarrec.meva',{organitzacioId:org.id}).then(function(d){
+      zona.innerHTML='';
+      var e=d&&d.ok?d.encarrec:null;
+      if(e){
+        var cap=document.createElement('div');
+        cap.style.cssText='display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap';
+        var esq=document.createElement('div');
+        var b1=document.createElement('strong'); b1.textContent=e.gestoria.nom;
+        var b2=document.createElement('div');
+        b2.style.cssText='color:#5B6B7C;font-size:.85rem;margin-top:2px';
+        b2.textContent=(e.gestoria.email||'')+' · '+(e.estat==='ACTIU'?(tt.g_vinc||'Vinculada'):(tt.g_pend||'Convit pendent'));
+        esq.appendChild(b1); esq.appendChild(b2);
+        var br=document.createElement('button');
+        br.className='btn perill'; br.type='button'; br.textContent=(tt.g_brev||'Revocar');
+        br.onclick=function(){
+          br.disabled=true;
+          api('encarrec.revoca',{organitzacioId:org.id}).then(function(r){
+            br.disabled=false;
+            if(r&&r.ok){ avisa('avis-gest',(tt.g_rev||'Revocat'),false); pintaGestoria(); }
+            else avisa('avis-gest',(r&&r.error)||'Error',true);
+          }).catch(function(){br.disabled=false;avisa('avis-gest','Error',true)});
+        };
+        cap.appendChild(esq); cap.appendChild(br);
+        zona.appendChild(cap);
+      } else {
+        var p=document.createElement('p');
+        p.style.cssText='color:#5B6B7C;font-size:.93rem'; p.textContent=(tt.g_cap||'');
+        zona.appendChild(p);
+        var fila=document.createElement('div');
+        fila.style.cssText='display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-top:10px';
+        function camp(id,lab,tipus){
+          var w=document.createElement('div'); w.style.cssText='flex:1 1 220px';
+          var l=document.createElement('label'); l.setAttribute('for',id); l.textContent=lab;
+          var i=document.createElement('input'); i.id=id; if(tipus)i.type=tipus; i.autocomplete='off';
+          w.appendChild(l); w.appendChild(i); return w;
+        }
+        fila.appendChild(camp('gv-nom',(tt.g_lnom||'Nom'),null));
+        fila.appendChild(camp('gv-mail',(tt.g_lmail||'Correu'),'email'));
+        var bv=document.createElement('button');
+        bv.className='btn'; bv.type='button'; bv.textContent=(tt.g_bvinc||'Vincular');
+        bv.onclick=function(){
+          var n=$('gv-nom').value.trim(), m=$('gv-mail').value.trim();
+          if(!n||m.indexOf('@')<0){ avisa('avis-gest','—',true); return; }
+          bv.disabled=true;
+          api('encarrec.vincula',{organitzacioId:org.id,nom:n,email:m}).then(function(r){
+            bv.disabled=false;
+            if(r&&r.ok){ avisa('avis-gest',(tt.g_env||'Convit enviat'),false); pintaGestoria(); }
+            else avisa('avis-gest',(r&&r.error)||'Error',true);
+          }).catch(function(){bv.disabled=false;avisa('avis-gest','Error',true)});
+        };
+        fila.appendChild(bv);
+        zona.appendChild(fila);
+      }
+    }).catch(function(){});
   }
 
   var usuari=null, org=null, gestor=false;
@@ -366,6 +436,7 @@
       $('d-col').textContent=usuari.colegiat||'—';
       $('d-org').textContent=org.nom;
       pintaProductes(usuari.productesOcults||[]);
+      pintaGestoria();
       try{localStorage.setItem('cm_productes',JSON.stringify(usuari.productes||PRODS));}catch(e){}
       if(!gestor){ $('bloc-equip').classList.add('amaga'); return; }
       Promise.all([api('membres.llista',{organitzacioId:org.id}),api('invitacions.llista',{organitzacioId:org.id})])

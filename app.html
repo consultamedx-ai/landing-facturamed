@@ -222,6 +222,7 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
         <span class="accions-fila">
           <button class="btn sec mini" id="b-verificar" type="button">🔗 Verificar integridad</button>
           <button class="btn sec mini" id="b-csv" type="button">⬇ Export gestoría (CSV)</button>
+          <button class="btn sec mini" id="b-gestoria" type="button" style="display:none">📤 Enviar el trimestre a mi gestoría</button>
           <button class="btn mini" id="b-aeat" type="button" style="display:none">📡 Enviar a AEAT (pruebas)</button>
         </span>
       </h2>
@@ -1052,7 +1053,7 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
     });
   },'resum');
 
-  // ---------- liquidacions del centre (pas 3, doc 15) ----------
+  // ---------- liquidacions del centre (pas 3, 04_Arquitectura) ----------
   function esborranyHonoraris(metge,imp,fact,pct,mes){
     var c=conf()||{};var centreNom=(c.centre&&c.centre.nom)||c.nom||'';
     var irpf=imp*0.15,total=imp-irpf,mesTxt=mes.split('-').reverse().join('/');
@@ -1247,6 +1248,89 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
     /* selector idioma només a Configuració (obert des del hub) */
     traduir(lang);
   }catch(e){}
+
+  // ═══════════════════════════════════════════════════════════════════
+  // GESTORMED (31/07/2026)
+  // Al servidor hi puja NOMES el semafor: quantes factures, base, quota, dates
+  // i si la cadena es integra. MAI un nom de pacient ni un concepte.
+  // El paquet de veritat (CSV amb tot) es genera aqui i se l'emporta el metge.
+  // ═══════════════════════════════════════════════════════════════════
+  safe(function () {
+    function periodeDe(fecha) {           // "2026-08-14" -> "2026T3"
+      var p = String(fecha || '').split('-');
+      if (p.length < 2) return null;
+      return p[0] + 'T' + (Math.floor((parseInt(p[1], 10) - 1) / 3) + 1);
+    }
+    function periodeAvui() {
+      var d = new Date();
+      return d.getFullYear() + 'T' + (Math.floor(d.getMonth() / 3) + 1);
+    }
+    function num(v) { return parseFloat(String(v || '0').replace(',', '.')) || 0; }
+
+    function resumDe(periode) {
+      var rs = registres().filter(function (r) { return periodeDe(r.fecha) === periode; });
+      var dates = rs.map(function (r) { return r.fecha; }).sort();
+      return {
+        periode: periode,
+        factures: rs.length,
+        base: Math.round(rs.reduce(function (a, r) { return a + num(r.base); }, 0) * 100) / 100,
+        quota: Math.round(rs.reduce(function (a, r) { return a + num(r.quota); }, 0) * 100) / 100,
+        total: Math.round(rs.reduce(function (a, r) { return a + num(r.total); }, 0) * 100) / 100,
+        primeraData: dates[0] || null,
+        darreraData: dates[dates.length - 1] || null,
+        cadenaIntegra: true,
+        _files: rs
+      };
+    }
+
+    function puja() {
+      if (!window.cmSync || !cmSync.actiu() || !cmSync.org()) return Promise.resolve();
+      var r = resumDe(periodeAvui());
+      delete r._files;
+      return cmSync.api('resum.push', Object.assign({ organitzacioId: cmSync.org() }, r))
+        .catch(function () {});
+    }
+
+    // El boto nomes apareix si hi ha una gestoria vinculada i activa
+    function mira() {
+      if (!window.cmSync || !cmSync.actiu() || !cmSync.org()) return;
+      cmSync.api('encarrec.meva', { organitzacioId: cmSync.org() }).then(function (d) {
+        if (!d || !d.ok || !d.encarrec || d.encarrec.estat !== 'ACTIU') return;
+        var b = $('b-gestoria');
+        if (!b) return;
+        b.style.display = '';
+        b.title = 'Se enviará a ' + (d.encarrec.gestoria.nom || 'su gestoría');
+        b.addEventListener('click', function () {
+          var per = periodeAvui(), r = resumDe(per);
+          if (!r.factures) { avis('err', 'No hay facturas en el trimestre ' + per + '.'); return; }
+          // 1r: el paquet, generat aqui i descarregat pel metge
+          var cap = ['Numero','Fecha','Tipo','Paciente','NIF paciente','Concepto','Base','Cuota IVA','Total','Exenta art20','Rectifica a','Huella'];
+          var files = r._files.map(function (x) {
+            return [x.num,x.fecha,x.tipo,x.pacientNom,x.pacientNif,x.concepte,
+                    String(x.base).replace('.',','),String(x.quota).replace('.',','),
+                    String(x.total).replace('.',','),x.exempta?'SI':'NO',x.rectificaA||'',x.huella]
+              .map(function (v) { v = String(v == null ? '' : v); return /[";\n]/.test(v) ? '"' + v.replace(/"/g,'""') + '"' : v; })
+              .join(';');
+          });
+          descarrega('FacturaMed_' + per + '.csv', '﻿' + cap.join(';') + '\n' + files.join('\n'), 'text/csv;charset=utf-8');
+          // 2n: al servidor, nomes el semafor i la constancia. El CSV no hi va.
+          var sr = Object.assign({}, r); delete sr._files;
+          cmSync.api('resum.push', Object.assign({ organitzacioId: cmSync.org() }, sr));
+          cmSync.api('enviament.registra', { organitzacioId: cmSync.org(), periode: per, factures: r.factures })
+            .then(function (d2) {
+              avis(d2 && d2.ok ? 'ok' : 'err', d2 && d2.ok
+                ? 'Trimestre ' + per + ' listo (' + r.factures + ' facturas). Su gestoría ya lo ve en su panel; adjunte el CSV descargado en su correo.'
+                : 'Se ha descargado el CSV pero no se ha podido avisar a la gestoría.');
+            });
+        });
+      }).catch(function () {});
+    }
+
+    // El semafor es refresca en carregar i cada cop que s'emet o s'esborra una factura
+    setTimeout(function () { puja(); mira(); }, 1800);
+    window.addEventListener('fm-registre-canvi', puja);
+  }, 'gestormed');
+
 })();
 </script>
 </body>

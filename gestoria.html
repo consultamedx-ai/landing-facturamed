@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://app.consultamed.es; form-action 'self'">
+<meta name="robots" content="noindex,nofollow">
+<title>GestorMed — ConsultaMed</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--blau:#0D3B66;--teal:#14B8A6;--verd:#059669;--ambre:#D97706;--vermell:#B91C1C;--gasa:#F7FAFC;--grafit:#1F2937;--boira:#94A3B8;--linia:#E7EDF3}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',system-ui,sans-serif;color:var(--grafit);line-height:1.5;min-height:100vh;
+    background:radial-gradient(1100px 620px at 10% -8%,rgba(20,184,166,.12),transparent 58%),radial-gradient(1000px 640px at 102% -2%,rgba(13,59,102,.13),transparent 56%),var(--gasa);background-attachment:fixed}
+  img{max-width:100%}
+  .nav{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 26px;background:rgba(255,255,255,.72);backdrop-filter:blur(16px);border-bottom:1px solid var(--linia);position:sticky;top:0;z-index:40}
+  .logo-img{height:28px;width:auto;display:block}
+  .logout{font-size:.82rem;font-weight:600;color:#5B6B7C;text-decoration:none;border:1px solid var(--linia);padding:8px 15px;border-radius:99px;background:#fff;cursor:pointer;font-family:inherit}
+  .wrap{max-width:1080px;margin:0 auto;padding:34px 22px 64px}
+  h1{font-family:'Sora';font-weight:800;font-size:2rem;color:var(--blau);letter-spacing:-.6px}
+  .sub{color:#5B6B7C;margin-top:6px;font-size:1rem}
+  .seccio{font-family:'Sora';font-weight:700;color:var(--blau);font-size:1.08rem;margin:30px 0 10px}
+  .targeta{background:rgba(255,255,255,.86);backdrop-filter:blur(10px);border:1px solid rgba(13,59,102,.08);border-radius:18px;padding:20px 22px;box-shadow:0 2px 14px rgba(13,59,102,.05)}
+  label{display:block;font-size:.82rem;font-weight:600;color:#5B6B7C;margin:12px 0 5px}
+  input,select{width:100%;padding:11px 13px;border:1px solid var(--linia);border-radius:11px;font:inherit;font-size:.95rem;background:#fff}
+  input:focus,select:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 3px rgba(20,184,166,.14)}
+  .btn{border:none;background:linear-gradient(100deg,var(--teal),#0FA396);color:#04201d;font-family:inherit;font-weight:700;font-size:.93rem;padding:11px 20px;border-radius:99px;cursor:pointer;box-shadow:0 8px 20px rgba(20,184,166,.24)}
+  .btn.sec{background:#fff;border:1px solid var(--linia);color:#334155;box-shadow:none;font-weight:600}
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:6px}
+  .kpi{background:#fff;border:1px solid var(--linia);border-radius:14px;padding:14px 16px}
+  .kpi .v{font-family:'Sora';font-weight:800;font-size:1.6rem;color:var(--blau);line-height:1.1}
+  .kpi .l{font-size:.76rem;color:var(--boira);text-transform:uppercase;letter-spacing:.04em;margin-top:4px}
+  table{width:100%;border-collapse:collapse;font-size:.9rem}
+  th{text-align:left;font-size:.72rem;text-transform:uppercase;letter-spacing:.04em;color:var(--boira);font-weight:600;padding:9px 10px;border-bottom:1px solid var(--linia)}
+  td{padding:11px 10px;border-bottom:1px solid var(--linia);vertical-align:middle}
+  td.n{text-align:right;font-variant-numeric:tabular-nums}
+  tr:last-child td{border-bottom:0}
+  .sem{display:inline-flex;align-items:center;gap:6px;font-size:.78rem;font-weight:700;padding:4px 10px;border-radius:99px;white-space:nowrap}
+  .sem.ok{background:rgba(5,150,105,.12);color:var(--verd)}
+  .sem.avis{background:rgba(217,119,6,.14);color:var(--ambre)}
+  .sem.mal{background:rgba(185,28,28,.12);color:var(--vermell)}
+  .sem.gris{background:#EEF2F7;color:#5B6B7C}
+  .avis{margin-top:12px;padding:11px 15px;border-radius:11px;font-size:.89rem;font-weight:600;display:none}
+  .avis.ok{background:rgba(20,184,166,.12);color:#0F7A70;display:block}
+  .avis.err{background:rgba(234,115,23,.12);color:#B45309;display:block}
+  .nota{font-size:.8rem;color:var(--boira);line-height:1.6;margin-top:10px}
+  .buit{color:var(--boira);font-size:.92rem;padding:22px 4px;text-align:center}
+  .centrat{max-width:460px;margin:70px auto;text-align:center}
+  .amaga{display:none}
+  .fila-conv{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+  @media(max-width:720px){h1{font-size:1.6rem}.wrap{padding:24px 14px 50px}table{font-size:.84rem}td,th{padding:8px 6px}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="hub.html"><img class="logo-img" src="consultamed.png" alt="ConsultaMed"></a>
+  <div style="display:flex;gap:10px;align-items:center">
+    <a class="logout" href="hub.html">← Panell</a>
+    <button class="logout" id="b-sortir" type="button">Tancar sessió</button>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <!-- Sense sessió -->
+  <div id="v-fora" class="centrat amaga">
+    <h1>GestorMed</h1>
+    <p class="sub">El panell de la gestoria. Cal iniciar sessió.</p>
+    <p style="margin-top:22px"><a class="btn" id="b-entrar" href="#" style="text-decoration:none;display:inline-block">Iniciar sessió</a></p>
+  </div>
+
+  <!-- Sense gestoria: crear-la -->
+  <div id="v-crea" class="amaga">
+    <h1>GestorMed</h1>
+    <p class="sub">Encara no té cap gestoria. Creï-la i comenci a convidar els seus metges.</p>
+    <div class="targeta" style="max-width:520px;margin-top:22px">
+      <label for="g-nom">Nom de la gestoria</label>
+      <input id="g-nom" placeholder="Assessoria Puig i Associats" autocomplete="organization">
+      <label for="g-nif">NIF (opcional)</label>
+      <input id="g-nif" placeholder="B12345678" style="text-transform:uppercase">
+      <p style="margin-top:16px"><button class="btn" id="b-crea" type="button">Crear la gestoria</button></p>
+      <div class="avis" id="avis-crea"></div>
+    </div>
+  </div>
+
+  <!-- Panell -->
+  <div id="v-dins" class="amaga">
+    <h1 id="g-titol">GestorMed</h1>
+    <p class="sub" id="g-sub"></p>
+
+    <div class="seccio">Trimestre</div>
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+      <select id="periode" style="max-width:180px"></select>
+      <span class="nota" style="margin:0">Els imports són els que el metge ha emès amb FacturaMed.</span>
+    </div>
+
+    <div class="seccio">Resum</div>
+    <div class="kpis" id="kpis"></div>
+
+    <div class="seccio">Els seus metges</div>
+    <div class="targeta">
+      <div id="taula"></div>
+      <div class="avis" id="avis-panell"></div>
+      <p class="nota">
+        <strong>Què veu vostè i què no.</strong> Veu quantes factures ha emès cada metge, la base, l'IVA,
+        la data de l'última i si la cadena VeriFactu és íntegra. <strong>No veu cap nom de pacient ni
+        cap concepte de factura</strong>: això no surt mai de l'ordinador del metge. Quan necessiti les dades
+        de veritat, el metge li envia el fitxer amb un clic.
+      </p>
+    </div>
+
+    <div class="seccio">Convidar un metge</div>
+    <div class="targeta">
+      <div class="fila-conv">
+        <div style="flex:1 1 260px"><label for="c-email">Correu electrònic del metge</label>
+          <input id="c-email" type="email" placeholder="metge@exemple.cat" autocomplete="off"></div>
+        <button class="btn" id="b-convidar" type="button">Convidar</button>
+      </div>
+      <div class="avis" id="avis-conv"></div>
+      <p class="nota">Rebrà un correu. Fins que no accepti, vostè no veu res seu. Ell ho pot revocar quan vulgui.</p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  'use strict';
+  var API='https://app.consultamed.es/api/s', ENTRA='https://app.consultamed.es';
+  var $=function(id){return document.getElementById(id)};
+  function api(accio,dades){
+    return fetch(API,{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(Object.assign({accio:accio},dades||{}))}).then(function(r){return r.json()});
+  }
+  function avisa(id,txt,err){var a=$(id);if(!a)return;a.textContent=txt;a.className='avis '+(err?'err':'ok');setTimeout(function(){a.className='avis'},7000)}
+  function eur(v){ return (v==null?'—':(Math.round(v*100)/100).toLocaleString('ca-ES',{minimumFractionDigits:2,maximumFractionDigits:2})+' €'); }
+  function dataCurta(d){ if(!d) return '—'; var p=String(d).split('-'); return p.length===3?p[2]+'/'+p[1]:d; }
+  function esc(t){var d=document.createElement('div');d.textContent=t==null?'':t;return d.innerHTML}
+
+  var gestoria=null, periodeSel=null;
+
+  function periodes(){
+    var out=[], d=new Date();
+    for(var i=0;i<6;i++){
+      var y=d.getFullYear(), q=Math.floor(d.getMonth()/3)+1;
+      out.push(y+'T'+q);
+      d.setMonth(d.getMonth()-3);
+    }
+    return out;
+  }
+
+  // Semàfor: no és una nota al metge, és un avís de feina per a la gestoria
+  function semafor(m){
+    if(m.estat!=='ACTIU') return '<span class="sem gris">Convit pendent</span>';
+    if(m.factures==null)  return '<span class="sem gris">Sense dades encara</span>';
+    if(m.cadenaIntegra===false) return '<span class="sem mal">⚠ Cadena trencada</span>';
+    if(m.factures===0)    return '<span class="sem avis">Cap factura aquest trimestre</span>';
+    if(!m.enviatEl)       return '<span class="sem avis">No li ha enviat el trimestre</span>';
+    return '<span class="sem ok">✓ Enviat</span>';
+  }
+
+  function pinta(d){
+    var ms=d.metges||[];
+    var actius=ms.filter(function(m){return m.estat==='ACTIU'});
+    var base=actius.reduce(function(a,m){return a+(m.base||0)},0);
+    var quota=actius.reduce(function(a,m){return a+(m.quota||0)},0);
+    var fact=actius.reduce(function(a,m){return a+(m.factures||0)},0);
+    var pendents=actius.filter(function(m){return m.factures!=null && !m.enviatEl}).length;
+    var trencats=actius.filter(function(m){return m.cadenaIntegra===false}).length;
+
+    $('kpis').innerHTML=
+      kpi(actius.length,'metges actius')+
+      kpi(fact,'factures al trimestre')+
+      kpi(eur(base),'base imposable')+
+      kpi(eur(quota),'IVA repercutit')+
+      kpi(pendents,'no han enviat', pendents?'var(--ambre)':null)+
+      (trencats?kpi(trencats,'cadena trencada','var(--vermell)'):'');
+
+    if(!ms.length){ $('taula').innerHTML='<div class="buit">Encara no té cap metge. Comenci convidant-ne un a baix.</div>'; return; }
+    var h='<table><thead><tr><th>Metge</th><th>Estat</th><th class="n">Factures</th><th class="n">Base</th><th class="n">IVA</th><th class="n">Última</th></tr></thead><tbody>';
+    ms.forEach(function(m){
+      var qui=(m.professionals&&m.professionals.length)?m.professionals.join(', '):m.nom;
+      h+='<tr><td><strong>'+esc(qui)+'</strong>'+
+         (m.colegiat?'<br><span style="color:var(--boira);font-size:.78rem">Col. '+esc(m.colegiat)+'</span>':'')+
+         '</td><td>'+semafor(m)+'</td>'+
+         '<td class="n">'+(m.factures==null?'—':m.factures)+'</td>'+
+         '<td class="n">'+eur(m.base)+'</td>'+
+         '<td class="n">'+eur(m.quota)+'</td>'+
+         '<td class="n">'+dataCurta(m.darreraData)+'</td></tr>';
+    });
+    $('taula').innerHTML=h+'</tbody></table>';
+  }
+  function kpi(v,l,color){
+    return '<div class="kpi"><div class="v"'+(color?' style="color:'+color+'"':'')+'>'+v+'</div><div class="l">'+l+'</div></div>';
+  }
+
+  function carregaPanell(){
+    if(!gestoria) return;
+    api('gestoria.panell',{gestoriaId:gestoria.id,periode:periodeSel}).then(function(d){
+      if(!d||!d.ok){ avisa('avis-panell',(d&&d.error)||'Error',true); return; }
+      pinta(d);
+    }).catch(function(){avisa('avis-panell','Error de connexió',true)});
+  }
+
+  function carrega(){
+    api('gestoria.meves').then(function(r){
+      if(!r||!r.ok){ $('v-fora').classList.remove('amaga'); return; }
+      if(!r.gestories||!r.gestories.length){ $('v-crea').classList.remove('amaga'); return; }
+      gestoria=r.gestories[0];
+      $('v-dins').classList.remove('amaga');
+      $('g-titol').textContent=gestoria.nom;
+      $('g-sub').textContent='GestorMed · panell de compliment VeriFactu dels seus metges';
+      var sel=$('periode');
+      periodes().forEach(function(p,i){
+        var o=document.createElement('option'); o.value=p; o.textContent=p.replace('T',' · T'); if(!i)o.selected=true;
+        sel.appendChild(o);
+      });
+      periodeSel=sel.value;
+      sel.addEventListener('change',function(){periodeSel=sel.value;carregaPanell()});
+      carregaPanell();
+    }).catch(function(){$('v-fora').classList.remove('amaga')});
+  }
+
+  document.addEventListener('DOMContentLoaded',function(){
+    $('b-entrar').href=ENTRA;
+    $('b-sortir').addEventListener('click',function(){
+      api('logout').then(function(){location.href='https://consultamed.es/'});
+    });
+    $('b-crea').addEventListener('click',function(){
+      var nom=$('g-nom').value.trim();
+      if(!nom){avisa('avis-crea','Cal el nom de la gestoria',true);return}
+      $('b-crea').disabled=true;
+      api('gestoria.crea',{nom:nom,nif:$('g-nif').value.trim()}).then(function(d){
+        $('b-crea').disabled=false;
+        if(d&&d.ok){ location.reload(); } else avisa('avis-crea',(d&&d.error)||'Error',true);
+      }).catch(function(){$('b-crea').disabled=false;avisa('avis-crea','Error de connexió',true)});
+    });
+    $('b-convidar').addEventListener('click',function(){
+      var em=$('c-email').value.trim();
+      if(!em||em.indexOf('@')<0){avisa('avis-conv','Correu invàlid',true);return}
+      $('b-convidar').disabled=true;
+      api('encarrec.convida',{gestoriaId:gestoria.id,email:em}).then(function(d){
+        $('b-convidar').disabled=false;
+        if(d&&d.ok){ $('c-email').value=''; avisa('avis-conv',d.enviat===false?'Convit creat, però el correu no ha sortit.':'Convit enviat a '+em,d.enviat===false); carregaPanell(); }
+        else avisa('avis-conv',(d&&d.error)||'Error',true);
+      }).catch(function(){$('b-convidar').disabled=false;avisa('avis-conv','Error de connexió',true)});
+    });
+    carrega();
+  });
+})();
+</script>
+</body>
+</html>

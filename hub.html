@@ -1,6 +1,12 @@
 <!doctype html>
 <html lang="ca">
 <head>
+<script>
+/* Anti-clickjacking (auditoria 31/07/2026, H3). GitHub Pages no permet capcaleres,
+   i frame-ancestors dins d'un <meta> l'ignoren tots els navegadors. */
+(function(){ if (self !== top) { try { top.location = self.location; } catch(e) { document.documentElement.style.display='none'; } } })();
+</script>
+
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://app.consultamed.es; form-action 'self'">
@@ -264,10 +270,18 @@
         var a=document.createElement('a');
         a.className='card'; a.id='card-gestor'; a.href='gestoria.html';
         a.style.setProperty('--acc','#0D3B66');
-        a.innerHTML='<div class="card-logo" style="font-family:Sora,system-ui;font-weight:800;'+
-          'font-size:1.5rem;color:#0D3B66">GestorMed</div>'+
-          '<div class="card-desc">'+d.gestories[0].nom+' · el compliment VeriFactu dels seus metges</div>'+
-          '<div class="card-go">Obrir →</div>';
+        // Auditoria 31/07/2026 (H2): el nom de la gestoria el pot haver escrit el METGE
+        // (encarrec.vincula la crea). Mai innerHTML amb text d'un altre usuari.
+        var lg=document.createElement('div');
+        lg.className='card-logo';
+        lg.style.cssText='font-family:Sora,system-ui;font-weight:800;font-size:1.5rem;color:#0D3B66';
+        lg.textContent='GestorMed';
+        var de=document.createElement('div');
+        de.className='card-desc';
+        de.textContent=d.gestories[0].nom+' · el compliment VeriFactu dels seus metges';
+        var go=document.createElement('div');
+        go.className='card-go'; go.textContent='Obrir →';
+        a.appendChild(lg); a.appendChild(de); a.appendChild(go);
         grid.appendChild(a);
       }).catch(function(){});
 

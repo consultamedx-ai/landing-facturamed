@@ -1,6 +1,12 @@
 <!doctype html>
 <html lang="ca">
 <head>
+<script>
+/* Anti-clickjacking (auditoria 31/07/2026, H3). GitHub Pages no permet capcaleres,
+   i frame-ancestors dins d'un <meta> l'ignoren tots els navegadors. */
+(function(){ if (self !== top) { try { top.location = self.location; } catch(e) { document.documentElement.style.display='none'; } } })();
+</script>
+
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://app.consultamed.es; form-action 'self'">

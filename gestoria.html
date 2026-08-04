@@ -185,7 +185,7 @@
       (trencats?kpi(trencats,'cadena trencada','var(--vermell)'):'');
 
     if(!ms.length){ $('taula').innerHTML='<div class="buit">Encara no té cap metge. Comenci convidant-ne un a baix.</div>'; return; }
-    var h='<table><thead><tr><th>Metge</th><th>Estat</th><th class="n">Factures</th><th class="n">Base</th><th class="n">IVA</th><th class="n">Última</th></tr></thead><tbody>';
+    var h='<table><thead><tr><th>Metge</th><th>Estat</th><th class="n">Factures</th><th class="n">Base</th><th class="n">IVA</th><th class="n">Última</th><th></th></tr></thead><tbody>';
     ms.forEach(function(m){
       var qui=(m.professionals&&m.professionals.length)?m.professionals.join(', '):m.nom;
       h+='<tr><td><strong>'+esc(qui)+'</strong>'+
@@ -194,9 +194,27 @@
          '<td class="n">'+(m.factures==null?'—':m.factures)+'</td>'+
          '<td class="n">'+eur(m.base)+'</td>'+
          '<td class="n">'+eur(m.quota)+'</td>'+
-         '<td class="n">'+dataCurta(m.darreraData)+'</td></tr>';
+         '<td class="n">'+dataCurta(m.darreraData)+'</td>'+
+         // Nomes els convits pendents es poden retirar. Un vincle ACTIU el talla
+         // el metge des de la seva Configuracio, no la gestoria.
+         '<td class="n">'+(m.estat==='ACTIU'?'':
+            '<button class="btn sec mini" type="button" data-anulla="'+esc(m.encarrecId)+'">Retirar</button>')+'</td></tr>';
     });
     $('taula').innerHTML=h+'</tbody></table>';
+
+    // Delegacio: la taula es torna a pintar sencera a cada carrega, aixi que
+    // enganxar el gestor al contenidor evita quedar-se amb botons orfes.
+    Array.prototype.forEach.call($('taula').querySelectorAll('[data-anulla]'), function(b){
+      b.addEventListener('click', function(){
+        if(!confirm('Retirar aquest convit? El metge ja no el podrà acceptar.')) return;
+        b.disabled=true;
+        api('encarrec.anulla',{gestoriaId:gestoria.id, encarrecId:b.getAttribute('data-anulla')})
+          .then(function(r){
+            if(r&&r.ok){ avisa('avis-panell','Convit retirat.'); carregaPanell(); }
+            else { b.disabled=false; avisa('avis-panell',(r&&r.error)||'Error',true); }
+          }).catch(function(){ b.disabled=false; avisa('avis-panell','Error de connexió',true); });
+      });
+    });
   }
   function kpi(v,l,color){
     return '<div class="kpi"><div class="v"'+(color?' style="color:'+color+'"':'')+'>'+v+'</div><div class="l">'+l+'</div></div>';

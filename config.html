@@ -167,7 +167,7 @@
       s_fact:"Dades de facturació",n_fact:"Sèries, logotip, NIF i conceptes habituals es configuren dins de FacturaMed, al costat de les factures.",
       b_fact:"Obrir la configuració de FacturaMed →",
       metge:"Metge",recepcio:"Recepció",admin:"Admin del centre",vos:"vostè",baixa:"Donar de baixa",
-      copiar:"Copiar enllaç",anullar:"Anul·lar",caduca:"caduca",pct:"% liquidació",
+      copiar:"Copiar enllaç",reenviar:"Tornar a enviar",anullar:"Anul·lar",caduca:"caduca",pct:"% liquidació",
       convidada:"Invitació enviada per correu ✓",convidada_no:"Invitació creada, però el correu no ha sortit. Copiï l'enllaç.",
       copiat:"Enllaç copiat",baixada:"Membre donat de baixa.",anullada:"Invitació anul·lada.",
       confirma_baixa:"Donar de baixa aquesta persona? El seu compte queda lliure i podrà tornar a ser convidada.",
@@ -185,7 +185,7 @@
       s_fact:"Datos de facturación",n_fact:"Series, logotipo, NIF y conceptos habituales se configuran dentro de FacturaMed, junto a las facturas.",
       b_fact:"Abrir la configuración de FacturaMed →",
       metge:"Médico",recepcio:"Recepción",admin:"Admin del centro",vos:"usted",baixa:"Dar de baja",
-      copiar:"Copiar enlace",anullar:"Anular",caduca:"caduca",pct:"% liquidación",
+      copiar:"Copiar enlace",reenviar:"Volver a enviar",anullar:"Anular",caduca:"caduca",pct:"% liquidación",
       convidada:"Invitación enviada por correo ✓",convidada_no:"Invitación creada, pero el correo no ha salido. Copie el enlace.",
       copiat:"Enlace copiado",baixada:"Miembro dado de baja.",anullada:"Invitación anulada.",
       confirma_baixa:"¿Dar de baja a esta persona? Su cuenta queda libre y podrá volver a ser invitada.",
@@ -203,7 +203,7 @@
       s_fact:"Invoicing details",n_fact:"Series, logo, tax ID and usual items are configured inside FacturaMed, next to the invoices.",
       b_fact:"Open FacturaMed settings →",
       metge:"Doctor",recepcio:"Reception",admin:"Centre admin",vos:"you",baixa:"Remove",
-      copiar:"Copy link",anullar:"Cancel",caduca:"expires",pct:"settlement %",
+      copiar:"Copy link",reenviar:"Resend",anullar:"Cancel",caduca:"expires",pct:"settlement %",
       convidada:"Invitation sent by email ✓",convidada_no:"Invitation created, but the email did not go out. Copy the link.",
       copiat:"Link copied",baixada:"Member removed.",anullada:"Invitation cancelled.",
       confirma_baixa:"Remove this person? Their account is released and they can be invited again.",
@@ -221,7 +221,7 @@
       s_fact:"Rechnungsdaten",n_fact:"Serien, Logo, Steuernummer und übliche Positionen werden in FacturaMed konfiguriert.",
       b_fact:"FacturaMed-Einstellungen öffnen →",
       metge:"Arzt",recepcio:"Empfang",admin:"Zentrum-Admin",vos:"Sie",baixa:"Entfernen",
-      copiar:"Link kopieren",anullar:"Stornieren",caduca:"läuft ab",pct:"% Abrechnung",
+      copiar:"Link kopieren",reenviar:"Erneut senden",anullar:"Stornieren",caduca:"läuft ab",pct:"% Abrechnung",
       convidada:"Einladung per E-Mail gesendet ✓",convidada_no:"Einladung erstellt, aber die E-Mail ging nicht raus. Kopieren Sie den Link.",
       copiat:"Link kopiert",baixada:"Mitglied entfernt.",anullada:"Einladung storniert.",
       confirma_baixa:"Diese Person entfernen? Das Konto wird frei und kann erneut eingeladen werden.",
@@ -395,11 +395,19 @@
         d.innerHTML='<span>'+esc(i.email)+' <span class="rol">'+esc(t[ROLNOM[i.rol]]||i.rol)+'</span>'+
           '<br><span style="color:#94A3B8;font-size:.8rem">'+esc(t.caduca)+' '+new Date(i.expiraEl).toLocaleDateString(lang)+'</span></span>';
         var dre=document.createElement('span'); dre.className='pill';
-        var bc=document.createElement('button'); bc.className='btn sec mini'; bc.type='button'; bc.textContent=t.copiar;
+        // M3: el servidor ja no guarda el token en clar, nomes la seva empremta,
+        // aixi que un enllac antic no es pot reconstruir. Es genera un de nou,
+        // s'envia per correu i es copia al porta-retalls.
+        var bc=document.createElement('button'); bc.className='btn sec mini'; bc.type='button'; bc.textContent=t.reenviar;
         bc.addEventListener('click',function(){
-          var url='https://app.consultamed.es/invitacio?token='+i.token;
-          if(navigator.clipboard)navigator.clipboard.writeText(url);
-          avisa('avis-equip',t.copiat+': '+url);
+          bc.disabled=true;
+          api('invitacions.reenvia',{organitzacioId:org.id,invitacioId:i.id}).then(function(r){
+            bc.disabled=false;
+            if(!r.ok){avisa('avis-equip',r.error,true);return}
+            var url='https://app.consultamed.es/invitacio?token='+r.token;
+            if(navigator.clipboard)navigator.clipboard.writeText(url);
+            avisa('avis-equip',t.copiat+': '+url);
+          });
         });
         var ba=document.createElement('button'); ba.className='btn sec mini'; ba.type='button'; ba.textContent=t.anullar;
         ba.addEventListener('click',function(){

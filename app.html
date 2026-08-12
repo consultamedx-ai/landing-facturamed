@@ -881,6 +881,15 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
   function pintaTot(){pintaConfig();pintaPacients();pintaRegistre();pintaUltimes();pintaKPIs()}
   /* ENG-4: el traductor crida això quan es canvia d'idioma (vegeu el bloc final). */
   window.__reRender=pintaTot;
+  /* ENG-4b (11/08/2026) · EL PONT ENTRE ELS DOS <script>.
+     El bloc de GestorMed viu dins de l'ALTRE <script> (el del traductor) i des
+     d'allà no veu res del que hi ha aquí: per això llançava «safe is not
+     defined» i, tot seguit, «registres is not defined». En comptes d'anar
+     duplicant funcions una a una, aquí es publica el que necessita, i allà es
+     recullen totes de cop. Si algun dia el bloc necessita res més, s'afegeix
+     en aquesta llista i prou. */
+  window.__fm = { safe: safe, registres: registres, avis: avis,
+                  descarrega: descarrega, T: T, Tf: Tf, conf: conf };
   window.addEventListener('cm-sync-pull',function(){try{pintaTot()}catch(e){}});
 
   safe(function(){$('r-filtre').addEventListener('input',pintaRegistre)},'filtre');
@@ -1340,13 +1349,21 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
   window.__t=function(s){return trad(s,LANG)};
   /* ⚠️ TROBALLA ENG-4b (11/08/2026) — AIXÒ ARREGLA UN DEFECTE DE PRODUCCIÓ.
      El bloc de GestorMed que hi ha al final d'aquest mateix <script> crida
-     safe(...), però safe() es defineix a l'altre <script> (el de l'aplicació) i
-     aquí no s'hi veu: cada càrrega de FacturaMed llançava
-     «ReferenceError: safe is not defined» i el bloc SENCER no s'executava mai.
-     Conseqüència: el botó d'enviar el trimestre a la gestoria no apareixia i el
-     semàfor fiscal no pujava mai. Reproduït al fitxer de producció sense cap
-     canvi nostre. Es defineix aquí la mateixa funció, que és el pedaç mínim. */
-  function safe(fn,nom){try{return fn()}catch(e){console.warn(nom,e)}}
+     funcions que es defineixen a l'ALTRE <script> (el de l'aplicació) i que des
+     d'aquí no es veuen: safe(), registres(), avis(), descarrega(), T(), Tf().
+     Cada càrrega de FacturaMed llançava «ReferenceError: safe is not defined» i
+     el bloc SENCER no s'executava mai: el botó d'enviar el trimestre a la
+     gestoria no apareixia i el semàfor fiscal no pujava mai.
+     L'aplicació les publica a window.__fm; aquí es recullen totes de cop.
+     Els respatllers (|| function(){}) són perquè, si algun dia el pont es
+     trenqués, això no torni a matar el bloc sencer sense dir res. */
+  var __fm = window.__fm || {};
+  var safe = __fm.safe || function (fn, nom) { try { return fn() } catch (e) { console.warn(nom, e) } };
+  var registres = __fm.registres || function () { return [] };
+  var avis = __fm.avis || function () {};
+  var descarrega = __fm.descarrega || function () {};
+  var T = __fm.T || function (s) { return s };
+  var Tf = __fm.Tf || function (s) { return s };
   function traduir(lang){
     LANG=lang;
     document.querySelectorAll(SEL).forEach(function(el){

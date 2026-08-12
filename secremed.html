@@ -143,7 +143,7 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
 
 <main class="wrap">
   <div class="banner" id="banner"></div>
-  <div class="avis-priv">🔒 <strong>Beta privada de demostración.</strong> No introduzca datos reales de pacientes. Todo se guarda solo en este dispositivo. La recepcionista telefónica con IA (contestar llamadas automáticamente) llegará en la fase con servidor.</div>
+  <div class="avis-priv">🔒 <strong>Beta privada de demostración.</strong> <span>No introduzca datos reales de pacientes. Todo se guarda solo en este dispositivo. La recepcionista telefónica con IA (contestar llamadas automáticamente) llegará en la fase con servidor.</span></div>
 
   <!-- ============ AGENDA ============ -->
   <section class="vista actiu" id="v-agenda">
@@ -171,7 +171,7 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
         <button class="btn" id="b-cita" type="button">＋ Añadir cita</button>
       </div>
       <div class="card">
-        <h2>Agenda del día
+        <h2><span>Agenda del día</span>
           <input type="date" id="a-veure" style="width:auto">
         </h2>
         <div id="llista-cites"></div>
@@ -196,7 +196,7 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
         <button class="btn" id="b-safata" type="button">＋ Anotar</button>
       </div>
       <div class="card">
-        <h2>Pendientes de confirmar (<span id="s-compte">0</span>)</h2>
+        <h2><span>Pendientes de confirmar</span> (<span id="s-compte">0</span>)</h2>
         <div id="llista-safata"></div>
       </div>
     </div>
@@ -217,7 +217,7 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
         <button class="btn" id="b-nova-fitxa" type="button">＋ Crear ficha</button>
       </div>
       <div class="card">
-        <h2>Pacientes (<span id="p-compte">0</span>) <span style="font-size:.72rem;color:var(--boira);font-weight:500">— compartidos con FacturaMed y EscribaMed</span></h2>
+        <h2><span>Pacientes</span> (<span id="p-compte">0</span>) <span style="font-size:.72rem;color:var(--boira);font-weight:500">— compartidos con FacturaMed y EscribaMed</span></h2>
         <div id="llista-pac" style="overflow-x:auto"></div>
       </div>
     </div>
@@ -263,10 +263,46 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
     desfer:['↩ Deshacer','↩ Desfer','↩ Rückgängig','↩ Undo'],
     visita:['▶ Visita','▶ Visita','▶ Besuch','▶ Visit'],
     facturar:['💶 Facturar','💶 Facturar','💶 Abrechnen','💶 Invoice'],
-    sincitas:['Sin citas para este día.','Sense cites per a aquest dia.','Keine Termine für diesen Tag.','No appointments for this day.']
+    sincitas:['Sin citas para este día.','Sense cites per a aquest dia.','Keine Termine für diesen Tag.','No appointments for this day.'],
+    /* ENG-4 (11/08/2026): textos que genera el JavaScript. Fins ara sortien
+       sempre en castellà encara que la interfície estigués en un altre idioma,
+       perque traduir() nomes recorre el DOM estatic. Mateix format que la resta:
+       [es, ca, de, en]. */
+    sensepacients:['Aún no hay pacientes. Se crean solos al añadir citas.',"Encara no hi ha pacients. Es creen sols en afegir cites.",'Noch keine Patienten. Sie werden beim Anlegen von Terminen automatisch erstellt.','No patients yet. They are created automatically when you add appointments.'],
+    thnom:['Nombre','Nom','Name','Name'],
+    thnif:['NIF','NIF','Steuernr.','Tax ID'],
+    thcontacte:['Contacto','Contacte','Kontakt','Contact'],
+    thprox:['Próxima cita','Propera cita','Nächster Termin','Next appointment'],
+    laconsulta:['la consulta','la consulta','die Praxis','the practice'],
+    /* Aquest text no es interficie: es el missatge que rep el PACIENT per
+       WhatsApp. Segueix l'idioma de la interficie perque el metge el pot
+       repassar i editar abans d'enviar-lo (s'obre escrit, no s'envia sol). */
+    msgrecordatori:[
+      'Hola {nom}, le recordamos su cita el {data} a las {hora} en {lloc}. Por favor, confirme respondiendo a este mensaje. Gracias.',
+      'Hola {nom}, li recordem la seva cita el {data} a les {hora} a {lloc}. Si us plau, confirmi-la responent aquest missatge. Gràcies.',
+      'Hallo {nom}, wir erinnern Sie an Ihren Termin am {data} um {hora} Uhr in {lloc}. Bitte bestätigen Sie ihn per Antwort auf diese Nachricht. Vielen Dank.',
+      'Hello {nom}, this is a reminder of your appointment on {data} at {hora} at {lloc}. Please confirm by replying to this message. Thank you.'],
+    senstel:['Esta cita no tiene teléfono. Añádelo para poder recordar.',"Aquesta cita no té telèfon. Afegeix-l'hi per poder recordar.",'Dieser Termin hat keine Telefonnummer. Fügen Sie eine hinzu, um erinnern zu können.','This appointment has no phone number. Add one to be able to send reminders.'],
+    recobert:['Recordatorio abierto en WhatsApp — solo tienes que enviarlo.',"Recordatori obert al WhatsApp — només l'has d'enviar.",'Erinnerung in WhatsApp geöffnet — Sie müssen sie nur noch senden.','Reminder opened in WhatsApp — you only have to send it.'],
+    indicapacient:['Indica el paciente.','Indica el pacient.','Bitte den Patienten angeben.','Enter the patient.'],
+    indicadatahora:['Indica fecha y hora.','Indica data i hora.','Bitte Datum und Uhrzeit angeben.','Enter date and time.'],
+    citaafegida:['Cita añadida el {data} a las {hora}.','Cita afegida el {data} a les {hora}.','Termin am {data} um {hora} Uhr hinzugefügt.','Appointment added on {data} at {hora}.'],
+    sensesafata:['Nada pendiente. Cuando anotes una llamada aparecerá aquí.',"Res pendent. Quan anotis una trucada apareixerà aquí.",'Nichts offen. Sobald Sie einen Anruf notieren, erscheint er hier.','Nothing pending. When you log a call it will appear here.'],
+    convertir:['→ Convertir en cita','→ Convertir en cita','→ In Termin umwandeln','→ Turn into appointment'],
+    descartar:['Descartar','Descartar','Verwerfen','Discard'],
+    anotat:['Anotado. Está en «Pendientes de confirmar».','Anotat. És a «Pendents de confirmar».','Notiert. Es steht unter «Ausstehende Bestätigung».','Logged. It is under "Pending confirmation".'],
+    dadespassades:['Datos pasados a «Nueva cita». Pon fecha y hora y añádela.','Dades passades a «Nova cita». Posa-hi data i hora i afegeix-la.','Daten in «Neuer Termin» übernommen. Datum und Uhrzeit eintragen und hinzufügen.','Details copied to "New appointment". Set date and time and add it.'],
+    indicanom:['Indica el nombre.','Indica el nom.','Bitte den Namen angeben.','Enter the name.'],
+    fitxaexisteix:['Ya existe una ficha con ese nombre.','Ja hi ha una fitxa amb aquest nom.','Es gibt bereits eine Karte mit diesem Namen.','A fiche with that name already exists.'],
+    fitxacreada:['Ficha creada. Ya puedes darle cita o facturarle.','Fitxa creada. Ja li pots donar cita o facturar-li.','Karte erstellt. Sie können jetzt einen Termin vergeben oder abrechnen.','Fiche created. You can now book an appointment or invoice them.'],
+    citesperconfirmar:['Citas por confirmar ({n})','Cites per confirmar ({n})','Zu bestätigende Termine ({n})','Appointments to confirm ({n})'],
+    trucadespendents:['Llamadas pendientes ({n})','Trucades pendents ({n})','Offene Anrufe ({n})','Pending calls ({n})'],
+    resapendent:['No hay nada pendiente de confirmar. 🎉','No hi ha res pendent de confirmar. 🎉','Es gibt nichts zu bestätigen. 🎉','Nothing pending confirmation. 🎉']
   };
   function L(k){return LBL[k][LBLidx[idi()]]}
   function Le(k){return LBL.estat[k]?LBL.estat[k][LBLidx[idi()]]:k}
+  /* ENG-4: com L(), pero substituint {claus} pels valors. Sense dependencies. */
+  function Lf(k,v){return L(k).replace(/\{(\w+)\}/g,function(t,n){return (v&&v[n]!==undefined)?String(v[n]):t})}
 
   // ---------- navegació ----------
   safe(function(){
@@ -291,9 +327,9 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
     var dl=$('dl-pac');dl.innerHTML='';
     ps.forEach(function(p){var o=document.createElement('option');o.value=p.nom;dl.appendChild(o)});
     var el=$('llista-pac');
-    if(!ps.length){el.innerHTML='<div class="buit">Aún no hay pacientes. Se crean solos al añadir citas.</div>';return}
+    if(!ps.length){el.innerHTML='<div class="buit">'+esc(L('sensepacients'))+'</div>';return}
     var cs=cites();
-    var h='<table><thead><tr><th>Nombre</th><th>NIF</th><th>Contacto</th><th>Próxima cita</th></tr></thead><tbody>';
+    var h='<table><thead><tr><th>'+esc(L('thnom'))+'</th><th>'+esc(L('thnif'))+'</th><th>'+esc(L('thcontacte'))+'</th><th>'+esc(L('thprox'))+'</th></tr></thead><tbody>';
     ps.slice().sort(function(a,b){return a.nom.localeCompare(b.nom)}).forEach(function(p){
       var futures=cs.filter(function(c){return c.pacient===p.nom&&c.data>=isoAvui()&&c.estat!=='cancelada'}).sort(function(a,b){return (a.data+a.hora).localeCompare(b.data+b.hora)});
       var prox=futures.length?dataLlegible(futures[0].data)+' '+futures[0].hora:'—';
@@ -316,7 +352,7 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
     var dia=$('a-veure').value||isoAvui();
     var cs=cites().filter(function(c){return c.data===dia}).sort(function(a,b){return a.hora.localeCompare(b.hora)});
     var el=$('llista-cites');
-    if(!cs.length){el.innerHTML='<div class="buit">'+L('sincitas')+'</div>';}
+    if(!cs.length){el.innerHTML='<div class="buit">'+esc(L('sincitas'))+'</div>';}
     else{
       el.innerHTML='';
       cs.forEach(function(c){
@@ -356,27 +392,27 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
   }
   document.addEventListener('click',function(){document.querySelectorAll('.estat-menu.obert').forEach(function(m){m.classList.remove('obert')})});
   function recordatori(c){
-    var cf=conf()||{};var lloc=cf.nom||(cf.centre&&cf.centre.nom)||'la consulta';
-    var msg='Hola '+c.pacient+', le recordamos su cita el '+dataLlegible(c.data)+' a las '+c.hora+' en '+lloc+'. Por favor, confirme respondiendo a este mensaje. Gracias.';
+    var cf=conf()||{};var lloc=cf.nom||(cf.centre&&cf.centre.nom)||L('laconsulta');
+    var msg=Lf('msgrecordatori',{nom:c.pacient,data:dataLlegible(c.data),hora:c.hora,lloc:lloc});
     var tel=(c.tel||'').replace(/[^0-9+]/g,'');
     if(tel){window.open('https://wa.me/'+tel.replace('+','')+'?text='+encodeURIComponent(msg),'_blank');}
-    else{avis('err','Esta cita no tiene teléfono. Añádelo para poder recordar.');return}
-    avis('ok','Recordatorio abierto en WhatsApp — solo tienes que enviarlo.');
+    else{avis('err',L('senstel'));return}
+    avis('ok',L('recobert'));
   }
   safe(function(){
     $('a-data').value=isoAvui();$('a-veure').value=isoAvui();
     $('a-veure').addEventListener('change',pintaAgenda);
     $('b-cita').addEventListener('click',function(){
-      var nom=$('a-pac').value.trim();if(!nom){avis('err','Indica el paciente.');return}
+      var nom=$('a-pac').value.trim();if(!nom){avis('err',L('indicapacient'));return}
       var data=$('a-data').value,hora=$('a-hora').value;
-      if(!data||!hora){avis('err','Indica fecha y hora.');return}
+      if(!data||!hora){avis('err',L('indicadatahora'));return}
       assegurraPacient(nom,$('a-tel').value.trim());
       var cs=cites();
       cs.push({id:Date.now(),data:data,hora:hora,pacient:nom,tel:$('a-tel').value.trim(),metge:esCentre()?$('a-metge').value:'',estat:'pendent'});
       desa(K.cites,cs);
       $('a-pac').value='';$('a-tel').value='';
       $('a-veure').value=data;pintaTot();
-      avis('ok','Cita añadida el '+dataLlegible(data)+' a las '+hora+'.');
+      avis('ok',Lf('citaafegida',{data:dataLlegible(data),hora:hora}));
     });
   },'agenda');
 
@@ -385,7 +421,7 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
     var l=safata();$('s-compte').textContent=l.filter(function(s){return s.estat==='pendent'}).length;
     var el=$('llista-safata');
     var pend=l.filter(function(s){return s.estat==='pendent'});
-    if(!pend.length){el.innerHTML='<div class="buit">Nada pendiente. Cuando anotes una llamada aparecerá aquí.</div>';return}
+    if(!pend.length){el.innerHTML='<div class="buit">'+esc(L('sensesafata'))+'</div>';return}
     el.innerHTML='';
     pend.slice().reverse().forEach(function(s){
       var d=document.createElement('div');d.className='cita';
@@ -393,14 +429,14 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
         '<div class="motiu">'+esc(s.motiu||'')+(s.quan?' · <em>'+esc(s.quan)+'</em>':'')+'</div></span>'+
         '<span class="accions"></span>';
       var ac=d.querySelector('.accions');
-      var b1=document.createElement('button');b1.className='btn mini';b1.type='button';b1.textContent='→ Convertir en cita';
+      var b1=document.createElement('button');b1.className='btn mini';b1.type='button';b1.textContent=L('convertir');
       b1.addEventListener('click',function(){
         $('a-pac').value=s.nom;$('a-tel').value=s.tel||'';
         s.estat='confirmada';desa(K.safata,safata().map(function(x){return x.id===s.id?s:x}));
         document.querySelector('[data-v="agenda"]').click();$('a-hora').focus();pintaTot();
-        avis('ok','Datos pasados a «Nueva cita». Pon fecha y hora y añádela.');
+        avis('ok',L('dadespassades'));
       });
-      var b2=document.createElement('button');b2.className='btn perill mini';b2.type='button';b2.textContent='Descartar';
+      var b2=document.createElement('button');b2.className='btn perill mini';b2.type='button';b2.textContent=L('descartar');
       b2.addEventListener('click',function(){desa(K.safata,safata().filter(function(x){return x.id!==s.id}));pintaTot()});
       ac.appendChild(b1);ac.appendChild(b2);
       el.appendChild(d);
@@ -408,25 +444,25 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
   }
   safe(function(){
     $('b-safata').addEventListener('click',function(){
-      var nom=$('s-nom').value.trim();if(!nom){avis('err','Indica el nombre.');return}
+      var nom=$('s-nom').value.trim();if(!nom){avis('err',L('indicanom'));return}
       var l=safata();
       l.push({id:Date.now(),nom:nom,tel:$('s-tel').value.trim(),motiu:$('s-motiu').value.trim(),quan:$('s-quan').value.trim(),estat:'pendent'});
       desa(K.safata,l);
       $('s-nom').value='';$('s-tel').value='';$('s-motiu').value='';$('s-quan').value='';
-      pintaTot();avis('ok','Anotado. Está en «Pendientes de confirmar».');
+      pintaTot();avis('ok',L('anotat'));
     });
   },'safata');
 
   // ---------- nova fitxa de pacient ----------
   safe(function(){
     $('b-nova-fitxa').addEventListener('click',function(){
-      var nom=$('np-nom').value.trim();if(!nom){avis('err','Indica el nombre.');return}
+      var nom=$('np-nom').value.trim();if(!nom){avis('err',L('indicanom'));return}
       var ps=pacients();
-      if(ps.some(function(p){return p.nom.toLowerCase()===nom.toLowerCase()})){avis('err','Ya existe una ficha con ese nombre.');return}
+      if(ps.some(function(p){return p.nom.toLowerCase()===nom.toLowerCase()})){avis('err',L('fitxaexisteix'));return}
       ps.push({nom:nom,nif:$('np-nif').value.trim().toUpperCase(),contacte:$('np-tel').value.trim()});
       desa(K.pac,ps);
       $('np-nom').value='';$('np-nif').value='';$('np-tel').value='';
-      pintaTot();avis('ok','Ficha creada. Ya puedes darle cita o facturarle.');
+      pintaTot();avis('ok',L('fitxacreada'));
     });
   },'novafitxa');
 
@@ -436,14 +472,14 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
     var calls=safata().filter(function(s){return s.estat==='pendent'});
     var h='';
     if(cs.length){
-      h+='<h3 style="font-size:.85rem;color:var(--blau);margin:6px 0">Citas por confirmar ('+cs.length+')</h3>';
+      h+='<h3 style="font-size:.85rem;color:var(--blau);margin:6px 0">'+esc(Lf('citesperconfirmar',{n:cs.length}))+'</h3>';
       cs.forEach(function(c){h+='<div class="cita"><span class="hora">'+esc(c.hora)+'</span><span class="cos"><div class="nom">'+esc(c.pacient)+'</div><div class="motiu">'+esc(dataLlegible(c.data))+'</div></span><span class="accions"><button class="btn sec mini" type="button" data-conf="'+c.id+'">'+L('confirmar')+'</button></span></div>';});
     }
     if(calls.length){
-      h+='<h3 style="font-size:.85rem;color:var(--blau);margin:12px 0 6px">Llamadas pendientes ('+calls.length+')</h3>';
+      h+='<h3 style="font-size:.85rem;color:var(--blau);margin:12px 0 6px">'+esc(Lf('trucadespendents',{n:calls.length}))+'</h3>';
       calls.slice().reverse().forEach(function(s){h+='<div class="cita"><span class="cos"><div class="nom">'+esc(s.nom)+'</div><div class="motiu">'+esc(s.motiu||'')+(s.quan?' · '+esc(s.quan):'')+'</div></span></div>';});
     }
-    if(!cs.length&&!calls.length)h='<div class="buit">No hay nada pendiente de confirmar. 🎉</div>';
+    if(!cs.length&&!calls.length)h='<div class="buit">'+esc(L('resapendent'))+'</div>';
     $('mp-cont').innerHTML=h;
     $('mp-cont').querySelectorAll('[data-conf]').forEach(function(b){b.addEventListener('click',function(){canviaEstat(parseInt(b.dataset.conf,10),'confirmada');obrePendents();});});
     $('modal-pend').style.display='block';
@@ -464,9 +500,14 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
 <script>
 /* Traductor d'interfície ConsultaMed (CA/DE/EN) — segur: només canvia text visible estàtic */
 (function(){
-  var DICT={"Facturar":["Facturar","Rechnung","Invoice"],"Registro":["Registre","Register","Records"],"Pacientes":["Pacients","Patienten","Patients"],"Configuración":["Configuració","Einstellungen","Settings"],"Agenda":["Agenda","Terminplan","Schedule"],"Llamadas":["Trucades","Anrufe","Calls"],"Nueva factura":["Nova factura","Neue Rechnung","New invoice"],"Paciente":["Pacient","Patient","Patient"],"Paciente (con ficha creada)":["Pacient (amb fitxa creada)","Patient (mit Karte)","Patient (with a fiche)"],"+ Nueva ficha":["+ Nova fitxa","+ Neue Karte","+ New fiche"],"Concepto":["Concepte","Position","Item"],"Conceptos":["Conceptes","Positionen","Items"],"+ Añadir concepto":["+ Afegir concepte","+ Position hinzufügen","+ Add item"],"Serie":["Sèrie","Serie","Series"],"Total factura":["Total factura","Rechnungssumme","Invoice total"],"Exenta de IVA (asistencia sanitaria, art. 20.Uno.3º LIVA)":["Exempta d'IVA (assistència sanitària, art. 20.Uno.3º LIVA)","MwSt-befreit (Gesundheit, Art. 20.Uno.3º LIVA)","VAT-exempt (healthcare, art. 20.Uno.3º LIVA)"],"Emitir factura ⚡":["Emetre factura ⚡","Rechnung erstellen ⚡","Issue invoice ⚡"],"Ver todo el registro →":["Veure tot el registre →","Alle Datensätze →","See all records →"],"Nuevo paciente":["Nou pacient","Neuer Patient","New patient"],"Guardar paciente":["Desar pacient","Patient speichern","Save patient"],"Nombre y apellidos":["Nom i cognoms","Vor- und Nachname","Full name"],"NIF (opcional)":["NIF (opcional)","Steuernr. (optional)","Tax ID (optional)"],"NIF (opcional, para factura nominal)":["NIF (opcional, per a factura nominal)","Steuernr. (optional, für namentl. Rechnung)","Tax ID (optional, for named invoice)"],"Email o teléfono":["Email o telèfon","E-Mail oder Telefon","Email or phone"],"Email o teléfono (opcional)":["Email o telèfon (opcional)","E-Mail oder Telefon (optional)","Email or phone (optional)"],"Facturas de este paciente":["Factures d'aquest pacient","Rechnungen dieses Patienten","This patient's invoices"],"Informes EscribaMed de este paciente":["Informes EscribaMed d'aquest pacient","EscribaMed-Berichte dieses Patienten","This patient's EscribaMed reports"],"🗑 Borrar paciente":["🗑 Esborrar pacient","🗑 Patient löschen","🗑 Delete patient"],"💾 Guardar cambios":["💾 Desar canvis","💾 Änderungen speichern","💾 Save changes"],"✕ Cerrar ficha":["✕ Tancar fitxa","✕ Karte schließen","✕ Close fiche"],"✕ Cerrar":["✕ Tancar","✕ Schließen","✕ Close"],"← Volver":["← Tornar","← Zurück","← Back"],"Resumen de actividad":["Resum d'activitat","Tätigkeitsübersicht","Activity summary"],"Resumen de actividad (para un período)":["Resum d'activitat (per a un període)","Tätigkeitsübersicht (Zeitraum)","Activity summary (for a period)"],"Desde":["Des de","Von","From"],"Hasta":["Fins a","Bis","Until"],"Ordenar por":["Ordenar per","Sortieren nach","Sort by"],"Fecha":["Data","Datum","Date"],"Paciente (A-Z)":["Pacient (A-Z)","Patient (A-Z)","Patient (A-Z)"],"Concepto (A-Z)":["Concepte (A-Z)","Position (A-Z)","Item (A-Z)"],"📄 Generar resumen":["📄 Generar resum","📄 Übersicht erstellen","📄 Generate summary"],"Profesional / consulta":["Professional / consulta","Fachperson / Praxis","Professional / practice"],"Modo centro médico":["Mode centre mèdic","Ärztezentrum-Modus","Medical center mode"],"Nombre del centro (aparece en facturas e informes)":["Nom del centre (apareix a factures i informes)","Zentrumsname (auf Rechnungen und Berichten)","Center name (appears on invoices and reports)"],"Médicos del centro":["Metges del centre","Ärzte des Zentrums","Center doctors"],"Añadir médico":["Afegir metge","Arzt hinzufügen","Add doctor"],"Médico que atiende":["Metge que atén","Behandelnder Arzt","Attending doctor"],"Médico":["Metge","Arzt","Doctor"],"Nº colegiado (opcional)":["Nº col·legiat (opcional)","Arztnummer (optional)","License no. (optional)"],"Dirección (opcional, aparece en la factura)":["Adreça (opcional, apareix a la factura)","Adresse (optional, auf der Rechnung)","Address (optional, shown on the invoice)"],"Página web (opcional, aparece en la factura)":["Pàgina web (opcional, apareix a la factura)","Website (optional, auf der Rechnung)","Website (optional, shown on the invoice)"],"Logo (opcional, aparece en la factura)":["Logo (opcional, apareix a la factura)","Logo (optional, auf der Rechnung)","Logo (optional, shown on the invoice)"],"🖼 Subir logo…":["🖼 Pujar logo…","🖼 Logo hochladen…","🖼 Upload logo…"],"Quitar logo":["Treure logo","Logo entfernen","Remove logo"],"Series de facturación":["Sèries de facturació","Rechnungsserien","Invoice series"],"Añadir serie":["Afegir sèrie","Serie hinzufügen","Add series"],"Nueva serie":["Nova sèrie","Neue Serie","New series"],"Sesión":["Sessió","Sitzung","Session"],"Copia de seguridad":["Còpia de seguretat","Sicherung","Backup"],"⬇ Exportar copia (JSON)":["⬇ Exportar còpia (JSON)","⬇ Sicherung exportieren (JSON)","⬇ Export backup (JSON)"],"⬆ Restaurar copia…":["⬆ Restaurar còpia…","⬆ Sicherung wiederherstellen…","⬆ Restore backup…"],"⬇ Export gestoría (CSV)":["⬇ Export gestoria (CSV)","⬇ Steuerberater-Export (CSV)","⬇ Accountant export (CSV)"],"Estado del producto":["Estat del producte","Produktstatus","Product status"],"Zona de peligro":["Zona de perill","Gefahrenzone","Danger zone"],"Borrar todos los datos":["Esborrar totes les dades","Alle Daten löschen","Delete all data"],"Borra TODOS los datos de FacturaMed de este dispositivo (config, pacientes y registro).":["Esborra TOTES les dades de FacturaMed d'aquest dispositiu (configuració, pacients i registre).","Löscht ALLE FacturaMed-Daten auf diesem Gerät (Einstellungen, Patienten, Register).","Deletes ALL FacturaMed data from this device (settings, patients and records)."],"📡 Enviar a AEAT (pruebas)":["📡 Enviar a l'AEAT (proves)","📡 An AEAT senden (Test)","📡 Send to AEAT (test)"],"🔗 Verificar integridad":["🔗 Verificar integritat","🔗 Integrität prüfen","🔗 Verify integrity"],"🖨 Imprimir / Guardar PDF":["🖨 Imprimir / Desar PDF","🖨 Drucken / PDF speichern","🖨 Print / Save PDF"],"Buscar":["Cercar","Suchen","Search"],"Importe":["Import","Betrag","Amount"],"Nombre":["Nom","Name","Name"],"Teléfono":["Telèfon","Telefon","Phone"],"Teléfono (para recordatorios)":["Telèfon (per a recordatoris)","Telefon (für Erinnerungen)","Phone (for reminders)"],"Contacto (teléfono / email)":["Contacte (telèfon / email)","Kontakt (Telefon / E-Mail)","Contact (phone / email)"],"Hora":["Hora","Uhrzeit","Time"],"Motivo":["Motiu","Grund","Reason"],"Motivo de la llamada":["Motiu de la trucada","Grund des Anrufs","Reason for the call"],"Cuándo le iría bien":["Quan li aniria bé","Wann es passen würde","When suits them"],"Nueva cita":["Nova cita","Neuer Termin","New appointment"],"Anotar llamada / mensaje":["Anotar trucada / missatge","Anruf / Nachricht notieren","Log call / message"],"Pendientes de confirmar":["Pendents de confirmar","Ausstehende Bestätigung","Pending confirmation"],"＋ Anotar":["＋ Anotar","＋ Notieren","＋ Log"],"＋ Añadir cita":["＋ Afegir cita","＋ Termin hinzufügen","＋ Add appointment"],"＋ Crear ficha":["＋ Crear fitxa","＋ Karte erstellen","＋ Create fiche"],"Nueva ficha de paciente":["Nova fitxa de pacient","Neue Patientenkarte","New patient fiche"],"Crea la ficha del paciente. Queda compartida con FacturaMed y EscribaMed.":["Crea la fitxa del pacient. Queda compartida amb FacturaMed i EscribaMed.","Erstellt die Patientenkarte. Wird mit FacturaMed und EscribaMed geteilt.","Create the patient fiche. It's shared with FacturaMed and EscribaMed."],"Consulta médica":["Consulta mèdica","Ärztliche Beratung","Medical consultation"],"Certificado médico":["Certificat mèdic","Ärztliches Attest","Medical certificate"],"Consulta de urgencia":["Consulta d'urgència","Notfallberatung","Urgent consultation"],"Cura / procedimiento":["Cura / procediment","Verband / Eingriff","Dressing / procedure"],"Informe médico":["Informe mèdic","Arztbericht","Medical report"],"Otro servicio sanitario":["Altre servei sanitari","Andere Gesundheitsleistung","Other healthcare service"],"Primera visita":["Primera visita","Erstbesuch","First visit"],"Revisión":["Revisió","Kontrolle","Follow-up"],"Sesión de seguimiento":["Sessió de seguiment","Folgesitzung","Follow-up session"],"Citas del día":["Cites del dia","Termine des Tages","Today's appointments"],"Por confirmar":["Per confirmar","Zu bestätigen","To confirm"],"No-shows (histórico)":["No-shows (històric)","No-Shows (gesamt)","No-shows (all-time)"],"Agenda del día":["Agenda del dia","Tagesplan","Today's schedule"],"BETA PRIVADA · solo datos ficticios":["BETA PRIVADA · només dades fictícies","PRIVATE BETA · nur Testdaten","PRIVATE BETA · dummy data only"],"BETA · remisión AEAT solo a PRUEBAS — no usar para facturas reales":["BETA · remissió AEAT només a PROVES — no fer servir per a factures reals","BETA · AEAT-Übermittlung nur zum TEST — nicht für echte Rechnungen","BETA · AEAT submission TEST only — do not use for real invoices"]};
+  var DICT={"Beta privada de demostración.":["Beta privada de demostració.","Private Demo-Beta.","Private demo beta."],"No introduzca datos reales de pacientes. Todo se guarda solo en este dispositivo. La recepcionista telefónica con IA (contestar llamadas automáticamente) llegará en la fase con servidor.":["No introdueixi dades reals de pacients. Tot es desa només en aquest dispositiu. La recepcionista telefònica amb IA (contestar trucades automàticament) arribarà a la fase amb servidor.","Geben Sie keine echten Patientendaten ein. Alles wird nur auf diesem Gerät gespeichert. Die KI-Telefonrezeption (Anrufe automatisch entgegennehmen) kommt in der Server-Phase.","Do not enter real patient data. Everything is stored only on this device. The AI phone receptionist (answering calls automatically) will arrive in the server phase."],"Cuando no puedes atender el teléfono, anota aquí lo que pide el paciente. Queda pendiente y luego se confirma con una cita.":["Quan no pots atendre el telèfon, anota aquí què demana el pacient. Queda pendent i després es confirma amb una cita.","Wenn Sie nicht ans Telefon gehen können, notieren Sie hier, worum der Patient bittet. Es bleibt offen und wird später mit einem Termin bestätigt.","When you can't answer the phone, note here what the patient is asking for. It stays pending and is later confirmed with an appointment."],"— compartidos con FacturaMed y EscribaMed":["— compartits amb FacturaMed i EscribaMed","— gemeinsam mit FacturaMed und EscribaMed","— shared with FacturaMed and EscribaMed"],"Nombre (se crea ficha si es nuevo)":["Nom (es crea fitxa si és nou)","Name (Karte wird bei Bedarf erstellt)","Name (a fiche is created if new)"],"Nombre del paciente":["Nom del pacient","Name des Patienten","Patient's name"],"Quiere hora para revisión…":["Vol hora per a una revisió…","Möchte einen Kontrolltermin…","Wants an appointment for a check-up…"],"Facturar":["Facturar","Rechnung","Invoice"],"Registro":["Registre","Register","Records"],"Pacientes":["Pacients","Patienten","Patients"],"Configuración":["Configuració","Einstellungen","Settings"],"Agenda":["Agenda","Terminplan","Schedule"],"Llamadas":["Trucades","Anrufe","Calls"],"Nueva factura":["Nova factura","Neue Rechnung","New invoice"],"Paciente":["Pacient","Patient","Patient"],"Paciente (con ficha creada)":["Pacient (amb fitxa creada)","Patient (mit Karte)","Patient (with a fiche)"],"+ Nueva ficha":["+ Nova fitxa","+ Neue Karte","+ New fiche"],"Concepto":["Concepte","Position","Item"],"Conceptos":["Conceptes","Positionen","Items"],"+ Añadir concepto":["+ Afegir concepte","+ Position hinzufügen","+ Add item"],"Serie":["Sèrie","Serie","Series"],"Total factura":["Total factura","Rechnungssumme","Invoice total"],"Exenta de IVA (asistencia sanitaria, art. 20.Uno.3º LIVA)":["Exempta d'IVA (assistència sanitària, art. 20.Uno.3º LIVA)","MwSt-befreit (Gesundheit, Art. 20.Uno.3º LIVA)","VAT-exempt (healthcare, art. 20.Uno.3º LIVA)"],"Emitir factura ⚡":["Emetre factura ⚡","Rechnung erstellen ⚡","Issue invoice ⚡"],"Ver todo el registro →":["Veure tot el registre →","Alle Datensätze →","See all records →"],"Nuevo paciente":["Nou pacient","Neuer Patient","New patient"],"Guardar paciente":["Desar pacient","Patient speichern","Save patient"],"Nombre y apellidos":["Nom i cognoms","Vor- und Nachname","Full name"],"NIF (opcional)":["NIF (opcional)","Steuernr. (optional)","Tax ID (optional)"],"NIF (opcional, para factura nominal)":["NIF (opcional, per a factura nominal)","Steuernr. (optional, für namentl. Rechnung)","Tax ID (optional, for named invoice)"],"Email o teléfono":["Email o telèfon","E-Mail oder Telefon","Email or phone"],"Email o teléfono (opcional)":["Email o telèfon (opcional)","E-Mail oder Telefon (optional)","Email or phone (optional)"],"Facturas de este paciente":["Factures d'aquest pacient","Rechnungen dieses Patienten","This patient's invoices"],"Informes EscribaMed de este paciente":["Informes EscribaMed d'aquest pacient","EscribaMed-Berichte dieses Patienten","This patient's EscribaMed reports"],"🗑 Borrar paciente":["🗑 Esborrar pacient","🗑 Patient löschen","🗑 Delete patient"],"💾 Guardar cambios":["💾 Desar canvis","💾 Änderungen speichern","💾 Save changes"],"✕ Cerrar ficha":["✕ Tancar fitxa","✕ Karte schließen","✕ Close fiche"],"✕ Cerrar":["✕ Tancar","✕ Schließen","✕ Close"],"← Volver":["← Tornar","← Zurück","← Back"],"Resumen de actividad":["Resum d'activitat","Tätigkeitsübersicht","Activity summary"],"Resumen de actividad (para un período)":["Resum d'activitat (per a un període)","Tätigkeitsübersicht (Zeitraum)","Activity summary (for a period)"],"Desde":["Des de","Von","From"],"Hasta":["Fins a","Bis","Until"],"Ordenar por":["Ordenar per","Sortieren nach","Sort by"],"Fecha":["Data","Datum","Date"],"Paciente (A-Z)":["Pacient (A-Z)","Patient (A-Z)","Patient (A-Z)"],"Concepto (A-Z)":["Concepte (A-Z)","Position (A-Z)","Item (A-Z)"],"📄 Generar resumen":["📄 Generar resum","📄 Übersicht erstellen","📄 Generate summary"],"Profesional / consulta":["Professional / consulta","Fachperson / Praxis","Professional / practice"],"Modo centro médico":["Mode centre mèdic","Ärztezentrum-Modus","Medical center mode"],"Nombre del centro (aparece en facturas e informes)":["Nom del centre (apareix a factures i informes)","Zentrumsname (auf Rechnungen und Berichten)","Center name (appears on invoices and reports)"],"Médicos del centro":["Metges del centre","Ärzte des Zentrums","Center doctors"],"Añadir médico":["Afegir metge","Arzt hinzufügen","Add doctor"],"Médico que atiende":["Metge que atén","Behandelnder Arzt","Attending doctor"],"Médico":["Metge","Arzt","Doctor"],"Nº colegiado (opcional)":["Nº col·legiat (opcional)","Arztnummer (optional)","License no. (optional)"],"Dirección (opcional, aparece en la factura)":["Adreça (opcional, apareix a la factura)","Adresse (optional, auf der Rechnung)","Address (optional, shown on the invoice)"],"Página web (opcional, aparece en la factura)":["Pàgina web (opcional, apareix a la factura)","Website (optional, auf der Rechnung)","Website (optional, shown on the invoice)"],"Logo (opcional, aparece en la factura)":["Logo (opcional, apareix a la factura)","Logo (optional, auf der Rechnung)","Logo (optional, shown on the invoice)"],"🖼 Subir logo…":["🖼 Pujar logo…","🖼 Logo hochladen…","🖼 Upload logo…"],"Quitar logo":["Treure logo","Logo entfernen","Remove logo"],"Series de facturación":["Sèries de facturació","Rechnungsserien","Invoice series"],"Añadir serie":["Afegir sèrie","Serie hinzufügen","Add series"],"Nueva serie":["Nova sèrie","Neue Serie","New series"],"Sesión":["Sessió","Sitzung","Session"],"Copia de seguridad":["Còpia de seguretat","Sicherung","Backup"],"⬇ Exportar copia (JSON)":["⬇ Exportar còpia (JSON)","⬇ Sicherung exportieren (JSON)","⬇ Export backup (JSON)"],"⬆ Restaurar copia…":["⬆ Restaurar còpia…","⬆ Sicherung wiederherstellen…","⬆ Restore backup…"],"⬇ Export gestoría (CSV)":["⬇ Export gestoria (CSV)","⬇ Steuerberater-Export (CSV)","⬇ Accountant export (CSV)"],"Estado del producto":["Estat del producte","Produktstatus","Product status"],"Zona de peligro":["Zona de perill","Gefahrenzone","Danger zone"],"Borrar todos los datos":["Esborrar totes les dades","Alle Daten löschen","Delete all data"],"Borra TODOS los datos de FacturaMed de este dispositivo (config, pacientes y registro).":["Esborra TOTES les dades de FacturaMed d'aquest dispositiu (configuració, pacients i registre).","Löscht ALLE FacturaMed-Daten auf diesem Gerät (Einstellungen, Patienten, Register).","Deletes ALL FacturaMed data from this device (settings, patients and records)."],"📡 Enviar a AEAT (pruebas)":["📡 Enviar a l'AEAT (proves)","📡 An AEAT senden (Test)","📡 Send to AEAT (test)"],"🔗 Verificar integridad":["🔗 Verificar integritat","🔗 Integrität prüfen","🔗 Verify integrity"],"🖨 Imprimir / Guardar PDF":["🖨 Imprimir / Desar PDF","🖨 Drucken / PDF speichern","🖨 Print / Save PDF"],"Buscar":["Cercar","Suchen","Search"],"Importe":["Import","Betrag","Amount"],"Nombre":["Nom","Name","Name"],"Teléfono":["Telèfon","Telefon","Phone"],"Teléfono (para recordatorios)":["Telèfon (per a recordatoris)","Telefon (für Erinnerungen)","Phone (for reminders)"],"Contacto (teléfono / email)":["Contacte (telèfon / email)","Kontakt (Telefon / E-Mail)","Contact (phone / email)"],"Hora":["Hora","Uhrzeit","Time"],"Motivo":["Motiu","Grund","Reason"],"Motivo de la llamada":["Motiu de la trucada","Grund des Anrufs","Reason for the call"],"Cuándo le iría bien":["Quan li aniria bé","Wann es passen würde","When suits them"],"Nueva cita":["Nova cita","Neuer Termin","New appointment"],"Anotar llamada / mensaje":["Anotar trucada / missatge","Anruf / Nachricht notieren","Log call / message"],"Pendientes de confirmar":["Pendents de confirmar","Ausstehende Bestätigung","Pending confirmation"],"＋ Anotar":["＋ Anotar","＋ Notieren","＋ Log"],"＋ Añadir cita":["＋ Afegir cita","＋ Termin hinzufügen","＋ Add appointment"],"＋ Crear ficha":["＋ Crear fitxa","＋ Karte erstellen","＋ Create fiche"],"Nueva ficha de paciente":["Nova fitxa de pacient","Neue Patientenkarte","New patient fiche"],"Crea la ficha del paciente. Queda compartida con FacturaMed y EscribaMed.":["Crea la fitxa del pacient. Queda compartida amb FacturaMed i EscribaMed.","Erstellt die Patientenkarte. Wird mit FacturaMed und EscribaMed geteilt.","Create the patient fiche. It's shared with FacturaMed and EscribaMed."],"Consulta médica":["Consulta mèdica","Ärztliche Beratung","Medical consultation"],"Certificado médico":["Certificat mèdic","Ärztliches Attest","Medical certificate"],"Consulta de urgencia":["Consulta d'urgència","Notfallberatung","Urgent consultation"],"Cura / procedimiento":["Cura / procediment","Verband / Eingriff","Dressing / procedure"],"Informe médico":["Informe mèdic","Arztbericht","Medical report"],"Otro servicio sanitario":["Altre servei sanitari","Andere Gesundheitsleistung","Other healthcare service"],"Primera visita":["Primera visita","Erstbesuch","First visit"],"Revisión":["Revisió","Kontrolle","Follow-up"],"Sesión de seguimiento":["Sessió de seguiment","Folgesitzung","Follow-up session"],"Citas del día":["Cites del dia","Termine des Tages","Today's appointments"],"Por confirmar":["Per confirmar","Zu bestätigen","To confirm"],"No-shows (histórico)":["No-shows (històric)","No-Shows (gesamt)","No-shows (all-time)"],"Agenda del día":["Agenda del dia","Tagesplan","Today's schedule"],"BETA PRIVADA · solo datos ficticios":["BETA PRIVADA · només dades fictícies","PRIVATE BETA · nur Testdaten","PRIVATE BETA · dummy data only"],"BETA · remisión AEAT solo a PRUEBAS — no usar para facturas reales":["BETA · remissió AEAT només a PROVES — no fer servir per a factures reals","BETA · AEAT-Übermittlung nur zum TEST — nicht für echte Rechnungen","BETA · AEAT submission TEST only — do not use for real invoices"]};
   var IDX={ca:0,de:1,en:2};
-  var SEL='label,button,h1,h2,h3,th,option,summary,.tab,.l,.nav-enllac,.kicker,.avis-priv,.beta-chip';
+  /* ENG-4 (11/08/2026): s'hi afegeixen p, span i strong. Sense això, els textos
+     d'ajuda i els avisos es quedaven en castellà encara que la interfície fos en
+     un altre idioma, perquè el selector no els mirava. Mateix criteri que app.html,
+     que ja hi tenia p i a. El guard «si té fills, no el toquis» es manté: per això
+     els títols amb comptadors o inputs a dins porten el text dins d'un <span>. */
+  var SEL='label,button,h1,h2,h3,th,option,summary,p,span,strong,.tab,.l,.nav-enllac,.kicker,.avis-priv,.beta-chip';
   function trad(o,lang){return (lang==='es'||!DICT[o])?o:(DICT[o][IDX[lang]]||o);}
   function traduir(lang){
     document.querySelectorAll(SEL).forEach(function(el){

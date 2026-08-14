@@ -231,6 +231,11 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
         <p style="font-size:.8rem;color:#475569;margin-bottom:4px" id="p-visita-info">Grabe la visita entera y el <strong>agente local EscribaMed</strong> la transcribe e identifica quién habla — todo <strong>dentro de su ordenador</strong>: el audio nunca sale de la consulta.</p>
         <div id="agent-off" style="display:none">
           <p style="font-size:.78rem;color:var(--boira);margin-top:8px" id="agent-off-p">Agente no detectado. En la beta, la instalación la asiste ConsultaMed (un solo comando, 5 minutos). Una vez instalado y arrancado, este panel se activa solo.</p>
+          <!-- PROD-7 · visita de ejemplo: mostramos el RESULTADO, nunca simulamos el proceso -->
+          <div class="accions-fila" style="margin-top:12px">
+            <button class="btn mini" id="b-visita-exemple" type="button" data-t>👁 Ver una visita de ejemplo</button>
+          </div>
+          <p style="font-size:.74rem;color:var(--boira);margin-top:8px" id="p-exemple-nota">Sin instalar nada: verá el resultado real de EscribaMed sobre una visita ya grabada — la transcripción con los turnos de palabra, el informe redactado por apartados y el documento imprimible. <strong>No se graba ningún audio</strong> y no se guarda nada en su historial.</p>
         </div>
         <div id="agent-on" style="display:none">
           <label for="v-parlants" data-t>Personas en la consulta</label>
@@ -452,6 +457,10 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
     "No se ha podido acceder al micrófono.":"No s'ha pogut accedir al micròfon.",
     "⏹ Finalizar y transcribir":"⏹ Finalitzar i transcriure",
     "Grabando":"Gravant",
+    "👁 Ver una visita de ejemplo":"👁 Veure una visita d'exemple",
+    "❌ Quitar el ejemplo":"❌ Treure l'exemple",
+    "👁 Ejemplo cargado — este es el resultado que devuelve EscribaMed. No se ha guardado nada.":"👁 Exemple carregat — aquest és el resultat que torna EscribaMed. No s'ha desat res.",
+    "Ejemplo retirado.":"Exemple tret.",
     "pulse ⏹ al terminar la visita":"premi ⏹ en acabar la visita",
     "Procesando en su ordenador":"Processant al seu ordinador",
     "puede tardar 1-3 min según la duración.":"pot trigar 1-3 min segons la durada.",
@@ -603,6 +612,10 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
     " · sin identificación de voces":" · no voice identification",
     "agente local: ":"local agent: ",
     "buscando…":"searching…","no detectado":"not detected","error":"error","bloqueado":"blocked",
+    "👁 Ver una visita de ejemplo":"👁 See a sample visit",
+    "❌ Quitar el ejemplo":"❌ Remove the sample",
+    "👁 Ejemplo cargado — este es el resultado que devuelve EscribaMed. No se ha guardado nada.":"👁 Sample loaded — this is what EscribaMed returns. Nothing has been saved.",
+    "Ejemplo retirado.":"Sample removed.",
     "Voz":"Voice","Última visita":"Last visit","Médico":"Doctor","Paciente ":"Patient","Acompañante":"Companion"
   };
   var TR_DE = {
@@ -731,6 +744,10 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
     "agente local: ":"lokaler Agent: ",
     "buscando…":"suche…",
     "no detectado":"nicht erkannt",
+    "👁 Ver una visita de ejemplo":"👁 Beispielbesuch ansehen",
+    "❌ Quitar el ejemplo":"❌ Beispiel entfernen",
+    "👁 Ejemplo cargado — este es el resultado que devuelve EscribaMed. No se ha guardado nada.":"👁 Beispiel geladen — das ist das Ergebnis von EscribaMed. Es wurde nichts gespeichert.",
+    "Ejemplo retirado.":"Beispiel entfernt.",
     "error":"Fehler",
     "bloqueado":"blockiert",
     "Voz":"Stimme",
@@ -771,6 +788,12 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
       de:'<strong>Wer ist wer?</strong> Prüfen Sie die automatische Zuordnung und korrigieren Sie bei Bedarf:',
       en:'<strong>Who is who?</strong> Check the automatic assignment and correct if needed:'
     },
+    "p-exemple-nota":{
+      es:'Sin instalar nada: verá el resultado real de EscribaMed sobre una visita ya grabada — la transcripción con los turnos de palabra, el informe redactado por apartados y el documento imprimible. <strong>No se graba ningún audio</strong> y no se guarda nada en su historial.',
+      ca:'Sense instal\u00b7lar res: veurà el resultat real d\'EscribaMed sobre una visita ja gravada — la transcripció amb els torns de paraula, l\'informe redactat per apartats i el document imprimible. <strong>No es grava cap àudio</strong> i no es desa res al seu historial.',
+      de:'Ohne Installation: Sie sehen das echte Ergebnis von EscribaMed für einen bereits aufgezeichneten Besuch — die Transkription mit Sprecherwechseln, den nach Abschnitten verfassten Bericht und das druckfertige Dokument. <strong>Es wird kein Ton aufgezeichnet</strong> und nichts in Ihrem Verlauf gespeichert.',
+      en:'Nothing to install: you will see what EscribaMed actually returns for an already-recorded visit — the transcript with speaker turns, the report drafted section by section, and the printable document. <strong>No audio is recorded</strong> and nothing is saved to your history.'
+    },
     "p-informe-nota":{
       es:'El informe es siempre revisable y editable por el médico antes de imprimir o facturar. Los datos se guardan solo en este dispositivo.',
       ca:'L\'informe sempre és revisable i editable pel metge abans d\'imprimir o facturar. Les dades es desen només en aquest dispositiu.',
@@ -810,12 +833,17 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
   var TITOLS_ES={'e-motivo':'Motivo de consulta','e-anamnesis':'Anamnesis / enfermedad actual','e-antecedentes':'Antecedentes','e-exploracion':'Exploración física','e-pruebas':'Pruebas complementarias','e-diagnostico':'Diagnóstico','e-tratamiento':'Tratamiento','e-recomendaciones':'Recomendaciones y seguimiento','e-transcripcion':'Transcripción de la visita (anexo)'};
   var TITOLS_CA={'e-motivo':'Motiu de consulta','e-anamnesis':'Anamnesi / malaltia actual','e-antecedentes':'Antecedents','e-exploracion':'Exploració física','e-pruebas':'Proves complementàries','e-diagnostico':'Diagnòstic','e-tratamiento':'Tractament','e-recomendaciones':'Recomanacions i seguiment','e-transcripcion':'Transcripció de la visita (annex)'};
   var TITOLS_DE={'e-motivo':'Vorstellungsgrund','e-anamnesis':'Anamnese / aktuelle Beschwerden','e-antecedentes':'Vorgeschichte','e-exploracion':'Körperliche Untersuchung','e-pruebas':'Zusatzuntersuchungen','e-diagnostico':'Diagnose','e-tratamiento':'Therapie','e-recomendaciones':'Empfehlungen und Verlauf','e-transcripcion':'Transkription des Besuchs (Anhang)'};
+  /* ENG-10 (12/08/2026) · Faltava l'angles: TIT() no tenia branca 'en' i queia a
+     TITOLS_ES, o sigue que l'informe imprES en angles sortia en castella.
+     Es la Troballa 3 de CS-3. Terminologia clinica anglesa estandard. */
+  var TITOLS_EN={'e-motivo':'Reason for consultation','e-anamnesis':'History of present illness','e-antecedentes':'Past medical history','e-exploracion':'Physical examination','e-pruebas':'Investigations','e-diagnostico':'Diagnosis','e-tratamiento':'Treatment','e-recomendaciones':'Recommendations and follow-up','e-transcripcion':'Visit transcript (appendix)'};
   var PRT={
     es:{doc:'Informe clínico',pacient:'Paciente: ',firma:'Firma del facultativo',legal:'Documento generado con EscribaMed (beta privada) · ConsultaMed. Contenido dictado y revisado por el facultativo. Demostración con datos ficticios — sin validez clínica ni legal.'},
     ca:{doc:'Informe clínic',pacient:'Pacient: ',firma:'Signatura del facultatiu',legal:'Document generat amb EscribaMed (beta privada) · ConsultaMed. Contingut dictat i revisat pel facultatiu. Demostració amb dades fictícies — sense validesa clínica ni legal.'},
-    de:{doc:'Arztbericht',pacient:'Patient: ',firma:'Unterschrift des Arztes',legal:'Erstellt mit EscribaMed (private Beta) · ConsultaMed. Vom Arzt diktierter und geprüfter Inhalt. Demonstration mit fiktiven Daten — ohne klinische oder rechtliche Gültigkeit.'}
+    de:{doc:'Arztbericht',pacient:'Patient: ',firma:'Unterschrift des Arztes',legal:'Erstellt mit EscribaMed (private Beta) · ConsultaMed. Vom Arzt diktierter und geprüfter Inhalt. Demonstration mit fiktiven Daten — ohne klinische oder rechtliche Gültigkeit.'},
+    en:{doc:'Clinical report',pacient:'Patient: ',firma:'Physician signature',legal:'Document generated with EscribaMed (private beta) · ConsultaMed. Content dictated and reviewed by the physician. Demonstration with fictitious data — no clinical or legal validity.'}
   };
-  function TIT(){var v=$('e-idioma').value;return v==='ca'?TITOLS_CA:v==='de'?TITOLS_DE:TITOLS_ES}
+  function TIT(){var v=$('e-idioma').value;return v==='ca'?TITOLS_CA:v==='de'?TITOLS_DE:v==='en'?TITOLS_EN:TITOLS_ES}
 
   // ---------- textarea auto-alçada ----------
   function autoAlta(t){t.style.height='auto';t.style.height=Math.min(t.scrollHeight+2,340)+'px'}
@@ -1111,6 +1139,87 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
     pintaLlista();
     if($('d-pacient')){$('d-pacient').addEventListener('input',pintaLlista);$('d-pacient').addEventListener('change',pintaLlista);}
   },'guardar');
+
+
+  // ---------- PROD-7 · VISITA D'EXEMPLE (sense agent local) ----------
+  // Regla de disseny de Producte (07_Mode_de_Prova.md §2.2):
+  //   ENSENYEM EL RESULTAT, MAI SIMULEM EL PROCES.
+  // Per aixo no hi ha cap animacio de gravacio ni cap barra de progres falsa:
+  // es carrega directament el resultat, marcat com a exemple i sense desar res.
+  var VISITA_DEMO = {
+    es: {
+      pacient: "A. Ferrer (ejemplo)",
+      "e-motivo": "Dolor lumbar de 5 días de evolución, sin traumatismo previo.",
+      "e-anamnesis": "Refiere dolor en región lumbar baja de inicio progresivo hace 5 días, tras una jornada de trabajo con carga de peso. Características mecánicas: empeora con la bipedestación prolongada y la flexión del tronco, y mejora en decúbito. No irradiación a extremidades inferiores, no parestesias, no pérdida de fuerza. No fiebre, no síndrome miccional, no pérdida de peso.",
+      "e-antecedentes": "Sin alergias medicamentosas conocidas. Episodio similar hace 3 años, resuelto con tratamiento conservador. Sin intervenciones quirúrgicas. Sin tratamiento habitual.",
+      "e-exploracion": "Buen estado general, afebril. Marcha normal. Contractura de la musculatura paravertebral lumbar bilateral, más marcada en el lado izquierdo. Dolor a la palpación de L4-L5. Lasègue negativo bilateral. Fuerza y sensibilidad conservadas en ambas extremidades inferiores. Reflejos rotuliano y aquíleo simétricos.",
+      "e-pruebas": "No se solicitan pruebas de imagen: cuadro de menos de 6 semanas de evolución y sin signos de alarma.",
+      "e-diagnostico": "Lumbalgia mecánica aguda, sin signos de alarma.",
+      "e-tratamiento": "Ibuprofeno 600 mg cada 8 h con las comidas, 5 días. Paracetamol 1 g cada 8 h si dolor irruptivo. Calor local seco 15 minutos, 2-3 veces al día.",
+      "e-recomendaciones": "Mantener la actividad dentro de lo tolerable; evitar el reposo en cama. Evitar cargar peso durante 2 semanas. Revisión en 10-14 días si no hay mejoría. Consultar antes si aparece dolor irradiado a la pierna, pérdida de fuerza, alteración del control de esfínteres o fiebre.",
+      "e-transcripcion": "— VISITA DE EJEMPLO · datos ficticios —\n\nMÉDICO: Buenos días, siéntese. Cuénteme qué le pasa.\nPACIENTE: Pues mire, llevo cinco días con un dolor en la parte baja de la espalda que no se me va.\nMÉDICO: ¿Recuerda si empezó después de algo en concreto?\nPACIENTE: El viernes estuve cargando cajas todo el día en el trabajo. Al día siguiente ya me levanté mal.\nMÉDICO: ¿El dolor le baja hacia la pierna, le hormiguea o nota que le falla?\nPACIENTE: No, no. Es todo aquí, en la espalda. Cuando me tumbo estoy mejor.\nMÉDICO: ¿Ha tenido fiebre, o molestias al orinar?\nPACIENTE: No, nada de eso.\nMÉDICO: Muy bien. Voy a explorarle. Túmbese boca arriba, por favor.\n[exploración]\nMÉDICO: Tiene la musculatura muy contracturada, sobre todo en el lado izquierdo, pero los reflejos y la fuerza están perfectos. No hace falta ninguna radiografía por ahora."
+    },
+    ca: {
+      pacient: "A. Ferrer (exemple)",
+      "e-motivo": "Dolor lumbar de 5 dies d'evolució, sense traumatisme previ.",
+      "e-anamnesis": "Refereix dolor a la regió lumbar baixa d'inici progressiu fa 5 dies, després d'una jornada de feina carregant pes. Característiques mecàniques: empitjora amb la bipedestació perllongada i la flexió del tronc, i millora en decúbit. Sense irradiació a les extremitats inferiors, sense parestèsies, sense pèrdua de força. Sense febre, sense síndrome miccional, sense pèrdua de pes.",
+      "e-antecedentes": "Sense al·lèrgies medicamentoses conegudes. Episodi similar fa 3 anys, resolt amb tractament conservador. Sense intervencions quirúrgiques. Sense tractament habitual.",
+      "e-exploracion": "Bon estat general, afebril. Marxa normal. Contractura de la musculatura paravertebral lumbar bilateral, més marcada al costat esquerre. Dolor a la palpació de L4-L5. Lasègue negatiu bilateral. Força i sensibilitat conservades a totes dues extremitats inferiors. Reflexos rotulià i aquil·li simètrics.",
+      "e-pruebas": "No es demanen proves d'imatge: quadre de menys de 6 setmanes d'evolució i sense signes d'alarma.",
+      "e-diagnostico": "Lumbàlgia mecànica aguda, sense signes d'alarma.",
+      "e-tratamiento": "Ibuprofèn 600 mg cada 8 h amb els àpats, 5 dies. Paracetamol 1 g cada 8 h si hi ha dolor irruptiu. Calor local seca 15 minuts, 2-3 vegades al dia.",
+      "e-recomendaciones": "Mantenir l'activitat dins del que es toleri; evitar el repòs al llit. Evitar carregar pes durant 2 setmanes. Revisió en 10-14 dies si no hi ha millora. Consultar abans si apareix dolor irradiat a la cama, pèrdua de força, alteració del control d'esfínters o febre.",
+      "e-transcripcion": "— VISITA D'EXEMPLE · dades fictícies —\n\nMETGE: Bon dia, segui. Expliqui'm què li passa.\nPACIENT: Doncs miri, fa cinc dies que tinc un dolor a la part baixa de l'esquena que no se me'n va.\nMETGE: Recorda si va començar després d'alguna cosa concreta?\nPACIENT: El divendres vaig estar carregant caixes tot el dia a la feina. L'endemà ja em vaig llevar malament.\nMETGE: El dolor li baixa cap a la cama, li formigueja o nota que li falla?\nPACIENT: No, no. És tot aquí, a l'esquena. Quan m'estiro estic millor.\nMETGE: Ha tingut febre, o molèsties en orinar?\nPACIENT: No, res d'això.\nMETGE: Molt bé. Ara l'exploro. Estiri's de panxa enlaire, si us plau.\n[exploració]\nMETGE: Té la musculatura molt contracturada, sobretot al costat esquerre, però els reflexos i la força estan perfectes. No cal cap radiografia de moment."
+    },
+    en: {
+      pacient: "A. Ferrer (sample)",
+      "e-motivo": "Low back pain for 5 days, with no preceding trauma.",
+      "e-anamnesis": "Reports gradual-onset pain in the lower lumbar region beginning 5 days ago, after a working day involving heavy lifting. Mechanical in nature: worse on prolonged standing and trunk flexion, better when lying down. No radiation to the lower limbs, no paraesthesia, no weakness. No fever, no urinary symptoms, no weight loss.",
+      "e-antecedentes": "No known drug allergies. Similar episode 3 years ago, resolved with conservative treatment. No previous surgery. No regular medication.",
+      "e-exploracion": "Well, afebrile. Normal gait. Bilateral lumbar paravertebral muscle spasm, more marked on the left. Tenderness on palpation at L4-L5. Straight-leg raise negative bilaterally. Power and sensation preserved in both lower limbs. Knee and ankle reflexes symmetrical.",
+      "e-pruebas": "No imaging requested: symptoms under 6 weeks and no red flags.",
+      "e-diagnostico": "Acute mechanical low back pain, no red flags.",
+      "e-tratamiento": "Ibuprofen 600 mg every 8 h with food for 5 days. Paracetamol 1 g every 8 h for breakthrough pain. Local dry heat for 15 minutes, 2-3 times a day.",
+      "e-recomendaciones": "Stay as active as tolerated; avoid bed rest. Avoid lifting for 2 weeks. Review in 10-14 days if not improving. Seek advice sooner if leg pain, weakness, bladder or bowel disturbance, or fever develop.",
+      "e-transcripcion": "— SAMPLE VISIT · fictitious data —\n\nDOCTOR: Good morning, have a seat. Tell me what is going on.\nPATIENT: Well, I have had this pain in my lower back for five days and it will not go away.\nDOCTOR: Do you remember whether it started after anything in particular?\nPATIENT: On Friday I was lifting boxes all day at work. The next morning I woke up sore.\nDOCTOR: Does the pain travel down your leg, or do you get pins and needles or any weakness?\nPATIENT: No, no. It is all here, in my back. When I lie down it is better.\nDOCTOR: Any fever, or discomfort passing urine?\nPATIENT: No, nothing like that.\nDOCTOR: Good. I am going to examine you. Please lie on your back.\n[examination]\nDOCTOR: The muscles are very tight, particularly on the left, but your reflexes and power are perfectly normal. You do not need an X-ray at this stage."
+    },
+    de: {
+      pacient: "A. Ferrer (Beispiel)",
+      "e-motivo": "Seit 5 Tagen Kreuzschmerzen, ohne vorangegangenes Trauma.",
+      "e-anamnesis": "Berichtet über allmählich einsetzende Schmerzen im unteren Lendenbereich seit 5 Tagen, nach einem Arbeitstag mit schwerem Heben. Mechanischer Charakter: Verschlechterung bei längerem Stehen und Rumpfbeugung, Besserung im Liegen. Keine Ausstrahlung in die unteren Extremitäten, keine Parästhesien, keine Kraftminderung. Kein Fieber, keine Miktionsbeschwerden, kein Gewichtsverlust.",
+      "e-antecedentes": "Keine bekannten Medikamentenallergien. Ähnliche Episode vor 3 Jahren, konservativ ausgeheilt. Keine Operationen. Keine Dauermedikation.",
+      "e-exploracion": "Guter Allgemeinzustand, afebril. Normales Gangbild. Beidseitiger paravertebraler Muskelhartspann lumbal, links betont. Druckschmerz über L4-L5. Lasègue beidseits negativ. Kraft und Sensibilität an beiden unteren Extremitäten erhalten. Patellar- und Achillessehnenreflex seitengleich.",
+      "e-pruebas": "Keine Bildgebung veranlasst: Beschwerden seit weniger als 6 Wochen und ohne Warnzeichen.",
+      "e-diagnostico": "Akuter mechanischer Kreuzschmerz, ohne Warnzeichen.",
+      "e-tratamiento": "Ibuprofen 600 mg alle 8 h zu den Mahlzeiten, 5 Tage. Paracetamol 1 g alle 8 h bei Durchbruchschmerz. Trockene Wärme lokal 15 Minuten, 2-3 mal täglich.",
+      "e-recomendaciones": "Aktivität im tolerierten Rahmen beibehalten; Bettruhe vermeiden. 2 Wochen kein schweres Heben. Wiedervorstellung nach 10-14 Tagen, falls keine Besserung. Früher vorstellen bei ins Bein ausstrahlenden Schmerzen, Kraftverlust, Blasen- oder Mastdarmstörung oder Fieber.",
+      "e-transcripcion": "— BEISPIELBESUCH · fiktive Daten —\n\nARZT: Guten Morgen, nehmen Sie Platz. Erzählen Sie, was los ist.\nPATIENT: Also, ich habe seit fünf Tagen Schmerzen im unteren Rücken, die einfach nicht weggehen.\nARZT: Erinnern Sie sich, ob es nach etwas Bestimmtem angefangen hat?\nPATIENT: Am Freitag habe ich den ganzen Tag Kisten geschleppt. Am nächsten Morgen bin ich schon mit Schmerzen aufgewacht.\nARZT: Strahlt der Schmerz ins Bein aus, kribbelt es, oder gibt das Bein nach?\nPATIENT: Nein, nein. Es ist alles hier, im Rücken. Im Liegen ist es besser.\nARZT: Hatten Sie Fieber oder Beschwerden beim Wasserlassen?\nPATIENT: Nein, nichts dergleichen.\nARZT: Gut. Ich untersuche Sie jetzt. Legen Sie sich bitte auf den Rücken.\n[Untersuchung]\nARZT: Die Muskulatur ist stark verspannt, vor allem links, aber Reflexe und Kraft sind völlig normal. Ein Röntgenbild brauchen Sie im Moment nicht."
+    }
+  };
+  var exempleCarregat=false;
+  function idiomaDemo(){ var v=$('e-idioma')?$('e-idioma').value:LANG; return VISITA_DEMO[v]?v:'es'; }
+  function pintaBotoExemple(){
+    var b=$('b-visita-exemple'); if(!b)return;
+    var t=exempleCarregat?'❌ Quitar el ejemplo':'👁 Ver una visita de ejemplo';
+    b.setAttribute('data-orig',t); b.textContent=TX(t);
+  }
+  function posaExemple(){
+    var d=VISITA_DEMO[idiomaDemo()];
+    CAMPS.forEach(function(id){ var el=$(id); if(el&&d[id]!==undefined){ el.value=d[id]; autoAlta(el); } });
+    if($('d-pacient'))$('d-pacient').value=d.pacient;
+    exempleCarregat=true; pintaBotoExemple();
+    avis('ok','👁 Ejemplo cargado — este es el resultado que devuelve EscribaMed. No se ha guardado nada.');
+    var anc=$('e-motivo'); if(anc&&anc.scrollIntoView)anc.scrollIntoView({behavior:'smooth',block:'center'});
+  }
+  function treuExemple(){
+    CAMPS.forEach(function(id){ var el=$(id); if(el){ el.value=''; autoAlta(el); } });
+    if($('d-pacient'))$('d-pacient').value='';
+    exempleCarregat=false; pintaBotoExemple();
+    avis('ok','Ejemplo retirado.');
+  }
+  safe(function(){
+    $('b-visita-exemple').addEventListener('click',function(){ exempleCarregat?treuExemple():posaExemple(); });
+  },'visita-exemple');
 
   // ---------- AGENT LOCAL (visita completa: whisper + identificacio de veus) ----------
   safe(function(){

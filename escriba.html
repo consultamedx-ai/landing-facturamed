@@ -227,7 +227,7 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
       </div>
 
       <div class="card" id="card-visita">
-        <h2><span data-t>Visita completa</span> <span class="chip-agent" id="chip-agent">⬤ agente local: buscando…</span></h2>
+        <h2><span data-t>Visita completa</span> <span class="chip-agent" id="chip-agent" data-t>⬤ agente local: buscando…</span></h2>
         <p style="font-size:.8rem;color:#475569;margin-bottom:4px" id="p-visita-info">Grabe la visita entera y el <strong>agente local EscribaMed</strong> la transcribe e identifica quién habla — todo <strong>dentro de su ordenador</strong>: el audio nunca sale de la consulta.</p>
         <div id="agent-off" style="display:none">
           <p style="font-size:.78rem;color:var(--boira);margin-top:8px" id="agent-off-p">Agente no detectado. En la beta, la instalación la asiste ConsultaMed (un solo comando, 5 minutos). Una vez instalado y arrancado, este panel se activa solo.</p>
@@ -320,7 +320,11 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
 <!-- ============ MODAL INFORME ============ -->
 <div id="informe-modal">
   <div id="informe-print">
-    <span class="beta-marca" data-t>DEMO · SIN VALIDEZ CLÍNICA</span>
+    <!-- ENG-10d (15/08/2026): AQUEST SEGELL ÉS PART DEL DOCUMENT, no de la interfície.
+         Amb data-t seguia l'idioma de la pantalla: un informe imprès en castellà
+         amb la interfície en català sortia segellat en català. Ara el pinta
+         obreModal() des de PRT, com el títol, el peu legal i la signatura. -->
+    <span class="beta-marca" id="p-beta">DEMO · SIN VALIDEZ CLÍNICA</span>
     <div class="i-cap">
       <div>
         <h2 id="p-metge">—</h2>
@@ -355,6 +359,14 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
   var _g0 = localStorage.getItem('em_idioma_ui');
   var LANG = (_g0==='ca'||_g0==='de'||_g0==='en') ? _g0 : 'es';
   var TR = {
+    /* ENG-10b (15/08/2026): textos que el JavaScript pinta i que no tenien entrada. */
+    "Ejemplo cargado. Pulse «🤖 Redactar (IA local)» para generar el informe.":"Exemple carregat. Premeu «🤖 Redactar (IA local)» per generar l'informe.",
+    "🎧 Visita transcrita e identificada en su ordenador. Revise «¿quién es quién?» y pulse «🤖 Redactar (IA local)».":"🎧 Visita transcrita i identificada al vostre ordinador. Reviseu «qui és qui?» i premeu «🤖 Redactar (IA local)».",
+    "No se ha podido leer la imagen.":"No s'ha pogut llegir la imatge.",
+    "No hay espacio para más imágenes en este dispositivo.":"No hi ha espai per a més imatges en aquest dispositiu.",
+    "Permite las ventanas emergentes para imprimir.":"Permeteu les finestres emergents per imprimir.",
+    "⬤ agente local: buscando…":"⬤ agent local: cercant…",
+    "🎧 Visita completa":"🎧 Visita completa",
     "Visita":"Visita",
     "Historial clínico":"Historial clínic",
     "Seguimiento":"Seguiment",
@@ -493,6 +505,13 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
     "Acompañante":"Acompanyant"
   };
   var TR_EN = {
+    /* ENG-10b (15/08/2026): textos que el JavaScript pinta i que no tenien entrada. */
+    "Ejemplo cargado. Pulse «🤖 Redactar (IA local)» para generar el informe.":"Example loaded. Press «🤖 Write report (local AI)» to generate the report.",
+    "🎧 Visita transcrita e identificada en su ordenador. Revise «¿quién es quién?» y pulse «🤖 Redactar (IA local)».":"🎧 Visit transcribed and speakers identified on your computer. Check «who is who?» and press «🤖 Write report (local AI)».",
+    "No se ha podido leer la imagen.":"The image could not be read.",
+    "No hay espacio para más imágenes en este dispositivo.":"There's no room for more images on this device.",
+    "Permite las ventanas emergentes para imprimir.":"Allow pop-up windows in order to print.",
+    "⬤ agente local: buscando…":"⬤ local agent: searching…",
     "Visita":"Visit",
     "Historial clínico":"Clinical history",
     "Seguimiento":"Follow-up",
@@ -619,6 +638,14 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
     "Voz":"Voice","Última visita":"Last visit","Médico":"Doctor","Paciente ":"Patient","Acompañante":"Companion"
   };
   var TR_DE = {
+    /* ENG-10b (15/08/2026): textos que el JavaScript pinta i que no tenien entrada. */
+    "Ejemplo cargado. Pulse «🤖 Redactar (IA local)» para generar el informe.":"Beispiel geladen. Klicken Sie auf «🤖 Verfassen (lokale KI)», um den Bericht zu erstellen.",
+    "🎧 Visita transcrita e identificada en su ordenador. Revise «¿quién es quién?» y pulse «🤖 Redactar (IA local)».":"🎧 Besuch auf Ihrem Rechner transkribiert und Sprecher erkannt. Prüfen Sie «wer ist wer?» und klicken Sie auf «🤖 Verfassen (lokale KI)».",
+    "No se ha podido leer la imagen.":"Das Bild konnte nicht gelesen werden.",
+    "No hay espacio para más imágenes en este dispositivo.":"Auf diesem Gerät ist kein Platz für weitere Bilder.",
+    "Permite las ventanas emergentes para imprimir.":"Erlauben Sie Pop-up-Fenster zum Drucken.",
+    "⬤ agente local: buscando…":"⬤ lokaler Agent: Suche…",
+    "Inglés":"Englisch",
     "Visita":"Besuch",
     "Historial clínico":"Krankengeschichte",
     "Seguimiento":"Nachsorge",
@@ -838,10 +865,10 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
      Es la Troballa 3 de CS-3. Terminologia clinica anglesa estandard. */
   var TITOLS_EN={'e-motivo':'Reason for consultation','e-anamnesis':'History of present illness','e-antecedentes':'Past medical history','e-exploracion':'Physical examination','e-pruebas':'Investigations','e-diagnostico':'Diagnosis','e-tratamiento':'Treatment','e-recomendaciones':'Recommendations and follow-up','e-transcripcion':'Visit transcript (appendix)'};
   var PRT={
-    es:{doc:'Informe clínico',pacient:'Paciente: ',firma:'Firma del facultativo',legal:'Documento generado con EscribaMed (beta privada) · ConsultaMed. Contenido dictado y revisado por el facultativo. Demostración con datos ficticios — sin validez clínica ni legal.'},
-    ca:{doc:'Informe clínic',pacient:'Pacient: ',firma:'Signatura del facultatiu',legal:'Document generat amb EscribaMed (beta privada) · ConsultaMed. Contingut dictat i revisat pel facultatiu. Demostració amb dades fictícies — sense validesa clínica ni legal.'},
-    de:{doc:'Arztbericht',pacient:'Patient: ',firma:'Unterschrift des Arztes',legal:'Erstellt mit EscribaMed (private Beta) · ConsultaMed. Vom Arzt diktierter und geprüfter Inhalt. Demonstration mit fiktiven Daten — ohne klinische oder rechtliche Gültigkeit.'},
-    en:{doc:'Clinical report',pacient:'Patient: ',firma:'Physician signature',legal:'Document generated with EscribaMed (private beta) · ConsultaMed. Content dictated and reviewed by the physician. Demonstration with fictitious data — no clinical or legal validity.'}
+    es:{doc:'Informe clínico',demo:'DEMO · SIN VALIDEZ CLÍNICA',pacient:'Paciente: ',firma:'Firma del facultativo',legal:'Documento generado con EscribaMed (beta privada) · ConsultaMed. Contenido dictado y revisado por el facultativo. Demostración con datos ficticios — sin validez clínica ni legal.'},
+    ca:{doc:'Informe clínic',demo:'DEMO · SENSE VALIDESA CLÍNICA',pacient:'Pacient: ',firma:'Signatura del facultatiu',legal:'Document generat amb EscribaMed (beta privada) · ConsultaMed. Contingut dictat i revisat pel facultatiu. Demostració amb dades fictícies — sense validesa clínica ni legal.'},
+    de:{doc:'Arztbericht',demo:'DEMO · OHNE KLINISCHE GÜLTIGKEIT',pacient:'Patient: ',firma:'Unterschrift des Arztes',legal:'Erstellt mit EscribaMed (private Beta) · ConsultaMed. Vom Arzt diktierter und geprüfter Inhalt. Demonstration mit fiktiven Daten — ohne klinische oder rechtliche Gültigkeit.'},
+    en:{doc:'Clinical report',demo:'DEMO · NOT CLINICALLY VALID',pacient:'Patient: ',firma:'Physician signature',legal:'Document generated with EscribaMed (private beta) · ConsultaMed. Content dictated and reviewed by the physician. Demonstration with fictitious data — no clinical or legal validity.'}
   };
   function TIT(){var v=$('e-idioma').value;return v==='ca'?TITOLS_CA:v==='de'?TITOLS_DE:v==='en'?TITOLS_EN:TITOLS_ES}
 
@@ -1070,6 +1097,7 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
       $('p-metge-detall').textContent=[c.nif?('NIF '+c.nif):'',c.colegiat?('Col. '+c.colegiat):'',c.adreca||''].filter(Boolean).join(' · ');
     }
     $('p-doc-titol').textContent=P.doc;
+    if($('p-beta'))$('p-beta').textContent=P.demo;   /* ENG-10d */
     $('p-data').textContent=dataTxt;
     $('p-pacient').textContent=pacient?(P.pacient+pacient):'';
     $('p-firma').textContent=P.firma+(centre&&metge?(' — '+metge):'');

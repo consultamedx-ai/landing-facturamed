@@ -165,6 +165,22 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
 ::selection{background:rgba(13,59,102,.14)}
 @media print{.avis-priv{display:none!important}}
 @media print{body{background:#fff!important}body::before{display:none!important}}
+
+/* ── ENG-16c ② · el botó verd d'acció, que la taula de Disseny no enumerava ──
+   `.btn.verd` és el botó verd que fa una acció de facturació, i existeix DINS
+   d'EscribaMed i de SecreMed (la fila d'una cita hi posa un «Facturar»), no
+   només a FacturaMed. Allà el `.btn` d'aquell producte el pinta en blanc, i
+   sobre el degradat verd això són **3,77:1 a l'extrem clar** — el mateix cas
+   que Disseny va mesurar per al botó de FacturaMed.
+
+   No m'invento cap color: s'hi aplica la seva regla, que és per farciment i no
+   per producte —sobre Verd, Tinta Teal i fons pla— al verd que ja hi havia.
+   `#059669` pla amb Tinta Teal són 4,53:1.
+
+   Ho reporto a Disseny igualment (P-ENG-37): la seva taula va producte a
+   producte i aquest botó travessa els productes, que és per què se'ls va
+   escapar i per què se'm va escapar a mi fins que el control m'hi va fer topar. */
+.btn.verd{background:#059669!important;color:#04201d!important}
 </style>
 </head>
 <body>
@@ -184,8 +200,29 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
 
 <main class="wrap">
   <div class="banner" id="banner"></div>
-  <div class="avis-priv" id="avis-priv">🔒 <strong>Beta privada de demostración.</strong> No introduzca datos reales de pacientes. El reconocimiento de voz lo realiza el servicio de su navegador (Chrome). Informe siempre al paciente antes de dictar en su presencia.</div>
+  <div class="avis-priv" id="avis-priv">🔒 <strong>Beta privada.</strong> No introduzca datos reales de pacientes. El reconocimiento de voz lo realiza el servicio de su navegador (Chrome). Informe siempre al paciente antes de dictar en su presencia.</div>
 
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       ENG-16 ③ · LA CRIDA A LA VISITA D'EXEMPLE, PER SOBRE DELS DOS MODES
+       Abans vivia DINS de la columna «Visita completa». El mode per defecte és
+       «Dictat», o sigui que el metge que obria la pàgina i no canviava de mode
+       no la veia mai — i és justament qui no pot fer res sense l'agent. Ara la
+       franja és de la pantalla i no d'un mode: surt només quan l'agent no hi
+       és, i surt en tots dos. (Decisió del CEO del 14/08, §1 de `11_`.)
+
+       El botó d'instal·lar NO hi és a posta: `instal-lar.html` encara no
+       existeix i la norma és que no hi hagi cap botó abans que la pàgina hi
+       sigui. Un `.zip` que baixa sol acaba amb el Gatekeeper del Mac.
+       ═══════════════════════════════════════════════════════════════════════ -->
+  <div id="franja-exemple" style="display:none;border:1px solid rgba(13,59,102,.18);background:rgba(13,59,102,.04);border-radius:12px;padding:14px 16px;margin:0 0 18px">
+    <p style="margin:0 0 6px;line-height:1.55" id="franja-exemple-p"></p>
+    <p style="margin:0 0 12px;font-size:.82rem;color:var(--boira);line-height:1.5" id="franja-instal"></p>
+    <div class="accions-fila">
+      <button class="btn mini" id="b-visita-exemple" type="button" data-t>👁 Ver una visita de ejemplo</button>
+    </div>
+    <p style="font-size:.74rem;color:var(--boira);margin:10px 0 0" id="p-exemple-nota">Sin instalar nada: verá el resultado real de EscribaMed sobre una visita ya grabada — la transcripción con los turnos de palabra, el informe redactado por apartados y el documento imprimible. <strong>No se guarda nada.</strong></p>
+  </div>
   <section class="vista-esc actiu" id="v-visita">
   <div class="grid">
     <!-- ============ COLUMNA DICTADO ============ -->
@@ -236,12 +273,7 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
         <h2><span data-t>Visita completa</span> <span class="chip-agent" id="chip-agent" data-t>⬤ agente local: buscando…</span></h2>
         <p style="font-size:.8rem;color:#475569;margin-bottom:4px" id="p-visita-info">Grabe la visita entera y el <strong>agente local EscribaMed</strong> la transcribe e identifica quién habla — todo <strong>dentro de su ordenador</strong>: el audio nunca sale de la consulta.</p>
         <div id="agent-off" style="display:none">
-          <p style="font-size:.78rem;color:var(--boira);margin-top:8px" id="agent-off-p">Agente no detectado. En la beta, la instalación la asiste ConsultaMed (un solo comando, 5 minutos). Una vez instalado y arrancado, este panel se activa solo.</p>
-          <!-- PROD-7 · visita de ejemplo: mostramos el RESULTADO, nunca simulamos el proceso -->
-          <div class="accions-fila" style="margin-top:12px">
-            <button class="btn mini" id="b-visita-exemple" type="button" data-t>👁 Ver una visita de ejemplo</button>
-          </div>
-          <p style="font-size:.74rem;color:var(--boira);margin-top:8px" id="p-exemple-nota">Sin instalar nada: verá el resultado real de EscribaMed sobre una visita ya grabada — la transcripción con los turnos de palabra, el informe redactado por apartados y el documento imprimible. <strong>No se graba ningún audio</strong> y no se guarda nada en su historial.</p>
+          <p style="font-size:.78rem;color:var(--boira);margin-top:8px" id="agent-off-p2"></p>
         </div>
         <div id="agent-on" style="display:none">
           <label for="v-parlants" data-t>Personas en la consulta</label>
@@ -344,7 +376,7 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
     </div>
     <div id="p-seccions"></div>
     <div class="i-peu">
-      <div class="i-legal" id="p-legal">Documento generado con EscribaMed (beta privada) · ConsultaMed. Contenido dictado y revisado por el facultativo. Demostración con datos ficticios — sin validez clínica ni legal.</div>
+      <div class="i-legal" id="p-legal">Documento generado con EscribaMed (beta privada) · ConsultaMed. Contenido dictado y revisado por el facultativo. Datos ficticios — sin validez clínica ni legal.</div>
       <div class="i-firma" id="p-firma">Firma del facultativo</div>
     </div>
   </div>
@@ -792,10 +824,10 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
   function TX(s){ if(LANG==='ca')return TR[s]!==undefined?TR[s]:s; if(LANG==='de')return TR_DE[s]!==undefined?TR_DE[s]:s; if(LANG==='en')return TR_EN[s]!==undefined?TR_EN[s]:s; return s; }
   var HTMLT = {
     "avis-priv":{
-      es:'🔒 <strong>Beta privada de demostración.</strong> No introduzca datos reales de pacientes. El <strong>Dictado</strong> usa el servicio de voz del navegador (Chrome, requiere internet): modo demostración. La <strong>Visita completa</strong> se procesa con el agente local, todo dentro de su ordenador. Informe siempre al paciente antes de grabar.',
-      ca:'🔒 <strong>Beta privada de demostració.</strong> No introdueixi dades reals de pacients. El <strong>Dictat</strong> fa servir el servei de veu del navegador (Chrome, requereix internet): mode de demostració. La <strong>Visita completa</strong> es processa amb l\'agent local, tot dins del seu ordinador. Informi sempre el pacient abans de gravar.',
-      de:'🔒 <strong>Private Demo-Beta.</strong> Geben Sie keine echten Patientendaten ein. Das <strong>Diktat</strong> nutzt den Sprachdienst Ihres Browsers (Chrome, benötigt Internet): Demomodus. Der <strong>komplette Besuch</strong> wird mit dem lokalen Agenten verarbeitet — alles auf Ihrem Rechner. Informieren Sie den Patienten stets vor der Aufnahme.',
-      en:'🔒 <strong>Private demo beta.</strong> Do not enter real patient data. <strong>Dictation</strong> uses your browser\'s voice service (Chrome, needs internet): demo mode. The <strong>full visit</strong> is processed by the local agent, entirely on your computer. Always inform the patient before recording.'
+      es:'🔒 <strong>Beta privada.</strong> No introduzca datos reales de pacientes. El <strong>Dictado</strong> usa el servicio de voz del navegador (Chrome, requiere internet). La <strong>Visita completa</strong> se procesa con el agente local, todo dentro de su ordenador. Informe siempre al paciente antes de grabar.',
+      ca:'🔒 <strong>Beta privada.</strong> No introdueixi dades reals de pacients. El <strong>Dictat</strong> fa servir el servei de veu del navegador (Chrome, requereix internet). La <strong>Visita completa</strong> es processa amb l\'agent local, tot dins del seu ordinador. Informi sempre el pacient abans de gravar.',
+      de:'🔒 <strong>Private Beta.</strong> Geben Sie keine echten Patientendaten ein. Das <strong>Diktat</strong> nutzt den Sprachdienst Ihres Browsers (Chrome, benötigt Internet): Demomodus. Der <strong>komplette Besuch</strong> wird mit dem lokalen Agenten verarbeitet — alles auf Ihrem Rechner. Informieren Sie den Patienten stets vor der Aufnahme.',
+      en:'🔒 <strong>Private beta.</strong> Do not enter real patient data. <strong>Dictation</strong> uses your browser\'s voice service (Chrome, needs internet): demo mode. The <strong>full visit</strong> is processed by the local agent, entirely on your computer. Always inform the patient before recording.'
     },
     "ajuda-dictat":{
       es:'<strong>Truco:</strong> diga el nombre de cada apartado mientras dicta — «<em>motivo de consulta…</em>», «<em>anamnesis…</em>», «<em>exploración…</em>», «<em>diagnóstico…</em>», «<em>tratamiento…</em>», «<em>recomendaciones…</em>» — y EscribaMed ordenará solo el informe. La versión final lo hará sin necesidad de decirlos.',
@@ -809,11 +841,30 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
       de:'Nehmen Sie den gesamten Besuch auf und der <strong>lokale EscribaMed-Agent</strong> transkribiert ihn und erkennt, wer spricht — alles <strong>auf Ihrem Computer</strong>: der Ton verlässt nie das Sprechzimmer.',
       en:'Record the whole visit and the <strong>local EscribaMed agent</strong> transcribes it and identifies who is speaking — all <strong>inside your computer</strong>: the audio never leaves the office.'
     },
-    "agent-off-p":{
-      es:'Agente no detectado. En la beta, la instalación la asiste ConsultaMed (un solo comando, 5 minutos). Una vez instalado y arrancado, este panel se activa solo.',
-      ca:'Agent no detectat. A la beta, la instal·lació l\'assisteix ConsultaMed (una sola ordre, 5 minuts). Un cop instal·lat i engegat, aquest panell s\'activa sol.',
-      de:'Agent nicht erkannt. In der Beta unterstützt ConsultaMed die Installation (ein einziger Befehl, 5 Minuten). Nach Installation und Start aktiviert sich dieses Feld von selbst.',
-      en:'Agent not detected. In the beta, ConsultaMed assists the installation (a single command, 5 minutes). Once installed and started, this panel activates on its own.'
+    /* ── ENG-16 ⑤ · el text d'instal·lació ────────────────────────────────
+       El que hi havia deia dues coses que no aprova ningú: que **ConsultaMed
+       assisteix la instal·lació** —un compromís de servei que no hem pres— i
+       que és **«una sola ordre, 5 minuts»**, que és pitjor que la realitat en
+       la part que compta: no hi ha cap ordre de terminal, i sí que hi ha una
+       espera. El text nou és el de `Producte/09` §1.6 i és honest en totes
+       dues direccions: la primera vegada triga, i el motiu és bo. */
+    "franja-instal":{
+      es:'Se descarga un instalador y se abre. Tarda unos minutos la primera vez porque se descarga la IA que después funcionará sin internet.',
+      ca:'Es baixa un instal·lador i s\'obre. Triga uns minuts la primera vegada perquè es descarrega la IA que després funcionarà sense internet.',
+      de:'Sie laden ein Installationsprogramm herunter und öffnen es. Beim ersten Mal dauert es ein paar Minuten, weil dabei die KI heruntergeladen wird, die danach ohne Internet läuft.',
+      en:'You download an installer and open it. The first time it takes a few minutes because it downloads the AI that will then run without internet.'
+    },
+    "franja-exemple-p":{
+      es:'<strong>Vea una visita de ejemplo.</strong> Aquí tiene el resultado que EscribaMed entrega: la conversación transcrita y el informe redactado. Lo hace <strong>la IA de su propio ordenador</strong>: el audio no sale nunca de ahí. Para hacerlo con sus visitas hay que instalar EscribaMed una vez.',
+      ca:'<strong>Vegi una visita d\'exemple.</strong> Aquí té el resultat que EscribaMed entrega: la conversa transcrita i l\'informe redactat. Ho fa <strong>la IA del seu propi ordinador</strong>: l\'àudio no surt mai d\'allà. Per fer-ho amb les seves visites cal instal·lar EscribaMed una vegada.',
+      de:'<strong>Sehen Sie sich einen Beispieltermin an.</strong> Hier ist das Ergebnis, das EscribaMed liefert: das transkribierte Gespräch und der verfasste Bericht. Das macht <strong>die KI auf Ihrem eigenen Rechner</strong>: das Audio verlässt ihn nie. Um das mit Ihren eigenen Terminen zu tun, muss EscribaMed einmal installiert werden.',
+      en:'<strong>See an example visit.</strong> Here is the result EscribaMed delivers: the conversation transcribed and the report written. It is done by <strong>the AI on your own computer</strong>: the audio never leaves it. To do this with your own visits, EscribaMed has to be installed once.'
+    },
+    "agent-off-p2":{
+      es:'Una vez instalado y arrancado, este panel se activa solo.',
+      ca:'Un cop instal·lat i engegat, aquest panell s\'activa sol.',
+      de:'Nach Installation und Start aktiviert sich dieses Feld von selbst.',
+      en:'Once installed and started, this panel activates on its own.'
     },
     "ajuda-veus":{
       es:'<strong>¿Quién es quién?</strong> Revise la asignación automática y corrija si hace falta:',
@@ -838,6 +889,10 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
   function aplicaIdioma(lang){
     LANG = (lang==='ca'||lang==='de'||lang==='en') ? lang : 'es';
     try{localStorage.setItem('em_idioma_ui',LANG)}catch(e){}
+    /* ENG-16 ① · la barra de mode de prova. La pinta `cmStore` perquè sigui
+       exactament la mateixa als quatre productes; aquí no hi va la clàusula de
+       les factures perquè a EscribaMed no n'hi ha cap i seria falsa. */
+    try{window.cmStore&&cmStore.barraProva&&cmStore.barraProva({tornar:'escriba'})}catch(e){}
     document.documentElement.lang=LANG;
     document.querySelectorAll('[data-t]').forEach(function(el){
       if(el.getAttribute('data-orig')===null)el.setAttribute('data-orig',el.textContent.trim());
@@ -871,10 +926,10 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
      Es la Troballa 3 de CS-3. Terminologia clinica anglesa estandard. */
   var TITOLS_EN={'e-motivo':'Reason for consultation','e-anamnesis':'History of present illness','e-antecedentes':'Past medical history','e-exploracion':'Physical examination','e-pruebas':'Investigations','e-diagnostico':'Diagnosis','e-tratamiento':'Treatment','e-recomendaciones':'Recommendations and follow-up','e-transcripcion':'Visit transcript (appendix)'};
   var PRT={
-    es:{doc:'Informe clínico',demo:'DEMO · SIN VALIDEZ CLÍNICA',pacient:'Paciente: ',firma:'Firma del facultativo',legal:'Documento generado con EscribaMed (beta privada) · ConsultaMed. Contenido dictado y revisado por el facultativo. Demostración con datos ficticios — sin validez clínica ni legal.'},
-    ca:{doc:'Informe clínic',demo:'DEMO · SENSE VALIDESA CLÍNICA',pacient:'Pacient: ',firma:'Signatura del facultatiu',legal:'Document generat amb EscribaMed (beta privada) · ConsultaMed. Contingut dictat i revisat pel facultatiu. Demostració amb dades fictícies — sense validesa clínica ni legal.'},
-    de:{doc:'Arztbericht',demo:'DEMO · OHNE KLINISCHE GÜLTIGKEIT',pacient:'Patient: ',firma:'Unterschrift des Arztes',legal:'Erstellt mit EscribaMed (private Beta) · ConsultaMed. Vom Arzt diktierter und geprüfter Inhalt. Demonstration mit fiktiven Daten — ohne klinische oder rechtliche Gültigkeit.'},
-    en:{doc:'Clinical report',demo:'DEMO · NOT CLINICALLY VALID',pacient:'Patient: ',firma:'Physician signature',legal:'Document generated with EscribaMed (private beta) · ConsultaMed. Content dictated and reviewed by the physician. Demonstration with fictitious data — no clinical or legal validity.'}
+    es:{doc:'Informe clínico',demo:'PRUEBA · SIN VALIDEZ CLÍNICA',pacient:'Paciente: ',firma:'Firma del facultativo',legal:'Documento generado con EscribaMed (beta privada) · ConsultaMed. Contenido dictado y revisado por el facultativo. Datos ficticios — sin validez clínica ni legal.'},
+    ca:{doc:'Informe clínic',demo:'PROVA · SENSE VALIDESA CLÍNICA',pacient:'Pacient: ',firma:'Signatura del facultatiu',legal:'Document generat amb EscribaMed (beta privada) · ConsultaMed. Contingut dictat i revisat pel facultatiu. Dades fictícies — sense validesa clínica ni legal.'},
+    de:{doc:'Arztbericht',demo:'TEST · OHNE KLINISCHE GÜLTIGKEIT',pacient:'Patient: ',firma:'Unterschrift des Arztes',legal:'Erstellt mit EscribaMed (private Beta) · ConsultaMed. Vom Arzt diktierter und geprüfter Inhalt. Fiktive Daten — ohne klinische oder rechtliche Gültigkeit.'},
+    en:{doc:'Clinical report',demo:'TEST · NOT CLINICALLY VALID',pacient:'Patient: ',firma:'Physician signature',legal:'Document generated with EscribaMed (private beta) · ConsultaMed. Content dictated and reviewed by the physician. Fictitious data — no clinical or legal validity.'}
   };
   function TIT(){var v=$('e-idioma').value;return v==='ca'?TITOLS_CA:v==='de'?TITOLS_DE:v==='en'?TITOLS_EN:TITOLS_ES}
 
@@ -1180,9 +1235,17 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
   //   ENSENYEM EL RESULTAT, MAI SIMULEM EL PROCES.
   // Per aixo no hi ha cap animacio de gravacio ni cap barra de progres falsa:
   // es carrega directament el resultat, marcat com a exemple i sense desar res.
+  /* DIS-9 (d), 26/08 · el pacient d'aquesta visita era «A. Ferrer (ejemplo)»,
+     de l'esbos de dades de l'11/08 que el joc canonic de Disseny substitueix.
+     Xocava dues vegades: contradeia el joc, i «Ferrer» es el cognom de la
+     metgessa del joc (Dra. Marta Ferrer Sola), o sigui que a una captura hi
+     sortia un pacient amb el cognom de la doctora. Ara es `Jordi Serra Vidal`,
+     que es el P2 del joc (`Disseny/09` §4), amb la paraula d'exemple de cada
+     idioma. La visita NO es desa —ho diu el propi avis del producte—, o sigui
+     que no ha de quadrar amb cap factura ni entrar a `em_informes`. */
   var VISITA_DEMO = {
     es: {
-      pacient: "A. Ferrer (ejemplo)",
+      pacient: "Jordi Serra Vidal (ejemplo)",
       "e-motivo": "Dolor lumbar de 5 días de evolución, sin traumatismo previo.",
       "e-anamnesis": "Refiere dolor en región lumbar baja de inicio progresivo hace 5 días, tras una jornada de trabajo con carga de peso. Características mecánicas: empeora con la bipedestación prolongada y la flexión del tronco, y mejora en decúbito. No irradiación a extremidades inferiores, no parestesias, no pérdida de fuerza. No fiebre, no síndrome miccional, no pérdida de peso.",
       "e-antecedentes": "Sin alergias medicamentosas conocidas. Episodio similar hace 3 años, resuelto con tratamiento conservador. Sin intervenciones quirúrgicas. Sin tratamiento habitual.",
@@ -1194,7 +1257,7 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
       "e-transcripcion": "— VISITA DE EJEMPLO · datos ficticios —\n\nMÉDICO: Buenos días, siéntese. Cuénteme qué le pasa.\nPACIENTE: Pues mire, llevo cinco días con un dolor en la parte baja de la espalda que no se me va.\nMÉDICO: ¿Recuerda si empezó después de algo en concreto?\nPACIENTE: El viernes estuve cargando cajas todo el día en el trabajo. Al día siguiente ya me levanté mal.\nMÉDICO: ¿El dolor le baja hacia la pierna, le hormiguea o nota que le falla?\nPACIENTE: No, no. Es todo aquí, en la espalda. Cuando me tumbo estoy mejor.\nMÉDICO: ¿Ha tenido fiebre, o molestias al orinar?\nPACIENTE: No, nada de eso.\nMÉDICO: Muy bien. Voy a explorarle. Túmbese boca arriba, por favor.\n[exploración]\nMÉDICO: Tiene la musculatura muy contracturada, sobre todo en el lado izquierdo, pero los reflejos y la fuerza están perfectos. No hace falta ninguna radiografía por ahora."
     },
     ca: {
-      pacient: "A. Ferrer (exemple)",
+      pacient: "Jordi Serra Vidal (exemple)",
       "e-motivo": "Dolor lumbar de 5 dies d'evolució, sense traumatisme previ.",
       "e-anamnesis": "Refereix dolor a la regió lumbar baixa d'inici progressiu fa 5 dies, després d'una jornada de feina carregant pes. Característiques mecàniques: empitjora amb la bipedestació perllongada i la flexió del tronc, i millora en decúbit. Sense irradiació a les extremitats inferiors, sense parestèsies, sense pèrdua de força. Sense febre, sense síndrome miccional, sense pèrdua de pes.",
       "e-antecedentes": "Sense al·lèrgies medicamentoses conegudes. Episodi similar fa 3 anys, resolt amb tractament conservador. Sense intervencions quirúrgiques. Sense tractament habitual.",
@@ -1206,7 +1269,7 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
       "e-transcripcion": "— VISITA D'EXEMPLE · dades fictícies —\n\nMETGE: Bon dia, segui. Expliqui'm què li passa.\nPACIENT: Doncs miri, fa cinc dies que tinc un dolor a la part baixa de l'esquena que no se me'n va.\nMETGE: Recorda si va començar després d'alguna cosa concreta?\nPACIENT: El divendres vaig estar carregant caixes tot el dia a la feina. L'endemà ja em vaig llevar malament.\nMETGE: El dolor li baixa cap a la cama, li formigueja o nota que li falla?\nPACIENT: No, no. És tot aquí, a l'esquena. Quan m'estiro estic millor.\nMETGE: Ha tingut febre, o molèsties en orinar?\nPACIENT: No, res d'això.\nMETGE: Molt bé. Ara l'exploro. Estiri's de panxa enlaire, si us plau.\n[exploració]\nMETGE: Té la musculatura molt contracturada, sobretot al costat esquerre, però els reflexos i la força estan perfectes. No cal cap radiografia de moment."
     },
     en: {
-      pacient: "A. Ferrer (sample)",
+      pacient: "Jordi Serra Vidal (sample)",
       "e-motivo": "Low back pain for 5 days, with no preceding trauma.",
       "e-anamnesis": "Reports gradual-onset pain in the lower lumbar region beginning 5 days ago, after a working day involving heavy lifting. Mechanical in nature: worse on prolonged standing and trunk flexion, better when lying down. No radiation to the lower limbs, no paraesthesia, no weakness. No fever, no urinary symptoms, no weight loss.",
       "e-antecedentes": "No known drug allergies. Similar episode 3 years ago, resolved with conservative treatment. No previous surgery. No regular medication.",
@@ -1218,7 +1281,7 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
       "e-transcripcion": "— SAMPLE VISIT · fictitious data —\n\nDOCTOR: Good morning, have a seat. Tell me what is going on.\nPATIENT: Well, I have had this pain in my lower back for five days and it will not go away.\nDOCTOR: Do you remember whether it started after anything in particular?\nPATIENT: On Friday I was lifting boxes all day at work. The next morning I woke up sore.\nDOCTOR: Does the pain travel down your leg, or do you get pins and needles or any weakness?\nPATIENT: No, no. It is all here, in my back. When I lie down it is better.\nDOCTOR: Any fever, or discomfort passing urine?\nPATIENT: No, nothing like that.\nDOCTOR: Good. I am going to examine you. Please lie on your back.\n[examination]\nDOCTOR: The muscles are very tight, particularly on the left, but your reflexes and power are perfectly normal. You do not need an X-ray at this stage."
     },
     de: {
-      pacient: "A. Ferrer (Beispiel)",
+      pacient: "Jordi Serra Vidal (Beispiel)",
       "e-motivo": "Seit 5 Tagen Kreuzschmerzen, ohne vorangegangenes Trauma.",
       "e-anamnesis": "Berichtet über allmählich einsetzende Schmerzen im unteren Lendenbereich seit 5 Tagen, nach einem Arbeitstag mit schwerem Heben. Mechanischer Charakter: Verschlechterung bei längerem Stehen und Rumpfbeugung, Besserung im Liegen. Keine Ausstrahlung in die unteren Extremitäten, keine Parästhesien, keine Kraftminderung. Kein Fieber, keine Miktionsbeschwerden, kein Gewichtsverlust.",
       "e-antecedentes": "Keine bekannten Medikamentenallergien. Ähnliche Episode vor 3 Jahren, konservativ ausgeheilt. Keine Operationen. Keine Dauermedikation.",
@@ -1268,6 +1331,9 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
       c.textContent=(on?('⬤ '+TX('agente local EscribaMed: conectado')):('⬤ '+TX('agente local: ')+TX(txt)));
       $('agent-on').style.display=on?'block':'none';
       $('agent-off').style.display=on?'none':'block';
+      /* ENG-16 ③ · la franja de l'exemple viu fora dels modes i s'encén amb el
+         mateix senyal: si hi ha agent, no hi ha res a ensenyar. */
+      var fe=$('franja-exemple'); if(fe)fe.style.display=on?'none':'block';
     }
     function sondeja(){
       var ctl=new AbortController();var tm=setTimeout(function(){ctl.abort()},2500);

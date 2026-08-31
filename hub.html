@@ -88,6 +88,40 @@
   .peu{text-align:center;color:var(--boira);font-size:.76rem;margin-top:44px}
   @media(max-width:640px){.grid{grid-template-columns:1fr}.hola{font-size:1.7rem}}
   [data-amagat]{display:none !important}
+/* ── ENG-13b ② · pantalla d'activació ─────────────────────────────────── */
+.act-wrap{max-width:640px}
+.act-passos{display:flex;gap:6px;margin:0 0 22px}
+.act-passos i{flex:1;height:3px;border-radius:99px;background:rgba(148,163,184,.28);font-style:normal}
+.act-passos i.fet{background:#14B8A6}
+.act-tit{font-size:1.55rem;font-weight:800;margin:0 0 6px;letter-spacing:-.02em}
+.act-preu{font-size:1rem;font-weight:700;margin:0 0 18px;color:#0D3B66}
+.act-sub{margin:0 0 16px;color:#5B6B7C}
+.act-cos{line-height:1.6;margin:0 0 20px}
+.act-cos p{margin:0 0 10px}
+.act-cos b{font-weight:700}
+.act-cal{border:1px solid rgba(13,59,102,.18);border-radius:12px;padding:14px 16px;margin:0 0 22px;background:rgba(13,59,102,.04)}
+.act-cal-tit{font-weight:700;margin-bottom:4px}
+.act-cal p{margin:0;line-height:1.55}
+.act-camps{display:flex;flex-direction:column;gap:14px;margin:0 0 18px}
+.act-camp label{display:block;font-weight:600;font-size:.86rem;margin-bottom:5px}
+.act-camp input{width:100%;padding:11px 13px;border:1px solid rgba(148,163,184,.5);border-radius:10px;font:inherit;background:#fff}
+.act-camp input:focus{outline:2px solid #14B8A6;outline-offset:1px;border-color:transparent}
+.act-camp.mal input{border-color:#C0392B}
+.act-camp .err{color:#C0392B;font-size:.82rem;margin-top:5px;display:none}
+.act-camp.mal .err{display:block}
+.act-desat{color:#0F9488;font-size:.82rem;margin:0 0 14px}
+.act-avis{border-left:3px solid #C9A227;background:rgba(201,162,39,.08);padding:12px 14px;border-radius:0 10px 10px 0;margin:0 0 18px;line-height:1.55}
+.act-botons{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.act-b{font:inherit;font-weight:700;border-radius:10px;padding:12px 22px;cursor:pointer;border:1px solid transparent}
+.act-b-si{background:#0D3B66;color:#fff}
+.act-b-si:hover{background:#12497e}
+.act-b-si[disabled]{opacity:.5;cursor:default}
+.act-b-no{background:transparent;color:#5B6B7C;border-color:rgba(148,163,184,.5)}
+.act-b-no:hover{color:#0D3B66;border-color:#0D3B66}
+/* La barra d'activació a mig fer, al hub */
+.act-represa{display:block;background:rgba(20,184,166,.12);border:1px solid rgba(20,184,166,.4);color:#0B5F57;
+  border-radius:12px;padding:12px 16px;margin:0 0 20px;font-weight:600;text-decoration:none}
+.act-represa:hover{background:rgba(20,184,166,.2)}
 </style>
 </head>
 <body>
@@ -141,6 +175,78 @@
 
   <p class="peu" data-k="peu"></p>
   <div id="cm-espai" style="text-align:center;color:#94A3B8;font-size:.72rem;margin-top:8px"></div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     ENG-13b ② · PANTALLA D'ACTIVACIÓ  ·  hub.html?activar=1&tornar=app|escriba|secre
+     Enginyeria · 26/08/2026 · flux de Producte/16, literals de Producte/09 §1.8 i 12 §4
+
+     És una PÀGINA i no un modal (decisió de Disseny, DIS-8): té la seva URL,
+     es pot recarregar, es pot deixar a mitges i tornar-hi demà, i el botó
+     enrere del navegador fa el que sembla. Un modal no fa res d'això, i
+     l'activació és justament el moment on el metge s'aturarà.
+     ═══════════════════════════════════════════════════════════════════════ -->
+<div class="wrap act-wrap" id="activacio" hidden>
+  <div class="act-passos" id="act-passos" aria-hidden="true"></div>
+
+  <!-- PORTA 0 · què li costa i què li passa a la seva feina -->
+  <section class="act-porta" id="act-p0" hidden>
+    <h1 class="act-tit" id="a0-tit"></h1>
+    <p class="act-preu" id="a0-preu"></p>
+    <div class="act-cos" id="a0-cos"></div>
+    <div class="act-cal" id="a0-cal">
+      <div class="act-cal-tit" id="a0-cal-tit"></div>
+      <p id="a0-cal-txt"></p>
+    </div>
+    <div class="act-botons">
+      <button class="act-b act-b-si" type="button" id="a0-segueix"></button>
+      <button class="act-b act-b-no" type="button" id="a0-surt"></button>
+    </div>
+  </section>
+
+  <!-- PORTA 1 · dades fiscals -->
+  <section class="act-porta" id="act-p1" hidden>
+    <h1 class="act-tit" id="a1-tit"></h1>
+    <p class="act-sub" id="a1-sub"></p>
+    <div class="act-camps" id="a1-camps"></div>
+    <p class="act-desat" id="a1-desat" hidden></p>
+    <div class="act-botons">
+      <button class="act-b act-b-si" type="button" id="a1-segueix"></button>
+      <button class="act-b act-b-no" type="button" id="a1-surt"></button>
+    </div>
+  </section>
+
+  <!-- PORTA 2 · pagament -->
+  <section class="act-porta" id="act-p2" hidden>
+    <h1 class="act-tit" id="a2-tit"></h1>
+    <p class="act-sub" id="a2-sub"></p>
+    <div class="act-avis" id="a2-avis" hidden></div>
+    <div class="act-botons">
+      <button class="act-b act-b-si" type="button" id="a2-paga"></button>
+      <button class="act-b act-b-no" type="button" id="a2-surt"></button>
+    </div>
+  </section>
+
+  <!-- ESPERANT · s'ha pagat i el servidor encara no ho sap -->
+  <section class="act-porta" id="act-esperant" hidden>
+    <h1 class="act-tit" id="ae-tit"></h1>
+    <p class="act-sub" id="ae-sub"></p>
+    <p class="act-cos" id="ae-nopaguis"></p>
+    <div class="act-botons">
+      <button class="act-b act-b-no" type="button" id="ae-surt"></button>
+    </div>
+  </section>
+
+  <!-- FET · el compte ja és actiu -->
+  <section class="act-porta" id="act-fet" hidden>
+    <h1 class="act-tit" id="af-tit"></h1>
+    <p class="act-sub" id="af-sub"></p>
+    <div class="act-cos" id="af-seguent"></div>
+    <div class="act-botons">
+      <button class="act-b act-b-si" type="button" id="af-continua"></button>
+    </div>
+  </section>
 </div>
 
 <script>
@@ -219,6 +325,9 @@
   function render(lang){
     var t=T[lang];
     document.documentElement.lang=lang;
+    /* ENG-16 ① · la barra de mode de prova, la mateixa que als altres tres.
+       Al hub no hi va la clàusula de les factures: aquí no n'hi ha cap. */
+    try{window.cmStore&&cmStore.barraProva&&cmStore.barraProva({tornar:'hub'})}catch(e){}
     document.querySelectorAll('[data-k]').forEach(function(el){var k=el.getAttribute('data-k'); if(t[k]!=null) el.textContent=t[k];});
     document.getElementById('brief-link').textContent=t.brief_link;
     var etiq={ca:'CAT',es:'ESP',en:'ENG'};
@@ -328,5 +437,354 @@
 })();
 </script>
 <script>(function(){try{var l=localStorage.getItem("em_idioma_ui")||"ca";if(window.cmStore)cmStore.meter("cm-espai",l);}catch(e){}})();</script>
+<script>
+/* ═══════════════════════════════════════════════════════════════════════════
+   ENG-13b ② · L'ACTIVACIÓ  ·  hub.html?activar=1&tornar=app|escriba|secre
+   Enginyeria · 26/08/2026
+   Flux: Producte/16 · Literals: Producte/09 §1.8 i Producte/12 §4 (A-013)
+
+   ── LA REGLA QUE MANA SOBRE TOTES LES ALTRES ────────────────────────────────
+   L'ACTIVACIÓ NO TÉ ESTAT PROPI. L'única font de veritat sobre si un compte
+   està pagat és la subscripció al servidor. Aquesta pantalla recorda dues
+   coses i cap més: per quina porta anava, i el que el metge ja ha escrit. Mai
+   «ja he pagat».
+
+   El motiu no és teòric. El cas dolent de veritat és: el pagament surt bé i el
+   retorn no —pestanya tancada, mòbil bloquejat, xarxa que cau—. Si aquesta
+   pantalla es cregués un «pagament=fet» de la URL, n'hi hauria prou d'escriure
+   aquella adreça a mà per tenir el compte actiu de franc. I si es cregués el
+   contrari, un metge que ha pagat veuria «mode de prova» i pagaria dues
+   vegades. Les dues coses les evita el mateix: preguntar-ho sempre al servidor.
+   ═══════════════════════════════════════════════════════════════════════════ */
+(function(){
+  var q=new URLSearchParams(location.search);
+  var API='https://app.consultamed.es/api/s';
+  var K_PAS='cm_activacio';                 /* nomes {porta:n} · MAI si s'ha pagat */
+  var NIF_RE=/^[0-9A-Z][0-9]{7}[0-9A-Z]$/;  /* la mateixa d'app.html: si divergeixen, un NIF bo aqui es dolent alla */
+
+  /* On torna «Ara no». Llista tancada: el que arribi per la URL no s'enganxa
+     enlloc, es busca en aquesta taula. Una destinacio que vingui del navegador
+     i s'usi tal qual es una redireccio oberta. */
+  var DESTINS={app:'app.html', escriba:'escriba.html', secre:'secremed.html'};
+  var tornarClau=q.get('tornar');
+  var TORNAR=Object.prototype.hasOwnProperty.call(DESTINS,String(tornarClau))?DESTINS[tornarClau]:'hub.html';
+  var ETIQ_RETORN=Object.prototype.hasOwnProperty.call(DESTINS,String(tornarClau))?('activacio-'+tornarClau):'activacio';
+
+  var TA={
+    ca:{
+      tit:"Activar el meu compte",
+      preu:"Provar-ho no costa res. Es paga des del primer dia d'ús real: 79 €/mes, IVA inclòs, el mateix per a tothom.",
+      cos:["A partir d'ara les seves factures seran reals i es remetran a l'AEAT.",
+           "<b>Es conserva tot el que ha fet</b>: pacients, fitxes, agenda i configuració.",
+           "<b>Les factures de prova es queden com a prova</b> i les podrà consultar sempre, però <b>la seva facturació legal comença de zero</b>, amb la seva sèrie pròpia. És així perquè ha de ser així."],
+      calTit:"Què necessitarà tenir a mà",
+      calTxt:"Per activar el compte necessitarà: <b>el seu NIF</b>, <b>l'adreça fiscal</b>, <b>el número de col·legiat</b> i <b>una targeta</b>. Són cinc minuts. Si li falta alguna cosa, pot deixar-ho a mitges i continuar quan vulgui: no es perd res.",
+      segueix:"Continuar", arano:"Ara no",
+      p1tit:"Les seves dades fiscals", p1sub:"Només el que falta per poder facturar de veritat. Es desa a mesura que l'escriu.",
+      lNom:"Nom i cognoms", lNif:"NIF", lCol:"Número de col·legiat", lAdr:"Adreça fiscal",
+      eNom:"Escrigui el nom amb què vol facturar.", eNif:"El NIF ha de tenir 9 caràcters.", eCol:"Falta el número de col·legiat.", eAdr:"Falta l'adreça fiscal.",
+      desat:"Desat.",
+      p2tit:"Pagament", p2sub:"79 €/mes, IVA inclòs. El pagament el gestiona Stripe; les dades de la targeta no passen mai pels nostres servidors.",
+      paga:"Anar al pagament",
+      noconf:"Els cobraments encara no estan actius. Pot tancar això i seguir treballant en mode de prova: no perd res.",
+      norec:"Per activar el compte cal un metge o un administrador del centre. Si vostè porta la recepció, demani-ho a qui gestioni el centre.",
+      nocon:"No hem pogut parlar amb el servidor. Provi-ho d'aquí a un moment; no s'ha cobrat res.",
+      aetit:"Comprovant el pagament…", aesub:"Trigarà uns segons.",
+      aenop:"<b>Si ha pagat i aquesta pàgina no s'actualitza, no torni a pagar</b>: tanqui i torni a entrar d'aquí a un minut. El pagament ja ens ha arribat.",
+      aftit:"El compte ja és actiu", afsub:"A partir d'ara les seves factures són reals i es remeten a l'AEAT.",
+      afseg:"<b>El següent pas</b>: emetre la seva primera factura real. La seva sèrie comença per <b>0001</b>.",
+      afcont:"Emetre la primera factura real",
+      cancel:"El pagament s'ha cancel·lat. No s'ha cobrat res i el compte segueix en mode de prova.",
+      represa:"Activació a mig fer · Continuar"
+    },
+    es:{
+      tit:"Activar mi cuenta",
+      preu:"Probarlo no cuesta nada. Se paga desde el primer día de uso real: 79 €/mes, IVA incluido, el mismo para todos.",
+      cos:["A partir de ahora sus facturas serán reales y se remitirán a la AEAT.",
+           "<b>Se conserva todo lo que ha hecho</b>: pacientes, fichas, agenda y configuración.",
+           "<b>Las facturas de prueba se quedan como prueba</b> y podrá consultarlas siempre, pero <b>su facturación legal empieza de cero</b>, con su serie propia. Es así porque tiene que ser así."],
+      calTit:"Qué necesitará tener a mano",
+      calTxt:"Para activar la cuenta necesitará: <b>su NIF</b>, <b>la dirección fiscal</b>, <b>el número de colegiado</b> y <b>una tarjeta</b>. Son cinco minutos. Si le falta algo, puede dejarlo a medias y continuar cuando quiera: no se pierde nada.",
+      segueix:"Continuar", arano:"Ahora no",
+      p1tit:"Sus datos fiscales", p1sub:"Solo lo que falta para poder facturar de verdad. Se guarda a medida que lo escribe.",
+      lNom:"Nombre y apellidos", lNif:"NIF", lCol:"Número de colegiado", lAdr:"Dirección fiscal",
+      eNom:"Escriba el nombre con el que quiere facturar.", eNif:"El NIF debe tener 9 caracteres.", eCol:"Falta el número de colegiado.", eAdr:"Falta la dirección fiscal.",
+      desat:"Guardado.",
+      p2tit:"Pago", p2sub:"79 €/mes, IVA incluido. El pago lo gestiona Stripe; los datos de la tarjeta no pasan nunca por nuestros servidores.",
+      paga:"Ir al pago",
+      noconf:"Los cobros todavía no están activos. Puede cerrar esto y seguir trabajando en modo de prueba: no pierde nada.",
+      norec:"Para activar la cuenta hace falta un médico o un administrador del centro. Si usted lleva la recepción, pídaselo a quien gestione el centro.",
+      nocon:"No hemos podido hablar con el servidor. Inténtelo dentro de un momento; no se ha cobrado nada.",
+      aetit:"Comprobando el pago…", aesub:"Tardará unos segundos.",
+      aenop:"<b>Si ha pagado y esta página no se actualiza, no vuelva a pagar</b>: cierre y vuelva a entrar dentro de un minuto. El pago ya nos ha llegado.",
+      aftit:"La cuenta ya está activa", afsub:"A partir de ahora sus facturas son reales y se remiten a la AEAT.",
+      afseg:"<b>El siguiente paso</b>: emitir su primera factura real. Su serie empieza por <b>0001</b>.",
+      afcont:"Emitir la primera factura real",
+      cancel:"El pago se ha cancelado. No se ha cobrado nada y la cuenta sigue en modo de prueba.",
+      represa:"Activación a medias · Continuar"
+    },
+    en:{
+      tit:"Activate my account",
+      preu:"Trying it costs nothing. You pay from the first day of real use: €79/month, VAT included, the same for everyone.",
+      cos:["From now on your invoices will be real and will be sent to the AEAT.",
+           "<b>Everything you have done is kept</b>: patients, records, schedule and settings.",
+           "<b>Your test invoices stay test invoices</b> and you will always be able to consult them, but <b>your legal invoicing starts from zero</b>, with your own series. It is this way because it has to be."],
+      calTit:"What you will need at hand",
+      calTxt:"To activate the account you will need: <b>your tax ID</b>, <b>your fiscal address</b>, <b>your licence number</b> and <b>a card</b>. It takes five minutes. If something is missing you can stop halfway and continue whenever you want: nothing is lost.",
+      segueix:"Continue", arano:"Not now",
+      p1tit:"Your fiscal details", p1sub:"Only what is missing in order to invoice for real. It is saved as you type.",
+      lNom:"Full name", lNif:"Tax ID", lCol:"Licence number", lAdr:"Fiscal address",
+      eNom:"Enter the name you want to invoice under.", eNif:"The tax ID must be 9 characters.", eCol:"The licence number is missing.", eAdr:"The fiscal address is missing.",
+      desat:"Saved.",
+      p2tit:"Payment", p2sub:"€79/month, VAT included. Payment is handled by Stripe; card details never pass through our servers.",
+      paga:"Go to payment",
+      noconf:"Payments are not active yet. You can close this and carry on working in test mode: nothing is lost.",
+      norec:"Activating the account requires a doctor or a centre administrator. If you run reception, ask whoever manages the centre.",
+      nocon:"We could not reach the server. Try again in a moment; nothing has been charged.",
+      aetit:"Checking the payment…", aesub:"This will take a few seconds.",
+      aenop:"<b>If you have paid and this page does not update, do not pay again</b>: close it and come back in a minute. Your payment has already reached us.",
+      aftit:"The account is now active", afsub:"From now on your invoices are real and are sent to the AEAT.",
+      afseg:"<b>Next step</b>: issue your first real invoice. Your series starts at <b>0001</b>.",
+      afcont:"Issue the first real invoice",
+      cancel:"The payment was cancelled. Nothing has been charged and the account is still in test mode.",
+      represa:"Activation half done · Continue"
+    },
+    de:{
+      tit:"Mein Konto aktivieren",
+      preu:"Ausprobieren kostet nichts. Bezahlt wird ab dem ersten Tag echter Nutzung: 79 €/Monat, inkl. MwSt., für alle gleich.",
+      cos:["Ab jetzt sind Ihre Rechnungen echt und werden an die AEAT übermittelt.",
+           "<b>Alles, was Sie gemacht haben, bleibt erhalten</b>: Patienten, Karten, Termine und Einstellungen.",
+           "<b>Ihre Testrechnungen bleiben Testrechnungen</b> und Sie können sie jederzeit einsehen, aber <b>Ihre rechtliche Rechnungsstellung beginnt bei null</b>, mit Ihrer eigenen Serie. Das ist so, weil es so sein muss."],
+      calTit:"Was Sie bereithalten sollten",
+      calTxt:"Zum Aktivieren des Kontos brauchen Sie: <b>Ihre Steuernummer</b>, <b>die Rechnungsadresse</b>, <b>Ihre Arztnummer</b> und <b>eine Karte</b>. Es dauert fünf Minuten. Wenn Ihnen etwas fehlt, können Sie mittendrin aufhören und später weitermachen: es geht nichts verloren.",
+      segueix:"Weiter", arano:"Jetzt nicht",
+      p1tit:"Ihre Steuerdaten", p1sub:"Nur was zum echten Rechnungstellen noch fehlt. Es wird beim Tippen gespeichert.",
+      lNom:"Vor- und Nachname", lNif:"Steuernummer", lCol:"Arztnummer", lAdr:"Rechnungsadresse",
+      eNom:"Geben Sie den Namen an, unter dem Sie abrechnen möchten.", eNif:"Die Steuernummer muss 9 Zeichen haben.", eCol:"Die Arztnummer fehlt.", eAdr:"Die Rechnungsadresse fehlt.",
+      desat:"Gespeichert.",
+      p2tit:"Zahlung", p2sub:"79 €/Monat, inkl. MwSt. Die Zahlung wickelt Stripe ab; Kartendaten laufen nie über unsere Server.",
+      paga:"Zur Zahlung",
+      noconf:"Die Zahlungen sind noch nicht aktiv. Sie können das schließen und im Testmodus weiterarbeiten: es geht nichts verloren.",
+      norec:"Zum Aktivieren des Kontos braucht es einen Arzt oder eine Zentrumsverwaltung. Wenn Sie den Empfang machen, fragen Sie die Zentrumsleitung.",
+      nocon:"Wir konnten den Server nicht erreichen. Versuchen Sie es gleich noch einmal; es wurde nichts abgebucht.",
+      aetit:"Zahlung wird geprüft…", aesub:"Das dauert ein paar Sekunden.",
+      aenop:"<b>Wenn Sie bezahlt haben und sich diese Seite nicht aktualisiert, zahlen Sie nicht noch einmal</b>: schließen Sie sie und kommen Sie in einer Minute zurück. Ihre Zahlung ist bereits bei uns angekommen.",
+      aftit:"Das Konto ist jetzt aktiv", afsub:"Ab jetzt sind Ihre Rechnungen echt und werden an die AEAT übermittelt.",
+      afseg:"<b>Nächster Schritt</b>: Ihre erste echte Rechnung ausstellen. Ihre Serie beginnt bei <b>0001</b>.",
+      afcont:"Erste echte Rechnung ausstellen",
+      cancel:"Die Zahlung wurde abgebrochen. Es wurde nichts abgebucht und das Konto ist weiterhin im Testmodus.",
+      represa:"Aktivierung halb fertig · Weiter"
+    }
+  };
+
+  function idi(){var l=localStorage.getItem('em_idioma_ui');return TA[l]?l:'ca'}
+  var t=TA[idi()];
+  function $(i){return document.getElementById(i)}
+  function conf(){try{return JSON.parse(localStorage.getItem('fm2_config'))||{}}catch(e){return {}}}
+  function desaConf(c){try{localStorage.setItem('fm2_config',JSON.stringify(c));window.cmSync&&cmSync.canvi('fm2_config')}catch(e){}}
+  function pas(){try{var v=JSON.parse(localStorage.getItem(K_PAS));return v&&typeof v.porta==='number'?v.porta:0}catch(e){return 0}}
+  function desaPas(n){try{localStorage.setItem(K_PAS,JSON.stringify({porta:n}))}catch(e){}}
+  function netejaPas(){try{localStorage.removeItem(K_PAS)}catch(e){}}
+
+  function api(accio,dades){
+    return fetch(API,{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(Object.assign({accio:accio},dades||{}))}).then(function(r){return r.json()});
+  }
+
+  /* ── La barra del hub quan hi ha una activació a mig fer ────────────────── */
+  function pintaRepresa(){
+    if(pas()<=0) return;
+    var w=document.querySelector('.wrap'); if(!w) return;
+    var a=document.createElement('a');
+    a.className='act-represa'; a.id='act-represa';
+    a.href='hub.html?activar=1';
+    a.textContent=TA[idi()].represa;
+    w.insertBefore(a,w.firstChild);
+  }
+
+  /* ── Ensenyar una porta ────────────────────────────────────────────────── */
+  /* ── ENG-16 ⑦ · els comptadors de Producte/16 §6 ──────────────────────────
+     Un esdeveniment per porta, i cap dada. La pregunta que responen és «a quina
+     porta es queden», i sense ells l'única manera de saber que el flux falla és
+     que un metge s'aturi i no ens ho digui mai.
+     `marca()` no espera resposta i s'empassa els errors: si el comptador no
+     arriba, el metge no se n'ha d'assabentar mai — mesurar el flux no pot
+     trencar el flux. */
+  var _marcades={};
+  function marca(porta,fet){
+    var clau=porta+'.'+fet;
+    if(fet==='vista'&&_marcades[clau])return;   /* una recàrrega no és una visita nova */
+    _marcades[clau]=true;
+    try{api('activacio.marca',{porta:porta,fet:fet}).catch(function(){})}catch(e){}
+  }
+
+  var PORTES=['act-p0','act-p1','act-p2','act-esperant','act-fet'];
+  var PORTA_DE={'act-p0':0,'act-p1':1,'act-p2':2,'act-esperant':2,'act-fet':3};
+  function mostra(id){
+    document.querySelectorAll('.wrap').forEach(function(w){ if(w.id!=='activacio') w.hidden=true; });
+    $('activacio').hidden=false;
+    PORTES.forEach(function(p){ var e=$(p); if(e) e.hidden=(p!==id); });
+    if(PORTA_DE[id]!==undefined)marca(PORTA_DE[id],'vista');
+    var n={'act-p0':1,'act-p1':2,'act-p2':3,'act-esperant':3,'act-fet':3}[id]||1;
+    $('act-passos').innerHTML='<i class="'+(n>=1?'fet':'')+'"></i><i class="'+(n>=2?'fet':'')+'"></i><i class="'+(n>=3?'fet':'')+'"></i>';
+    document.title='ConsultaMed · '+t.tit;
+  }
+  function surt(){
+    /* «Ara no» és un abandonament declarat, i és el senyal més útil dels tres:
+       vol dir que ha llegit la porta i ha decidit que no. */
+    var visible=PORTES.filter(function(p){var e=$(p);return e&&!e.hidden})[0];
+    if(visible&&PORTA_DE[visible]!==undefined)marca(PORTA_DE[visible],'abandonada');
+    location.href=TORNAR;
+  }
+
+  /* ── PORTA 0 ───────────────────────────────────────────────────────────── */
+  function porta0(){
+    $('a0-tit').textContent=t.tit;
+    $('a0-preu').textContent=t.preu;
+    $('a0-cos').innerHTML=t.cos.map(function(p){return '<p>'+p+'</p>'}).join('');
+    $('a0-cal-tit').textContent=t.calTit;
+    $('a0-cal-txt').innerHTML=t.calTxt;
+    $('a0-segueix').textContent=t.segueix;
+    $('a0-surt').textContent=t.arano;
+    $('a0-segueix').onclick=function(){marca(0,'completada');desaPas(1);porta1()};
+    $('a0-surt').onclick=surt;
+    mostra('act-p0');
+  }
+
+  /* ── PORTA 1 · només el que falta ──────────────────────────────────────── */
+  var CAMPS=[
+    {k:'nom',      l:'lNom', e:'eNom', max:120, val:function(v){return v.trim().length>1}},
+    {k:'nif',      l:'lNif', e:'eNif', max:9,   val:function(v){return NIF_RE.test(v.trim().toUpperCase())}},
+    {k:'colegiat', l:'lCol', e:'eCol', max:20,  val:function(v){return v.trim().length>0}},
+    {k:'adreca',   l:'lAdr', e:'eAdr', max:160, val:function(v){return v.trim().length>4}}
+  ];
+  function porta1(){
+    $('a1-tit').textContent=t.p1tit; $('a1-sub').textContent=t.p1sub;
+    $('a1-segueix').textContent=t.segueix; $('a1-surt').textContent=t.arano;
+    var c=conf();
+    /* Nomes el que falta, mai el que ja tenim (Producte/16, porta 1). */
+    var caldran=CAMPS.filter(function(x){return !x.val(String(c[x.k]||''))});
+    $('a1-camps').innerHTML=caldran.map(function(x){
+      return '<div class="act-camp" id="camp-'+x.k+'">'+
+        '<label for="a1-'+x.k+'">'+t[x.l]+'</label>'+
+        '<input id="a1-'+x.k+'" maxlength="'+x.max+'" value="'+String(c[x.k]||'').replace(/"/g,'&quot;')+'">'+
+        '<div class="err">'+t[x.e]+'</div></div>';
+    }).join('');
+    if(!caldran.length){ marca(1,'completada'); desaPas(2); porta2(); return; }
+
+    caldran.forEach(function(x){
+      var el=$('a1-'+x.k);
+      el.addEventListener('input',function(){
+        var c2=conf(); c2[x.k]=(x.k==='nif'?el.value.trim().toUpperCase():el.value); desaConf(c2);
+        $('camp-'+x.k).classList.remove('mal');
+        var d=$('a1-desat'); d.textContent=t.desat; d.hidden=false;
+      });
+      /* Es valida en sortir del camp, no en escriure: marcar en vermell mentre
+         algu escriu el tercer caracter del NIF es dir-li que s'equivoca abans
+         d'haver acabat. */
+      el.addEventListener('blur',function(){
+        $('camp-'+x.k).classList.toggle('mal', !x.val(el.value));
+      });
+    });
+    $('a1-segueix').onclick=function(){
+      var mal=false;
+      caldran.forEach(function(x){
+        var ok=x.val($('a1-'+x.k).value);
+        $('camp-'+x.k).classList.toggle('mal',!ok);
+        if(!ok&&!mal){mal=true;$('a1-'+x.k).focus()}
+      });
+      if(mal) return;
+      marca(1,'completada');
+      desaPas(2); porta2();
+    };
+    $('a1-surt').onclick=surt;
+    mostra('act-p1');
+  }
+
+  /* ── PORTA 2 · pagament ────────────────────────────────────────────────── */
+  function porta2(estat){
+    $('a2-tit').textContent=t.p2tit; $('a2-sub').textContent=t.p2sub;
+    $('a2-paga').textContent=t.paga; $('a2-surt').textContent=t.arano;
+    $('a2-surt').onclick=surt;
+    var avis=$('a2-avis'); avis.hidden=true;
+
+    if(q.get('pagament')==='cancellat'){ avis.textContent=t.cancel; avis.hidden=false; }
+    if(estat&&estat.actiu===false){ avis.textContent=t.noconf; avis.hidden=false; $('a2-paga').disabled=true; }
+    if(estat&&estat.potPagar===false){ avis.textContent=t.norec; avis.hidden=false; $('a2-paga').disabled=true; }
+
+    $('a2-paga').onclick=function(){
+      $('a2-paga').disabled=true;
+      /* L'etiqueta, no la URL: la construeix el servidor amb una llista tancada
+         (lib/retorns.js). Una URL de retorn que surti d'aqui es una redireccio
+         oberta amb el nostre domini al davant. */
+      api('pagament.inicia',{periode:'mes',torna:ETIQ_RETORN}).then(function(r){
+        if(r&&r.ok&&r.url){ marca(2,'completada'); location.href=r.url; return; }
+        $('a2-paga').disabled=false;
+        avis.textContent=(r&&r.error)?r.error:t.nocon; avis.hidden=false;
+      }).catch(function(){
+        $('a2-paga').disabled=false; avis.textContent=t.nocon; avis.hidden=false;
+      });
+    };
+    mostra('act-p2');
+  }
+
+  /* ── ESPERANT ──────────────────────────────────────────────────────────── */
+  /* S'hi entra quan es torna de Stripe: el navegador torna abans que el webhook
+     hagi arribat, o sigui que preguntar-ho una sola vegada donaria «encara en
+     prova» a algu que acaba de pagar. Es pregunta unes quantes vegades i, si
+     tampoc, es diu clarament que NO torni a pagar. */
+  function esperant(){
+    $('ae-tit').textContent=t.aetit; $('ae-sub').textContent=t.aesub;
+    $('ae-nopaguis').innerHTML=t.aenop;
+    $('ae-surt').textContent=t.arano; $('ae-surt').onclick=surt;
+    mostra('act-esperant');
+    var voltes=0;
+    (function torna(){
+      voltes++;
+      api('pagament.estat',{}).then(function(r){
+        var s=r&&r.subscripcio;
+        if(s&&s.estat==='ACTIVA'){ fet(); return; }
+        if(voltes<8) setTimeout(torna,2500); else { $('ae-tit').textContent=t.aetit; $('ae-sub').textContent=''; }
+      }).catch(function(){ if(voltes<8) setTimeout(torna,2500); });
+    })();
+  }
+
+  /* ── FET ───────────────────────────────────────────────────────────────── */
+  function fet(){
+    netejaPas();
+    $('af-tit').textContent=t.aftit; $('af-sub').textContent=t.afsub;
+    $('af-seguent').innerHTML='<p>'+t.afseg+'</p>';
+    $('af-continua').textContent=t.afcont;
+    $('af-continua').onclick=function(){ location.href='app.html'; };
+    mostra('act-fet');
+  }
+
+  /* ── Entrada ───────────────────────────────────────────────────────────── */
+  /* Si no venim per `?activar=1`, aqui no hi ha res a fer: nomes, si hi havia
+     una activacio a mig fer, ensenyar-ho al hub.
+     Aquesta linia era a dalt de tot i era un error meu: cridava `pintaRepresa()`
+     abans que `var TA` tingues cap valor, o sigui que el hub petava amb un
+     TypeError per a qualsevol que hagues comencat una activacio i l'hagues
+     deixada. No es veia perque nomes passa amb `cm_activacio` desat. */
+  if(q.get('activar')!=='1'){ pintaRepresa(); return; }
+
+  /* Primer es pregunta al servidor, sempre, i despres es decideix que ensenyar.
+     Si el servidor no respon, s'ensenya la porta on anava: no es pot ni
+     confirmar ni negar un pagament sense ell, i inventar-s'ho es el que
+     produeix els dos estats que Producte prohibeix al seu §4. */
+  mostra(pas()>=2?'act-p2':(pas()===1?'act-p1':'act-p0'));
+  api('pagament.estat',{}).then(function(r){
+    var s=(r&&r.subscripcio)||null;
+    if(s&&s.estat==='ACTIVA'){ fet(); return; }
+    if(q.get('pagament')==='fet'){ esperant(); return; }
+    var p=pas();
+    if(p>=2) porta2(s); else if(p===1) porta1(); else porta0();
+  }).catch(function(){
+    var p=pas();
+    if(p>=2) porta2(null); else if(p===1) porta1(); else porta0();
+  });
+})();
+</script>
+
 </body>
 </html>

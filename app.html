@@ -8,14 +8,8 @@
 </script>
 
 <meta charset="UTF-8">
-  <!-- ENG-7 · favicon (DIS-3) -->
-  <link rel="icon" href="/favicon.ico" sizes="any">
-  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="/favicon-180.png">
-  <link rel="manifest" href="/site.webmanifest">
-  <meta name="theme-color" content="#0D3B66">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://app.consultamed.es http://127.0.0.1:7373 http://localhost:7373; form-action 'self'; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://app.consultamed.es http://127.0.0.1:7373 http://localhost:7373; form-action 'self'">
 <script src="cmstore.js"></script>
 <script src="cmsync.js?v=20260730b" defer></script>
 <meta name="referrer" content="no-referrer">
@@ -25,7 +19,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <style>
-  :root{--blau:#0D3B66;--teal:#14B8A6;--verd:#059669;--verd-fosc:#047857;--gasa:#F7FAFC;--grafit:#1F2937;--boira:#94A3B8;--linia:#E2E8F0;--vermell:#DC2626}
+  :root{--blau:#0D3B66;--teal:#14B8A6;--verd:#059669;--tinta-teal:#04201d;/* ENG-16 ⑧ · bíblia v2.3 §4: sobre farciment Teal o Verd, el text va en Tinta Teal i mai en blanc. Blanc sobre #059669 són 3,77:1 i no arriba; Tinta Teal són 4,53:1 i sí. */--verd-fosc:#047857;--gasa:#F7FAFC;--grafit:#1F2937;--boira:#94A3B8;--linia:#E2E8F0;--vermell:#DC2626}
   *{margin:0;padding:0;box-sizing:border-box}
   body{font-family:'Inter',system-ui,sans-serif;background:var(--gasa);color:var(--grafit);line-height:1.55;-webkit-font-smoothing:antialiased}
   h1,h2,h3{font-family:'Sora',sans-serif;color:var(--blau)}
@@ -51,7 +45,7 @@
   input,select,textarea{width:100%;padding:9px 12px;border:1px solid var(--linia);border-radius:9px;font:inherit;font-size:.9rem;background:var(--gasa)}
   input:focus,select:focus{outline:2px solid var(--teal);background:#fff}
   .fila{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  .btn{display:inline-block;background:var(--verd);color:#fff;border:none;cursor:pointer;font-family:inherit;font-weight:600;font-size:.93rem;padding:11px 20px;border-radius:99px;margin-top:14px;transition:background .15s}
+  .btn{display:inline-block;background:var(--verd);color:var(--tinta-teal);border:none;cursor:pointer;font-family:inherit;font-weight:600;font-size:.93rem;padding:11px 20px;border-radius:99px;margin-top:14px;transition:background .15s}
   .btn:hover{background:var(--verd-fosc)}
   .btn.sec{background:#fff;color:var(--blau);border:1.5px solid var(--linia)}
   .btn.sec:hover{background:var(--gasa)}
@@ -161,6 +155,48 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
 ::selection{background:rgba(13,59,102,.14)}
 @media print{.avis-priv{display:none!important}}
 @media print{body{background:#fff!important}body::before{display:none!important}}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ENG-16c ② · CONTRAST DELS CTA — el degradat passa a pla
+   Enginyeria · 29/08/2026 · CSS de Disseny (§3 del canal, 27/08), literal
+
+   PER QUÈ AIXÒ ÉS AQUÍ BAIX I NO A DALT
+   A la línia 48 hi ha `.btn{color:var(--tinta-teal)}` — correcte — i a la 138
+   hi havia `.btn{background:linear-gradient(...)!important}`, que repintava el
+   fons DESPRÉS. El color que jo havia posat es quedava sobre un fons que no era
+   el que havia mirat: 4,53:1 a l'extrem clar del degradat i **3,11:1 al fosc**.
+   Ho va caçar Disseny mesurant el botó renderitzat; llegint el CSS no es veu,
+   perquè cada regla, per separat, és correcta.
+
+   PER QUÈ PLA I NO UN DEGRADAT MÉS CURT
+   El degradat és llenguatge de marca (bíblia §7) i no es treu per les bones.
+   La regla que se'n deriva —i que Disseny incorpora a la bíblia— és que **el
+   degradat s'ha d'allunyar del text, mai acostar-s'hi**: amb text fosc el fons
+   només es pot aclarir, i el de l'accent s'enfosqueix. El dia que la bíblia
+   tingui un to més CLAR de cada accent, es podrà recuperar.
+
+   ⚠️ MARGE: `#059669` amb Tinta Teal dona **4,53** — passa amb tres
+   centèsimes. Aquest verd no es pot enfosquir ni una mica sense trencar-ho.
+   Si algú el toca, que avisi Disseny perquè el recalculi.
+   ═══════════════════════════════════════════════════════════════════════════ */
+.btn{background:var(--acc)!important}
+.tab.actiu,.tab-esc.actiu{background:var(--acc)!important;color:var(--tinta-teal)!important}
+
+/* ── ENG-16c ② · el botó verd d'acció, que la taula de Disseny no enumerava ──
+   `.btn.verd` és el botó verd que fa una acció de facturació, i existeix DINS
+   d'EscribaMed i de SecreMed (la fila d'una cita hi posa un «Facturar»), no
+   només a FacturaMed. Allà el `.btn` d'aquell producte el pinta en blanc, i
+   sobre el degradat verd això són **3,77:1 a l'extrem clar** — el mateix cas
+   que Disseny va mesurar per al botó de FacturaMed.
+
+   No m'invento cap color: s'hi aplica la seva regla, que és per farciment i no
+   per producte —sobre Verd, Tinta Teal i fons pla— al verd que ja hi havia.
+   `#059669` pla amb Tinta Teal són 4,53:1.
+
+   Ho reporto a Disseny igualment (P-ENG-37): la seva taula va producte a
+   producte i aquest botó travessa els productes, que és per què se'ls va
+   escapar i per què se'm va escapar a mi fins que el control m'hi va fer topar. */
+.btn.verd{background:#059669!important;color:#04201d!important}
 </style>
 </head>
 <body>
@@ -395,13 +431,21 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
           <a class="btn sec" href="index.html" style="text-decoration:none">↩ Cerrar sesión</a>
         </div>
         <div class="card">
+          <h2 id="h-exemple" data-o="Datos de ejemplo">Datos de ejemplo</h2>
+          <p id="p-exemple" style="font-size:.86rem;color:var(--boira);margin-top:0"></p>
+          <div class="accions-fila" style="margin-bottom:6px">
+            <button class="btn sec" id="b-exemple-posa" type="button">Cargar datos de ejemplo</button>
+            <button class="btn sec" id="b-exemple-treu" type="button" style="display:none">Quitar los datos de ejemplo</button>
+          </div>
+        </div>
+        <div class="targeta">
           <h2>Zona de peligro</h2>
           <p style="font-size:.85rem;color:#475569">Borra TODOS los datos de FacturaMed de este dispositivo (config, pacientes y registro).</p>
           <button class="btn perill" id="b-esborrar" type="button">Borrar todos los datos</button>
         </div>
         <div class="card">
           <h2>Estado del producto</h2>
-          <p id="cfg-estat-desc" style="font-size:.85rem;color:#475569">✅ Registro con huella encadenada · ✅ QR de cotejo (entorno pruebas) · ✅ Rectificativas · ✅ Export gestoría · ⏳ Remisión automática a la AEAT (pendiente de certificado y alta como sistema de facturación) · ⏳ Remesas a mutuas. <strong>Hasta entonces: solo datos de prueba.</strong></p>
+          <p id="cfg-estat-desc" style="font-size:.85rem;color:#475569">✅ Registro con huella encadenada · ✅ QR de cotejo (entorno pruebas) · ✅ Rectificativas · ✅ Export gestoría · ⏳ Remisión automática a la AEAT (pendiente de certificado y alta como sistema de facturación). <strong>Hasta entonces: solo datos de prueba.</strong></p>
         </div>
       </div>
     </div>
@@ -409,10 +453,23 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
 </main>
 
 <!-- ============ FACTURA IMPRIMIBLE ============ -->
+<!-- ENG-13 · La barra del mode de prova. 07_Mode_de_Prova §5: fixa i discreta,
+     sense finestres emergents, sense comptador de dies i sense cadenats. El boto
+     d'activar sempre visible i mai al mig. -->
+<div id="barra-prova" style="display:none;position:sticky;bottom:0;z-index:60;background:#0D3B66;color:#fff;padding:9px 16px;font-size:.82rem;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap">
+  <span id="barra-prova-txt">Modo de prueba · las facturas no tienen validez fiscal</span>
+  <a id="barra-prova-cta" href="hub.html?activar=1&amp;tornar=app" style="color:#fff;font-weight:700;text-decoration:underline">Activar mi cuenta</a>
+</div>
+
 <div id="factura-modal">
   <div id="factura-print">
     <button class="modal-x" id="b-x-factura" type="button" title="Cerrar">✕</button>
     <span class="beta-marca">BETA — SIN VALIDEZ FISCAL</span>
+    <!-- ENG-13 · El segell de prova. Viu DINS de #factura-print, o sigui que el
+         traductor no l'agafa (ENG-4d) i es queda en castella: es un document.
+         No es pot treure des de la interficie: el pinta mostraFactura() a
+         partir del registre, no d'una preferencia. -->
+    <div id="pr-prova" style="display:none;margin:0 0 14px;padding:9px 14px;border:2px solid #B91C1C;border-radius:8px;background:#FEF2F2;color:#B91C1C;font-weight:800;font-size:.82rem;letter-spacing:.02em;text-align:center">FACTURA DE PRUEBA — SIN VALIDEZ FISCAL</div>
     <div class="f-cap">
       <div>
         <img id="pr-logo" alt="">
@@ -473,6 +530,57 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
   function safe(fn,nom){try{return fn()}catch(e){console.warn(nom,e)}}
   var $=function(id){return document.getElementById(id)};
   var K={conf:'fm2_config',pac:'fm2_pacients',reg:'fm2_registres'};
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     ENG-13 · MODE DE PROVA (PROD-7)
+     ───────────────────────────────────────────────────────────────────────
+     El mode de prova NO es una versio capada: es el producte sencer amb dades
+     que no compten. La diferencia es d'ESTAT, no de funcions.
+
+     ⚠️ EL RISC CAR D'AQUEST PROJECTE, escrit aqui perque no s'oblidi:
+     la cadena VeriFactu es el component legalment critic. Si una factura de
+     prova entres a la cadena real, el metge comencaria la seva vida fiscal
+     amb la cadena contaminada — i aixo NO es pot desfer. Per aixo hi ha DOS
+     ambits separats de veritat: dues series i dues cadenes que no es toquen
+     mai. Cada registre porta `prova:true|false` escrit a sobre, i tot el que
+     encadena o verifica filtra PRIMER per ambit.
+
+     L'estat per defecte es PROVA i aixo es deliberat: si no podem demostrar
+     que el compte paga, es de prova. Un estat desconegut mai no ha de poder
+     escriure a la cadena real. */
+  var K_ESTAT='cm_estat_compte';        // el desa cmsync des de la sessio del servidor
+  var SERIE_PROVA='PROVA';
+  function estatCompte(){
+    try{var v=localStorage.getItem(K_ESTAT);return (v==='ACTIU'||v==='IMPAGAMENT')?v:'PROVA'}catch(e){return 'PROVA'}
+  }
+  function enProva(){return estatCompte()==='PROVA'}
+  /* Explicit primer (el que hem escrit nosaltres), i el prefix de serie com a
+     respatller per a qualsevol registre anterior a ENG-13. */
+  function esProva(r){
+    if(!r)return false;
+    if(r.prova===true)return true;
+    if(r.prova===false)return false;
+    return String(r.serie||r.num||'').indexOf(SERIE_PROVA+'-')===0;
+  }
+  /* Els registres d'un sol ambit, en ordre. TOT el que encadena o verifica ha
+     de passar per aqui: es l'unic lloc on es decideix que veu cada cadena. */
+  function registresDe(prova){
+    return registres().filter(function(r){return esProva(r)===!!prova});
+  }
+  /* La serie amb que s'emet ara. En prova nomes n'hi ha una, es diu PROVA i no
+     es pot triar; si no existeix, es crea amb el seu propi comptador a 1 —
+     i els comptadors de les series reals no es toquen mai. */
+  function serieDeTreball(c,codiDemanat){
+    c.series=c.series||[];
+    if(enProva()){
+      var sp=c.series.find(function(x){return x.codi===SERIE_PROVA});
+      if(!sp){sp={codi:SERIE_PROVA,seguent:1};c.series.push(sp);desa(K.conf,c)}
+      return sp;
+    }
+    return c.series.find(function(x){return x.codi===codiDemanat&&x.codi!==SERIE_PROVA})
+        || c.series.find(function(x){return x.codi!==SERIE_PROVA})
+        || null;
+  }
 
   // ---------- utilitats ----------
   async function sha256hex(s){
@@ -555,7 +663,10 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
       var tb=$('tabs');if(tb)tb.style.display='none';
       var bn=document.querySelector('.avis-priv');if(bn)bn.style.display='none';
       var np=document.querySelector('nav a[href="hub.html"]');if(np&&np.parentNode)np.parentNode.style.display='none';
-      try{document.title='ConsultaMed — Configuración'}catch(e){}
+      /* ENG-16 ⑥ · el titol de la pestanya tambe es interficie. Els altres
+         `document.title` d'aquest fitxer NO es toquen: son noms de fitxer de
+         documents impresos, i els documents no canvien d'idioma (ENG-4d). */
+      try{document.title=T('ConsultaMed — Configuración')}catch(e){}
     }
   },'tabs');
 
@@ -607,7 +718,15 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
       cen.metges.forEach(function(m){var o=document.createElement('option');o.value=m;o.textContent=m;rm.appendChild(o)});
     }else{rw.style.display='none'}
     var s=$('f-serie');s.innerHTML='';
-    (c.series||[]).forEach(function(x){var o=document.createElement('option');o.value=x.codi;o.textContent=x.codi+' '+Tf('(próx. nº {n})',{n:x.seguent});s.appendChild(o)});
+    /* ENG-13 · en prova la serie es obligatoria i unica: nomes PROVA, i el
+       selector queda inactiu. No es una funcio capada, es que en prova no hi ha
+       res a triar — les series reals del compte segueixen intactes a sota. */
+    var enP=enProva();
+    var visibles=(c.series||[]).filter(function(x){return enP?x.codi===SERIE_PROVA:x.codi!==SERIE_PROVA});
+    if(enP&&!visibles.length){serieDeTreball(c);c=conf();visibles=(c.series||[]).filter(function(x){return x.codi===SERIE_PROVA})}
+    visibles.forEach(function(x){var o=document.createElement('option');o.value=x.codi;o.textContent=x.codi+' '+Tf('(próx. nº {n})',{n:x.seguent});s.appendChild(o)});
+    s.disabled=enP;
+    s.title=enP?T('En modo de prueba la serie es siempre PRUEBA y no se puede cambiar.'):'';
     var l=$('s-llista');l.innerHTML='';
     (c.series||[]).forEach(function(x){
       var d=document.createElement('div');d.style.cssText='display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px dashed var(--linia);font-size:.87rem';
@@ -618,7 +737,16 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
   safe(function(){
     $('b-config').addEventListener('click',function(){
       var nom=$('c-nom').value.trim(),nif=$('c-nif').value.trim().toUpperCase();
-      if(!nom||!/^[0-9A-Z][0-9]{7}[0-9A-Z]$/.test(nif)){avis('err','Revise nombre y NIF (9 caracteres).');return}
+      /* ENG-13, criteri ④ · en mode de prova el NIF NO es obligatori: aixi una
+         gestoria o el gerent d'un centre poden entrar-hi i ensenyar-ho abans de
+         tenir cap dada fiscal. Si l'escriuen, se'ls valida igual — el que no fem
+         es demanar-lo per poder mirar el producte. */
+      if(!nom){avis('err','Escriba el nombre de la consulta.');return}
+      if(enProva()){
+        if(nif&&!/^[0-9A-Z][0-9]{7}[0-9A-Z]$/.test(nif)){avis('err','El NIF no es válido (9 caracteres). Puede dejarlo vacío mientras la cuenta esté en prueba.');return}
+      }else if(!/^[0-9A-Z][0-9]{7}[0-9A-Z]$/.test(nif)){
+        avis('err','Revise nombre y NIF (9 caracteres).');return;
+      }
       var c=conf()||{series:[{codi:String(new Date().getFullYear()),seguent:1}]};
       c.nom=nom;c.nif=nif;c.colegiat=$('c-colegiat').value.trim();c.adreca=$('c-adreca').value.trim();
       c.web=$('c-web').value.trim();
@@ -652,6 +780,10 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
     $('b-serie').addEventListener('click',function(){
       var codi=$('s-codi').value.trim();if(!codi){avis('err','Escriba un código de serie.');return}
       var c=conf();if(!c){avis('err','Guarde antes el profesional.');return}
+      /* ENG-13 · les series reals es creen quan el compte es actiu. En prova
+         nomes hi ha PROVA, i afegir-ne una de real ara nomes serviria per
+         confondre: quan s'activi, comenca de zero igualment. */
+      if(enProva()){avis('err','En modo de prueba solo existe la serie PRUEBA. Al activar la cuenta podrá crear sus series reales.');return}
       if(c.series.some(function(x){return x.codi===codi})){avis('err','Esa serie ya existe.');return}
       c.series.push({codi:codi,seguent:1});desa(K.conf,c);$('s-codi').value='';pintaConfig();avis('ok','Serie añadida.');
     });
@@ -673,7 +805,7 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
       if(abans&&ps.some(function(p){return p.nom===abans}))sel.value=abans;
     }
     var el=$('p-llista');
-    if(!ps.length){el.innerHTML='<div class="buit">'+esc(T('Aún no hay pacientes. Cree la primera ficha con el formulario ←.'))+'</div>';return}
+    if(!ps.length){el.innerHTML=estatBuit(enProva()?'Todavía no hay ningún paciente. Cree uno o cargue datos de ejemplo.':'Aún no hay pacientes. Cree la primera ficha con el formulario ←.',true);return}
     var h='<table><thead><tr><th>Nombre</th><th>NIF</th><th>Contacto</th><th>Facturas</th><th></th></tr></thead><tbody>';
     var rs=registres();
     ps.slice().sort(function(a,b){return a.nom.localeCompare(b.nom)}).forEach(function(p){
@@ -785,18 +917,332 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
     $('b-linia').addEventListener('click',function(){afegeixLinia('','')});
   },'linies');
 
+  /* ═══════════════════════════════════════════════════════════════════════
+     ENG-13b ① · EL JOC DE DADES D'EXEMPLE
+     ───────────────────────────────────────────────────────────────────────
+     Es EXACTAMENT el joc canonic de `Disseny/09_Joc_Dades_Canoniques_v1.md`.
+     No me n'he inventat cap: si aquest joc i el manual visual divergeixen, les
+     captures del manual deixen d'ensenyar el que el metge veu el primer dia, i
+     aquella es tota la gracia d'haver-ne fet un de sol.
+
+     Tres regles, i les tres neixen de la cadena:
+       1. Nomes es carrega en mode de PROVA. Les factures d'exemple porten la
+          serie PROVA i no poden tocar mai la cadena real.
+       2. Nomes es carrega si l'ambit de prova esta BUIT. Si el metge ja ha
+          emes factures de prova seves, inserir-n'hi nou entremig li trencaria
+          la numeracio i la cadena.
+       3. Nomes es treu si TOTES les de prova son d'exemple. Si n'hi ha de
+          seves posteriors, treure les d'exemple deixaria la cadena trencada
+          — i una cadena trencada es exactament el que aquest producte no pot
+          permetre's, ni tan sols a l'ambit de prova.
+     Quan no es pot, es diu per que. Mai un boto que no fa res (PROD-7 §2.2). */
+  var MARCA_EXEMPLE=true;
+  var EXEMPLE_CONF={
+    nom:'Dra. Marta Ferrer Solà', nif:'12345678Z', colegiat:'080899999',
+    adreca:'Carrer de Casp, 46, 3r 2a — 08010 Barcelona', web:''
+  };
+  var EXEMPLE_PACIENTS=[
+    {nom:'Laia Puigdefàbregas Mas',nif:'11111111H',contacte:'laia.p@example.com'},
+    {nom:'Jordi Serra Vidal',      nif:'22222222J',contacte:'jserra@example.com'},
+    {nom:'Carmen López Ruiz',      nif:'33333333P',contacte:'934 000 673'},
+    {nom:'Youssef El Amrani',      nif:'X1111111G',contacte:'y.elamrani@example.com'},
+    {nom:'Hannah Müller',          nif:'',         contacte:'h.mueller@example.com'}
+  ];
+  /* dies enrere · pacient (index) · concepte · base · exempta */
+  var EXEMPLE_FACTURES=[
+    [52,1,'Visita de seguimiento',60,true],
+    [41,0,'Primera visita',80,true],
+    [33,2,'Visita de seguimiento',60,true],
+    [25,3,'Visita de seguimiento',60,true],
+    [18,1,'Revisión anual',60,true],
+    [12,4,'Primera visita',80,true],
+    [8, 2,'Visita de seguimiento',60,true],
+    [4, 1,'Certificado médico (no asistencial)',90,false],
+    [1, 3,'Visita de seguimiento',60,true]
+  ];
+
+  /* ── ENG-16 ③ · els estats buits (Producte/09 §1.4) ───────────────────────
+     «Cap estat buit sense una acció al costat. Un estat buit sense sortida és
+     una porta de sortida.» I la regla afegida el 25/08: **«Carregar dades
+     d'exemple» va SEMPRE primer**, també a Factures — el text antic hi
+     convidava a emetre una factura de prova, que era justament l'única cosa
+     que després li tancava la porta de les dades d'exemple.
+     Fora del mode de prova no hi ha dades d'exemple i el text és el de sempre. */
+  function estatBuit(text, ambExemple){
+    var cos='<div class="buit">'+esc(T(text));
+    if(ambExemple&&enProva()){
+      cos+='<div style="margin-top:12px"><button class="btn sec mini" type="button" id="buit-exemple">'
+         + esc(T('Cargar datos de ejemplo'))+'</button></div>';
+    }
+    return cos+'</div>';
+  }
+  /* Un sol manejador per a tots els estats buits: el botó es repinta cada cop
+     que es repinta la llista, o sigui que enganxar-l'hi a cada pintada deixaria
+     manejadors morts pel camí. */
+  document.addEventListener('click',function(ev){
+    var b=ev.target&&ev.target.closest?ev.target.closest('#buit-exemple'):null;
+    if(b){ev.preventDefault();carregaExemple();}
+  });
+  function esExemple(x){return !!(x&&x.exemple===true)}
+
+  /* ── ENG-16 ② (b) · el que faltava per sembrar ────────────────────────────
+     Disseny va tancar el joc canònic el 26/08 i el §12 n'és el CONTRACTE: si
+     ho carreguem amb una altra forma, les captures no quadraran amb els seus
+     KPI i ningú no sabrà si la culpa és de la captura o del producte.
+     Els KPI que han de sortir (§8): SecreMed **4 / 4 / 1** i el hub «4 visites
+     avui · 1 per confirmar». Surten sols d'aquestes dades i la prova els compta. */
+
+  /* [dies enrere · hora · índex de pacient · telèfon · motiu · estat]
+     El forat de les 10:30 no hi és a posta: és un forat lliure, i es veu
+     perquè no hi ha cap registre. La cita `cancelada` de les 11:00 és la que
+     fa que l'agenda n'ensenyi 5 i el comptador en digui 4. */
+  var EXEMPLE_CITES=[
+    [0,'09:00',0,'612 345 671','Seguimiento','confirmada'],
+    [0,'09:30',1,'612 345 672','Seguimiento','confirmada'],
+    [0,'10:00',2,'934 000 673','Revisión','pendent'],
+    [0,'11:00',3,'612 345 674','Revisión','cancelada'],
+    [0,'11:30',4,'612 345 675','Seguimiento','confirmada'],
+    [7,'09:00',1,'612 345 672','Seguimiento','noshow'],
+    [7,'09:30',0,'612 345 671','Seguimiento','vinguda']
+  ];
+  /* [nom · telèfon · motiu · quan] — les tres `pendent`, que són les que fan
+     que «Per confirmar» sigui 4 i no 1. En Pere Camps Roca NO és pacient: és
+     una sol·licitud web d'algú que encara no ha vingut mai, i per això no surt
+     a `fm2_pacients`. */
+  var EXEMPLE_SAFATA=[
+    ['Carmen López Ruiz','934 000 673','Quiere cambiar la hora','Esta semana por la tarde'],
+    ['Laia Puigdefàbregas Mas','612 345 671','Confirma su asistencia',''],
+    ['Pere Camps Roca','612 345 676','Quiere hora para una revisión','Cualquier mañana']
+  ];
+  /* Els dos informes desats del §7. R1 segueix l'idioma de la interfície,
+     com tot el text lliure. R2 va SEMPRE en alemany, i això no és un descuit:
+     sense agent local no hi ha IA, o sigui que canviar l'idioma només canvia
+     els títols del document i mai el cos — un cos castellà amb títols alemanys
+     és un document barrejat. L'informe s'ha de desar ja en l'idioma en què
+     s'ha d'imprimir. Per això la seva data també va en format alemany. */
+  var EXEMPLE_INFORMES=[
+    {pac:1, dies:18, idioma:null, camps:{
+      'e-motivo':'Revisión anual.',
+      'e-anamnesis':'', 'e-antecedentes':'',
+      'e-exploracion':'TA 138/86 mmHg. Exploración general sin hallazgos.',
+      'e-pruebas':'',
+      'e-diagnostico':'Revisión sin hallazgos patológicos.',
+      'e-tratamiento':'',
+      'e-recomendaciones':'Medidas higiénico-dietéticas. Control de tensión arterial en 3 meses.'}},
+    {pac:4, dies:12, idioma:'de', camps:{
+      'e-motivo':'Halsschmerzen seit 48 Stunden, ohne Fieber.',
+      'e-anamnesis':'Odynophagie seit zwei Tagen. Kein Fieber, kein Husten, keine Atemnot.',
+      'e-antecedentes':'',
+      'e-exploracion':'Pharynx gerötet, ohne Exsudate. Keine tastbaren Lymphknoten.',
+      'e-pruebas':'',
+      'e-diagnostico':'Akute Pharyngitis.',
+      'e-tratamiento':'Symptomatische Behandlung.',
+      'e-recomendaciones':'Wiedervorstellung bei Fieber oder Verschlechterung innerhalb von 72 Stunden.'}}
+  ];
+  /* Els camps buits hi són a posta: una revisió anual no té proves
+     complementàries i una faringitis de 48 h no té antecedents rellevants. */
+
+  function isoDe(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+  function diaEnrere(n){var d=new Date();d.setHours(12,0,0,0);d.setDate(d.getDate()-n);return d}
+  /* Les cites NO passen per `dataExemple()`: el dia T ha de ser exactament avui
+     o els comptadors del §8 no quadren. Les factures sí, perquè el seu
+     invariant són els totals i no els dies. */
+
+  function llegeixLS(k){try{return JSON.parse(localStorage.getItem(k)||'[]')||[]}catch(e){return []}}
+  function desaLS(k,v){try{localStorage.setItem(k,JSON.stringify(v));window.cmSync&&cmSync.canvi(k)}catch(e){}}
+
+  /* `id` és `Date.now()` a les tres col·leccions (§12). Carregant-ne unes
+     quantes dins del mateix mil·lisegon en sortirien amb el mateix id, i
+     després esborrar-ne una n'esborraria dues. Se separen a mà. */
+  var _idBase=0;
+  function nouId(){var ara=Date.now(); if(ara<=_idBase)ara=_idBase+1; _idBase=ara; return ara}
+
+  function sembraAgenda(){
+    var cs=llegeixLS('sm_cites');
+    EXEMPLE_CITES.forEach(function(x){
+      var data=isoDe(diaEnrere(x[0]));
+      if(cs.some(function(y){return y.data===data&&y.hora===x[1]&&y.pacient===EXEMPLE_PACIENTS[x[2]].nom}))return;
+      cs.push({id:nouId(),data:data,hora:x[1],pacient:EXEMPLE_PACIENTS[x[2]].nom,
+        tel:x[3],motiu:T(x[4]),metge:'',estat:x[5],exemple:MARCA_EXEMPLE});
+    });
+    desaLS('sm_cites',cs);
+    var sf=llegeixLS('sm_safata');
+    EXEMPLE_SAFATA.forEach(function(x){
+      if(sf.some(function(y){return y.nom===x[0]&&y.motiu===T(x[2])}))return;
+      sf.push({id:nouId(),nom:x[0],tel:x[1],motiu:T(x[2]),quan:x[3]?T(x[3]):'',
+        estat:'pendent',exemple:MARCA_EXEMPLE});
+    });
+    desaLS('sm_safata',sf);
+  }
+
+  function sembraInformes(){
+    var infs=llegeixLS('em_informes');
+    EXEMPLE_INFORMES.forEach(function(r){
+      var pac=EXEMPLE_PACIENTS[r.pac].nom;
+      if(infs.some(function(y){return y.pacient===pac&&esExemple(y)}))return;
+      /* `dataTxt` és una cadena ja formatada i NO es reformata mai (§12).
+         La de l'informe alemany va en format alemany. */
+      /* L'idioma NO es llegeix de `LANG`: aquella variable viu a l'altre bloc
+         d'`<script>` i des d'aquí no existeix — el navegador tirava un
+         `ReferenceError` i la sembra es quedava a mitges sense dir res. La
+         font compartida entre productes és `em_idioma_ui` (§12 del joc). */
+      var mapa={es:'es-ES',ca:'ca-ES',en:'en-GB',de:'de-DE'};
+      var ui=null; try{ui=localStorage.getItem('em_idioma_ui')}catch(e){}
+      var loc=r.idioma||(mapa[ui]?ui:'es');
+      var camps={};
+      Object.keys(r.camps).forEach(function(k){
+        camps[k]=r.camps[k]?(r.idioma?r.camps[k]:T(r.camps[k])):'';
+      });
+      /* Amb dues xifres a dia i mes. `toLocaleDateString('de-DE')` a seques
+         dóna «15.8.2026», i el joc diu dd.mm.aaaa: en un manual, una data
+         curta i una de llarga a dues captures seguides semblen un defecte. */
+      var FMT={day:'2-digit',month:'2-digit',year:'numeric'};
+      infs.push({id:nouId(),dataTxt:dataExemple(r.dies).toLocaleDateString(mapa[loc]||'es-ES',FMT),
+        pacient:pac,camps:camps,exemple:MARCA_EXEMPLE});
+    });
+    desaLS('em_informes',infs);
+  }
+
+  function comptaExemple(){
+    return {pacients:pacients().filter(esExemple).length,
+            factures:registres().filter(esExemple).length,
+            cites:llegeixLS('sm_cites').filter(esExemple).length,
+            safata:llegeixLS('sm_safata').filter(esExemple).length,
+            informes:llegeixLS('em_informes').filter(esExemple).length};
+  }
+  /* Les dates es comprimeixen dins del trimestre en curs si cal (regla 6 del
+     joc): l'invariant son els totals, no els dies exactes. */
+  function dataExemple(diesEnrere){
+    var avui=new Date();
+    var iniTrim=new Date(avui.getFullYear(),Math.floor(avui.getMonth()/3)*3,1);
+    var d=new Date(avui.getTime()-diesEnrere*86400000);
+    if(d<iniTrim){
+      var span=Math.max(1,Math.round((avui-iniTrim)/86400000));
+      d=new Date(iniTrim.getTime()+Math.round((1-diesEnrere/60)*span)*86400000);
+      if(d>avui)d=avui;
+    }
+    return d;
+  }
+  /* ── ENG-16 ③ · el cul-de-sac, i per què això no era un detall ────────────
+     Fins ara, si el metge emetia UNA factura de prova el primer dia, ja no
+     podia carregar mai més les dades d'exemple durant tota la prova — i per
+     sortir-ne se li demanava que esborrés la seva pròpia feina. Li demanàvem
+     que destruís el que havia fet ell per endreçar el que havíem posat
+     nosaltres. I la pantalla de Factures l'hi empenyia: convidava a emetre'n
+     una de prova, que era justament l'única cosa que li tancava la porta.
+     Ara la càrrega és PARCIAL: pacients i agenda sempre, factures només si
+     la cadena ho permet. La cadena mana sobre les factures i sobre res més. */
+  async function carregaExemple(){
+    if(!enProva()){avis('err','Los datos de ejemplo solo existen en modo de prueba.');return}
+    var ambitBuit=!registresDe(true).length;
+    var c=conf()||{};
+    c.nom=c.nom||EXEMPLE_CONF.nom; c.nif=c.nif||EXEMPLE_CONF.nif;
+    c.colegiat=c.colegiat||EXEMPLE_CONF.colegiat; c.adreca=c.adreca||EXEMPLE_CONF.adreca;
+    c.series=c.series||[]; desa(K.conf,c);
+    var ps=pacients();
+    EXEMPLE_PACIENTS.forEach(function(x){
+      if(ps.some(function(y){return y.nom===x.nom}))return;
+      ps.push({nom:x.nom,nif:x.nif,contacte:x.contacte,exemple:MARCA_EXEMPLE});
+    });
+    desa(K.pac,ps);
+    sembraAgenda();
+    sembraInformes();
+    if(!ambitBuit){
+      pintaTot();
+      avis('ok','Ya tiene facturas de prueba propias, así que no añadimos las de ejemplo: rompería su numeración. Cargamos los pacientes y la agenda de ejemplo.');
+      return;
+    }
+    for(var i=0;i<EXEMPLE_FACTURES.length;i++){
+      var f=EXEMPLE_FACTURES[i], p=EXEMPLE_PACIENTS[f[1]];
+      /* DIS-9 (a) · el concepte es text lliure del metge i va en l'idioma de la
+         consulta, o sigui que es tradueix EN CARREGAR-SE i es desa aixi. A
+         partir d'aqui es una dada com el nom del pacient: no torna a canviar
+         si el metge canvia d'idioma, i la factura impresa tampoc (ENG-4d).
+         El nom, el NIF, el dia i l'import son els mateixos en tots els
+         idiomes: son l'invariant del joc, i els totals del §6 hi quadren. */
+      var concepte=T(f[2]);
+      await emet({serie:SERIE_PROVA,tipo:'F1',pacientNom:p.nom,pacientNif:p.nif,
+        concepte:concepte,conceptes:[{c:concepte,imp:f[3]}],metge:'',
+        base:f[3],quota:f[4]?0:f[3]*0.21,exempta:f[4],
+        data:dataExemple(f[0]),exemple:MARCA_EXEMPLE});
+    }
+    pintaTot();
+    avis('ok','Datos de ejemplo cargados: 5 pacientes y 9 facturas de prueba. Puede quitarlos cuando quiera.');
+  }
+  /* ── ENG-16 ③ · i l'esborrat, també PARCIAL ───────────────────────────────
+     Els pacients, les cites, la safata i els informes se'n van sempre: cap
+     d'ells encadena res. Les factures d'exemple només si el metge no n'ha
+     emès de seves després — i si n'ha emès, no es diu «no es pot»: es fa el
+     que es pot fer i s'explica què es queda i per què. La cadena és una
+     regla, no una avaria, i el metge ho ha de poder distingir. */
+  function treuExemple(){
+    var totes=registresDe(true);
+    var potTreureFactures=!totes.length||totes.every(esExemple);
+    if(potTreureFactures){
+      desa(K.reg,registres().filter(function(r){return !esExemple(r)}));
+      /* El comptador de la serie de prova torna a 1: si no, la primera factura
+         propia del metge seria la PROVA-0010 sense que hi hagi cap 0001..0009. */
+      var c=conf()||{};
+      (c.series||[]).forEach(function(x){if(x.codi===SERIE_PROVA)x.seguent=1});
+      desa(K.conf,c);
+    }
+    desa(K.pac,pacients().filter(function(p){return !esExemple(p)}));
+    ['sm_cites','sm_safata','em_informes'].forEach(function(k){
+      desaLS(k,llegeixLS(k).filter(function(x){return !esExemple(x)}));
+    });
+    pintaTot();
+    if(potTreureFactures) avis('ok','Datos de ejemplo retirados. Lo que haya creado usted no se ha tocado.');
+    else avis('ok','Se han borrado los pacientes y las citas de ejemplo. Las facturas de ejemplo se quedan: como después usted ha emitido las suyas, quitarlas rompería la numeración. No tienen validez fiscal y no cuentan en ningún sitio.');
+  }
+  function pintaExemple(){
+    var h=$('h-exemple'),p=$('p-exemple'),bp=$('b-exemple-posa'),bt=$('b-exemple-treu');
+    if(!p||!bp||!bt)return;
+    var enP=enProva(), n=comptaExemple(), hiHa=n.pacients+n.factures+n.cites>0;
+    /* Fora del mode de prova el bloc no hi es: no s'ensenya un boto que no pot
+       funcionar (ENG-13 ⑤). */
+    var cont=p.parentNode;
+    [h,p,bp.parentNode].forEach(function(el){if(el)el.style.display=enP?'':'none'});
+    if(!enP)return;
+    bp.style.display=hiHa?'none':'';
+    bt.style.display=hiHa?'':'none';
+    p.textContent=hiHa
+      ? Tf('Ahora mismo hay {p} pacientes, {c} citas y {f} facturas de ejemplo. Lo que haya creado usted no se toca.',{p:n.pacients,c:n.cites,f:n.factures})
+      : T('Una consulta de ejemplo con 5 pacientes y 9 facturas de prueba, para ver el producto con datos. Se quitan con un clic.');
+  }
+  safe(function(){
+    $('b-exemple-posa').addEventListener('click',function(){carregaExemple()});
+    $('b-exemple-treu').addEventListener('click',function(){
+      if(confirm(T('¿Quitar los datos de ejemplo? Lo que haya creado usted no se toca.')))treuExemple();
+    });
+  },'exemple');
+
   // ---------- crear factura / rectificativa ----------
   async function emet(dades){
     var c=conf();
-    var serie=c.series.find(function(x){return x.codi===dades.serie});
+    /* ENG-13 · en prova la serie NO es tria: la imposa serieDeTreball(). */
+    var prova=enProva();
+    var serie=serieDeTreball(c,dades.serie);
+    if(!serie){avis('err','Configure primero una serie de facturación.');return}
+    /* ⚠️ ENG-13 · LA LINIA QUE PROTEGEIX LA CADENA REAL.
+       Abans era `registres()` — TOTS els registres— i per tant la primera
+       factura real d'un compte s'hauria encadenat a l'ultima de prova. Ara
+       cada ambit nomes veu el seu, i la cadena real d'un compte que activa
+       comenca de zero, com ha de ser (07_Mode_de_Prova §4.3). */
+    var rsAmbit=registresDe(prova);
     var rs=registres();
     var r={
+      prova:prova,
+      exemple:dades.exemple===true||undefined,
       num:serie.codi+'-'+String(serie.seguent).padStart(4,'0'),serie:serie.codi,
-      fecha:fmtData(new Date()),gen:fmtISO(new Date()),tipo:dades.tipo,
+      /* ENG-13b: el joc d'exemple necessita dates del trimestre, no d'avui.
+         Nomes s'accepta una data d'entrada quan la factura es d'exemple. */
+      fecha:fmtData(dades.exemple&&dades.data?dades.data:new Date()),
+      gen:fmtISO(dades.exemple&&dades.data?dades.data:new Date()),tipo:dades.tipo,
       nifEmisor:c.nif,pacientNom:dades.pacientNom,pacientNif:dades.pacientNif||'',
       concepte:dades.concepte,conceptes:dades.conceptes||null,metge:dades.metge||'',
       base:fmt2(dades.base),quota:fmt2(dades.quota),total:fmt2(dades.base+dades.quota),
-      exempta:dades.exempta,anterior:rs.length?rs[rs.length-1].huella:'',esPrimer:!rs.length,
+      exempta:dades.exempta,
+      anterior:rsAmbit.length?rsAmbit[rsAmbit.length-1].huella:'',esPrimer:!rsAmbit.length,
       rectificaA:dades.rectificaA||null
     };
     r.huella=await huellaAlta(r);
@@ -829,7 +1275,13 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
     if(rs.some(function(r){return r.rectificaA===num})){avis('err','Esa factura ya tiene rectificativa.');return}
     if(!confirm(Tf('Se emitirá una factura RECTIFICATIVA (R1) que anula {num} con importes en negativo. ¿Continuar?',{num:num})))return;
     await emet({serie:orig.serie,tipo:'R1',pacientNom:orig.pacientNom,pacientNif:orig.pacientNif,
-      concepte:'Rectificación de la factura '+num+' — '+orig.concepte,
+      /* ENG-16 ⑥ · L832 del report de Disseny. Aquest concepte NO l'escriu el
+         metge: el compon el producte, i el componia sempre en castella — o
+         sigui que a la taula del registre en catala hi sortia una frase
+         castellana, i era l'unica cosa que bloquejava el fascicle 3 en catala.
+         Es text lliure d'una factura, com els conceptes del joc d'exemple: es
+         compon en l'idioma del moment i a partir d'aqui es una dada. */
+      concepte:Tf('Rectificación de la factura {num} — {c}',{num:num,c:orig.concepte}),
       base:-parseFloat(orig.base),quota:-parseFloat(orig.quota),exempta:orig.exempta,rectificaA:num});
     avis('ok','Rectificativa emitida. La factura original queda anulada con rastro.');
   }
@@ -856,6 +1308,8 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
   function th(txt,dreta){return '<th'+(dreta?' style="text-align:right"':'')+'>'+esc(T(txt))+'</th>'}
   function filaHTML(r){
     var pill=r.tipo==='R1'?'<span class="pill r1">R1</span>':'<span class="pill f1">F1</span>';
+    /* ENG-13 · a la llista tambe es veu quines no compten. */
+    if(esProva(r))pill+=' <span class="pill" style="background:#FEF2F2;color:#B91C1C" title="Factura de prueba, sin validez fiscal">'+esc(T('prueba'))+'</span>';
     var accions='<span class="accions-fila"><button class="btn sec mini" data-obre="'+esc(r.num)+'" type="button">'+esc(T('Ver'))+'</button>';
     if(r.tipo==='F1')accions+='<button class="btn sec mini" data-rect="'+esc(r.num)+'" type="button">'+esc(T('Rectificar'))+'</button>';
     accions+='</span>';
@@ -867,7 +1321,15 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
       return !f||r.num.toLowerCase().includes(f)||r.pacientNom.toLowerCase().includes(f)||r.concepte.toLowerCase().includes(f);
     });
     var el=$('llista');
-    if(!rs.length){el.innerHTML='<div class="buit">'+esc(T('Sin resultados.'))+'</div>';return}
+    /* ENG-16 ③ · «Sin resultados.» és la resposta a un filtre, no a un registre
+       buit. Amb el registre buit i sense filtre, el metge es trobava aquesta
+       frase i cap sortida — que és exactament el que Producte/09 §1.4 prohibeix.
+       Amb filtre es queda com estava: allà «sin resultados» és la veritat. */
+    if(!rs.length){
+      el.innerHTML=f?('<div class="buit">'+esc(T('Sin resultados.'))+'</div>')
+        :estatBuit(enProva()?'Todavía no ha emitido ninguna factura. Cargue datos de ejemplo para ver algunas hechas, o emita una de prueba usted mismo.':'Emita la primera factura con el formulario ← (30 segundos).',true);
+      return;
+    }
     var h='<table><thead><tr>'+th('Nº')+th('Fecha')+th('Tipo')+th('Paciente')+th('Concepto')+th('Total',1)+th('Huella')+th('AEAT')+'<th></th></tr></thead><tbody>';
     rs.slice().reverse().forEach(function(r){h+=filaHTML(r)});
     el.innerHTML=h+'</tbody></table>';
@@ -875,7 +1337,7 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
   }
   function pintaUltimes(){
     var rs=registres().slice(-5).reverse(),el=$('ultimes');
-    if(!rs.length){el.innerHTML='<div class="buit">'+esc(T('Emita la primera factura con el formulario ← (30 segundos).'))+'</div>';return}
+    if(!rs.length){el.innerHTML=estatBuit(enProva()?'Todavía no ha emitido ninguna factura. Cargue datos de ejemplo para ver algunas hechas, o emita una de prueba usted mismo.':'Emita la primera factura con el formulario ← (30 segundos).',true);return}
     var h='<table><thead><tr>'+th('Nº')+th('Fecha')+th('Tipo')+th('Paciente')+th('Concepto')+th('Total',1)+th('Huella')+th('AEAT')+'<th></th></tr></thead><tbody>';
     rs.forEach(function(r){h+=filaHTML(r)});
     el.innerHTML=h+'</tbody></table>';
@@ -895,7 +1357,7 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
     var tot=rs.reduce(function(a,r){return a+parseFloat(r.total)},0);
     $('k-total').textContent=fmt2(tot)+' €';
   }
-  function pintaTot(){pintaConfig();pintaPacients();pintaRegistre();pintaUltimes();pintaKPIs()}
+  function pintaTot(){pintaConfig();pintaPacients();pintaRegistre();pintaUltimes();pintaKPIs();pintaBarraProva();pintaExemple()}
   /* ENG-4: el traductor crida això quan es canvia d'idioma (vegeu el bloc final). */
   window.__reRender=pintaTot;
   /* ENG-4b (11/08/2026) · EL PONT ENTRE ELS DOS <script>.
@@ -907,6 +1369,25 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
      en aquesta llista i prou. */
   window.__fm = { safe: safe, registres: registres, avis: avis,
                   descarrega: descarrega, T: T, Tf: Tf, conf: conf };
+  /* ENG-13 · la barra nomes es veu en prova. Es torna a mirar a cada repintat
+     perque l'estat pot canviar amb la pagina oberta (algu activa el pagament
+     en una altra pestanya i torna aqui). */
+  /* ENG-16 ① · la barra la pinta `cmStore.barraProva`, que es la mateixa per
+     als quatre productes. Aquí hi va sencera (amb la clàusula de les factures)
+     i el CTA porta a la pantalla d'activació d'ENG-13b ②, no al panell.
+     Si `cmstore.js` no hagués carregat, es fa servir la marca que ja hi ha al
+     document: la barra és l'única cosa que li diu al metge que el que veu no
+     compta, i no pot dependre d'un fitxer extern. */
+  function pintaBarraProva(){
+    if(window.cmStore&&cmStore.barraProva){cmStore.barraProva({tornar:'app',factures:true});return}
+    var b=$('barra-prova');if(!b)return;
+    var enP=enProva();
+    b.style.display=enP?'flex':'none';
+    var t=$('barra-prova-txt');
+    if(t)t.textContent=T('Modo de prueba · las facturas no tienen validez fiscal');
+    var a=$('barra-prova-cta');
+    if(a){a.textContent=T('Activar mi cuenta');a.href='hub.html?activar=1&tornar=app'}
+  }
   window.addEventListener('cm-sync-pull',function(){try{pintaTot()}catch(e){}});
 
   safe(function(){$('r-filtre').addEventListener('input',pintaRegistre)},'filtre');
@@ -914,7 +1395,11 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
   // ---------- verificar integritat ----------
   safe(function(){
     async function verificaCadena(silenci){
-      var rs=registres();
+      /* ENG-13: es verifica la cadena de l'AMBIT en que estem. Si es
+         verifiquessin totes juntes, el primer dia que un compte activa el
+         pagament la barreja donaria «cadena rota» sense que hi hagi res
+         trencat: son dues cadenes, i cadascuna comenca pel seu principi. */
+      var rs=registresDe(enProva());
       if(!rs.length){$('k-cadena').textContent='—';if(!silenci)avis('err','No hay registros que verificar.');return}
       var ant='';
       for(var i=0;i<rs.length;i++){
@@ -935,9 +1420,13 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
     $('b-csv').addEventListener('click',function(){
       var rs=registres();
       if(!rs.length){avis('err','No hay facturas que exportar.');return}
-      var cap=['Numero','Fecha','Tipo','Paciente','NIF paciente','Concepto','Base','Cuota IVA','Total','Exenta art20','Rectifica a','Huella'];
+      /* ENG-13 · una columna «Prueba» DINS del fitxer, no nomes al nom: el que
+         arriba a la gestoria es el CSV, i el nom del fitxer es el primer que es
+         perd quan algu el reanomena o el reenvia (07_Mode_de_Prova §2.1).
+         Capcaleres en castella sempre: es un document (ENG-4d). */
+      var cap=['Numero','Fecha','Tipo','Prueba','Paciente','NIF paciente','Concepto','Base','Cuota IVA','Total','Exenta art20','Rectifica a','Huella'];
       var files=rs.map(function(r){
-        return [r.num,r.fecha,r.tipo,r.pacientNom,r.pacientNif,r.concepte,r.base.replace('.',','),r.quota.replace('.',','),r.total.replace('.',','),r.exempta?'SI':'NO',r.rectificaA||'',r.huella]
+        return [r.num,r.fecha,r.tipo,esProva(r)?'SI — SIN VALIDEZ FISCAL':'NO',r.pacientNom,r.pacientNif,r.concepte,r.base.replace('.',','),r.quota.replace('.',','),r.total.replace('.',','),r.exempta?'SI':'NO',r.rectificaA||'',r.huella]
           .map(function(v){v=String(v??'');return /[";\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v}).join(';');
       });
       descarrega('FacturaMed_export_'+new Date().toISOString().slice(0,10)+'.csv','﻿'+cap.join(';')+'\n'+files.join('\n'),'text/csv;charset=utf-8');
@@ -1000,6 +1489,10 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
     $('pr-web').textContent=c.web||'';
     var lg=$('pr-logo');
     if(c.logo){lg.src=c.logo;lg.style.display='block'}else{lg.style.display='none'}
+    /* ENG-13 · el segell surt del REGISTRE, no de l'estat actual del compte:
+       una factura de prova segueix sent de prova per sempre, tambe despres
+       d'activar el pagament (07_Mode_de_Prova §4.3). */
+    var pp=$('pr-prova');if(pp)pp.style.display=esProva(r)?'block':'none';
     $('pr-tipus').textContent=r.tipo==='R1'?'FACTURA RECTIFICATIVA':'FACTURA';
     $('pr-num').textContent=r.num;$('pr-data').textContent=r.fecha;
     $('pr-pacient').textContent=r.pacientNom;
@@ -1155,6 +1648,16 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
       var r=await fetch(BRIDGE+'/estat',{signal:AbortSignal.timeout(1500)});
       var d=await r.json();
       bridgeViu=true;
+      /* ENG-13 · PORTA 1 de 2. En prova el boto no hi es —no s'ensenya un boto
+         que no fa res (07_Mode_de_Prova §2.2 i §6.6)— i el text diu per que.
+         Aixo NOMES es la comoditat: la porta que no es pot saltar es la del
+         pont local, que rebutja qualsevol registre de prova encara que algu
+         cridi /alta a ma. Dues portes, no una (§2.1). */
+      if(enProva()){
+        $('b-aeat').style.display='none';
+        pintaBridge(T('Cuenta en modo de prueba: las facturas no se envían a la AEAT. Al activar la cuenta, la serie y la cadena reales empiezan de cero.'),'#B91C1C');
+        return;
+      }
       $('b-aeat').style.display='';
       pintaBridge(Tf('Bridge AEAT: ✓ conectado (entorno de PRUEBAS, {cert}) · pendientes: {n}',
         {cert:T(d.certCarregat?'certificado cargado':'SIN certificado'),n:d.pendents}),'var(--verd-fosc)');
@@ -1171,6 +1674,8 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
     sondejaBridge();setInterval(sondejaBridge,7000);
     $('b-aeat').addEventListener('click',async function(){
       if(!bridgeViu){avis('err','Bridge no detectado.');return}
+      /* ENG-13 · si l'estat canvia amb la pagina oberta, es torna a mirar aqui. */
+      if(enProva()){avis('err','Cuenta en modo de prueba: no se envía nada a la AEAT.');return}
       var c=conf(),rs=registres(),enviades=0,saltades=0;
       for(var i=0;i<rs.length;i++){
         var r=rs[i];
@@ -1184,6 +1689,10 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
         }
         var payload={
           registre:{
+            /* ENG-13 · la marca viatja explicitament fins al pont. El prefix de
+               la serie ja el delataria, pero el pont no ha d'haver de deduir res:
+               si algun dia canvia el nom de la serie, la marca segueix sent certa. */
+            prova:esProva(r),
             nifEmisor:r.nifEmisor,numSerieFactura:r.num,fechaExpedicion:r.fecha,
             tipoFactura:r.tipo,descripcion:r.concepte,
             baseImponible:r.base,cuotaTotal:r.quota,importeTotal:r.total,
@@ -1253,6 +1762,43 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
 /* Traductor d'interfície ConsultaMed (CA/DE/EN) — segur: només canvia text visible estàtic */
 (function(){
   var DICT={
+  /* ENG-16 ③ · estats buits amb sortida (Producte/09 §1.4). */
+  "Cargar datos de ejemplo":["Carregar dades d'exemple","Beispieldaten laden","Load example data"],
+  "Todavía no hay ningún paciente. Cree uno o cargue datos de ejemplo.":["Encara no hi ha cap pacient. Creeu-ne un o carregueu dades d'exemple.","Noch keine Patienten. Legen Sie einen an oder laden Sie Beispieldaten.","No patients yet. Create one or load example data."],
+  "Todavía no ha emitido ninguna factura. Cargue datos de ejemplo para ver algunas hechas, o emita una de prueba usted mismo.":["Encara no heu emès cap factura. Carregueu dades d'exemple per veure'n de fetes, o emeteu-ne una de prova vós mateix.","Sie haben noch keine Rechnung ausgestellt. Laden Sie Beispieldaten, um fertige zu sehen, oder stellen Sie selbst eine Testrechnung aus.","You have not issued any invoice yet. Load example data to see some, or issue a test one yourself."],
+  /* ENG-16 ② i ③ · els motius de les cites i de la safata (text lliure: van
+     en l'idioma de la consulta, com els conceptes) i els dos avisos de la
+     càrrega i l'esborrat parcials. */
+  "Seguimiento":["Seguiment","Kontrolle","Follow-up"],
+  "Quiere cambiar la hora":["Vol canviar l'hora","Möchte den Termin verschieben","Wants to change the time"],
+  "Confirma su asistencia":["Confirma l'assistència","Bestätigt den Termin","Confirms attendance"],
+  "Quiere hora para una revisión":["Vol hora per a una revisió","Möchte einen Kontrolltermin","Wants an appointment for a check-up"],
+  "Esta semana por la tarde":["Aquesta setmana a la tarda","Diese Woche nachmittags","This week in the afternoon"],
+  "Cualquier mañana":["Qualsevol matí","Jeden Vormittag","Any morning"],
+  "Ya tiene facturas de prueba propias, así que no añadimos las de ejemplo: rompería su numeración. Cargamos los pacientes y la agenda de ejemplo.":["Ja té factures de prova pròpies, així que no hi afegim les d'exemple: trencaria la seva numeració. Carreguem els pacients i l'agenda d'exemple.","Sie haben bereits eigene Testrechnungen, deshalb fügen wir die Beispielrechnungen nicht hinzu: das würde Ihre Nummerierung brechen. Wir laden die Beispielpatienten und den Beispielkalender.","You already have your own test invoices, so we are not adding the example ones: it would break your numbering. We are loading the example patients and schedule."],
+  "Se han borrado los pacientes y las citas de ejemplo. Las facturas de ejemplo se quedan: como después usted ha emitido las suyas, quitarlas rompería la numeración. No tienen validez fiscal y no cuentan en ningún sitio.":["S'han esborrat els pacients i les cites d'exemple. Les factures d'exemple es queden: com que després vós n'heu emès de vostres, treure-les trencaria la numeració. No tenen validesa fiscal i no compten enlloc.","Die Beispielpatienten und -termine wurden gelöscht. Die Beispielrechnungen bleiben: da Sie danach eigene ausgestellt haben, würde ihr Entfernen die Nummerierung brechen. Sie haben keine steuerliche Gültigkeit und zählen nirgends.","The example patients and appointments have been deleted. The example invoices stay: since you issued your own afterwards, removing them would break the numbering. They have no fiscal validity and do not count anywhere."],
+  /* ENG-16 ⑥ · les fugues que quedaven del creuament amb Disseny del 26/08. */
+  "Rectificación de la factura {num} — {c}":["Rectificació de la factura {num} — {c}","Berichtigung der Rechnung {num} — {c}","Correction of invoice {num} — {c}"],
+  "ConsultaMed — Configuración":["ConsultaMed — Configuració","ConsultaMed — Einstellungen","ConsultaMed — Settings"],
+  "% de liquidación del médico":["% de liquidació del metge","Abrechnungsanteil des Arztes in %","Doctor's settlement %"],
+  /* ENG-13b · els avisos del mode de prova i els dos de benvinguda. Els cinc
+     del mode de prova se'm van escapar al lot del 24/08 i els dos de
+     benvinguda venien de lluny; ara hi ha una prova que ho vigila sola
+     (`proves/prova-avisos-al-diccionari.mjs`), o sigui que aixo no torna a
+     passar sense que algu ho vegi. */
+  "Los datos de ejemplo solo existen en modo de prueba.":["Les dades d'exemple només existeixen en mode de prova.","Die Beispieldaten gibt es nur im Testmodus.","The example data only exists in test mode."],
+  "Datos de ejemplo cargados: 5 pacientes y 9 facturas de prueba. Puede quitarlos cuando quiera.":["Dades d'exemple carregades: 5 pacients i 9 factures de prova. Les podeu treure quan vulgueu.","Beispieldaten geladen: 5 Patienten und 9 Testrechnungen. Sie können sie jederzeit entfernen.","Example data loaded: 5 patients and 9 test invoices. You can remove them whenever you want."],
+  "Datos de ejemplo retirados. Lo que haya creado usted no se ha tocado.":["Dades d'exemple retirades. El que hàgiu creat vós no s'ha tocat.","Beispieldaten entfernt. Was Sie selbst angelegt haben, wurde nicht angerührt.","Example data removed. Anything you created yourself was left untouched."],
+  "👋 Bienvenido/a a FacturaMed (beta). Primer paso: pestaña Configuración — nombre, NIF y serie. Después emita su primera factura en 20 segundos.":["👋 Benvingut/da a FacturaMed (beta). Primer pas: pestanya Configuració — nom, NIF i sèrie. Després emeteu la vostra primera factura en 20 segons.","👋 Willkommen bei FacturaMed (Beta). Erster Schritt: Reiter Einstellungen — Name, Steuernummer und Serie. Danach stellen Sie Ihre erste Rechnung in 20 Sekunden aus.","👋 Welcome to FacturaMed (beta). First step: the Settings tab — name, tax ID and series. Then issue your first invoice in 20 seconds."],
+  "👋 Bienvenido/a a FacturaMed (beta). Su nombre y NIF ya están configurados — revíselos en «Configuración» (y añada nº de colegiado o dirección si quiere). Ya puede emitir su primera factura.":["👋 Benvingut/da a FacturaMed (beta). El vostre nom i NIF ja estan configurats — reviseu-los a «Configuració» (i afegiu-hi nº de col·legiat o adreça si voleu). Ja podeu emetre la vostra primera factura.","👋 Willkommen bei FacturaMed (Beta). Ihr Name und Ihre Steuernummer sind bereits eingerichtet — prüfen Sie sie unter «Einstellungen» (und ergänzen Sie ggf. Arztnummer oder Adresse). Sie können jetzt Ihre erste Rechnung ausstellen.","👋 Welcome to FacturaMed (beta). Your name and tax ID are already set up — review them in «Settings» (and add a license number or address if you like). You can now issue your first invoice."],
+  /* DIS-9 (a), 26/08 · els CONCEPTES de les factures d'exemple. Son text lliure
+     del metge: han de seguir l'idioma de la interficie, com la resta del que
+     ell escriu. Els noms, els NIF, els dies i els imports NO canvien mai entre
+     idiomes — son l'invariant del joc canonic, i per aixo els totals del seu
+     §6 (610,00 € de base i 18,90 € d'IVA) han de quadrar igual en tots quatre. */
+  "Visita de seguimiento":["Visita de seguiment","Folgetermin","Follow-up visit"],
+  "Revisión anual":["Revisió anual","Jahreskontrolle","Annual check-up"],
+  "Certificado médico (no asistencial)":["Certificat mèdic (no assistencial)","Ärztliches Attest (nicht behandlungsbezogen)","Medical certificate (non-clinical)"],
   /* ENG-4: textos ESTÀTICS que tampoc no es traduïen (no eren al diccionari).
      Els de la FACTURA IMPRESA (segell «BETA — SIN VALIDEZ FISCAL», peu legal de
      l'AEAT, etiquetes del document) es deixen expressament en castellà. */
@@ -1348,7 +1894,6 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
   "Error de conexión con el bridge.":["Error de connexió amb el pont.","Verbindungsfehler mit der Bridge.","Connection error with the bridge."],
   "📡 {n} factura(s) en cola hacia la AEAT (pruebas). El estado se actualiza solo.":["📡 {n} factura/es a la cua cap a l'AEAT (proves). L'estat s'actualitza sol.","📡 {n} Rechnung(en) in der Warteschlange zur AEAT (Test). Der Status aktualisiert sich von selbst.","📡 {n} invoice(s) queued to the AEAT (test). The status updates on its own."],
   "{n} omitidas (ya enviadas o rectificativas).":["{n} omeses (ja enviades o rectificatives).","{n} übersprungen (bereits gesendet oder Korrekturrechnungen).","{n} skipped (already sent or corrective)."],
-  "👋 Bienvenido/a a FacturaMed (beta). Primer paso: pestaña Configuración — nombre, NIF y serie. Después emita su primera factura en 30 segundos.":["👋 Benvingut/da a FacturaMed (beta). Primer pas: pestanya Configuració — nom, NIF i sèrie. Després emeteu la primera factura en 30 segons.","👋 Willkommen bei FacturaMed (Beta). Erster Schritt: Reiter Einstellungen — Name, Steuernummer und Serie. Danach stellen Sie Ihre erste Rechnung in 30 Sekunden aus.","👋 Welcome to FacturaMed (beta). First step: Settings tab — name, tax ID and series. Then issue your first invoice in 30 seconds."],
   "📝 Visita recibida de EscribaMed — revise los datos y pulse «Emitir factura».":["📝 Visita rebuda d'EscribaMed — reviseu les dades i premeu «Emetre factura».","📝 Besuch von EscribaMed empfangen — prüfen Sie die Daten und klicken Sie auf «Rechnung erstellen».","📝 Visit received from EscribaMed — check the details and press “Issue invoice”."],
   "Este paciente aún no tiene ficha. Complétela y guárdela — después podrá facturar la visita.":["Aquest pacient encara no té fitxa. Completeu-la i deseu-la — després podreu facturar la visita.","Dieser Patient hat noch keine Karte. Füllen Sie sie aus und speichern Sie — danach können Sie den Besuch abrechnen.","This patient has no fiche yet. Fill it in and save — then you can invoice the visit."],
   "Se enviará a {gestoria}":["S'enviarà a {gestoria}","Wird gesendet an {gestoria}","Will be sent to {gestoria}"],
@@ -1356,7 +1901,7 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
   "No hay facturas en el trimestre {per}.":["No hi ha factures al trimestre {per}.","Keine Rechnungen im Quartal {per}.","No invoices in quarter {per}."],
   "Trimestre {per} listo ({n} facturas). Su gestoría ya lo ve en su panel; adjunte el CSV descargado en su correo.":["Trimestre {per} a punt ({n} factures). La gestoria ja ho veu al seu panell; adjunteu el CSV descarregat al vostre correu.","Quartal {per} fertig ({n} Rechnungen). Ihr Steuerberater sieht es bereits im Panel; hängen Sie die heruntergeladene CSV an Ihre E-Mail an.","Quarter {per} ready ({n} invoices). Your accountant can already see it in their panel; attach the downloaded CSV to your email."],
   "Se ha descargado el CSV pero no se ha podido avisar a la gestoría.":["S'ha descarregat el CSV però no s'ha pogut avisar la gestoria.","Die CSV wurde heruntergeladen, aber der Steuerberater konnte nicht benachrichtigt werden.","The CSV was downloaded but the accountant could not be notified."],
-  "Facturar":["Facturar","Rechnung","Invoice"],"Registro":["Registre","Register","Records"],"Pacientes":["Pacients","Patienten","Patients"],"Configuración":["Configuració","Einstellungen","Settings"],"Agenda":["Agenda","Terminplan","Schedule"],"Llamadas":["Trucades","Anrufe","Calls"],"Nueva factura":["Nova factura","Neue Rechnung","New invoice"],"Paciente":["Pacient","Patient","Patient"],"Paciente (con ficha creada)":["Pacient (amb fitxa creada)","Patient (mit Karte)","Patient (with a fiche)"],"+ Nueva ficha":["+ Nova fitxa","+ Neue Karte","+ New fiche"],"Concepto":["Concepte","Position","Item"],"Conceptos":["Conceptes","Positionen","Items"],"+ Añadir concepto":["+ Afegir concepte","+ Position hinzufügen","+ Add item"],"Serie":["Sèrie","Serie","Series"],"Total factura":["Total factura","Rechnungssumme","Invoice total"],"Exenta de IVA (asistencia sanitaria, art. 20.Uno.3º LIVA)":["Exempta d'IVA (assistència sanitària, art. 20.Uno.3º LIVA)","MwSt-befreit (Gesundheit, Art. 20.Uno.3º LIVA)","VAT-exempt (healthcare, art. 20.Uno.3º LIVA)"],"Emitir factura ⚡":["Emetre factura ⚡","Rechnung erstellen ⚡","Issue invoice ⚡"],"Ver todo el registro →":["Veure tot el registre →","Alle Datensätze →","See all records →"],"Nuevo paciente":["Nou pacient","Neuer Patient","New patient"],"Guardar paciente":["Desar pacient","Patient speichern","Save patient"],"Nombre y apellidos":["Nom i cognoms","Vor- und Nachname","Full name"],"NIF (opcional)":["NIF (opcional)","Steuernr. (optional)","Tax ID (optional)"],"NIF (opcional, para factura nominal)":["NIF (opcional, per a factura nominal)","Steuernr. (optional, für namentl. Rechnung)","Tax ID (optional, for named invoice)"],"Email o teléfono":["Email o telèfon","E-Mail oder Telefon","Email or phone"],"Email o teléfono (opcional)":["Email o telèfon (opcional)","E-Mail oder Telefon (optional)","Email or phone (optional)"],"Facturas de este paciente":["Factures d'aquest pacient","Rechnungen dieses Patienten","This patient's invoices"],"Informes EscribaMed de este paciente":["Informes EscribaMed d'aquest pacient","EscribaMed-Berichte dieses Patienten","This patient's EscribaMed reports"],"🗑 Borrar paciente":["🗑 Esborrar pacient","🗑 Patient löschen","🗑 Delete patient"],"💾 Guardar cambios":["💾 Desar canvis","💾 Änderungen speichern","💾 Save changes"],"✕ Cerrar ficha":["✕ Tancar fitxa","✕ Karte schließen","✕ Close fiche"],"✕ Cerrar":["✕ Tancar","✕ Schließen","✕ Close"],"← Volver":["← Tornar","← Zurück","← Back"],"Resumen de actividad":["Resum d'activitat","Tätigkeitsübersicht","Activity summary"],"Resumen de actividad (para un período)":["Resum d'activitat (per a un període)","Tätigkeitsübersicht (Zeitraum)","Activity summary (for a period)"],"Desde":["Des de","Von","From"],"Hasta":["Fins a","Bis","Until"],"Ordenar por":["Ordenar per","Sortieren nach","Sort by"],"Fecha":["Data","Datum","Date"],"Paciente (A-Z)":["Pacient (A-Z)","Patient (A-Z)","Patient (A-Z)"],"Concepto (A-Z)":["Concepte (A-Z)","Position (A-Z)","Item (A-Z)"],"📄 Generar resumen":["📄 Generar resum","📄 Übersicht erstellen","📄 Generate summary"],"Profesional / consulta":["Professional / consulta","Fachperson / Praxis","Professional / practice"],"Modo centro médico":["Mode centre mèdic","Ärztezentrum-Modus","Medical center mode"],"Nombre del centro (aparece en facturas e informes)":["Nom del centre (apareix a factures i informes)","Zentrumsname (auf Rechnungen und Berichten)","Center name (appears on invoices and reports)"],"Médicos del centro":["Metges del centre","Ärzte des Zentrums","Center doctors"],"Añadir médico":["Afegir metge","Arzt hinzufügen","Add doctor"],"Médico que atiende":["Metge que atén","Behandelnder Arzt","Attending doctor"],"Médico":["Metge","Arzt","Doctor"],"Nº colegiado (opcional)":["Nº col·legiat (opcional)","Arztnummer (optional)","License no. (optional)"],"Dirección (opcional, aparece en la factura)":["Adreça (opcional, apareix a la factura)","Adresse (optional, auf der Rechnung)","Address (optional, shown on the invoice)"],"Página web (opcional, aparece en la factura)":["Pàgina web (opcional, apareix a la factura)","Website (optional, auf der Rechnung)","Website (optional, shown on the invoice)"],"Logo (opcional, aparece en la factura)":["Logo (opcional, apareix a la factura)","Logo (optional, auf der Rechnung)","Logo (optional, shown on the invoice)"],"🖼 Subir logo…":["🖼 Pujar logo…","🖼 Logo hochladen…","🖼 Upload logo…"],"Quitar logo":["Treure logo","Logo entfernen","Remove logo"],"Series de facturación":["Sèries de facturació","Rechnungsserien","Invoice series"],"Añadir serie":["Afegir sèrie","Serie hinzufügen","Add series"],"Nueva serie":["Nova sèrie","Neue Serie","New series"],"Sesión":["Sessió","Sitzung","Session"],"Copia de seguridad":["Còpia de seguretat","Sicherung","Backup"],"⬇ Exportar copia (JSON)":["⬇ Exportar còpia (JSON)","⬇ Sicherung exportieren (JSON)","⬇ Export backup (JSON)"],"⬆ Restaurar copia…":["⬆ Restaurar còpia…","⬆ Sicherung wiederherstellen…","⬆ Restore backup…"],"⬇ Export gestoría (CSV)":["⬇ Export gestoria (CSV)","⬇ Steuerberater-Export (CSV)","⬇ Accountant export (CSV)"],"Estado del producto":["Estat del producte","Produktstatus","Product status"],"Zona de peligro":["Zona de perill","Gefahrenzone","Danger zone"],"Borrar todos los datos":["Esborrar totes les dades","Alle Daten löschen","Delete all data"],"Borra TODOS los datos de FacturaMed de este dispositivo (config, pacientes y registro).":["Esborra TOTES les dades de FacturaMed d'aquest dispositiu (configuració, pacients i registre).","Löscht ALLE FacturaMed-Daten auf diesem Gerät (Einstellungen, Patienten, Register).","Deletes ALL FacturaMed data from this device (settings, patients and records)."],"📡 Enviar a AEAT (pruebas)":["📡 Enviar a l'AEAT (proves)","📡 An AEAT senden (Test)","📡 Send to AEAT (test)"],"🔗 Verificar integridad":["🔗 Verificar integritat","🔗 Integrität prüfen","🔗 Verify integrity"],"🖨 Imprimir / Guardar PDF":["🖨 Imprimir / Desar PDF","🖨 Drucken / PDF speichern","🖨 Print / Save PDF"],"Buscar":["Cercar","Suchen","Search"],"Ver":["Veure","Ansehen","View"],"Rectificar":["Rectificar","Korrigieren","Rectify"],"Ver ficha":["Veure fitxa","Karte ansehen","View fiche"],"Tipo":["Tipus","Art","Type"],"Total":["Total","Gesamt","Total"],"Huella":["Empremta","Prüfsumme","Fingerprint"],"en cola":["a la cua","in Warteschlange","queued"],"sin conexión":["sense connexió","offline","offline"],"Facturado":["Facturat","Umsatz","Invoiced"],"Liquidación":["Liquidació","Abrechnung","Settlement"],"(sin asignar)":["(sense assignar)","(nicht zugewiesen)","(unassigned)"],"Importe":["Import","Betrag","Amount"],"Nombre":["Nom","Name","Name"],"Teléfono":["Telèfon","Telefon","Phone"],"Teléfono (para recordatorios)":["Telèfon (per a recordatoris)","Telefon (für Erinnerungen)","Phone (for reminders)"],"Contacto (teléfono / email)":["Contacte (telèfon / email)","Kontakt (Telefon / E-Mail)","Contact (phone / email)"],"Hora":["Hora","Uhrzeit","Time"],"Motivo":["Motiu","Grund","Reason"],"Motivo de la llamada":["Motiu de la trucada","Grund des Anrufs","Reason for the call"],"Cuándo le iría bien":["Quan li aniria bé","Wann es passen würde","When suits them"],"Nueva cita":["Nova cita","Neuer Termin","New appointment"],"Anotar llamada / mensaje":["Anotar trucada / missatge","Anruf / Nachricht notieren","Log call / message"],"Pendientes de confirmar":["Pendents de confirmar","Ausstehende Bestätigung","Pending confirmation"],"＋ Anotar":["＋ Anotar","＋ Notieren","＋ Log"],"＋ Añadir cita":["＋ Afegir cita","＋ Termin hinzufügen","＋ Add appointment"],"＋ Crear ficha":["＋ Crear fitxa","＋ Karte erstellen","＋ Create fiche"],"Nueva ficha de paciente":["Nova fitxa de pacient","Neue Patientenkarte","New patient fiche"],"Crea la ficha del paciente. Queda compartida con FacturaMed y EscribaMed.":["Crea la fitxa del pacient. Queda compartida amb FacturaMed i EscribaMed.","Erstellt die Patientenkarte. Wird mit FacturaMed und EscribaMed geteilt.","Create the patient fiche. It's shared with FacturaMed and EscribaMed."],"Consulta médica":["Consulta mèdica","Ärztliche Beratung","Medical consultation"],"Certificado médico":["Certificat mèdic","Ärztliches Attest","Medical certificate"],"Consulta de urgencia":["Consulta d'urgència","Notfallberatung","Urgent consultation"],"Cura / procedimiento":["Cura / procediment","Verband / Eingriff","Dressing / procedure"],"Informe médico":["Informe mèdic","Arztbericht","Medical report"],"Otro servicio sanitario":["Altre servei sanitari","Andere Gesundheitsleistung","Other healthcare service"],"Primera visita":["Primera visita","Erstbesuch","First visit"],"Revisión":["Revisió","Kontrolle","Follow-up"],"Sesión de seguimiento":["Sessió de seguiment","Folgesitzung","Follow-up session"],"Citas del día":["Cites del dia","Termine des Tages","Today's appointments"],"Por confirmar":["Per confirmar","Zu bestätigen","To confirm"],"No-shows (histórico)":["No-shows (històric)","No-Shows (gesamt)","No-shows (all-time)"],"Agenda del día":["Agenda del dia","Tagesplan","Today's schedule"],"Liquidaciones del centro":["Liquidacions del centre","Abrechnungen des Zentrums","Center settlements"],"Mes":["Mes","Monat","Month"],"Calcular liquidaciones":["Calcular liquidacions","Abrechnungen berechnen","Calculate settlements"],"Para cada médico: total facturado en el mes × su % (se define en Configuración → Médicos del centro) = importe de la liquidación. La factura de honorarios la emite siempre el médico al centro; aquí tiene el borrador.":["Per a cada metge: total facturat al mes × el seu % (es defineix a Configuració → Metges del centre) = import de la liquidació. La factura d'honoraris l'emet sempre el metge al centre; aquí té l'esborrany.","Je Arzt: Monatsumsatz × sein % (unter Einstellungen → Ärzte des Zentrums) = Abrechnungsbetrag. Die Honorarrechnung stellt immer der Arzt dem Zentrum; hier ist der Entwurf.","Per doctor: month's invoiced total × their % (set in Settings → Center doctors) = settlement amount. The fee invoice is always issued by the doctor to the center; here is the draft."],"BETA PRIVADA · solo datos ficticios":["BETA PRIVADA · només dades fictícies","PRIVATE BETA · nur Testdaten","PRIVATE BETA · dummy data only"],"BETA · remisión AEAT solo a PRUEBAS — no usar para facturas reales":["BETA · remissió AEAT només a PROVES — no fer servir per a factures reals","BETA · AEAT-Übermittlung nur zum TEST — nicht für echte Rechnungen","BETA · AEAT submission TEST only — do not use for real invoices"],"Los datos viven solo en este navegador. Exporte una copia periódicamente y guárdela en lugar seguro.":["Les dades viuen només en aquest navegador. Exporti una còpia periòdicament i guardi-la en un lloc segur.","Die Daten liegen nur in diesem Browser. Exportieren Sie regelmäßig eine Sicherung und bewahren Sie sie sicher auf.","Your data lives only in this browser. Export a backup regularly and keep it somewhere safe."],"Cierra la sesión y vuelve a la página de inicio. Tus datos permanecen guardados en este dispositivo.":["Tanca la sessió i torna a la pàgina d'inici. Les dades queden desades en aquest dispositiu.","Meldet Sie ab und kehrt zur Startseite zurück. Ihre Daten bleiben auf diesem Gerät gespeichert.","Signs you out and returns to the home page. Your data stays saved on this device."],"Factura el centro y varios médicos pasan consulta. El resumen de actividad calculará el total por médico (para liquidaciones).":["Factura el centre i diversos metges passen consulta. El resum d'activitat calcularà el total per metge (per a liquidacions).","Das Zentrum stellt die Rechnungen und mehrere Ärzte behandeln. Die Tätigkeitsübersicht berechnet die Summe je Arzt (für Abrechnungen).","The center invoices and several doctors see patients. The activity summary totals per doctor (for settlements)."],"↩ Cerrar sesión":["↩ Tancar sessió","↩ Abmelden","↩ Sign out"],"Registro con huella SHA-256 encadenada + QR de cotejo (entorno de pruebas AEAT). Los datos se guardan solo en este dispositivo.":["Registre amb empremta SHA-256 encadenada + QR de verificació (entorn de proves AEAT). Les dades es desen només en aquest dispositiu.","Registrierung mit verketteter SHA-256-Prüfsumme + Verifizierungs-QR (AEAT-Testumgebung). Die Daten bleiben nur auf diesem Gerät.","Chained SHA-256 fingerprint + verification QR (AEAT test environment). Data is stored only on this device."]};
+  "Facturar":["Facturar","Rechnung","Invoice"],"Registro":["Registre","Register","Records"],"Pacientes":["Pacients","Patienten","Patients"],"Configuración":["Configuració","Einstellungen","Settings"],"Agenda":["Agenda","Terminplan","Schedule"],"Llamadas":["Trucades","Anrufe","Calls"],"Nueva factura":["Nova factura","Neue Rechnung","New invoice"],"Paciente":["Pacient","Patient","Patient"],"Paciente (con ficha creada)":["Pacient (amb fitxa creada)","Patient (mit Karte)","Patient (with a fiche)"],"+ Nueva ficha":["+ Nova fitxa","+ Neue Karte","+ New fiche"],"Concepto":["Concepte","Position","Item"],"Conceptos":["Conceptes","Positionen","Items"],"+ Añadir concepto":["+ Afegir concepte","+ Position hinzufügen","+ Add item"],"Serie":["Sèrie","Serie","Series"],"Total factura":["Total factura","Rechnungssumme","Invoice total"],"Exenta de IVA (asistencia sanitaria, art. 20.Uno.3º LIVA)":["Exempta d'IVA (assistència sanitària, art. 20.Uno.3º LIVA)","MwSt-befreit (Gesundheit, Art. 20.Uno.3º LIVA)","VAT-exempt (healthcare, art. 20.Uno.3º LIVA)"],"Emitir factura ⚡":["Emetre factura ⚡","Rechnung erstellen ⚡","Issue invoice ⚡"],"Ver todo el registro →":["Veure tot el registre →","Alle Datensätze →","See all records →"],"Nuevo paciente":["Nou pacient","Neuer Patient","New patient"],"Guardar paciente":["Desar pacient","Patient speichern","Save patient"],"Nombre y apellidos":["Nom i cognoms","Vor- und Nachname","Full name"],"NIF (opcional)":["NIF (opcional)","Steuernr. (optional)","Tax ID (optional)"],"NIF (opcional, para factura nominal)":["NIF (opcional, per a factura nominal)","Steuernr. (optional, für namentl. Rechnung)","Tax ID (optional, for named invoice)"],"Email o teléfono":["Email o telèfon","E-Mail oder Telefon","Email or phone"],"Email o teléfono (opcional)":["Email o telèfon (opcional)","E-Mail oder Telefon (optional)","Email or phone (optional)"],"Facturas de este paciente":["Factures d'aquest pacient","Rechnungen dieses Patienten","This patient's invoices"],"Informes EscribaMed de este paciente":["Informes EscribaMed d'aquest pacient","EscribaMed-Berichte dieses Patienten","This patient's EscribaMed reports"],"🗑 Borrar paciente":["🗑 Esborrar pacient","🗑 Patient löschen","🗑 Delete patient"],"💾 Guardar cambios":["💾 Desar canvis","💾 Änderungen speichern","💾 Save changes"],"✕ Cerrar ficha":["✕ Tancar fitxa","✕ Karte schließen","✕ Close fiche"],"✕ Cerrar":["✕ Tancar","✕ Schließen","✕ Close"],"← Volver":["← Tornar","← Zurück","← Back"],"Resumen de actividad":["Resum d'activitat","Tätigkeitsübersicht","Activity summary"],"Resumen de actividad (para un período)":["Resum d'activitat (per a un període)","Tätigkeitsübersicht (Zeitraum)","Activity summary (for a period)"],"Desde":["Des de","Von","From"],"Hasta":["Fins a","Bis","Until"],"Ordenar por":["Ordenar per","Sortieren nach","Sort by"],"Fecha":["Data","Datum","Date"],"Paciente (A-Z)":["Pacient (A-Z)","Patient (A-Z)","Patient (A-Z)"],"Concepto (A-Z)":["Concepte (A-Z)","Position (A-Z)","Item (A-Z)"],"📄 Generar resumen":["📄 Generar resum","📄 Übersicht erstellen","📄 Generate summary"],"Profesional / consulta":["Professional / consulta","Fachperson / Praxis","Professional / practice"],"Modo centro médico":["Mode centre mèdic","Ärztezentrum-Modus","Medical center mode"],"Nombre del centro (aparece en facturas e informes)":["Nom del centre (apareix a factures i informes)","Zentrumsname (auf Rechnungen und Berichten)","Center name (appears on invoices and reports)"],"Médicos del centro":["Metges del centre","Ärzte des Zentrums","Center doctors"],"Añadir médico":["Afegir metge","Arzt hinzufügen","Add doctor"],"Médico que atiende":["Metge que atén","Behandelnder Arzt","Attending doctor"],"Médico":["Metge","Arzt","Doctor"],"Nº colegiado (opcional)":["Nº col·legiat (opcional)","Arztnummer (optional)","License no. (optional)"],"Dirección (opcional, aparece en la factura)":["Adreça (opcional, apareix a la factura)","Adresse (optional, auf der Rechnung)","Address (optional, shown on the invoice)"],"Página web (opcional, aparece en la factura)":["Pàgina web (opcional, apareix a la factura)","Website (optional, auf der Rechnung)","Website (optional, shown on the invoice)"],"Logo (opcional, aparece en la factura)":["Logo (opcional, apareix a la factura)","Logo (optional, auf der Rechnung)","Logo (optional, shown on the invoice)"],"🖼 Subir logo…":["🖼 Pujar logo…","🖼 Logo hochladen…","🖼 Upload logo…"],"Quitar logo":["Treure logo","Logo entfernen","Remove logo"],"Series de facturación":["Sèries de facturació","Rechnungsserien","Invoice series"],"Añadir serie":["Afegir sèrie","Serie hinzufügen","Add series"],"Nueva serie":["Nova sèrie","Neue Serie","New series"],"Sesión":["Sessió","Sitzung","Session"],"Copia de seguridad":["Còpia de seguretat","Sicherung","Backup"],"⬇ Exportar copia (JSON)":["⬇ Exportar còpia (JSON)","⬇ Sicherung exportieren (JSON)","⬇ Export backup (JSON)"],"⬆ Restaurar copia…":["⬆ Restaurar còpia…","⬆ Sicherung wiederherstellen…","⬆ Restore backup…"],"⬇ Export gestoría (CSV)":["⬇ Export gestoria (CSV)","⬇ Steuerberater-Export (CSV)","⬇ Accountant export (CSV)"],"Estado del producto":["Estat del producte","Produktstatus","Product status"],"Zona de peligro":["Zona de perill","Gefahrenzone","Danger zone"],"Borrar todos los datos":["Esborrar totes les dades","Alle Daten löschen","Delete all data"],"Borra TODOS los datos de FacturaMed de este dispositivo (config, pacientes y registro).":["Esborra TOTES les dades de FacturaMed d'aquest dispositiu (configuració, pacients i registre).","Löscht ALLE FacturaMed-Daten auf diesem Gerät (Einstellungen, Patienten, Register).","Deletes ALL FacturaMed data from this device (settings, patients and records)."],"📡 Enviar a AEAT (pruebas)":["📡 Enviar a l'AEAT (proves)","📡 An AEAT senden (Test)","📡 Send to AEAT (test)"],"🔗 Verificar integridad":["🔗 Verificar integritat","🔗 Integrität prüfen","🔗 Verify integrity"],"🖨 Imprimir / Guardar PDF":["🖨 Imprimir / Desar PDF","🖨 Drucken / PDF speichern","🖨 Print / Save PDF"],"Buscar":["Cercar","Suchen","Search"],"prueba":["prova","Test","test"],"Modo de prueba · las facturas no tienen validez fiscal":["Mode de prova · les factures no tenen validesa fiscal","Testmodus · die Rechnungen haben keine steuerliche Gültigkeit","Test mode · these invoices have no fiscal validity"],"Activar mi cuenta":["Activar el meu compte","Konto aktivieren","Activate my account"],"En modo de prueba la serie es siempre PRUEBA y no se puede cambiar.":["En mode de prova la sèrie és sempre PROVA i no es pot canviar.","Im Testmodus ist die Serie immer PRUEBA und nicht änderbar.","In test mode the series is always PRUEBA and cannot be changed."],"En modo de prueba solo existe la serie PRUEBA. Al activar la cuenta podrá crear sus series reales.":["En mode de prova només existeix la sèrie PROVA. En activar el compte podreu crear les vostres sèries reals.","Im Testmodus gibt es nur die Serie PRUEBA. Nach der Aktivierung können Sie Ihre echten Serien anlegen.","In test mode only the PRUEBA series exists. Once you activate the account you can create your real series."],"Cuenta en modo de prueba: las facturas no se envían a la AEAT. Al activar la cuenta, la serie y la cadena reales empiezan de cero.":["Compte en mode de prova: les factures no s'envien a l'AEAT. En activar el compte, la sèrie i la cadena reals comencen de zero.","Konto im Testmodus: Rechnungen werden nicht an die AEAT gesendet. Bei der Aktivierung beginnen echte Serie und Kette bei null.","Account in test mode: invoices are not sent to the AEAT. When you activate, the real series and chain start from zero."],"Cuenta en modo de prueba: no se envía nada a la AEAT.":["Compte en mode de prova: no s'envia res a l'AEAT.","Konto im Testmodus: es wird nichts an die AEAT gesendet.","Account in test mode: nothing is sent to the AEAT."],"Escriba el nombre de la consulta.":["Escriviu el nom de la consulta.","Geben Sie den Namen der Praxis ein.","Enter the name of the practice."],"El NIF no es válido (9 caracteres). Puede dejarlo vacío mientras la cuenta esté en prueba.":["El NIF no és vàlid (9 caràcters). El podeu deixar buit mentre el compte estigui en prova.","Die Steuernummer ist ungültig (9 Zeichen). Sie kann leer bleiben, solange das Konto im Testmodus ist.","The tax ID is not valid (9 characters). You can leave it empty while the account is in test mode."],"Configure primero una serie de facturación.":["Configureu primer una sèrie de facturació.","Richten Sie zuerst eine Rechnungsserie ein.","Set up an invoice series first."],"Ver":["Veure","Ansehen","View"],"Rectificar":["Rectificar","Korrigieren","Rectify"],"Ver ficha":["Veure fitxa","Karte ansehen","View fiche"],"Tipo":["Tipus","Art","Type"],"Total":["Total","Gesamt","Total"],"Huella":["Empremta","Prüfsumme","Fingerprint"],"en cola":["a la cua","in Warteschlange","queued"],"sin conexión":["sense connexió","offline","offline"],"Facturado":["Facturat","Umsatz","Invoiced"],"Liquidación":["Liquidació","Abrechnung","Settlement"],"(sin asignar)":["(sense assignar)","(nicht zugewiesen)","(unassigned)"],"Importe":["Import","Betrag","Amount"],"Nombre":["Nom","Name","Name"],"Teléfono":["Telèfon","Telefon","Phone"],"Teléfono (para recordatorios)":["Telèfon (per a recordatoris)","Telefon (für Erinnerungen)","Phone (for reminders)"],"Contacto (teléfono / email)":["Contacte (telèfon / email)","Kontakt (Telefon / E-Mail)","Contact (phone / email)"],"Hora":["Hora","Uhrzeit","Time"],"Motivo":["Motiu","Grund","Reason"],"Motivo de la llamada":["Motiu de la trucada","Grund des Anrufs","Reason for the call"],"Cuándo le iría bien":["Quan li aniria bé","Wann es passen würde","When suits them"],"Nueva cita":["Nova cita","Neuer Termin","New appointment"],"Anotar llamada / mensaje":["Anotar trucada / missatge","Anruf / Nachricht notieren","Log call / message"],"Pendientes de confirmar":["Pendents de confirmar","Ausstehende Bestätigung","Pending confirmation"],"＋ Anotar":["＋ Anotar","＋ Notieren","＋ Log"],"＋ Añadir cita":["＋ Afegir cita","＋ Termin hinzufügen","＋ Add appointment"],"＋ Crear ficha":["＋ Crear fitxa","＋ Karte erstellen","＋ Create fiche"],"Nueva ficha de paciente":["Nova fitxa de pacient","Neue Patientenkarte","New patient fiche"],"Consulta médica":["Consulta mèdica","Ärztliche Beratung","Medical consultation"],"Certificado médico":["Certificat mèdic","Ärztliches Attest","Medical certificate"],"Consulta de urgencia":["Consulta d'urgència","Notfallberatung","Urgent consultation"],"Cura / procedimiento":["Cura / procediment","Verband / Eingriff","Dressing / procedure"],"Informe médico":["Informe mèdic","Arztbericht","Medical report"],"Otro servicio sanitario":["Altre servei sanitari","Andere Gesundheitsleistung","Other healthcare service"],"Primera visita":["Primera visita","Erstbesuch","First visit"],"Revisión":["Revisió","Kontrolle","Follow-up"],"Sesión de seguimiento":["Sessió de seguiment","Folgesitzung","Follow-up session"],"Citas del día":["Cites del dia","Termine des Tages","Today's appointments"],"Por confirmar":["Per confirmar","Zu bestätigen","To confirm"],"No-shows (histórico)":["No-shows (històric)","No-Shows (gesamt)","No-shows (all-time)"],"Agenda del día":["Agenda del dia","Tagesplan","Today's schedule"],"Liquidaciones del centro":["Liquidacions del centre","Abrechnungen des Zentrums","Center settlements"],"Mes":["Mes","Monat","Month"],"Calcular liquidaciones":["Calcular liquidacions","Abrechnungen berechnen","Calculate settlements"],"Para cada médico: total facturado en el mes × su % (se define en Configuración → Médicos del centro) = importe de la liquidación. La factura de honorarios la emite siempre el médico al centro; aquí tiene el borrador.":["Per a cada metge: total facturat al mes × el seu % (es defineix a Configuració → Metges del centre) = import de la liquidació. La factura d'honoraris l'emet sempre el metge al centre; aquí té l'esborrany.","Je Arzt: Monatsumsatz × sein % (unter Einstellungen → Ärzte des Zentrums) = Abrechnungsbetrag. Die Honorarrechnung stellt immer der Arzt dem Zentrum; hier ist der Entwurf.","Per doctor: month's invoiced total × their % (set in Settings → Center doctors) = settlement amount. The fee invoice is always issued by the doctor to the center; here is the draft."],"BETA PRIVADA · solo datos ficticios":["BETA PRIVADA · només dades fictícies","PRIVATE BETA · nur Testdaten","PRIVATE BETA · dummy data only"],"BETA · remisión AEAT solo a PRUEBAS — no usar para facturas reales":["BETA · remissió AEAT només a PROVES — no fer servir per a factures reals","BETA · AEAT-Übermittlung nur zum TEST — nicht für echte Rechnungen","BETA · AEAT submission TEST only — do not use for real invoices"],"Los datos viven solo en este navegador. Exporte una copia periódicamente y guárdela en lugar seguro.":["Les dades viuen només en aquest navegador. Exporti una còpia periòdicament i guardi-la en un lloc segur.","Die Daten liegen nur in diesem Browser. Exportieren Sie regelmäßig eine Sicherung und bewahren Sie sie sicher auf.","Your data lives only in this browser. Export a backup regularly and keep it somewhere safe."],"Cierra la sesión y vuelve a la página de inicio. Tus datos permanecen guardados en este dispositivo.":["Tanca la sessió i torna a la pàgina d'inici. Les dades queden desades en aquest dispositiu.","Meldet Sie ab und kehrt zur Startseite zurück. Ihre Daten bleiben auf diesem Gerät gespeichert.","Signs you out and returns to the home page. Your data stays saved on this device."],"Factura el centro y varios médicos pasan consulta. El resumen de actividad calculará el total por médico (para liquidaciones).":["Factura el centre i diversos metges passen consulta. El resum d'activitat calcularà el total per metge (per a liquidacions).","Das Zentrum stellt die Rechnungen und mehrere Ärzte behandeln. Die Tätigkeitsübersicht berechnet die Summe je Arzt (für Abrechnungen).","The center invoices and several doctors see patients. The activity summary totals per doctor (for settlements)."],"↩ Cerrar sesión":["↩ Tancar sessió","↩ Abmelden","↩ Sign out"],"Registro con huella SHA-256 encadenada + QR de cotejo (entorno de pruebas AEAT). Los datos se guardan solo en este dispositivo.":["Registre amb empremta SHA-256 encadenada + QR de verificació (entorn de proves AEAT). Les dades es desen només en aquest dispositiu.","Registrierung mit verketteter SHA-256-Prüfsumme + Verifizierungs-QR (AEAT-Testumgebung). Die Daten bleiben nur auf diesem Gerät.","Chained SHA-256 fingerprint + verification QR (AEAT test environment). Data is stored only on this device."]};
   var IDX={ca:0,de:1,en:2};
   /* ENG-4: s'hi afegeixen span i strong, com a SecreMed. El guard «si té fills,
      no el toquis» es manté; els títols amb comptadors porten el text dins d'un span. */
@@ -1406,13 +1951,25 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
       if(o===null){o=el.getAttribute('placeholder')||''; if(!DICT[o])return; el.setAttribute('data-op',o);}
       el.setAttribute('placeholder',trad(o,lang));
     });
+    /* ENG-16 ⑥ · l'atribut `title`. El traductor mirava el text i el
+       `placeholder` i prou, o sigui que el rètol que surt en passar el ratolí
+       per sobre es quedava en castellà encara que fos al diccionari — el cas
+       que ho va destapar és el «% de liquidación del médico». Es fa aquí i no
+       cas per cas perquè així queda cobert el `title` que algú afegeixi demà.
+       La regla dels documents val igual: dins d'una factura impresa, res. */
+    document.querySelectorAll('[title]').forEach(function(el){
+      if(el.closest('#factura-print,#resum-print,.no-traduir'))return;
+      var o=el.getAttribute('data-ot');
+      if(o===null){o=el.getAttribute('title')||''; if(!DICT[o])return; el.setAttribute('data-ot',o);}
+      el.setAttribute('title',trad(o,lang));
+    });
     var eh=document.getElementById('cfg-estat-desc');
     if(eh){
       if(!eh.getAttribute('data-oh'))eh.setAttribute('data-oh',eh.innerHTML);
       var EH={
-        ca:'✅ Registre amb empremta encadenada · ✅ QR de verificació (entorn proves) · ✅ Rectificatives · ✅ Export gestoria · ⏳ Remissió automàtica a l\'AEAT (pendent de certificat i alta com a sistema de facturació) · ⏳ Remeses a mútues. <strong>Fins llavors: només dades de prova.</strong>',
-        de:'✅ Registrierung mit verketteter Prüfsumme · ✅ Verifizierungs-QR (Testumgebung) · ✅ Korrekturrechnungen · ✅ Steuerberater-Export · ⏳ Automatische Übermittlung an die AEAT (ausstehend: Zertifikat und Registrierung als Rechnungssystem) · ⏳ Abrechnung mit Versicherungen. <strong>Bis dahin: nur Testdaten.</strong>',
-        en:'✅ Chained-fingerprint records · ✅ Verification QR (test environment) · ✅ Corrective invoices · ✅ Accountant export · ⏳ Automatic AEAT submission (pending certificate and registration as an invoicing system) · ⏳ Insurer batches. <strong>Until then: test data only.</strong>'
+        ca:'✅ Registre amb empremta encadenada · ✅ QR de verificació (entorn proves) · ✅ Rectificatives · ✅ Export gestoria · ⏳ Remissió automàtica a l\'AEAT (pendent de certificat i alta com a sistema de facturació). <strong>Fins llavors: només dades de prova.</strong>',
+        de:'✅ Registrierung mit verketteter Prüfsumme · ✅ Verifizierungs-QR (Testumgebung) · ✅ Korrekturrechnungen · ✅ Steuerberater-Export · ⏳ Automatische Übermittlung an die AEAT (ausstehend: Zertifikat und Registrierung als Rechnungssystem). <strong>Bis dahin: nur Testdaten.</strong>',
+        en:'✅ Chained-fingerprint records · ✅ Verification QR (test environment) · ✅ Corrective invoices · ✅ Accountant export · ⏳ Automatic AEAT submission (pending certificate and registration as an invoicing system). <strong>Until then: test data only.</strong>'
       };
       eh.innerHTML=(lang==='es'||!EH[lang])?eh.getAttribute('data-oh'):EH[lang];
     }

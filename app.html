@@ -324,9 +324,29 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
         <button class="btn" id="b-pacient" type="button">Guardar paciente</button>
       </div>
       <div class="card">
-        <h2>Pacientes (<span id="p-compte">0</span>)</h2>
+        <h2><span>Pacientes (<span id="p-compte">0</span>)</span>
+          <span class="accions-fila">
+            <button class="btn sec mini" id="b-pac-importar-btn" type="button">⬆ Importar Excel/CSV</button>
+            <button class="btn sec mini" id="b-pac-exportar" type="button">⬇ Exportar Excel</button>
+          </span>
+        </h2>
+        <input type="file" id="b-pac-importar" accept=".xlsx,.xls,.csv,.txt" style="display:none">
         <div id="p-llista" style="overflow-x:auto"></div>
       </div>
+    </div>
+    <!-- ENG-26 · previsualització de la importació: res es desa fins que el metge prem «Importar» -->
+    <div class="card" id="p-import" style="display:none">
+      <h2><span>Importar pacientes</span>
+        <button class="btn sec mini" id="pi-tancar" type="button">✕ Cancelar</button>
+      </h2>
+      <p style="font-size:.82rem;color:var(--boira);margin-top:0">El archivo se lee en su ordenador y no se envía a ningún sitio.</p>
+      <p id="pi-fitxer" style="font-size:.82rem;color:var(--grafit);margin-top:0"></p>
+      <div class="fila" id="pi-mapa" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr))"></div>
+      <div id="pi-resum" style="margin-top:12px"></div>
+      <div id="pi-mostra" style="margin-top:12px;overflow-x:auto"></div>
+      <span class="accions-fila" style="margin-top:12px">
+        <button class="btn mini" id="pi-importar" type="button">Importar</button>
+      </span>
     </div>
     <div class="card" id="p-detall" style="display:none">
       <h2><span>Ficha del paciente</span>
@@ -884,6 +904,343 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
     $('b-anar-pacients').addEventListener('click',function(){document.querySelector('[data-v="pacients"]').click();$('p-nom').focus()});
   },'pacients');
 
+  // ---------- pacients: importar (Excel/CSV) i exportar (Excel) · ENG-26 ----------
+  /* ENG-26 (1/09/2026) · La consulta que arriba ja té els pacients en un full
+     de càlcul: el cas que ho va obrir és un metge amb tota la base de dades en
+     un Excel. Aquí es LLEGEIX aquell fitxer i s'ESCRIU un Excel amb les fitxes,
+     tot dins del navegador: el fitxer no puja enlloc, es processa i es desa al
+     dispositiu, com la resta de dades.
+
+     Cap llibreria, a posta: un .xlsx és un zip amb XML a dins, i el navegador
+     ja sap descomprimir (DecompressionStream) i llegir XML (DOMParser). Una
+     llibreria de fulls de càlcul són 800 KB més a cada càrrega per fer-ne el 2 %.
+
+     El que es desa és EXACTAMENT el model de fitxa que ja existeix —nom, NIF,
+     contacte— i res més: el servidor de sincronització només coneix aquests
+     tres camps (sync.push els filtra i sync.pull els torna) i qualsevol camp
+     de més es perdria a la primera baixada. Una columna que el model no té NO
+     s'importa, i el metge ho veu escrit abans de prémer el botó. Una fitxa amb
+     més camps és una decisió de Producte, no d'aquest lot.
+
+     La regla dels documents (ENG-4d) val per a l'Excel exportat: capçaleres en
+     castellà sempre, com el CSV de la gestoria. */
+  var CRC_T=(function(){var t=[],c;for(var n=0;n<256;n++){c=n;for(var k=0;k<8;k++)c=(c&1)?(0xEDB88320^(c>>>1)):(c>>>1);t[n]=c>>>0}return t})();
+  function crc32(u8){var c=0xFFFFFFFF;for(var i=0;i<u8.length;i++)c=CRC_T[(c^u8[i])&0xFF]^(c>>>8);return (c^0xFFFFFFFF)>>>0}
+  function colLletra(i){var s='';i=i+1;while(i>0){var m=(i-1)%26;s=String.fromCharCode(65+m)+s;i=(i-m-1)/26}return s}
+  function colIndex(l){var n=0;for(var i=0;i<l.length;i++)n=n*26+(l.charCodeAt(i)-64);return n-1}
+
+  /* Un zip «stored» (sense comprimir): l'Excel l'obre igual i no cal escriure
+     un compressor. Els bytes: capçalera local + nom + dades per fitxer, després
+     el directori central, després el registre final. */
+  function zipEscriu(fitxers){
+    var enc=new TextEncoder(),parts=[],cd=[],off=0;
+    var ara=new Date(),dosT=((ara.getHours()<<11)|(ara.getMinutes()<<5)|(ara.getSeconds()>>1))&0xFFFF,
+        dosD=(((ara.getFullYear()-1980)<<9)|((ara.getMonth()+1)<<5)|ara.getDate())&0xFFFF;
+    fitxers.forEach(function(f){
+      var nom=enc.encode(f.nom),dades=enc.encode(f.text),crc=crc32(dades);
+      var lh=new DataView(new ArrayBuffer(30));
+      lh.setUint32(0,0x04034b50,true);lh.setUint16(4,20,true);lh.setUint16(6,0x0800,true);lh.setUint16(8,0,true);
+      lh.setUint16(10,dosT,true);lh.setUint16(12,dosD,true);lh.setUint32(14,crc,true);
+      lh.setUint32(18,dades.length,true);lh.setUint32(22,dades.length,true);lh.setUint16(26,nom.length,true);lh.setUint16(28,0,true);
+      parts.push(new Uint8Array(lh.buffer),nom,dades);
+      var ch=new DataView(new ArrayBuffer(46));
+      ch.setUint32(0,0x02014b50,true);ch.setUint16(4,20,true);ch.setUint16(6,20,true);ch.setUint16(8,0x0800,true);ch.setUint16(10,0,true);
+      ch.setUint16(12,dosT,true);ch.setUint16(14,dosD,true);ch.setUint32(16,crc,true);
+      ch.setUint32(20,dades.length,true);ch.setUint32(24,dades.length,true);ch.setUint16(28,nom.length,true);
+      ch.setUint16(30,0,true);ch.setUint16(32,0,true);ch.setUint16(34,0,true);ch.setUint16(36,0,true);ch.setUint32(38,0,true);ch.setUint32(42,off,true);
+      cd.push(new Uint8Array(ch.buffer),nom);
+      off+=30+nom.length+dades.length;
+    });
+    var cdMida=cd.reduce(function(a,x){return a+x.length},0);
+    var e=new DataView(new ArrayBuffer(22));
+    e.setUint32(0,0x06054b50,true);e.setUint16(4,0,true);e.setUint16(6,0,true);e.setUint16(8,fitxers.length,true);e.setUint16(10,fitxers.length,true);
+    e.setUint32(12,cdMida,true);e.setUint32(16,off,true);e.setUint16(20,0,true);
+    var tot=parts.concat(cd,[new Uint8Array(e.buffer)]),mida=tot.reduce(function(a,x){return a+x.length},0),out=new Uint8Array(mida),p=0;
+    tot.forEach(function(x){out.set(x,p);p+=x.length});
+    return out;
+  }
+  function xlsxEscriu(nomFull,files){
+    function x(s){return String(s==null?'':s).replace(/[\x00-\x08\x0B\x0C\x0E-\x1F]/g,'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+    var rows=files.map(function(f,i){
+      return '<row r="'+(i+1)+'">'+f.map(function(v,j){
+        var ref=colLletra(j)+(i+1),st=i===0?' s="1"':'';
+        if(typeof v==='number'&&isFinite(v))return '<c r="'+ref+'"'+st+'><v>'+v+'</v></c>';
+        return '<c r="'+ref+'" t="inlineStr"'+st+'><is><t xml:space="preserve">'+x(v)+'</t></is></c>';
+      }).join('')+'</row>';
+    }).join('');
+    var NS='http://schemas.openxmlformats.org/spreadsheetml/2006/main',NSR='http://schemas.openxmlformats.org/officeDocument/2006/relationships';
+    var X='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
+    return zipEscriu([
+      {nom:'[Content_Types].xml',text:X+'<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>'},
+      {nom:'_rels/.rels',text:X+'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>'},
+      {nom:'xl/workbook.xml',text:X+'<workbook xmlns="'+NS+'" xmlns:r="'+NSR+'"><sheets><sheet name="'+x(nomFull)+'" sheetId="1" r:id="rId1"/></sheets></workbook>'},
+      {nom:'xl/_rels/workbook.xml.rels',text:X+'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>'},
+      {nom:'xl/styles.xml',text:X+'<styleSheet xmlns="'+NS+'"><fonts count="2"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><name val="Calibri"/></font></fonts><fills count="2"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill></fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="2"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="0" borderId="0" xfId="0" applyFont="1"/></cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>'},
+      {nom:'xl/worksheets/sheet1.xml',text:X+'<worksheet xmlns="'+NS+'"><cols><col min="1" max="1" width="36" customWidth="1"/><col min="2" max="2" width="14" customWidth="1"/><col min="3" max="3" width="36" customWidth="1"/><col min="4" max="4" width="11" customWidth="1"/></cols><sheetData>'+rows+'</sheetData></worksheet>'}
+    ]);
+  }
+
+  /* Lectura d'un zip: el registre final (al final del fitxer) diu on és el
+     directori central; el directori diu on és cada fitxer i com està comprimit. */
+  function zipEntrades(buf){
+    var dv=new DataView(buf),u8=new Uint8Array(buf),n=u8.length,eocd=-1;
+    for(var i=n-22;i>=Math.max(0,n-22-65557);i--){if(dv.getUint32(i,true)===0x06054b50){eocd=i;break}}
+    if(eocd<0)throw new Error('zip');
+    var total=dv.getUint16(eocd+10,true),p=dv.getUint32(eocd+16,true),ents={};
+    for(var k=0;k<total;k++){
+      if(dv.getUint32(p,true)!==0x02014b50)throw new Error('zip');
+      var metode=dv.getUint16(p+10,true),compMida=dv.getUint32(p+20,true),nomLen=dv.getUint16(p+28,true),
+          extraLen=dv.getUint16(p+30,true),comLen=dv.getUint16(p+32,true),locOff=dv.getUint32(p+42,true);
+      ents[new TextDecoder().decode(u8.subarray(p+46,p+46+nomLen))]={metode:metode,compMida:compMida,locOff:locOff};
+      p+=46+nomLen+extraLen+comLen;
+    }
+    return ents;
+  }
+  async function zipText(buf,ents,nom){
+    var e=ents[nom];if(!e)return null;
+    var dv=new DataView(buf),u8=new Uint8Array(buf);
+    if(dv.getUint32(e.locOff,true)!==0x04034b50)throw new Error('zip');
+    var ini=e.locOff+30+dv.getUint16(e.locOff+26,true)+dv.getUint16(e.locOff+28,true),dades=u8.subarray(ini,ini+e.compMida),bytes;
+    if(e.metode===0)bytes=dades;
+    else if(e.metode===8){
+      if(typeof DecompressionStream==='undefined')throw new Error('navegador');
+      bytes=new Uint8Array(await new Response(new Blob([dades]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).arrayBuffer());
+    }else throw new Error('zip');
+    return new TextDecoder().decode(bytes);
+  }
+  function xmlDoc(text){var d=new DOMParser().parseFromString(text,'application/xml');if(d.getElementsByTagName('parsererror').length)throw new Error('xml');return d}
+  function xmlTots(node,nom){return Array.prototype.slice.call(node.getElementsByTagNameNS('*',nom))}
+  async function xlsxFiles(buf){
+    var ents=zipEntrades(buf),wb=await zipText(buf,ents,'xl/workbook.xml');
+    if(!wb)throw new Error('no-xlsx');
+    var full=null;
+    try{
+      var s=xmlTots(xmlDoc(wb),'sheet')[0],rid=s&&(s.getAttribute('r:id')||s.getAttributeNS('http://schemas.openxmlformats.org/officeDocument/2006/relationships','id'));
+      var rels=await zipText(buf,ents,'xl/_rels/workbook.xml.rels');
+      if(rid&&rels){
+        var r=xmlTots(xmlDoc(rels),'Relationship').filter(function(x){return x.getAttribute('Id')===rid})[0];
+        if(r){var t=(r.getAttribute('Target')||'').replace(/^\//,'');full=t.indexOf('xl/')===0?t:'xl/'+t}
+      }
+    }catch(e){}
+    if(!full||!ents[full])full=Object.keys(ents).filter(function(k){return /^xl\/worksheets\/sheet\d+\.xml$/.test(k)}).sort()[0];
+    if(!full)throw new Error('no-xlsx');
+    var sst=[],sstx=await zipText(buf,ents,'xl/sharedStrings.xml');
+    if(sstx)xmlTots(xmlDoc(sstx),'si').forEach(function(si){sst.push(xmlTots(si,'t').map(function(x){return x.textContent}).join(''))});
+    var files=[];
+    xmlTots(xmlDoc(await zipText(buf,ents,full)),'row').forEach(function(row){
+      /* Les files buides no s'escriuen al fitxer: es respecta el número de fila
+         de l'Excel (atribut r) perquè «capçaleres a la fila 3» sigui la 3 de veritat. */
+      var rn=parseInt(row.getAttribute('r'),10);
+      if(rn>0&&rn<=1048576)while(files.length<rn-1)files.push([]);
+      var f=[],seg=0;
+      xmlTots(row,'c').forEach(function(c){
+        var ref=(c.getAttribute('r')||'').replace(/\d+$/,''),col=ref?colIndex(ref):seg;seg=col+1;
+        var t=c.getAttribute('t'),v=xmlTots(c,'v')[0],val='';
+        if(t==='s')val=sst[parseInt(v?v.textContent:'-1',10)]||'';
+        else if(t==='inlineStr')val=xmlTots(c,'t').map(function(x){return x.textContent}).join('');
+        else if(t==='b')val=v&&v.textContent==='1'?'1':'0';
+        else if(v){val=v.textContent;if(t!=='str'&&t!=='d'&&t!=='e'){var num=Number(val);if(isFinite(num))val=String(num)}}
+        while(f.length<col)f.push('');
+        f[col]=val;
+      });
+      files.push(f);
+    });
+    return files;
+  }
+  /* CSV: separador detectat a la primera línia (; , tabulador |), cometes
+     dobles, BOM. La codificació: UTF-8 si ho és; si no, Windows-1252 (el CSV
+     de l'Excel de Windows); i si el resultat porta les empremtes de Mac Roman
+     (l'Excel antic de Mac), Mac Roman. */
+  function decodifica(buf){
+    try{return new TextDecoder('utf-8',{fatal:true}).decode(buf)}catch(e){}
+    var t;try{t=new TextDecoder('windows-1252').decode(buf)}catch(e){return new TextDecoder().decode(buf)}
+    var sospitosos=(t.match(/[A-Za-z][Ž‡’—œ–ˆ]/g)||[]).length;
+    if(sospitosos>=2){try{return new TextDecoder('macintosh').decode(buf)}catch(e){}}
+    return t;
+  }
+  function csvFiles(text){
+    text=text.replace(/^\uFEFF/,'');
+    var primera=(text.split(/\r?\n/).filter(function(l){return l.trim()})[0]||'');
+    var sep=[';',',','\t','|'].map(function(s){return [s,primera.split(s).length-1]}).sort(function(a,b){return b[1]-a[1]})[0];
+    sep=sep[1]>0?sep[0]:';';
+    var files=[],f=[],cel='',q=false;
+    for(var i=0;i<text.length;i++){
+      var c=text[i];
+      if(q){if(c==='"'){if(text[i+1]==='"'){cel+='"';i++}else q=false}else cel+=c}
+      else if(c==='"'&&cel==='')q=true;
+      else if(c===sep){f.push(cel);cel=''}
+      else if(c==='\n'||c==='\r'){if(c==='\r'&&text[i+1]==='\n')i++;f.push(cel);files.push(f);f=[];cel=''}
+      else cel+=c;
+    }
+    if(cel!==''||f.length){f.push(cel);files.push(f)}
+    return files;
+  }
+
+  /* Quina columna és què. Primer per nom exacte de capçalera (sense accents ni
+     majúscules), després per «conté». Cada columna només pot ser una cosa. */
+  var CAMPS_IMPORT=['nom','cognoms','cognoms2','nif','tel','email'];
+  var PATRONS_IMPORT={
+    nom:     {exacte:/^(nombre y apellidos|nombre completo|nombre del paciente|nombre paciente|paciente|pacient|nom i cognoms|nom complet|nom|nombre|name|full name|patient|patient name|apellidos y nombre|apellidos nombre|nombre apellidos|apellidos, nombre)$/,conte:/nombre|paciente|pacient|\bnom\b|\bname\b/},
+    cognoms: {exacte:/^(apellidos|apellido|cognoms|cognom|surname|surnames|last name|apellido 1|primer apellido|1er apellido|apellido1|1 apellido|1r apellido|primer cognom|cognom 1)$/,conte:/apellido|cognom|surname|last name/},
+    cognoms2:{exacte:/^(segundo apellido|apellido 2|2o apellido|2 apellido|2n apellido|apellido2|segon cognom|cognom 2|second surname)$/,conte:/segundo apellido|apellido 2|apellido2|segon cognom|cognom 2/},
+    nif:     {exacte:/^(nif|dni|nie|nif nie|dni nie|nif dni|dni nif|documento|n documento|num documento|numero de documento|numero documento|doc|document|id number|pasaporte|passport|cif)$/,conte:/\bnif\b|\bdni\b|\bnie\b|documento/},
+    tel:     {exacte:/^(telefono|tel|telf|tlf|tfno|telefon|movil|mobil|celular|phone|mobile|telefono movil|telefono 1|tel 1|telefono fijo|fijo|tel movil|tel fijo|telephone|contacto|contacte|contact|contacto telefono email|telefono email|email o telefono|telefono o email)$/,conte:/tel|movil|mobil|phone|contact/},
+    email:   {exacte:/^(email|e mail|correo|correo electronico|mail|correu|correu electronic|e mail address|email address)$/,conte:/mail|correo|correu/}
+  };
+  function normCap(s){return String(s==null?'':s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9,]+/g,' ').replace(/\s+,/g,',').trim()}
+  function detectaMapa(cap,nomesExacte){
+    var mapa={},usades={};
+    (nomesExacte?['exacte']:['exacte','conte']).forEach(function(mode){
+      CAMPS_IMPORT.forEach(function(camp){
+        if(mapa[camp]!=null)return;
+        for(var i=0;i<cap.length;i++){
+          if(usades[i])continue;
+          var h=normCap(cap[i]);if(!h)continue;
+          if(PATRONS_IMPORT[camp][mode].test(h)){mapa[camp]=i;usades[i]=true;break}
+        }
+      });
+    });
+    return mapa;
+  }
+  /* La fila de capçaleres: la primera amb un nom de columna EXACTE; si no
+     n'hi ha cap, la primera amb dos «conté» (un de sol enganya: un títol
+     «Pacientes Dr. Vila» conté «paciente» i no és cap capçalera); si no, la
+     primera amb dues cel·les plenes. */
+  function filaCapcalera(files){
+    var lim=Math.min(files.length,10),i;
+    function quants(m){return CAMPS_IMPORT.filter(function(c){return m[c]!=null}).length}
+    for(i=0;i<lim;i++)if(quants(detectaMapa(files[i],true))>=1)return i;
+    for(i=0;i<lim;i++)if(quants(detectaMapa(files[i]))>=2)return i;
+    for(i=0;i<lim;i++)if(files[i].filter(function(c){return String(c).trim()}).length>=2)return i;
+    return 0;
+  }
+  function netText(s){return String(s==null?'':s).replace(/\s+/g,' ').trim()}
+  function netNif(s){return netText(s).replace(/[\s.\-]/g,'').toUpperCase().slice(0,20)}
+  function netTel(s){s=netText(s);if(/^\d+\.0+$/.test(s))s=s.replace(/\.0+$/,'');return s}
+  /* Avalua cada fila del fitxer contra les fitxes que ja hi ha. No modifica res:
+     torna què passaria. La fitxa existent MAI es toca (ni per completar-la):
+     el metge ha de poder importar sense por de perdre el que ja tenia. */
+  function avaluaImport(pend){
+    var mapa=pend.mapa,existents={},nifs={};
+    pacients().forEach(function(p){existents[p.nom.toLowerCase()]=true;if(p.nif)nifs[p.nif.toUpperCase()]=p.nom.toLowerCase()});
+    var vistos={},r={files:[],nous:[],jaExisteixen:0,senseNom:0,repetits:0,nifDuplicat:0};
+    function cel(f,camp){return mapa[camp]==null?'':(f[mapa[camp]]==null?'':String(f[mapa[camp]]))}
+    for(var i=pend.cap+1;i<pend.files.length;i++){
+      var f=pend.files[i];
+      if(!f.some(function(c){return String(c==null?'':c).trim()}))continue;
+      var nom=netText([cel(f,'nom'),cel(f,'cognoms'),cel(f,'cognoms2')].filter(Boolean).join(' '));
+      var nif=netNif(cel(f,'nif')),tel=netTel(cel(f,'tel')),email=netText(cel(f,'email'));
+      var contacte=[tel,email].filter(Boolean).join(' · ');
+      var fitxa={nom:nom,nif:nif,contacte:contacte},estat;
+      var clau=nom.toLowerCase();
+      if(!nom){estat='senseNom';r.senseNom++}
+      else if(existents[clau]){estat='jaExisteix';r.jaExisteixen++}
+      else if(vistos[clau]){estat='repetit';r.repetits++}
+      else if(nif&&nifs[nif]&&nifs[nif]!==clau){estat='nifDuplicat';r.nifDuplicat++}
+      else{estat='nou';vistos[clau]=true;if(nif)nifs[nif]=clau;r.nous.push(fitxa)}
+      r.files.push({fitxa:fitxa,estat:estat});
+    }
+    return r;
+  }
+  var importPendent=null;
+  function pintaImportPacients(){
+    var card=$('p-import');if(!card)return;
+    if(!importPendent){card.style.display='none';return}
+    var pend=importPendent,cap=pend.files[pend.cap]||[];
+    var ncol=pend.files.reduce(function(a,f){return Math.max(a,f.length)},0);
+    var nomsCol=[];for(var i=0;i<ncol;i++)nomsCol.push(netText(cap[i])||Tf('Columna {c}',{c:colLletra(i)}));
+    var etq={nom:'Columna del nombre',cognoms:'Columna de los apellidos',cognoms2:'Columna del 2º apellido',nif:'Columna del NIF',tel:'Columna del teléfono',email:'Columna del email'};
+    var h='';
+    CAMPS_IMPORT.forEach(function(camp){
+      h+='<div><label for="pi-'+camp+'">'+esc(T(etq[camp]))+'</label><select id="pi-'+camp+'" data-camp="'+camp+'"><option value="">'+esc(T('— no está en el archivo —'))+'</option>';
+      nomsCol.forEach(function(n,i){h+='<option value="'+i+'"'+(pend.mapa[camp]===i?' selected':'')+'>'+esc(n)+'</option>'});
+      h+='</select></div>';
+    });
+    $('pi-mapa').innerHTML=h;
+    $('pi-mapa').querySelectorAll('select').forEach(function(s){
+      s.addEventListener('change',function(){var v=s.value;importPendent.mapa[s.dataset.camp]=v===''?null:parseInt(v,10);pintaImportPacients()});
+    });
+    var r=avaluaImport(pend);
+    $('pi-fitxer').textContent=Tf('Archivo: {f} · filas con datos: {n} · encabezados en la fila {r}.',{f:pend.nomFitxer,n:r.files.length,r:pend.cap+1});
+    var res=[];
+    if(pend.mapa.nom==null&&pend.mapa.cognoms==null)res.push('<strong style="color:var(--vermell)">'+esc(T('Elija en qué columna está el nombre para poder importar.'))+'</strong>');
+    else res.push('<strong>'+esc(Tf('Fichas nuevas que se crearán: {n}.',{n:r.nous.length}))+'</strong>');
+    if(r.jaExisteixen)res.push(esc(Tf('Ya existían con el mismo nombre (no se modifican): {n}.',{n:r.jaExisteixen})));
+    if(r.senseNom)res.push(esc(Tf('Filas sin nombre (no se importan): {n}.',{n:r.senseNom})));
+    if(r.repetits)res.push(esc(Tf('Filas repetidas dentro del archivo (se importan una sola vez): {n}.',{n:r.repetits})));
+    if(r.nifDuplicat)res.push(esc(Tf('Filas con un NIF que ya pertenece a otra ficha (no se importan): {n}.',{n:r.nifDuplicat})));
+    var usades={};CAMPS_IMPORT.forEach(function(c){if(pend.mapa[c]!=null)usades[pend.mapa[c]]=true});
+    var fora=nomsCol.filter(function(n,i){return !usades[i]&&netText(cap[i])});
+    if(fora.length)res.push(esc(Tf('Columnas del archivo que no se importan: {c}. La ficha de FacturaMed guarda nombre, NIF y contacto.',{c:fora.join(', ')})));
+    var totalDespres=pacients().length+r.nous.length;
+    if(totalDespres>500)res.push('<span style="color:#B45309">'+esc(Tf('Aviso: la sincronización entre dispositivos admite por ahora 500 fichas. Con {n}, las fichas se guardan en este dispositivo pero no se sincronizarán hasta que se amplíe el límite.',{n:totalDespres}))+'</span>');
+    $('pi-resum').innerHTML='<p style="margin:0;font-size:.88rem;line-height:1.55">'+res.join('<br>')+'</p>';
+    var PILL={nou:['f1','nueva'],jaExisteix:['','ya existe'],senseNom:['r1','sin nombre'],repetit:['','repetida'],nifDuplicat:['r1','NIF de otra ficha']};
+    var mostra=r.files.slice(0,8),hm='';
+    if(mostra.length){
+      hm='<p style="font-size:.78rem;color:var(--boira);margin:0 0 6px">'+esc(Tf('Primeras {n} filas, tal como quedarán:',{n:mostra.length}))+'</p>'+
+         '<table><thead><tr><th>'+esc(T('Nombre y apellidos'))+'</th><th>NIF</th><th>'+esc(T('Contacto'))+'</th><th>'+esc(T('Resultado'))+'</th></tr></thead><tbody>';
+      mostra.forEach(function(x){
+        var p=PILL[x.estat];
+        hm+='<tr><td><strong>'+esc(x.fitxa.nom||'—')+'</strong></td><td>'+esc(x.fitxa.nif||'—')+'</td><td>'+esc(x.fitxa.contacte||'—')+'</td>'+
+            '<td><span class="pill'+(p[0]?' '+p[0]:'')+'"'+(p[0]?'':' style="background:#F1F5F9;color:#475569"')+'>'+esc(T(p[1]))+'</span></td></tr>';
+      });
+      hm+='</tbody></table>';
+    }
+    $('pi-mostra').innerHTML=hm;
+    var b=$('pi-importar');
+    b.textContent=r.nous.length===1?T('Importar 1 paciente'):Tf('Importar {n} pacientes',{n:r.nous.length});
+    b.disabled=!r.nous.length;b.style.opacity=r.nous.length?'':'.5';
+    card.style.display='block';
+  }
+  async function llegeixFitxerPacients(f){
+    var nom=f.name||'',ext=(nom.match(/\.([a-z0-9]+)$/i)||['',''])[1].toLowerCase();
+    if(ext==='xls'){avis('err','Este archivo es un Excel antiguo (.xls). Ábralo en Excel y guárdelo como .xlsx o como CSV.');return}
+    if(ext==='numbers'||ext==='ods'||ext==='pages'||ext==='doc'||ext==='docx'||ext==='pdf'){avis('err','Este formato no se puede leer directamente. Expórtelo como Excel (.xlsx) o como CSV.');return}
+    var buf=await f.arrayBuffer(),u8=new Uint8Array(buf),files;
+    try{
+      if(u8.length>=4&&u8[0]===0x50&&u8[1]===0x4B)files=await xlsxFiles(buf);
+      else if(u8.length>=8&&u8[0]===0xD0&&u8[1]===0xCF&&u8[2]===0x11&&u8[3]===0xE0){avis('err','Este archivo es un Excel antiguo (.xls). Ábralo en Excel y guárdelo como .xlsx o como CSV.');return}
+      else files=csvFiles(decodifica(buf));
+    }catch(e){
+      if(e&&e.message==='navegador'){avis('err','Este navegador no puede leer .xlsx. Guarde el archivo como CSV o use Google Chrome.');return}
+      avis('err','No se ha podido leer el archivo. Use un Excel (.xlsx) o un CSV.');return;
+    }
+    files=files.map(function(r){return r.map(function(c){return c==null?'':String(c)})});
+    while(files.length&&!files[files.length-1].some(function(c){return c.trim()}))files.pop();
+    var ambDades=files.filter(function(r){return r.some(function(c){return c.trim()})}).length;
+    if(!ambDades){avis('err','El archivo no tiene filas con datos.');return}
+    if(ambDades>5001){avis('err','El archivo tiene más de 5.000 filas. Divídalo en varios.');return}
+    var cap=filaCapcalera(files);
+    importPendent={nomFitxer:nom,files:files,cap:cap,mapa:detectaMapa(files[cap])};
+    pintaImportPacients();
+    $('p-import').scrollIntoView({behavior:'smooth',block:'start'});
+  }
+  safe(function(){
+    $('b-pac-importar-btn').addEventListener('click',function(){$('b-pac-importar').click()});
+    $('b-pac-importar').addEventListener('change',function(){var f=this.files[0];this.value='';if(f)llegeixFitxerPacients(f)});
+    $('pi-tancar').addEventListener('click',function(){importPendent=null;pintaImportPacients()});
+    $('pi-importar').addEventListener('click',function(){
+      if(!importPendent)return;
+      var r=avaluaImport(importPendent);
+      if(!r.nous.length){avis('err','Nada que importar: todas las filas ya existen o no tienen nombre.');return}
+      desa(K.pac,pacients().concat(r.nous));
+      importPendent=null;pintaTot();
+      avis('ok',r.jaExisteixen?Tf('Pacientes importados: {n}. Ya existían y no se han tocado: {m}.',{n:r.nous.length,m:r.jaExisteixen}):Tf('Pacientes importados: {n}.',{n:r.nous.length}));
+    });
+    $('b-pac-exportar').addEventListener('click',function(){
+      var ps=pacients().filter(function(p){return !esExemple(p)});
+      if(!ps.length){avis('err','No hay pacientes que exportar.');return}
+      var rs=registres();
+      /* Capçaleres en castellà sempre: és un document (ENG-4d), com el CSV de la gestoria. */
+      var files=[['Nombre y apellidos','NIF','Contacto','Facturas']].concat(ps.slice().sort(function(a,b){return a.nom.localeCompare(b.nom)}).map(function(p){
+        return [p.nom,p.nif||'',p.contacte||'',rs.filter(function(r){return r.pacientNom===p.nom}).length];
+      }));
+      descarrega('FacturaMed_pacientes_'+new Date().toISOString().slice(0,10)+'.xlsx',xlsxEscriu('Pacientes',files),'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+      avis('ok',Tf('Pacientes exportados a Excel: {n}.',{n:ps.length}));
+    });
+  },'pacients-excel');
+
   // ---------- línies de conceptes ----------
   function afegeixLinia(concepte,imp){
     var d=document.createElement('div');d.className='linia-c';
@@ -1357,7 +1714,7 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
     var tot=rs.reduce(function(a,r){return a+parseFloat(r.total)},0);
     $('k-total').textContent=fmt2(tot)+' €';
   }
-  function pintaTot(){pintaConfig();pintaPacients();pintaRegistre();pintaUltimes();pintaKPIs();pintaBarraProva();pintaExemple()}
+  function pintaTot(){pintaConfig();pintaPacients();pintaRegistre();pintaUltimes();pintaKPIs();pintaBarraProva();pintaExemple();pintaImportPacients()}
   /* ENG-4: el traductor crida això quan es canvia d'idioma (vegeu el bloc final). */
   window.__reRender=pintaTot;
   /* ENG-4b (11/08/2026) · EL PONT ENTRE ELS DOS <script>.
@@ -1762,6 +2119,50 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
 /* Traductor d'interfície ConsultaMed (CA/DE/EN) — segur: només canvia text visible estàtic */
 (function(){
   var DICT={
+  /* ENG-26 · importar (Excel/CSV) i exportar (Excel) pacients. */
+  "⬆ Importar Excel/CSV":["⬆ Importar Excel/CSV","⬆ Excel/CSV importieren","⬆ Import Excel/CSV"],
+  "⬇ Exportar Excel":["⬇ Exportar Excel","⬇ Excel exportieren","⬇ Export Excel"],
+  "Importar pacientes":["Importar pacients","Patienten importieren","Import patients"],
+  "✕ Cancelar":["✕ Cancel·lar","✕ Abbrechen","✕ Cancel"],
+  "El archivo se lee en su ordenador y no se envía a ningún sitio.":["El fitxer es llegeix al seu ordinador i no s'envia enlloc.","Die Datei wird auf Ihrem Rechner gelesen und nirgendwohin gesendet.","The file is read on your computer and is not sent anywhere."],
+  "Columna del nombre":["Columna del nom","Spalte: Vorname","Name column"],
+  "Columna de los apellidos":["Columna dels cognoms","Spalte: Nachname","Surname column"],
+  "Columna del 2º apellido":["Columna del 2n cognom","Spalte: 2. Nachname","2nd surname column"],
+  "Columna del NIF":["Columna del NIF","Spalte: Ausweisnummer","ID number column"],
+  "Columna del teléfono":["Columna del telèfon","Spalte: Telefon","Phone column"],
+  "Columna del email":["Columna del correu","Spalte: E-Mail","Email column"],
+  "— no está en el archivo —":["— no és al fitxer —","— nicht in der Datei —","— not in the file —"],
+  "Columna {c}":["Columna {c}","Spalte {c}","Column {c}"],
+  "Archivo: {f} · filas con datos: {n} · encabezados en la fila {r}.":["Fitxer: {f} · files amb dades: {n} · capçaleres a la fila {r}.","Datei: {f} · Zeilen mit Daten: {n} · Überschriften in Zeile {r}.","File: {f} · rows with data: {n} · headers in row {r}."],
+  "Elija en qué columna está el nombre para poder importar.":["Trieu en quina columna hi ha el nom per poder importar.","Wählen Sie die Spalte mit dem Namen, um importieren zu können.","Choose which column holds the name in order to import."],
+  "Fichas nuevas que se crearán: {n}.":["Fitxes noves que es crearan: {n}.","Neue Karten, die angelegt werden: {n}.","New records to be created: {n}."],
+  "Ya existían con el mismo nombre (no se modifican): {n}.":["Ja existien amb el mateix nom (no es modifiquen): {n}.","Gab es schon mit demselben Namen (bleiben unverändert): {n}.","Already existed with the same name (left untouched): {n}."],
+  "Filas sin nombre (no se importan): {n}.":["Files sense nom (no s'importen): {n}.","Zeilen ohne Namen (werden nicht importiert): {n}.","Rows without a name (not imported): {n}."],
+  "Filas repetidas dentro del archivo (se importan una sola vez): {n}.":["Files repetides dins del fitxer (s'importen una sola vegada): {n}.","In der Datei doppelte Zeilen (werden nur einmal importiert): {n}.","Rows repeated within the file (imported only once): {n}."],
+  "Filas con un NIF que ya pertenece a otra ficha (no se importan): {n}.":["Files amb un NIF que ja pertany a una altra fitxa (no s'importen): {n}.","Zeilen mit einer Ausweisnummer, die schon zu einer anderen Karte gehört (werden nicht importiert): {n}.","Rows with an ID number that already belongs to another record (not imported): {n}."],
+  "Columnas del archivo que no se importan: {c}. La ficha de FacturaMed guarda nombre, NIF y contacto.":["Columnes del fitxer que no s'importen: {c}. La fitxa de FacturaMed desa nom, NIF i contacte.","Spalten der Datei, die nicht importiert werden: {c}. Die FacturaMed-Karte speichert Name, Ausweisnummer und Kontakt.","Columns in the file that are not imported: {c}. The FacturaMed record stores name, ID number and contact."],
+  "Aviso: la sincronización entre dispositivos admite por ahora 500 fichas. Con {n}, las fichas se guardan en este dispositivo pero no se sincronizarán hasta que se amplíe el límite.":["Avís: la sincronització entre dispositius admet de moment 500 fitxes. Amb {n}, les fitxes es desen en aquest dispositiu però no se sincronitzaran fins que s'ampliï el límit.","Hinweis: Die Synchronisierung zwischen Geräten unterstützt derzeit 500 Karten. Mit {n} werden die Karten auf diesem Gerät gespeichert, aber erst synchronisiert, wenn das Limit erhöht wird.","Notice: sync between devices currently supports 500 records. With {n}, records are saved on this device but will not sync until the limit is raised."],
+  "Primeras {n} filas, tal como quedarán:":["Primeres {n} files, tal com quedaran:","Die ersten {n} Zeilen, so wie sie gespeichert werden:","First {n} rows, as they will be saved:"],
+  "Contacto":["Contacte","Kontakt","Contact"],
+  "Resultado":["Resultat","Ergebnis","Result"],
+  "nueva":["nova","neu","new"],
+  "ya existe":["ja existeix","gibt es schon","already exists"],
+  "sin nombre":["sense nom","ohne Namen","no name"],
+  "repetida":["repetida","doppelt","duplicate"],
+  "NIF de otra ficha":["NIF d'una altra fitxa","Nummer einer anderen Karte","ID of another record"],
+  "Importar {n} pacientes":["Importar {n} pacients","{n} Patienten importieren","Import {n} patients"],
+  "Importar 1 paciente":["Importar 1 pacient","1 Patienten importieren","Import 1 patient"],
+  "Pacientes importados: {n}.":["Pacients importats: {n}.","Importierte Patienten: {n}.","Patients imported: {n}."],
+  "Pacientes importados: {n}. Ya existían y no se han tocado: {m}.":["Pacients importats: {n}. Ja existien i no s'han tocat: {m}.","Importierte Patienten: {n}. Gab es schon und wurden nicht verändert: {m}.","Patients imported: {n}. Already existed and left untouched: {m}."],
+  "Nada que importar: todas las filas ya existen o no tienen nombre.":["Res a importar: totes les files ja existeixen o no tenen nom.","Nichts zu importieren: alle Zeilen existieren schon oder haben keinen Namen.","Nothing to import: every row already exists or has no name."],
+  "No se ha podido leer el archivo. Use un Excel (.xlsx) o un CSV.":["No s'ha pogut llegir el fitxer. Feu servir un Excel (.xlsx) o un CSV.","Die Datei konnte nicht gelesen werden. Verwenden Sie eine Excel-Datei (.xlsx) oder eine CSV.","The file could not be read. Use an Excel file (.xlsx) or a CSV."],
+  "Este archivo es un Excel antiguo (.xls). Ábralo en Excel y guárdelo como .xlsx o como CSV.":["Aquest fitxer és un Excel antic (.xls). Obriu-lo a l'Excel i deseu-lo com a .xlsx o com a CSV.","Diese Datei ist ein altes Excel-Format (.xls). Öffnen Sie sie in Excel und speichern Sie sie als .xlsx oder CSV.","This is an old Excel file (.xls). Open it in Excel and save it as .xlsx or CSV."],
+  "Este formato no se puede leer directamente. Expórtelo como Excel (.xlsx) o como CSV.":["Aquest format no es pot llegir directament. Exporteu-lo com a Excel (.xlsx) o com a CSV.","Dieses Format kann nicht direkt gelesen werden. Exportieren Sie es als Excel (.xlsx) oder CSV.","This format cannot be read directly. Export it as Excel (.xlsx) or CSV."],
+  "El archivo no tiene filas con datos.":["El fitxer no té files amb dades.","Die Datei enthält keine Datenzeilen.","The file has no rows with data."],
+  "El archivo tiene más de 5.000 filas. Divídalo en varios.":["El fitxer té més de 5.000 files. Dividiu-lo en diversos.","Die Datei hat mehr als 5.000 Zeilen. Teilen Sie sie auf.","The file has more than 5,000 rows. Split it into several files."],
+  "Este navegador no puede leer .xlsx. Guarde el archivo como CSV o use Google Chrome.":["Aquest navegador no pot llegir .xlsx. Deseu el fitxer com a CSV o feu servir Google Chrome.","Dieser Browser kann keine .xlsx-Dateien lesen. Speichern Sie die Datei als CSV oder verwenden Sie Google Chrome.","This browser cannot read .xlsx files. Save the file as CSV or use Google Chrome."],
+  "No hay pacientes que exportar.":["No hi ha pacients per exportar.","Keine Patienten zum Exportieren.","No patients to export."],
+  "Pacientes exportados a Excel: {n}.":["Pacients exportats a Excel: {n}.","Nach Excel exportierte Patienten: {n}.","Patients exported to Excel: {n}."],
   /* ENG-16 ③ · estats buits amb sortida (Producte/09 §1.4). */
   "Cargar datos de ejemplo":["Carregar dades d'exemple","Beispieldaten laden","Load example data"],
   "Todavía no hay ningún paciente. Cree uno o cargue datos de ejemplo.":["Encara no hi ha cap pacient. Creeu-ne un o carregueu dades d'exemple.","Noch keine Patienten. Legen Sie einen an oder laden Sie Beispieldaten.","No patients yet. Create one or load example data."],

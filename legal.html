@@ -34,6 +34,9 @@
   a{color:var(--teal);font-weight:600;text-decoration:none}
   .caixa{background:#F0FDFA;border-left:4px solid #14B8A6;border-radius:0 10px 10px 0;padding:14px 18px;margin:16px 0;font-size:.92rem}
   .pendent{background:#FEF3C7;padding:1px 7px;border-radius:6px;font-weight:600}
+  table{border-collapse:collapse;width:100%;margin:14px 0;font-size:.86rem}
+  th,td{border:1px solid var(--linia);padding:8px 10px;text-align:left;vertical-align:top}
+  th{background:#EEF4F9;color:var(--blau);font-family:'Sora';font-size:.82rem}
   footer{background:#0A2E52;color:#8FA6BD;padding:34px 0;font-size:.82rem;text-align:center}
 </style>
 </head>
@@ -45,55 +48,92 @@
 
 <main class="wrap">
   <h1>Avís legal i privacitat</h1>
-  <p class="data">Versió 1.0 · Juliol de 2026 · consultamed.es</p>
+  <p class="data">Versió 1.1 · Setembre de 2026 · consultamed.es</p>
 
   <h2 id="avis">1 · Avís legal</h2>
   <h3>Titular del lloc web</h3>
   <ul>
-    <li><strong>Titular:</strong> <strong>CONSULTAMED SOFTWARE, S.L.</strong> (societat en constitució, denominació reservada al Registre Mercantil Central). Un cop inscrita la societat, aquest avís s'actualitzarà amb el CIF i el domicili social definitius.</li>
-    <li><strong>CIF:</strong> <span class="pendent">pendent d'inscripció</span></li>
-    <li><strong>Domicili social:</strong> C/ Montseny, 135 — Sabadell (Barcelona), Espanya</li>
+    <li><strong>Titular:</strong> <strong>CONSULTAMED SOFTWARE, S.L.</strong></li>
+    <li><strong>NIF:</strong> B93977551</li>
+    <li><strong>Domicili social:</strong> C/ Montseny 135, Sabadell (Barcelona), Espanya</li>
+    <li><strong>Dades registrals:</strong> societat constituïda en escriptura pública l'1 de setembre de 2026; inscripció al Registre Mercantil de Barcelona en tràmit</li>
     <li><strong>Contacte:</strong> <a href="mailto:legal@consultamed.es">legal@consultamed.es</a></li>
   </ul>
+
   <h3>Objecte i condicions d'ús</h3>
-  <p>consultamed.es presenta i dona accés a la suite de programari ConsultaMed (FacturaMed, EscribaMed i altres productes), actualment en <strong>fase beta de demostració</strong>. Durant la beta, el programari no té validesa fiscal i només s'hi han d'introduir dades fictícies, tal com s'indica dins de cada producte. L'accés al lloc atribueix la condició d'usuari i implica l'acceptació d'aquestes condicions.</p>
+  <p>consultamed.es presenta i dona accés a la suite de programari ConsultaMed (FacturaMed, EscribaMed, SecreMed i altres productes), adreçada <strong>exclusivament a professionals sanitaris, clíniques i entitats</strong>. L'accés al lloc atribueix la condició d'usuari i implica l'acceptació d'aquestes condicions.</p>
+  <p>El servei té <strong>dos estats, i convé no confondre'ls</strong>:</p>
+  <ul>
+    <li><strong>Mode de prova</strong> — permet conèixer el funcionament del programari <strong>sense cost</strong>. Les factures que s'hi generen <strong>no tenen validesa fiscal</strong>, van marcades com a prova i no entren en cap registre de facturació oficial. No s'hi han d'introduir dades reals de pacients.</li>
+    <li><strong>Servei contractat</strong> — s'inicia amb l'alta de pagament i és l'únic estat amb validesa fiscal i funcionalitat completa. Les condicions econòmiques són les publicades al web i les condicions que s'accepten en contractar el servei.</li>
+  </ul>
+
   <h3>Propietat intel·lectual i industrial</h3>
   <p>Les marques ConsultaMed, FacturaMed, EscribaMed, SecreMed i ReceptaMed, els logotips, el disseny del lloc i el programari són titularitat del titular indicat. No se'n permet la reproducció, distribució o transformació sense autorització expressa, excepte els usos legalment permesos.</p>
+
   <h3>Responsabilitat</h3>
-  <p>El titular treballa perquè el lloc i el programari funcionin correctament, però no pot garantir l'absència d'interrupcions o errors, especialment durant la fase beta. El programari d'ajuda a la documentació clínica és una <strong>eina de suport</strong>: la revisió i validació de qualsevol informe o factura correspon sempre al professional sanitari, que en manté la responsabilitat.</p>
+  <p>El titular treballa perquè el lloc i el programari funcionin correctament, però no pot garantir l'absència d'interrupcions o errors. El programari d'ajuda a la documentació clínica és una <strong>eina de suport administratiu i documental</strong>: no presta serveis sanitaris, no fa diagnòstics ni recomana tractaments, i la revisió i validació de qualsevol informe o factura correspon sempre al professional sanitari, que en manté la responsabilitat clínica, deontològica i legal.</p>
+
   <h3>Llei aplicable</h3>
-  <p>Aquestes condicions es regeixen per la legislació espanyola. Per a qualsevol controvèrsia, les parts se sotmeten als jutjats i tribunals que corresponguin conforme a dret; en el cas de consumidors, els del seu domicili.</p>
+  <p>Aquestes condicions es regeixen per la legislació espanyola. Per a qualsevol controvèrsia, les parts se sotmeten als jutjats i tribunals que corresponguin conforme a dret.</p>
 
   <h2 id="privacitat">2 · Política de privacitat</h2>
-  <div class="caixa"><strong>El més important, en una frase:</strong> la informació clínica (informes, historials i àudio de les visites) <strong>no surt mai del dispositiu del metge</strong>. Si el professional activa la sincronització, les dades <strong>administratives</strong> de l'agenda i les fitxes sí que es desen al nostre servidor per compartir-les entre els seus dispositius.</div>
+  <div class="caixa"><strong>El més important, en una frase:</strong> la informació clínica (informes, historials i àudio de les visites) <strong>no surt mai del dispositiu del metge</strong>. Si el professional activa la sincronització, les dades <strong>administratives</strong> de l'agenda i les fitxes sí que es desen al nostre servidor —<strong>a la Unió Europea</strong>— per compartir-les entre els seus dispositius.</div>
+
   <h3>Responsable del tractament</h3>
-  <p>El titular indicat a l'avís legal. Contacte per a privacitat: <a href="mailto:legal@consultamed.es">legal@consultamed.es</a>.</p>
+  <p>CONSULTAMED SOFTWARE, S.L., amb les dades identificatives de l'avís legal. Contacte per a privacitat: <a href="mailto:privacitat@consultamed.es">privacitat@consultamed.es</a>.</p>
+
+  <h3>Els dos papers de ConsultaMed</h3>
+  <p><strong>Com a responsable</strong>, tractem les dades dels professionals i clíniques que es registren, dels visitants del web i dels contactes comercials. <strong>Com a encarregat del tractament</strong>, tractem per compte del professional les dades administratives de pacients que ell sincronitza (identificació, contacte i cites): d'aquestes n'és responsable el professional, i la relació es regeix pel contracte d'encàrrec de tractament de ConsultaMed, que forma part de les condicions del servei contractat i que facilitem a qualsevol professional que el demani a <a href="mailto:privacitat@consultamed.es">privacitat@consultamed.es</a>.</p>
+
   <h3>Quines dades tractem i per a què</h3>
-  <ul>
-    <li><strong>Registre a la beta</strong> (nom, correu electrònic, NIF i tipus de consulta): per crear i gestionar el compte, donar accés als productes i comunicar-nos amb vostè sobre el servei. Base jurídica: execució de mesures precontractuals i del contracte (art. 6.1.b RGPD) i, per a comunicacions no estrictament necessàries, el seu consentiment (art. 6.1.a).</li>
-    <li><strong>Correus que ens enviï</strong>: per respondre les seves consultes. Base jurídica: interès legítim en atendre-les (art. 6.1.f).</li>
-  </ul>
+  <table>
+    <tr><th>Finalitat</th><th>Dades</th><th>Base jurídica</th><th>Termini</th></tr>
+    <tr><td>Alta i gestió del compte i del contracte</td><td>Identificatives, col·legiació, dades de facturació</td><td>Execució de contracte (art. 6.1.b RGPD)</td><td>Vigència + terminis legals de conservació</td></tr>
+    <tr><td>Cobrament de les subscripcions</td><td>Dades de pagament tokenitzades per Stripe (no veiem ni desem el número complet de targeta)</td><td>Execució de contracte / obligació legal</td><td>Terminis legals</td></tr>
+    <tr><td>Suport i comunicacions operatives</td><td>Identificatives i contingut de les consultes</td><td>Execució de contracte</td><td>3 anys des del tancament</td></tr>
+    <tr><td>Formulari de contacte del web</td><td>Nom, correu i missatge</td><td>Mesures precontractuals / consentiment</td><td>1 any</td></tr>
+    <tr><td>Seguretat del servei</td><td>Adreça IP i registre d'esdeveniments</td><td>Interès legítim en la seguretat (art. 6.1.f)</td><td>12 mesos</td></tr>
+    <tr><td>Compliment normatiu (VeriFactu, requeriments)</td><td>Registres de facturació</td><td>Obligació legal</td><td>El que fixi la norma</td></tr>
+  </table>
+  <p>No prenem decisions automatitzades amb efectes jurídics ni elaborem perfils amb aquests efectes. <strong>No venem dades ni les cedim a tercers</strong> fora del que s'indica a continuació.</p>
+
   <h3>Les dades dels seus pacients</h3>
-  <p>ConsultaMed està dissenyat perquè la <strong>informació clínica</strong> (informes, historials clínics, àudio de les visites i factures dels pacients) es processi i es desi <strong>exclusivament a l'ordinador del metge</strong>. Aquestes dades no s'envien mai als nostres servidors i no hi tenim accés.</p>
-  <p><strong>Excepció explícita — la sincronització.</strong> Si el professional inicia sessió amb el seu compte de ConsultaMed i activa la sincronització, les <strong>dades administratives de l'agenda i de les fitxes</strong> (nom del pacient, NIF, telèfon, correu, mútua, data, hora i motiu de la cita) es transmeten xifrades i es desen al nostre servidor, per poder compartir-les entre els dispositius de la mateixa consulta. Respecte d'aquestes dades, el professional sanitari és el <strong>responsable del tractament</strong> i ConsultaMed actua com a <strong>encarregat del tractament</strong> seguint les seves instruccions, amb el contracte d'encarregat corresponent. Sense sincronització activada, cap dada de pacient surt del dispositiu.</p>
-  <p><em>Excepció durant la beta:</em> el mode de dictat de demostració utilitza el servei de reconeixement de veu del navegador (Chrome/Google); per això dins del producte s'adverteix d'usar-lo només amb dades fictícies. <em>Recomanació de seguretat:</em> com que les dades clíniques viuen al seu ordinador, li recomanem tenir activat el xifratge de disc (FileVault a Mac, BitLocker a Windows).</p>
-  <h3>Destinataris i proveïdors</h3>
-  <ul>
-    <li><strong>Formspree, Inc.</strong> (EUA): gestiona el formulari de registre. Tractament emparat en clàusules contractuals tipus de la UE.</li>
-    <li><strong>GitHub, Inc. / GitHub Pages</strong> (EUA): allotja aquest lloc web i pot registrar dades tècniques d'accés (adreça IP) com qualsevol servidor web.</li>
-    <li><strong>Vercel Inc.</strong> (EUA): allotja el servidor de sincronització (app.consultamed.es).</li>
-    <li><strong>Neon Inc.</strong> (base de dades allotjada a la Unió Europea: AWS Europe Central 1, Frankfurt, Alemanya): desa les dades administratives sincronitzades.</li>
-  </ul>
-  <p>No venem dades ni les cedim a cap altre tercer.</p>
+  <p>ConsultaMed està dissenyat perquè la <strong>informació clínica</strong> (informes, historials, àudio de les visites i el motiu de la consulta) es processi i es desi <strong>exclusivament a l'ordinador del metge</strong>: amb l'agent local, la intel·ligència artificial s'executa al mateix dispositiu. Aquestes dades <strong>no s'envien mai als nostres servidors</strong> i no hi tenim accés.</p>
+  <p><strong>Dictat sense l'agent local.</strong> Si el professional fa servir el dictat per veu sense tenir instal·lat l'agent local, el reconeixement de veu el fa el servei del seu navegador (a Google Chrome, el servei de reconeixement de veu de Google, que requereix connexió a internet): en aquest cas l'àudio del dictat el processa el proveïdor del navegador, no ConsultaMed. Per això, en aquest mode, el producte adverteix de no introduir-hi dades reals de pacients. El text resultant es desa només al dispositiu del professional.</p>
+  <p><strong>Excepció explícita — la sincronització.</strong> Si el professional activa la sincronització, les <strong>dades administratives</strong> de l'agenda i de les fitxes (nom del pacient, NIF, telèfon, correu, mútua, data i hora de la cita) es transmeten xifrades i es desen al nostre servidor, allotjat a <strong>Frankfurt (Alemanya, Unió Europea)</strong>. Sense sincronització activada, cap dada de pacient surt del dispositiu.</p>
+  <p><strong>GestorMed.</strong> Si el professional ho activa expressament, comuniquem a la gestoria que ell designi un <strong>resum fiscal agregat</strong> (nombre de factures, bases, quotes d'IVA, dates i indicador d'integritat). Aquest resum <strong>no conté cap dada de pacient</strong> i l'autorització es pot revocar en qualsevol moment des del panell.</p>
+  <p><em>Recomanació de seguretat:</em> com que les dades clíniques viuen al seu ordinador, li recomanem tenir-hi activat el xifratge de disc (FileVault a Mac, BitLocker a Windows).</p>
+
+  <h3>Destinataris i transferències internacionals</h3>
+  <p>Per prestar el servei ens recolzem en un nombre reduït de proveïdors. Aquesta és la llista completa, amb la seva ubicació i la garantia aplicable:</p>
+  <table>
+    <tr><th>Proveïdor</th><th>Per a què</th><th>On</th><th>Garantia</th></tr>
+    <tr><td><strong>Neon, LLC</strong> (grup Databricks, Inc.)</td><td>Base de dades del servei de comptes i sincronització</td><td><strong>Frankfurt (Alemanya) — Unió Europea</strong></td><td>Dades allotjades a la UE; per al suport del proveïdor, marc UE-EUA (DPF) i clàusules contractuals tipus</td></tr>
+    <tr><td><strong>Vercel Inc.</strong></td><td>Infraestructura del servidor de comptes</td><td>Estats Units</td><td>Clàusules contractuals tipus</td></tr>
+    <tr><td><strong>Stripe Payments Europe, Ltd.</strong></td><td>Cobrament de les subscripcions</td><td>Irlanda (UE), amb processament del grup als EUA</td><td>Marc UE-EUA (DPF) i clàusules contractuals tipus</td></tr>
+    <tr><td><strong>Resend</strong> (Plus Five Five, Inc.)</td><td>Correu transaccional del servei</td><td>Estats Units</td><td>Marc UE-EUA (DPF) i clàusules contractuals tipus</td></tr>
+    <tr><td><strong>Cloudflare, Inc.</strong></td><td>Seguretat i xarxa de distribució del web</td><td>Xarxa global amb nodes a la UE</td><td>Marc UE-EUA (DPF) i clàusules contractuals tipus</td></tr>
+    <tr><td><strong>GitHub, Inc.</strong> (GitHub Pages)</td><td>Allotjament del web públic</td><td>Estats Units / xarxa global</td><td>Marc UE-EUA (DPF) i clàusules contractuals tipus</td></tr>
+    <tr><td><strong>Formspree, Inc.</strong></td><td>Formulari de contacte del web</td><td>Estats Units</td><td>Clàusules contractuals tipus</td></tr>
+  </table>
+  <p><strong>Cap d'aquests proveïdors rep contingut clínic</strong>, i cap d'ells és un proveïdor d'intel·ligència artificial: amb l'agent local, la transcripció i la redacció de l'informe es fan al mateix dispositiu del professional (l'única excepció és el dictat sense agent, descrit més amunt). Stripe, Resend i Formspree tampoc reben cap dada de pacient.</p>
+  <p><strong>La base de dades on reposen les dades administratives de pacients és a la Unió Europea (Frankfurt)</strong>, de manera que aquestes dades no són objecte de transferència internacional. Alguns proveïdors d'infraestructura, correu, seguretat i cobrament processen dades als Estats Units: en aquests casos la transferència s'empara en el <strong>marc de privacitat de dades UE-EUA (Data Privacy Framework)</strong> o en <strong>clàusules contractuals tipus</strong> de la Comissió Europea, amb mesures suplementàries quan escau.</p>
+  <p>També podem comunicar dades a administracions públiques quan la llei ho exigeix (per exemple, a l'Agència Tributària en el cas de FacturaMed) i a assessors professionals subjectes a confidencialitat.</p>
+
   <h3>Conservació</h3>
-  <p>Les dades del registre es conserven mentre el compte estigui actiu i, després, durant els terminis de prescripció legal. Pot demanar-ne la supressió en qualsevol moment.</p>
+  <p>Les dades del compte es conserven mentre estigui actiu i, després, durant els terminis de prescripció legal. En finalitzar el servei, les dades del servidor es conserven 30 dies perquè les pugui descarregar i després se suprimeixen, llevat de les que la llei obligui a conservar.</p>
+
   <h3>Els seus drets</h3>
-  <p>Pot exercir els drets d'accés, rectificació, supressió, oposició, limitació i portabilitat escrivint a <a href="mailto:legal@consultamed.es">legal@consultamed.es</a>. Si considera que el tractament no és correcte, pot reclamar davant l'Agència Espanyola de Protecció de Dades (aepd.es).</p>
+  <p>Pot exercir els drets d'accés, rectificació, supressió, oposició, limitació i portabilitat, i retirar el consentiment, escrivint a <a href="mailto:privacitat@consultamed.es">privacitat@consultamed.es</a>, acreditant la seva identitat. Respondrem en el termini d'un mes. Si considera que el tractament no és correcte, pot reclamar davant l'<strong>Agència Espanyola de Protecció de Dades</strong> (aepd.es) i, a Catalunya i segons l'àmbit, davant l'APDCAT.</p>
+  <p><strong>Si vostè és pacient</strong> d'un professional que utilitza ConsultaMed: el responsable de les seves dades és el seu professional sanitari, i és a ell a qui ha d'adreçar l'exercici dels seus drets. Si ens arriba una petició seva, la traslladarem sense dilació.</p>
 
   <h2 id="cookies">3 · Política de galetes</h2>
-  <p><strong>Aquest lloc no fa servir galetes de seguiment, de publicitat ni d'analítica.</strong> Només utilitza l'emmagatzematge local del navegador (localStorage) amb finalitat estrictament tècnica: recordar l'idioma triat i, dins dels productes, desar les dades de treball al seu propi dispositiu. Aquest emmagatzematge és imprescindible per al funcionament i no requereix consentiment previ segons la normativa vigent. Cap d'aquestes dades s'envia als nostres servidors.</p>
+  <p><strong>Aquest lloc no fa servir galetes de seguiment, de publicitat ni d'analítica</strong>, ni instal·la galetes pròpies. Utilitza l'emmagatzematge local del navegador (localStorage) amb finalitat estrictament tècnica: recordar l'idioma triat i, dins dels productes, desar les dades de treball al seu propi dispositiu. Cap d'aquestes dades s'envia als nostres servidors.</p>
+  <p>El lloc es publica a través d'un <strong>proveïdor de seguretat i xarxa (Cloudflare)</strong>, que pot instal·lar galetes tècniques <strong>estrictament necessàries</strong> per protegir el web del trànsit automatitzat maliciós (per exemple, <code>__cf_bm</code>, de durada curta). Segons el seu proveïdor, aquestes galetes no serveixen per fer seguiment de persones entre llocs ni sessions i no s'utilitzen amb finalitats publicitàries.</p>
+  <p>Tant l'emmagatzematge tècnic com aquestes galetes de seguretat estan <strong>exempts del deure de consentiment previ</strong> per ser imprescindibles per prestar el servei sol·licitat (art. 22.2 de la Llei 34/2002, LSSI). Per això aquest lloc no mostra cap bàner de galetes. Si algun dia hi incorporéssim analítica o qualsevol galeta no necessària, demanaríem el seu consentiment abans i actualitzaríem aquesta política.</p>
 
-  <p style="margin-top:36px;color:var(--boira);font-size:.82rem">Aquest document es revisarà en constituir-se la societat i abans del llançament comercial.</p>
+  <p style="margin-top:36px;color:var(--boira);font-size:.82rem">Última actualització: setembre de 2026. Publicarem qualsevol modificació d'aquesta pàgina amb avís previ raonable, indicant la data de versió.</p>
 </main>
 
 <footer><div class="wrap">ConsultaMed · El metge fa de metge. La resta, ConsultaMed. · <a href="mailto:legal@consultamed.es" style="color:#B9CBDD">legal@consultamed.es</a></div></footer>

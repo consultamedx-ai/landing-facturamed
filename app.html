@@ -69,6 +69,12 @@
   .pill{display:inline-block;font-size:.68rem;font-weight:700;padding:2px 9px;border-radius:99px}
   .pill.f1{background:#ECFDF5;color:var(--verd-fosc)}
   .pill.r1{background:#FEF2F2;color:#B91C1C}
+  /* ENG-28 · pastilla Info («se completa», panell d'importació). Mateix patró
+     que f1 i r1: tint -50 de fons i to fosc de text. El contracte §4 deia el
+     text en Info #0891B2 sobre #ECFEFF, però això dóna 3,54:1, per sota del
+     mínim 4,5:1 de la regla 9 (marca); #0E7490 (el mateix to, més fosc) dóna
+     5,15:1, com els 5,21:1 de f1 i els 5,91:1 de r1. */
+  .pill.info{background:#ECFEFF;color:#0E7490}
   .banner{border-radius:11px;padding:11px 15px;font-size:.86rem;margin-bottom:14px;display:none}
   .banner.ok{display:block;background:#ECFDF5;border:1px solid #A7F3D0;color:var(--verd-fosc)}
   .banner.err{display:block;background:#FEF2F2;border:1px solid #FECACA;color:#B91C1C}
@@ -368,6 +374,8 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
       <p style="font-size:.82rem;color:var(--boira);margin-top:0">El archivo se lee en su ordenador y no se envía a ningún sitio.</p>
       <p id="pi-fitxer" style="font-size:.82rem;color:var(--grafit);margin-top:0"></p>
       <div class="fila" id="pi-mapa" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr))"></div>
+      <!-- ENG-28 · mode «completar fitxes existents»: DESMARCADA per defecte, i només omple camps buits (mai un de ple) -->
+      <div class="check"><input type="checkbox" id="pi-completar"><label for="pi-completar" style="margin:0;font-weight:400">Completar las fichas que ya existen con los datos que falten (nunca sobrescribe lo que ya está)</label></div>
       <div id="pi-resum" style="margin-top:12px"></div>
       <div id="pi-mostra" style="margin-top:12px;overflow-x:auto"></div>
       <span class="accions-fila" style="margin-top:12px">
@@ -1024,12 +1032,15 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
      ja sap descomprimir (DecompressionStream) i llegir XML (DOMParser). Una
      llibreria de fulls de càlcul són 800 KB més a cada càrrega per fer-ne el 2 %.
 
-     El que es desa és EXACTAMENT el model de fitxa que ja existeix —nom, NIF,
-     contacte— i res més: el servidor de sincronització només coneix aquests
-     tres camps (sync.push els filtra i sync.pull els torna) i qualsevol camp
-     de més es perdria a la primera baixada. Una columna que el model no té NO
-     s'importa, i el metge ho veu escrit abans de prémer el botó. Una fitxa amb
-     més camps és una decisió de Producte, no d'aquest lot.
+     El que es desa és EXACTAMENT el model de fitxa i res més. ENG-28
+     (03/09/2026): els 8 camps —nom, NIF, telèfon, correu, adreça, naixement,
+     mútua i observacions—, que són els que el servidor coneix (sync.push els
+     filtra i sync.pull els torna; un camp de més es perdria a la primera
+     baixada). Una columna que el model no té NO s'importa, i el metge ho veu
+     escrit abans de prémer el botó. Les dates d'Excel arriben com a NÚMEROS de
+     sèrie: dataExcel() les converteix. I amb la casella «completar» (desmarcada
+     per defecte) una fila d'una fitxa que ja existeix només n'omple els camps
+     buits: mai s'escriu sobre un camp ple.
 
      La regla dels documents (ENG-4d) val per a l'Excel exportat: capçaleres en
      castellà sempre, com el CSV de la gestoria. */
@@ -1085,7 +1096,7 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
       {nom:'xl/workbook.xml',text:X+'<workbook xmlns="'+NS+'" xmlns:r="'+NSR+'"><sheets><sheet name="'+x(nomFull)+'" sheetId="1" r:id="rId1"/></sheets></workbook>'},
       {nom:'xl/_rels/workbook.xml.rels',text:X+'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>'},
       {nom:'xl/styles.xml',text:X+'<styleSheet xmlns="'+NS+'"><fonts count="2"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><name val="Calibri"/></font></fonts><fills count="2"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill></fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="2"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="0" borderId="0" xfId="0" applyFont="1"/></cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>'},
-      {nom:'xl/worksheets/sheet1.xml',text:X+'<worksheet xmlns="'+NS+'"><cols><col min="1" max="1" width="36" customWidth="1"/><col min="2" max="2" width="14" customWidth="1"/><col min="3" max="3" width="36" customWidth="1"/><col min="4" max="4" width="11" customWidth="1"/></cols><sheetData>'+rows+'</sheetData></worksheet>'}
+      {nom:'xl/worksheets/sheet1.xml',text:X+'<worksheet xmlns="'+NS+'"><cols><col min="1" max="1" width="36" customWidth="1"/><col min="2" max="2" width="14" customWidth="1"/><col min="3" max="3" width="16" customWidth="1"/><col min="4" max="4" width="30" customWidth="1"/><col min="5" max="5" width="36" customWidth="1"/><col min="6" max="6" width="14" customWidth="1"/><col min="7" max="7" width="18" customWidth="1"/><col min="8" max="8" width="40" customWidth="1"/><col min="9" max="9" width="11" customWidth="1"/></cols><sheetData>'+rows+'</sheetData></worksheet>'}
     ]);
   }
 
@@ -1187,14 +1198,24 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
 
   /* Quina columna és què. Primer per nom exacte de capçalera (sense accents ni
      majúscules), després per «conté». Cada columna només pot ser una cosa. */
-  var CAMPS_IMPORT=['nom','cognoms','cognoms2','nif','tel','email'];
+  var CAMPS_IMPORT=['nom','cognoms','cognoms2','nif','tel','email','adreca','naixement','mutua','observacions'];
   var PATRONS_IMPORT={
     nom:     {exacte:/^(nombre y apellidos|nombre completo|nombre del paciente|nombre paciente|paciente|pacient|nom i cognoms|nom complet|nom|nombre|name|full name|patient|patient name|apellidos y nombre|apellidos nombre|nombre apellidos|apellidos, nombre)$/,conte:/nombre|paciente|pacient|\bnom\b|\bname\b/},
     cognoms: {exacte:/^(apellidos|apellido|cognoms|cognom|surname|surnames|last name|apellido 1|primer apellido|1er apellido|apellido1|1 apellido|1r apellido|primer cognom|cognom 1)$/,conte:/apellido|cognom|surname|last name/},
     cognoms2:{exacte:/^(segundo apellido|apellido 2|2o apellido|2 apellido|2n apellido|apellido2|segon cognom|cognom 2|second surname)$/,conte:/segundo apellido|apellido 2|apellido2|segon cognom|cognom 2/},
     nif:     {exacte:/^(nif|dni|nie|nif nie|dni nie|nif dni|dni nif|documento|n documento|num documento|numero de documento|numero documento|doc|document|id number|pasaporte|passport|cif)$/,conte:/\bnif\b|\bdni\b|\bnie\b|documento/},
     tel:     {exacte:/^(telefono|tel|telf|tlf|tfno|telefon|movil|mobil|celular|phone|mobile|telefono movil|telefono 1|tel 1|telefono fijo|fijo|tel movil|tel fijo|telephone|contacto|contacte|contact|contacto telefono email|telefono email|email o telefono|telefono o email)$/,conte:/tel|movil|mobil|phone|contact/},
-    email:   {exacte:/^(email|e mail|correo|correo electronico|mail|correu|correu electronic|e mail address|email address)$/,conte:/mail|correo|correu/}
+    email:   {exacte:/^(email|e mail|correo|correo electronico|mail|correu|correu electronic|e mail address|email address)$/,conte:/mail|correo|correu/},
+    /* ENG-28 · els quatre camps nous, amb les capçaleres del contracte §4.
+       normCap ja ha tret accents i majúscules abans de comparar («Dirección»
+       arriba com «direccion», «Mútua» com «mutua», «Compañía» com «compania»):
+       les formes accentuades de la llista hi són per fidelitat al contracte i
+       no fan cap feina. Van DARRERE dels sis de sempre: en mode «conté» els
+       camps es proven per ordre i cap dels nous no els pot prendre una columna. */
+    adreca:      {exacte:/^(direccion|domicilio|direccion postal|address|calle|adreca)$/,conte:/direccion|domicilio|address|adreca|\bcalle\b/},
+    naixement:   {exacte:/^(fecha de nacimiento|f nac|fecha nac|nacimiento|data de naixement|naixement|birth|dob|date of birth|geburtsdatum)$/,conte:/nacimiento|naixement|birth|\bdob\b|geburtsdatum|\bnac\b/},
+    mutua:       {exacte:/^(mutua|aseguradora|compania|compañia|seguro|insurance|mútua|versicherung)$/,conte:/mutua|aseguradora|compania|seguro|insurance|versicherung/},
+    observacions:{exacte:/^(observaciones|notas|comentarios|observacions|notes|remarks|bemerkungen)$/,conte:/observacion|\bnotas\b|\bnotes\b|comentario|remark|bemerkung/}
   };
   function normCap(s){return String(s==null?'':s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9,]+/g,' ').replace(/\s+,/g,',').trim()}
   function detectaMapa(cap,nomesExacte){
@@ -1226,24 +1247,74 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
   function netText(s){return String(s==null?'':s).replace(/\s+/g,' ').trim()}
   function netNif(s){return netText(s).replace(/[\s.\-]/g,'').toUpperCase().slice(0,20)}
   function netTel(s){s=netText(s);if(/^\d+\.0+$/.test(s))s=s.replace(/\.0+$/,'');return s}
+  /* ENG-28 · Les dates d'un Excel (funció pura; l'arnès la prova via __fm).
+     Una cel·la de data d'Excel és un NÚMERO de sèrie: dies des del 1899-12-30
+     (l'època es compta en UTC perquè el dia no es mogui amb el fus horari del
+     navegador; la part decimal és l'hora i es descarta). Un CSV o una cel·la
+     de text porta dd/mm/aaaa, dd-mm-aaaa, dd.mm.aaaa, aaaa-mm-dd o d/m/aa
+     (aa < 30 → 20aa, si no 19aa), amb o sense hora al darrere. El que no
+     s'entén queda buit: mai una data inventada. Per això un número de quatre
+     xifres entre 1900 i 2100 tampoc no es converteix: és un any sol (una
+     columna «Fecha de nacimiento» amb només «1985» passa) i com a sèrie seria
+     un dia del 1905. Torna sempre 'YYYY-MM-DD' o '', el mateix que dóna
+     <input type="date"> i l'únic que accepta el servidor. */
+  function dataExcel(v){
+    var s=netText(v),m,a,me,d;
+    if(!s)return '';
+    if(/^\d+(\.\d+)?$/.test(s)){
+      var num=Math.floor(Number(s));
+      if(num<1||num>2958465)return '';                        // 2958465 = 31/12/9999
+      if(/^\d{4}$/.test(s)&&num>=1900&&num<=2100)return '';    // un any sol, no una data
+      return new Date(Date.UTC(1899,11,30)+num*86400000).toISOString().slice(0,10);
+    }
+    if((m=s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})(?:[T ]\d{1,2}:\d{2}.*)?$/))){a=+m[1];me=+m[2];d=+m[3]}
+    else if((m=s.match(/^(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{2}|\d{4})(?:\s+\d{1,2}:\d{2}.*)?$/))){d=+m[1];me=+m[2];a=+m[3];if(m[3].length===2)a+=a<30?2000:1900}
+    else return '';
+    if(a<1000||me<1||me>12||d<1||d>31)return '';
+    var t=new Date(Date.UTC(a,me-1,d));
+    if(t.getUTCFullYear()!==a||t.getUTCMonth()!==me-1||t.getUTCDate()!==d)return '';   // 31/02 no existeix
+    return t.toISOString().slice(0,10);
+  }
+  /* ENG-28 · mode «completar fitxes existents». Dels camps que la fila aporta,
+     torna NOMÉS els que a la fitxa existent són buits: un camp ple no es toca
+     mai. El nom no hi és (és la clau de la fitxa). */
+  var CAMPS_COMPLETA=['nif','telefon','correu','adreca','naixement','mutua','observacions'];
+  function campsQueCompleten(p,fitxa){
+    var o={};
+    CAMPS_COMPLETA.forEach(function(c){if(fitxa[c]&&!p[c])o[c]=fitxa[c]});
+    return o;
+  }
   /* Avalua cada fila del fitxer contra les fitxes que ja hi ha. No modifica res:
-     torna què passaria. La fitxa existent MAI es toca (ni per completar-la):
-     el metge ha de poder importar sense por de perdre el que ja tenia. */
+     torna què passaria. La fitxa existent no es toca, excepte amb la casella
+     «completar» (pend.completar, desmarcada per defecte): llavors una fila d'una
+     fitxa que ja existeix i que hi aporta algun camp BUIT queda com a «completa»
+     (r.completen: clau i camps) i en importar només s'omplen aquells camps.
+     Un camp ple no es toca mai, ni amb la casella: el metge ha de poder
+     importar sense por de perdre el que ja tenia. Els límits per camp són els
+     de tallat() del servidor (contracte §4), els mateixos maxlength del formulari. */
   function avaluaImport(pend){
-    var mapa=pend.mapa,existents={},nifs={};
-    pacients().forEach(function(p){existents[p.nom.toLowerCase()]=true;if(p.nif)nifs[p.nif.toUpperCase()]=p.nom.toLowerCase()});
-    var vistos={},r={files:[],nous:[],jaExisteixen:0,senseNom:0,repetits:0,nifDuplicat:0};
+    var mapa=pend.mapa,existents={},nifs={},ps=pacients();
+    normalitzaFitxes(ps);   // una fitxa vella amb «contacte» s'avalua ja partida (còpia en memòria: no es desa res)
+    ps.forEach(function(p){existents[p.nom.toLowerCase()]=Object.assign({},p);if(p.nif)nifs[p.nif.toUpperCase()]=p.nom.toLowerCase()});
+    var vistos={},r={files:[],nous:[],completen:[],jaExisteixen:0,senseNom:0,repetits:0,nifDuplicat:0};
     function cel(f,camp){return mapa[camp]==null?'':(f[mapa[camp]]==null?'':String(f[mapa[camp]]))}
+    function txt(f,camp,lim){return netText(cel(f,camp)).slice(0,lim)}
     for(var i=pend.cap+1;i<pend.files.length;i++){
       var f=pend.files[i];
       if(!f.some(function(c){return String(c==null?'':c).trim()}))continue;
       var nom=netText([cel(f,'nom'),cel(f,'cognoms'),cel(f,'cognoms2')].filter(Boolean).join(' '));
-      var nif=netNif(cel(f,'nif')),tel=netTel(cel(f,'tel')),email=netText(cel(f,'email'));
-      var contacte=[tel,email].filter(Boolean).join(' · ');
-      var fitxa={nom:nom,nif:nif,contacte:contacte},estat;
-      var clau=nom.toLowerCase();
+      var fitxa={nom:nom,nif:netNif(cel(f,'nif')),telefon:netTel(cel(f,'tel')).slice(0,40),correu:txt(f,'email',120),
+                 adreca:txt(f,'adreca',200),naixement:dataExcel(cel(f,'naixement')),mutua:txt(f,'mutua',80),observacions:txt(f,'observacions',300)};
+      var nif=fitxa.nif,estat,clau=nom.toLowerCase();
       if(!nom){estat='senseNom';r.senseNom++}
-      else if(existents[clau]){estat='jaExisteix';r.jaExisteixen++}
+      else if(existents[clau]){
+        var omple=pend.completar?campsQueCompleten(existents[clau],fitxa):{};
+        if(omple.nif&&nifs[omple.nif]&&nifs[omple.nif]!==clau)delete omple.nif;   // un NIF que ja és d'una altra fitxa no s'hi posa
+        if(Object.keys(omple).length){
+          estat='completa';r.completen.push({clau:clau,camps:omple});
+          Object.assign(existents[clau],omple);if(omple.nif)nifs[omple.nif]=clau;   // una segona fila del mateix nom només veu el que encara falta
+        }else{estat='jaExisteix';r.jaExisteixen++}
+      }
       else if(vistos[clau]){estat='repetit';r.repetits++}
       else if(nif&&nifs[nif]&&nifs[nif]!==clau){estat='nifDuplicat';r.nifDuplicat++}
       else{estat='nou';vistos[clau]=true;if(nif)nifs[nif]=clau;r.nous.push(fitxa)}
@@ -1258,7 +1329,8 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
     var pend=importPendent,cap=pend.files[pend.cap]||[];
     var ncol=pend.files.reduce(function(a,f){return Math.max(a,f.length)},0);
     var nomsCol=[];for(var i=0;i<ncol;i++)nomsCol.push(netText(cap[i])||Tf('Columna {c}',{c:colLletra(i)}));
-    var etq={nom:'Columna del nombre',cognoms:'Columna de los apellidos',cognoms2:'Columna del 2º apellido',nif:'Columna del NIF',tel:'Columna del teléfono',email:'Columna del email'};
+    var etq={nom:'Columna del nombre',cognoms:'Columna de los apellidos',cognoms2:'Columna del 2º apellido',nif:'Columna del NIF',tel:'Columna del teléfono',email:'Columna del email',
+             adreca:'Columna de la dirección',naixement:'Columna de la fecha de nacimiento',mutua:'Columna de la mutua',observacions:'Columna de las observaciones'};
     var h='';
     CAMPS_IMPORT.forEach(function(camp){
       h+='<div><label for="pi-'+camp+'">'+esc(T(etq[camp]))+'</label><select id="pi-'+camp+'" data-camp="'+camp+'"><option value="">'+esc(T('— no está en el archivo —'))+'</option>';
@@ -1269,38 +1341,49 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
     $('pi-mapa').querySelectorAll('select').forEach(function(s){
       s.addEventListener('change',function(){var v=s.value;importPendent.mapa[s.dataset.camp]=v===''?null:parseInt(v,10);pintaImportPacients()});
     });
+    $('pi-completar').checked=!!pend.completar;   // ENG-28 · la casella segueix l'estat del fitxer pendent (desmarcada en carregar-ne un)
     var r=avaluaImport(pend);
     $('pi-fitxer').textContent=Tf('Archivo: {f} · filas con datos: {n} · encabezados en la fila {r}.',{f:pend.nomFitxer,n:r.files.length,r:pend.cap+1});
     var res=[];
     if(pend.mapa.nom==null&&pend.mapa.cognoms==null)res.push('<strong style="color:var(--vermell)">'+esc(T('Elija en qué columna está el nombre para poder importar.'))+'</strong>');
     else res.push('<strong>'+esc(Tf('Fichas nuevas que se crearán: {n}.',{n:r.nous.length}))+'</strong>');
     if(r.jaExisteixen)res.push(esc(Tf('Ya existían con el mismo nombre (no se modifican): {n}.',{n:r.jaExisteixen})));
+    if(r.completen.length)res.push(esc(Tf('Fichas que ya existen y se completarán con los datos que faltan: {n}.',{n:r.completen.length})));
     if(r.senseNom)res.push(esc(Tf('Filas sin nombre (no se importan): {n}.',{n:r.senseNom})));
     if(r.repetits)res.push(esc(Tf('Filas repetidas dentro del archivo (se importan una sola vez): {n}.',{n:r.repetits})));
     if(r.nifDuplicat)res.push(esc(Tf('Filas con un NIF que ya pertenece a otra ficha (no se importan): {n}.',{n:r.nifDuplicat})));
     var usades={};CAMPS_IMPORT.forEach(function(c){if(pend.mapa[c]!=null)usades[pend.mapa[c]]=true});
     var fora=nomsCol.filter(function(n,i){return !usades[i]&&netText(cap[i])});
-    if(fora.length)res.push(esc(Tf('Columnas del archivo que no se importan: {c}. La ficha de FacturaMed guarda nombre, NIF y contacto.',{c:fora.join(', ')})));
+    if(fora.length)res.push(esc(Tf('Columnas del archivo que no se importan: {c}. La ficha de FacturaMed guarda nombre, NIF, teléfono, email, dirección, fecha de nacimiento, mutua y observaciones.',{c:fora.join(', ')})));
     /* ENG-27 (03/09/2026): l'avís dels 500 ja no hi és. La sincronització puja
        per lots (cmsync.js) i no hi ha cap sostre per consulta: l'únic límit real
        és el localStorage del navegador (la mesura és a 04_Arquitectura). */
     $('pi-resum').innerHTML='<p style="margin:0;font-size:.88rem;line-height:1.55">'+res.join('<br>')+'</p>';
-    var PILL={nou:['f1','nueva'],jaExisteix:['','ya existe'],senseNom:['r1','sin nombre'],repetit:['','repetida'],nifDuplicat:['r1','NIF de otra ficha']};
+    var PILL={nou:['f1','nueva'],jaExisteix:['','ya existe'],senseNom:['r1','sin nombre'],repetit:['','repetida'],nifDuplicat:['r1','NIF de otra ficha'],completa:['info','se completa']};
     var mostra=r.files.slice(0,8),hm='';
+    /* ENG-28 · les columnes noves només es pinten si el fitxer les té (un CSV
+       de nom i NIF no ha d'ensenyar quatre columnes buides). La data surt ja
+       convertida (YYYY-MM-DD), que és com quedarà. */
+    var ETQ_EXTRA={adreca:'Dirección',naixement:'Fecha de nacimiento',mutua:'Mutua',observacions:'Observaciones'};
+    var extra=['adreca','naixement','mutua','observacions'].filter(function(c){return pend.mapa[c]!=null});
     if(mostra.length){
       hm='<p style="font-size:.78rem;color:var(--boira);margin:0 0 6px">'+esc(Tf('Primeras {n} filas, tal como quedarán:',{n:mostra.length}))+'</p>'+
-         '<table><thead><tr><th>'+esc(T('Nombre y apellidos'))+'</th><th>NIF</th><th>'+esc(T('Contacto'))+'</th><th>'+esc(T('Resultado'))+'</th></tr></thead><tbody>';
+         '<table><thead><tr><th>'+esc(T('Nombre y apellidos'))+'</th><th>NIF</th><th>'+esc(T('Contacto'))+'</th>'+
+         extra.map(function(c){return '<th>'+esc(T(ETQ_EXTRA[c]))+'</th>'}).join('')+'<th>'+esc(T('Resultado'))+'</th></tr></thead><tbody>';
       mostra.forEach(function(x){
-        var p=PILL[x.estat];
-        hm+='<tr><td><strong>'+esc(x.fitxa.nom||'—')+'</strong></td><td>'+esc(x.fitxa.nif||'—')+'</td><td>'+esc(x.fitxa.contacte||'—')+'</td>'+
+        var p=PILL[x.estat],contacte=[x.fitxa.telefon,x.fitxa.correu].filter(Boolean).join(' · ');
+        hm+='<tr><td><strong>'+esc(x.fitxa.nom||'—')+'</strong></td><td>'+esc(x.fitxa.nif||'—')+'</td><td>'+esc(contacte||'—')+'</td>'+
+            extra.map(function(c){return '<td>'+esc(x.fitxa[c]||'—')+'</td>'}).join('')+
             '<td><span class="pill'+(p[0]?' '+p[0]:'')+'"'+(p[0]?'':' style="background:#F1F5F9;color:#475569"')+'>'+esc(T(p[1]))+'</span></td></tr>';
       });
       hm+='</tbody></table>';
+      /* La mateixa etiqueta fixa que sota el camp: el que hi ha a la columna d'observacions se sincronitza. */
+      if(pend.mapa.observacions!=null)hm+='<p class="nota-obs">'+esc(T('Observaciones administrativas — no escriba información clínica: este campo se sincroniza.'))+'</p>';
     }
     $('pi-mostra').innerHTML=hm;
-    var b=$('pi-importar');
-    b.textContent=r.nous.length===1?T('Importar 1 paciente'):Tf('Importar {n} pacientes',{n:r.nous.length});
-    b.disabled=!r.nous.length;b.style.opacity=r.nous.length?'':'.5';
+    var b=$('pi-importar'),nn=r.nous.length,nc=r.completen.length;
+    b.textContent=nn&&nc?Tf('Importar {n} y completar {m}',{n:nn,m:nc}):nc?(nc===1?T('Completar 1 ficha'):Tf('Completar {n} fichas',{n:nc})):nn===1?T('Importar 1 paciente'):Tf('Importar {n} pacientes',{n:nn});
+    b.disabled=!(nn||nc);b.style.opacity=(nn||nc)?'':'.5';
     card.style.display='block';
   }
   async function llegeixFitxerPacients(f){
@@ -1324,7 +1407,7 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
        d'una consulta de tota una vida ha de cabre en una sola importació. */
     if(ambDades>20001){avis('err','El archivo tiene más de 20.000 filas. Divídalo en varios.');return}
     var cap=filaCapcalera(files);
-    importPendent={nomFitxer:nom,files:files,cap:cap,mapa:detectaMapa(files[cap])};
+    importPendent={nomFitxer:nom,files:files,cap:cap,mapa:detectaMapa(files[cap]),completar:false};
     pintaImportPacients();
     $('p-import').scrollIntoView({behavior:'smooth',block:'start'});
   }
@@ -1332,21 +1415,33 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
     $('b-pac-importar-btn').addEventListener('click',function(){$('b-pac-importar').click()});
     $('b-pac-importar').addEventListener('change',function(){var f=this.files[0];this.value='';if(f)llegeixFitxerPacients(f)});
     $('pi-tancar').addEventListener('click',function(){importPendent=null;pintaImportPacients()});
+    $('pi-completar').addEventListener('change',function(){if(importPendent){importPendent.completar=this.checked;pintaImportPacients()}});
     $('pi-importar').addEventListener('click',function(){
       if(!importPendent)return;
       var r=avaluaImport(importPendent);
-      if(!r.nous.length){avis('err','Nada que importar: todas las filas ya existen o no tienen nombre.');return}
-      desa(K.pac,pacients().concat(r.nous));
+      if(!r.nous.length&&!r.completen.length){avis('err','Nada que importar: todas las filas ya existen o no tienen nombre.');return}
+      var ps=pacients();normalitzaFitxes(ps);
+      /* ENG-28 · completar: només els camps que avaluaImport ha trobat buits, i
+         es torna a mirar aquí que ho siguin (mai s'escriu sobre un camp ple). */
+      r.completen.forEach(function(x){
+        var p=ps.find(function(q){return String(q.nom).toLowerCase()===x.clau});if(!p)return;
+        Object.keys(x.camps).forEach(function(c){if(!p[c])p[c]=x.camps[c]});
+      });
+      desa(K.pac,ps.concat(r.nous));
       importPendent=null;pintaTot();
-      avis('ok',r.jaExisteixen?Tf('Pacientes importados: {n}. Ya existían y no se han tocado: {m}.',{n:r.nous.length,m:r.jaExisteixen}):Tf('Pacientes importados: {n}.',{n:r.nous.length}));
+      var m=(r.nous.length||r.jaExisteixen)?(r.jaExisteixen?Tf('Pacientes importados: {n}. Ya existían y no se han tocado: {m}.',{n:r.nous.length,m:r.jaExisteixen}):Tf('Pacientes importados: {n}.',{n:r.nous.length})):'';
+      if(r.completen.length)m+=(m?' ':'')+Tf('Fichas existentes completadas con los datos que faltaban: {n}.',{n:r.completen.length});
+      avis('ok',m);
     });
     $('b-pac-exportar').addEventListener('click',function(){
       var ps=pacients().filter(function(p){return !esExemple(p)});
       if(!ps.length){avis('err','No hay pacientes que exportar.');return}
+      normalitzaFitxes(ps);   // ENG-28 · una fitxa vella surt amb el contacte ja partit
       var rs=registres();
-      /* Capçaleres en castellà sempre: és un document (ENG-4d), com el CSV de la gestoria. */
-      var files=[['Nombre y apellidos','NIF','Contacto','Facturas']].concat(ps.slice().sort(function(a,b){return a.nom.localeCompare(b.nom)}).map(function(p){
-        return [p.nom,p.nif||'',contacteDe(p),rs.filter(function(r){return r.pacientNom===p.nom}).length];   // ENG-28 · lectura del contacte partit (les columnes noves, a l'ordre següent)
+      /* Capçaleres en castellà sempre: és un document (ENG-4d), com el CSV de la
+         gestoria. ENG-28: les 9 columnes (els 8 camps de la fitxa i les factures). */
+      var files=[['Nombre y apellidos','NIF','Teléfono','Email','Dirección','Fecha de nacimiento','Mutua','Observaciones','Facturas']].concat(ps.slice().sort(function(a,b){return a.nom.localeCompare(b.nom)}).map(function(p){
+        return [p.nom,p.nif||'',p.telefon||'',p.correu||'',p.adreca||'',p.naixement||'',p.mutua||'',p.observacions||'',rs.filter(function(r){return r.pacientNom===p.nom}).length];
       }));
       descarrega('FacturaMed_pacientes_'+new Date().toISOString().slice(0,10)+'.xlsx',xlsxEscriu('Pacientes',files),'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
       avis('ok',Tf('Pacientes exportados a Excel: {n}.',{n:ps.length}));
@@ -1839,7 +1934,7 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
      en aquesta llista i prou. */
   window.__fm = { safe: safe, registres: registres, avis: avis,
                   descarrega: descarrega, T: T, Tf: Tf, conf: conf,
-                  separaContacte: separaContacte };   // ENG-28 · perquè l'arnès provi el criteri exacte
+                  separaContacte: separaContacte, dataExcel: dataExcel };   // ENG-28 · perquè l'arnès provi el criteri exacte i les dates
   /* ENG-13 · la barra nomes es veu en prova. Es torna a mirar a cada repintat
      perque l'estat pot canviar amb la pagina oberta (algu activa el pagament
      en una altra pestanya i torna aqui). */
@@ -2257,7 +2352,7 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
   "Filas sin nombre (no se importan): {n}.":["Files sense nom (no s'importen): {n}.","Zeilen ohne Namen (werden nicht importiert): {n}.","Rows without a name (not imported): {n}."],
   "Filas repetidas dentro del archivo (se importan una sola vez): {n}.":["Files repetides dins del fitxer (s'importen una sola vegada): {n}.","In der Datei doppelte Zeilen (werden nur einmal importiert): {n}.","Rows repeated within the file (imported only once): {n}."],
   "Filas con un NIF que ya pertenece a otra ficha (no se importan): {n}.":["Files amb un NIF que ja pertany a una altra fitxa (no s'importen): {n}.","Zeilen mit einer Ausweisnummer, die schon zu einer anderen Karte gehört (werden nicht importiert): {n}.","Rows with an ID number that already belongs to another record (not imported): {n}."],
-  "Columnas del archivo que no se importan: {c}. La ficha de FacturaMed guarda nombre, NIF y contacto.":["Columnes del fitxer que no s'importen: {c}. La fitxa de FacturaMed desa nom, NIF i contacte.","Spalten der Datei, die nicht importiert werden: {c}. Die FacturaMed-Karte speichert Name, Ausweisnummer und Kontakt.","Columns in the file that are not imported: {c}. The FacturaMed record stores name, ID number and contact."],
+  "Columnas del archivo que no se importan: {c}. La ficha de FacturaMed guarda nombre, NIF, teléfono, email, dirección, fecha de nacimiento, mutua y observaciones.":["Columnes del fitxer que no s'importen: {c}. La fitxa de FacturaMed desa nom, NIF, telèfon, correu, adreça, data de naixement, mútua i observacions.","Spalten der Datei, die nicht importiert werden: {c}. Die FacturaMed-Karte speichert Name, Ausweisnummer, Telefon, E-Mail, Adresse, Geburtsdatum, Versicherung und Bemerkungen.","Columns in the file that are not imported: {c}. The FacturaMed record stores name, ID number, phone, email, address, date of birth, insurer and notes."],
   "Primeras {n} filas, tal como quedarán:":["Primeres {n} files, tal com quedaran:","Die ersten {n} Zeilen, so wie sie gespeichert werden:","First {n} rows, as they will be saved:"],
   "Contacto":["Contacte","Kontakt","Contact"],
   "Resultado":["Resultat","Ergebnis","Result"],
@@ -2271,6 +2366,19 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
   "Mutua (si tiene)":["Mútua (si en té)","Versicherung (falls vorhanden)","Insurer (if any)"],
   "Observaciones":["Observacions","Bemerkungen","Notes"],
   "Observaciones administrativas — no escriba información clínica: este campo se sincroniza.":["Observacions administratives — no hi escrigui informació clínica: aquest camp se sincronitza.","Verwaltungsbemerkungen — keine klinischen Angaben eintragen: dieses Feld wird synchronisiert.","Administrative notes — do not enter clinical information: this field is synced."],
+  /* ENG-28 ③ · importació amb els camps nous i el mode «completar fitxes existents». */
+  "Columna de la dirección":["Columna de l'adreça","Spalte: Adresse","Address column"],
+  "Columna de la fecha de nacimiento":["Columna de la data de naixement","Spalte: Geburtsdatum","Date of birth column"],
+  "Columna de la mutua":["Columna de la mútua","Spalte: Versicherung","Insurer column"],
+  "Columna de las observaciones":["Columna de les observacions","Spalte: Bemerkungen","Notes column"],
+  "Mutua":["Mútua","Versicherung","Insurer"],
+  "Completar las fichas que ya existen con los datos que falten (nunca sobrescribe lo que ya está)":["Completar les fitxes que ja existeixen amb les dades que faltin (mai no sobreescriu el que ja hi ha)","Vorhandene Karten mit den fehlenden Angaben ergänzen (überschreibt nie, was schon da ist)","Complete existing records with the missing data (never overwrites what is already there)"],
+  "Fichas que ya existen y se completarán con los datos que faltan: {n}.":["Fitxes que ja existeixen i es completaran amb les dades que falten: {n}.","Vorhandene Karten, die mit den fehlenden Angaben ergänzt werden: {n}.","Existing records to be completed with the missing data: {n}."],
+  "se completa":["es completa","wird ergänzt","will be completed"],
+  "Completar 1 ficha":["Completar 1 fitxa","1 Karte ergänzen","Complete 1 record"],
+  "Completar {n} fichas":["Completar {n} fitxes","{n} Karten ergänzen","Complete {n} records"],
+  "Importar {n} y completar {m}":["Importar {n} i completar {m}","{n} importieren und {m} ergänzen","Import {n} and complete {m}"],
+  "Fichas existentes completadas con los datos que faltaban: {n}.":["Fitxes existents completades amb les dades que faltaven: {n}.","Vorhandene Karten mit den fehlenden Angaben ergänzt: {n}.","Existing records completed with the missing data: {n}."],
   "nueva":["nova","neu","new"],
   "ya existe":["ja existeix","gibt es schon","already exists"],
   "sin nombre":["sense nom","ohne Namen","no name"],

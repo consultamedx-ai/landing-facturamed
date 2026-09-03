@@ -374,8 +374,33 @@
     }
     // 1r: el que teniem desat, perque no parpellegi
     try{ var c=JSON.parse(localStorage.getItem('cm_productes')||'null'); if(c) aplica(c); }catch(e){}
+    /* ENG-22 (nota) · cap crida a l'API sense sessio. `jo` es l'UNICA sonda
+       d'aquesta pagina i tota la resta va darrere seu: sense sessio, res mes no
+       surt. I si l'ultima vegada el servidor ja va dir que no (401) i aquesta
+       carrega no pot haver creat cap sessio (recarrega, enrere, enllac des del
+       hub), ni la sonda: ho decideix cmStore.potHaverSessio, que te el perque
+       escrit a cmstore.js. La promesa es comparteix amb l'activacio (mes avall)
+       per window.cmSessio: resol amb la resposta de `jo` si hi ha sessio, i
+       amb null si no. */
+    var st=window.cmStore||{};
+    var sessio=window.cmSessio=(st.potHaverSessio&&!st.potHaverSessio())?Promise.resolve(null):
+      fetch('https://app.consultamed.es/api/s',{method:'POST',credentials:'include',
+        headers:{'Content-Type':'application/json'},body:JSON.stringify({accio:'jo'})})
+      .then(function(r){ if(r.status===401&&st.anotaSessio) st.anotaSessio(false); return r.json(); })
+      .then(function(d){
+        if(!d||!d.ok||!d.usuari) return null;
+        if(st.anotaSessio) st.anotaSessio(true);
+        return d;
+      }).catch(function(){ return null; });
+    // 2n: el que en diu el servidor
+    sessio.then(function(d){
+      if(!d||!d.usuari.productes) return;
+      try{localStorage.setItem('cm_productes',JSON.stringify(d.usuari.productes));}catch(e){}
+      aplica(d.usuari.productes);
+    });
     // GestorMed: si l'usuari pertany a una gestoria, li ensenyem la seva porta.
-    fetch('https://app.consultamed.es/api/s',{method:'POST',credentials:'include',
+    sessio.then(function(u){ if(!u) return;
+      return fetch('https://app.consultamed.es/api/s',{method:'POST',credentials:'include',
       headers:{'Content-Type':'application/json'},body:JSON.stringify({accio:'gestoria.meves'})})
       .then(function(r){return r.json();})
       .then(function(d){
@@ -398,17 +423,8 @@
         go.className='card-go'; go.textContent='Obrir →';
         a.appendChild(lg); a.appendChild(de); a.appendChild(go);
         grid.appendChild(a);
-      }).catch(function(){});
-
-    // 2n: preguntar-ho al servidor
-    fetch('https://app.consultamed.es/api/s',{method:'POST',credentials:'include',
-      headers:{'Content-Type':'application/json'},body:JSON.stringify({accio:'jo'})})
-      .then(function(r){return r.json();})
-      .then(function(d){
-        if(!d||!d.ok||!d.usuari||!d.usuari.productes) return;
-        try{localStorage.setItem('cm_productes',JSON.stringify(d.usuari.productes));}catch(e){}
-        aplica(d.usuari.productes);
-      }).catch(function(){});
+      });
+    }).catch(function(){});
   })();
 
   (function(){
@@ -587,8 +603,16 @@
   function netejaPas(){try{localStorage.removeItem(K_PAS)}catch(e){}}
 
   function api(accio,dades){
-    return fetch(API,{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify(Object.assign({accio:accio},dades||{}))}).then(function(r){return r.json()});
+    /* ENG-22 (nota) · cap crida sense sessio: s'espera la sonda `jo` del hub
+       (window.cmSessio, mes amunt) i, si no n'hi ha, es respon aqui mateix el
+       que respondria el servidor (el 401 «Sense sessio»), sense sortir a la
+       xarxa: cada porta fa exactament el que feia. Si la sonda no existis (no
+       hauria de passar), es crida com abans: el dubte cau del canto de preguntar. */
+    return (window.cmSessio||Promise.resolve(true)).then(function(u){
+      if(!u) return {ok:false,error:'Sense sessio'};
+      return fetch(API,{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify(Object.assign({accio:accio},dades||{}))}).then(function(r){return r.json()});
+    });
   }
 
   /* ── La barra del hub quan hi ha una activació a mig fer ────────────────── */

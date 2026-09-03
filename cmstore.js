@@ -340,9 +340,59 @@
     return b;
   }
 
+  /* ═════════════════════════════════════════════════════════════════════════
+     ENG-22 (nota) · CAP CRIDA A L'API SENSE SESSIO
+     Enginyeria · 03/09/2026
+
+     Un visitant que prova els productes sense compte carregava hub/app/secre i
+     cada pagina preguntava al servidor (`jo`; el hub a mes `gestoria.meves`, i
+     amb ?activar=1 `pagament.estat` i els comptadors de les portes): tot 401,
+     i la consola plena a cada carrega. No es un defecte funcional; es soroll
+     que amaga els errors de veritat.
+
+     La sessio viu en una cookie httpOnly d'app.consultamed.es: des d'aqui no es
+     pot llegir, i l'unic que sap si n'hi ha es el servidor. Per tant l'accio
+     `jo` es queda com a UNICA sonda per pagina i tota la resta s'encadena al
+     seu resultat (ho fan cmsync.js i hub.html). Aqui nomes es recorda que va
+     dir el servidor l'ultima vegada (`cm_sessio`: '1' si hi havia sessio, '0'
+     si va respondre 401) per estalviar-se la sonda quan NO POT haver canviat:
+
+       - una recarrega o un enrere/endavant no creen cap sessio;
+       - un enllac des d'una pagina nostra (referrer del mateix origen) tampoc:
+         la sessio nomes es crea a app.consultamed.es, que redirigeix al hub
+         SENSE referrer (Referrer-Policy: no-referrer al servidor).
+
+     Qualsevol altra arribada —URL escrita a ma, retorn del login, enllac des
+     d'una pagina nostra amb <meta name="referrer" content="no-referrer">
+     (index, es, app, escriba, secremed)— torna a preguntar, perque pot ser el
+     metge que acaba d'entrar. El dubte cau SEMPRE del canto de preguntar: el
+     cost d'una sonda de mes es un 401 a la consola; el d'una de menys seria un
+     metge amb sessio que no sincronitza.
+     ═════════════════════════════════════════════════════════════════════════ */
+  var K_SESSIO = 'cm_sessio';
+  function anotaSessio(hiHa) {
+    try { G.localStorage.setItem(K_SESSIO, hiHa ? '1' : '0'); } catch (e) {}
+  }
+  function potHaverSessio() {
+    var v = null;
+    try { v = G.localStorage.getItem(K_SESSIO); } catch (e) {}
+    if (v !== '0') return true;               // mai preguntat, o l'ultima vegada hi era
+    var tipus = 'navigate';
+    try {
+      var n = G.performance && G.performance.getEntriesByType && G.performance.getEntriesByType('navigation')[0];
+      if (n && n.type) tipus = n.type;
+    } catch (e) {}
+    if (tipus !== 'navigate') return false;    // recarrega, enrere/endavant
+    var ref = '';
+    try { ref = G.document.referrer || ''; } catch (e) {}
+    return !(ref && G.location && ref.indexOf(G.location.origin + '/') === 0);
+  }
+
   var LIMIT = 5 * 1024 * 1024; // ~5 MB (aprox. límit típic per origen)
   G.cmStore = {
     barraProva: barraProva,
+    potHaverSessio: potHaverSessio,
+    anotaSessio: anotaSessio,
     stats: function () {
       var ls = G.localStorage, stored = 0, raw = 0, keys = 0, i, k, sraw, splain;
       for (i = 0; i < ls.length; i++) {

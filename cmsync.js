@@ -23,14 +23,15 @@
   function t(k) { return TXT[k][IDX[idi()]]; }
 
   // ---- utilitats ----
-  function api(accio, dades) {
+  function crida(accio, dades) {
     var cos = Object.assign({ accio: accio }, dades || {});
     return fetch(BASE, {
       method: 'POST', credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(cos)
-    }).then(function (r) { return r.json(); });
+    });
   }
+  function api(accio, dades) { return crida(accio, dades).then(function (r) { return r.json(); }); }
   function llegeix(k) { try { return JSON.parse(localStorage.getItem(k)) || []; } catch (e) { return []; } }
 
   // ---- xip d'estat (discret, cantonada inferior dreta) ----
@@ -154,7 +155,18 @@
 
   // ---- arrencada ----
   function arrenca() {
-    api('jo').then(function (r) {
+    /* ENG-22 (nota) · `jo` es l'unica sonda de sessio d'aquesta pagina: push i
+       pull nomes surten si respon que si. I si l'ultima vegada va dir que no i
+       aquesta carrega no pot haver creat cap sessio (cmStore.potHaverSessio, amb
+       el perque a cmstore.js), ni la sonda: el xip diu "sense connexio" igual
+       que abans, pero sense cap 401 a la consola. */
+    var st = window.cmStore || {};
+    if (st.potHaverSessio && !st.potHaverSessio()) { pintaXip('off'); return; }
+    crida('jo').then(function (r) {
+      if (r.status === 401 && st.anotaSessio) st.anotaSessio(false);
+      return r.json();
+    }).then(function (r) {
+      if (r && r.ok && st.anotaSessio) st.anotaSessio(true);
       if (r && r.ok && r.usuari && r.usuari.organitzacions.length) {
         nomUsuari = r.usuari.nom;
         orgs = r.usuari.organitzacions;

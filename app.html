@@ -25,7 +25,7 @@
   h1,h2,h3{font-family:'Sora',sans-serif;color:var(--blau)}
   .wrap{max-width:1100px;margin:0 auto;padding:0 20px}
   nav{position:sticky;top:0;z-index:40;background:rgba(247,250,252,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--linia)}
-  .nav-in{display:flex;align-items:center;justify-content:space-between;height:58px;gap:12px;flex-wrap:wrap}
+  .nav-in{display:flex;align-items:center;justify-content:space-between;min-height:58px;gap:12px;flex-wrap:wrap} /* QA 03-09: min-height, no height: a 390 px les pestanyes salten a una segona fila i amb alçada fixa quedaven damunt de l'avís de beta */
   .logo{font-family:'Sora';font-weight:700;font-size:1.08rem;color:var(--blau);white-space:nowrap}
   .logo em{font-style:normal;color:var(--verd)}
   .logo{display:inline-flex;align-items:center;gap:9px}
@@ -35,6 +35,8 @@
   .tab{border:none;background:none;font:inherit;font-size:.85rem;font-weight:600;color:#64748B;padding:7px 16px;border-radius:99px;cursor:pointer}
   .tab.actiu{background:var(--blau);color:#fff}
   main{padding:24px 0 70px}
+  /* QA 03-09: el xip «Sense connexió» de cmsync.js (position:fixed, bottom:14px, estil en línia) quedava damunt de la barra de prova i a 390 px tapava «Activar el meu compte»; si hi ha barra, el xip puja per sobre (84 px cobreix la barra a 3 línies). */
+  body:has(#barra-prova) #cm-sync-xip{bottom:84px!important}
   .vista{display:none}
   .vista.actiu{display:block}
   .cfg-l{border:none;background:#fff;color:#64748B;font:inherit;font-weight:700;font-size:.72rem;padding:6px 11px;cursor:pointer}
@@ -95,11 +97,11 @@
   .banner{border-radius:11px;padding:11px 15px;font-size:.86rem;margin-bottom:14px;display:none}
   .banner.ok{display:block;background:#ECFDF5;border:1px solid #A7F3D0;color:var(--verd-fosc)}
   .banner.err{display:block;background:#FEF2F2;border:1px solid #FECACA;color:#B91C1C}
-  .buit{color:var(--boira);font-size:.87rem;text-align:center;padding:24px 0}
+  .buit{color:#64748B;font-size:.87rem;text-align:center;padding:24px 0} /* QA 03-09: Gris Boira només decoratiu (bíblia §4): com a text feia 2,5:1; #64748B fa 4,76 sobre blanc i 4,54 sobre Gasa */
   .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:18px}
   .kpi{background:#fff;border:1px solid var(--linia);border-radius:12px;padding:14px 16px}
   .kpi .v{font-family:'Sora';font-weight:700;font-size:1.35rem;color:var(--blau)}
-  .kpi .l{font-size:.72rem;color:var(--boira);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+  .kpi .l{font-size:.72rem;color:#64748B;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
   .accions-fila{display:flex;gap:6px;flex-wrap:wrap}
   /* ---- factura modal ---- */
   #factura-modal{display:none;position:fixed;inset:0;background:rgba(13,59,102,.45);z-index:60;overflow:auto;padding:24px 12px}
@@ -833,7 +835,7 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
     $('c-web').value=c.web||'';
     var lp=$('logo-preview');
     if(c.logo){lp.innerHTML='<img src="'+c.logo+'" alt="logo">';$('b-logo-treu').style.display='inline-block'}
-    else{lp.innerHTML='<span style="font-size:.75rem;color:var(--boira)">'+esc(T('Sin logo'))+'</span>';$('b-logo-treu').style.display='none'}
+    else{lp.innerHTML='<span style="font-size:.75rem;color:#64748B">'+esc(T('Sin logo'))+'</span>';$('b-logo-treu').style.display='none'}
     var cen=c.centre||{actiu:false,nom:'',metges:[]};
     $('c-centre').checked=!!cen.actiu;
     $('centre-camps').style.display=cen.actiu?'block':'none';

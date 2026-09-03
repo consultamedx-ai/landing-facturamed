@@ -16,7 +16,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root{--blau:#0D3B66;--teal:#0F9488;--gasa:#F7FAFC;--grafit:#1F2937;--boira:#94A3B8;--linia:#E7EDF3}
+  :root{--blau:#0D3B66;--teal:#0D7F74;/* QA 03-09: els enllaços en #0F9488 feien 3,57:1 sobre Blanc Gasa; #0D7F74 en fa 4,65 */--gasa:#F7FAFC;--grafit:#1F2937;--boira:#94A3B8;--linia:#E7EDF3}
   *{margin:0;padding:0;box-sizing:border-box}
   body{font-family:'Inter',system-ui,sans-serif;color:var(--grafit);background:var(--gasa);line-height:1.7;-webkit-font-smoothing:antialiased}
   .wrap{max-width:760px;margin:0 auto;padding:0 24px}
@@ -26,7 +26,7 @@
   nav a.torna{font-size:.86rem;font-weight:600;color:var(--blau);text-decoration:none}
   main{padding:48px 0 80px}
   h1{font-family:'Sora';font-size:1.9rem;color:var(--blau);letter-spacing:-.02em;margin-bottom:6px}
-  .data{color:var(--boira);font-size:.85rem;margin-bottom:34px}
+  .data{color:#64748B;font-size:.85rem;margin-bottom:34px}
   h2{font-family:'Sora';font-size:1.25rem;color:var(--blau);margin:40px 0 12px;padding-top:20px;border-top:1px solid var(--linia)}
   h3{font-family:'Sora';font-size:1rem;color:var(--blau);margin:22px 0 8px}
   p,li{font-size:.95rem;color:#374151;margin-bottom:10px}
@@ -37,6 +37,7 @@
   table{border-collapse:collapse;width:100%;margin:14px 0;font-size:.86rem}
   th,td{border:1px solid var(--linia);padding:8px 10px;text-align:left;vertical-align:top}
   th{background:#EEF4F9;color:var(--blau);font-family:'Sora';font-size:.82rem}
+  @media(max-width:640px){table{display:block;overflow-x:auto}} /* QA 03-09: a 390 px les dues taules de 4 columnes feien 476 px i desbordaven la pàgina sencera; així es desplacen dins la seva caixa */
   footer{background:#0A2E52;color:#8FA6BD;padding:34px 0;font-size:.82rem;text-align:center}
 </style>
 </head>
@@ -133,7 +134,7 @@
   <p>El lloc es publica a través d'un <strong>proveïdor de seguretat i xarxa (Cloudflare)</strong>, que pot instal·lar galetes tècniques <strong>estrictament necessàries</strong> per protegir el web del trànsit automatitzat maliciós (per exemple, <code>__cf_bm</code>, de durada curta). Segons el seu proveïdor, aquestes galetes no serveixen per fer seguiment de persones entre llocs ni sessions i no s'utilitzen amb finalitats publicitàries.</p>
   <p>Tant l'emmagatzematge tècnic com aquestes galetes de seguretat estan <strong>exempts del deure de consentiment previ</strong> per ser imprescindibles per prestar el servei sol·licitat (art. 22.2 de la Llei 34/2002, LSSI). Per això aquest lloc no mostra cap bàner de galetes. Si algun dia hi incorporéssim analítica o qualsevol galeta no necessària, demanaríem el seu consentiment abans i actualitzaríem aquesta política.</p>
 
-  <p style="margin-top:36px;color:var(--boira);font-size:.82rem">Última actualització: setembre de 2026. Publicarem qualsevol modificació d'aquesta pàgina amb avís previ raonable, indicant la data de versió.</p>
+  <p style="margin-top:36px;color:#64748B;font-size:.82rem">Última actualització: setembre de 2026. Publicarem qualsevol modificació d'aquesta pàgina amb avís previ raonable, indicant la data de versió.</p>
 </main>
 
 <footer><div class="wrap">ConsultaMed · El metge fa de metge. La resta, ConsultaMed. · <a href="mailto:legal@consultamed.es" style="color:#B9CBDD">legal@consultamed.es</a></div></footer>

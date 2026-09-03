@@ -23,7 +23,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --blau:#0D3B66; --blau2:#0A2E52; --teal:#14B8A6; --teal2:#0F9488;
+    --blau:#0D3B66; --blau2:#0A2E52; --teal:#14B8A6; --teal2:#0D7F74; /* QA 03-09: el teal fosc #0F9488 com a text (kickers, enllaços) feia 3,57:1 sobre Blanc Gasa; #0D7F74 en fa 4,65 (4,88 sobre blanc) */
     --verd:#059669; --violeta:#8B2DA5; --gasa:#F7FAFC; --grafit:#1F2937;
     --boira:#94A3B8; --linia:#E7EDF3; --max:1120px;
   }
@@ -61,7 +61,7 @@
   nav.scrolled .nav-login{color:var(--blau)}
   .nav-cta{background:var(--teal);color:#04201d;font-weight:700;font-size:.88rem;padding:11px 20px;border-radius:99px;transition:transform .2s,box-shadow .2s;box-shadow:0 8px 24px rgba(20,184,166,.35);min-height:44px;display:inline-flex;align-items:center}
   .nav-cta:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(20,184,166,.5)}
-  @media(max-width:560px){.nav-login{display:none}}
+  @media(max-width:560px){.nav-login{display:none}.lang-b,.nav-cta{white-space:nowrap}.nav-cta{font-size:.82rem;padding:11px 15px}.logo-pill img{height:20px}} /* QA 03-09: a 390 px «CAT ▾» i el CTA es partien en dues línies */
   .lang{position:relative}
   .lang-b{font:inherit;font-size:.82rem;font-weight:700;letter-spacing:.04em;background:none;border:1.5px solid currentColor;border-radius:99px;padding:9px 15px;cursor:pointer;min-height:44px;transition:color .3s,opacity .2s}
   nav:not(.scrolled) .lang-b{color:rgba(255,255,255,.85)}
@@ -102,19 +102,20 @@
 
   /* factura de mostra */
   .mock{position:relative;perspective:1400px}
-  .card-glass{position:relative;background:rgba(255,255,255,.92);border:1px solid rgba(255,255,255,.6);border-radius:20px;box-shadow:0 40px 90px rgba(4,20,40,.5);padding:24px;backdrop-filter:blur(6px);animation:float 7s ease-in-out infinite;will-change:transform}
+  .card-glass{position:relative;background:rgba(255,255,255,.92);border:1px solid rgba(255,255,255,.6);border-radius:20px;box-shadow:0 40px 90px rgba(4,20,40,.5);padding:24px 24px 48px;backdrop-filter:blur(6px);animation:float 7s ease-in-out infinite;will-change:transform}
   @keyframes float{0%,100%{transform:translateY(0) rotateX(4deg) rotateY(-6deg)}50%{transform:translateY(-14px) rotateX(2deg) rotateY(-4deg)}}
   @media(prefers-reduced-motion:reduce){.card-glass{animation:none}}
   .demo-tag{position:absolute;top:-12px;right:16px;background:var(--blau);color:#fff;font-size:.62rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:5px 11px;border-radius:99px;box-shadow:0 6px 16px rgba(4,20,40,.3)}
   .cg-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:10px}
   .cg-h strong{font-family:'Sora';color:var(--blau);font-size:.98rem}
-  .chip-vf{font-size:.66rem;font-weight:700;background:#ECFDF5;color:var(--verd);border:1px solid #A7F3D0;padding:3px 9px;border-radius:99px;white-space:nowrap}
+  .chip-vf{font-size:.66rem;font-weight:700;background:#ECFDF5;color:#047857;border:1px solid #A7F3D0;padding:3px 9px;border-radius:99px;white-space:nowrap}
   .cg-l{display:flex;justify-content:space-between;font-size:.83rem;color:#475569;padding:9px 0;border-bottom:1px dashed var(--linia);gap:12px}
   .cg-l .viol{color:var(--violeta);font-weight:600}
   .cg-t{display:flex;justify-content:space-between;font-weight:700;color:var(--blau);padding-top:12px;font-size:.92rem}
   .pill-ia{position:absolute;top:-16px;left:-14px;background:linear-gradient(120deg,var(--violeta),#6F2184);color:#fff;font-size:.72rem;font-weight:700;padding:8px 14px;border-radius:99px;box-shadow:0 12px 28px rgba(139,45,165,.45);display:inline-flex;align-items:center;gap:6px}
-  .qr-box{position:absolute;right:-18px;bottom:-24px;background:#fff;border-radius:14px;padding:12px;box-shadow:0 24px 50px rgba(4,20,40,.4);text-align:center}
-  .qr-box small{display:block;font-size:.56rem;font-weight:700;letter-spacing:.08em;color:var(--boira);margin-top:6px}
+  /* QA 03-09: el QR penja de la cantonada des de fora (i la factura du 24 px més de peu) perquè abans tapava «generat» i l'estat «Correcta ✓» */
+  .qr-box{position:absolute;right:-26px;bottom:-64px;background:#fff;border-radius:14px;padding:12px;box-shadow:0 24px 50px rgba(4,20,40,.4);text-align:center}
+  .qr-box small{display:block;font-size:.56rem;font-weight:700;letter-spacing:.08em;color:#64748B;margin-top:6px}
 
   /* franja de fets */
   .stats{background:var(--blau);color:#fff;padding:34px 0}
@@ -148,6 +149,7 @@
   .prod{position:relative;background:linear-gradient(#fff,#fff) padding-box,linear-gradient(135deg,var(--pc),transparent 55%) border-box;border:1.5px solid transparent;border-radius:20px;padding:30px 28px;box-shadow:0 12px 36px rgba(13,59,102,.06);transition:transform .2s,box-shadow .2s}
   .prod:hover{transform:translateY(-4px);box-shadow:0 22px 52px rgba(13,59,102,.12)}
   .prod .p-chip{display:inline-block;font-size:.64rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#fff;background:var(--pc);padding:4px 11px;border-radius:99px;margin-bottom:14px}
+  .prod[style*="--verd"] .p-chip{color:#04201d} /* QA 03-09: bíblia v2.3 §4, text sobre Verd en Tinta Teal (blanc: 3,77:1; Tinta Teal: 4,53) */
   .prod img{height:30px;width:auto;margin-bottom:14px}
   .prod p{font-size:.95rem;color:#4B5B6C;margin-bottom:16px}
   .prod ul{list-style:none}
@@ -194,7 +196,7 @@
   .offer .risc{margin-top:22px;font-size:.88rem;color:#5B6B7C;max-width:34em;margin-left:auto;margin-right:auto}
   .offer .btn-of{display:inline-flex;align-items:center;justify-content:center;margin-top:24px;background:linear-gradient(100deg,var(--teal),#0FA396);color:#04201d;font-weight:700;font-size:1rem;padding:16px 34px;border-radius:99px;box-shadow:0 14px 34px rgba(20,184,166,.35);transition:transform .2s,box-shadow .2s;min-height:48px}
   .offer .btn-of:hover{transform:translateY(-3px);box-shadow:0 20px 44px rgba(20,184,166,.5)}
-  .offer .centre{margin-top:18px;font-size:.82rem;color:var(--boira)}
+  .offer .centre{margin-top:18px;font-size:.82rem;color:#64748B} /* QA 03-09: Gris Boira mai per a text informatiu (bíblia §4, 2,56:1); #64748B fa 4,76 sobre blanc */
 
   /* ===== HISTÒRIA ===== */
   #historia .cos{max-width:44em;margin-top:26px;display:grid;gap:18px;font-size:1.02rem;color:#374151}
@@ -220,7 +222,7 @@
   .check input{width:auto;min-height:auto;margin-top:3px}
   .cta{width:100%;margin-top:20px;background:linear-gradient(100deg,var(--teal),#0FA396);color:#04201d;border:none;cursor:pointer;font-family:inherit;font-weight:700;font-size:1rem;padding:16px;border-radius:99px;box-shadow:0 12px 30px rgba(20,184,166,.3);transition:transform .2s,box-shadow .2s;min-height:48px}
   .cta:hover{transform:translateY(-2px);box-shadow:0 16px 38px rgba(20,184,166,.45)}
-  .micro{font-size:.78rem;color:var(--boira);text-align:center;margin-top:12px}
+  .micro{font-size:.78rem;color:#64748B;text-align:center;margin-top:12px}
   #gracies{display:none;max-width:520px;margin:0 auto;background:#fff;border:1px solid var(--linia);border-radius:20px;padding:44px 32px;text-align:center;box-shadow:0 18px 50px rgba(13,59,102,.08)}
   #gracies .okic{width:56px;height:56px;border-radius:50%;background:#ECFDF5;color:var(--verd);display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
   #gracies h3{font-size:1.2rem;margin-bottom:6px}
@@ -252,7 +254,8 @@
     section{padding:72px 0}
     header{padding:110px 0 70px}
     .pains,.facts,.moat,.steps{grid-template-columns:1fr}
-    .qr-box{right:-4px;bottom:-18px}
+    .qr-box{right:-4px;bottom:-64px}
+    .demo-tag{top:auto;bottom:-12px;right:auto;left:16px} /* QA 03-09: a 390 px trepitjava la pastilla «Informe escrit per IA» */
     .offer{padding:32px 22px}
     body{padding-bottom:70px}
   }
@@ -307,7 +310,7 @@
         <div class="cg-l"><span>Dermatology visit</span><span>90,00 €</span></div>
         <div class="cg-l"><span>Patient · Adeslas</span><span>Oct. batch</span></div>
         <div class="cg-l"><span>Visit report</span><span class="viol">generated</span></div>
-        <div class="cg-t"><span>Status</span><span style="color:var(--verd)">Valid ✓</span></div>
+        <div class="cg-t"><span>Status</span><span style="color:#047857">Valid ✓</span></div>
       </div>
       <div class="qr-box" aria-hidden="true">
         <svg width="64" height="64" viewBox="0 0 64 64"><rect width="64" height="64" fill="#fff"/><g fill="#0D3B66"><rect x="4" y="4" width="16" height="16"/><rect x="8" y="8" width="8" height="8" fill="#fff"/><rect x="44" y="4" width="16" height="16"/><rect x="48" y="8" width="8" height="8" fill="#fff"/><rect x="4" y="44" width="16" height="16"/><rect x="8" y="48" width="8" height="8" fill="#fff"/><rect x="28" y="6" width="6" height="6"/><rect x="28" y="18" width="6" height="6"/><rect x="26" y="28" width="8" height="8"/><rect x="40" y="30" width="6" height="6"/><rect x="50" y="28" width="6" height="6"/><rect x="28" y="44" width="6" height="6"/><rect x="38" y="42" width="6" height="6"/><rect x="48" y="44" width="10" height="6"/><rect x="38" y="54" width="6" height="6"/><rect x="52" y="54" width="6" height="6"/></g></svg>

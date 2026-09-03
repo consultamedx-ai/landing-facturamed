@@ -30,7 +30,7 @@
   h1,h2,h3{font-family:'Sora',sans-serif;color:var(--blau)}
   .wrap{max-width:1100px;margin:0 auto;padding:0 20px}
   nav{position:sticky;top:0;z-index:40;background:rgba(247,250,252,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--linia)}
-  .nav-in{display:flex;align-items:center;justify-content:space-between;height:58px;gap:12px;flex-wrap:wrap}
+  .nav-in{display:flex;align-items:center;justify-content:space-between;min-height:58px;gap:12px;flex-wrap:wrap} /* QA 03-09: min-height, no height: a 390 px les pestanyes salten a una segona fila i amb alçada fixa quedaven damunt de l'avís de beta */
   .logo{font-family:'Sora';font-weight:700;font-size:1.08rem;color:var(--blau);white-space:nowrap}
   .logo em{font-style:normal;color:var(--violeta)}
   .logo small{font-size:.66rem;color:var(--boira);font-weight:500}
@@ -43,6 +43,8 @@
   .tab{border:none;background:none;font:inherit;font-size:.85rem;font-weight:600;color:#64748B;padding:7px 15px;border-radius:99px;cursor:pointer}
   .tab.actiu{background:var(--violeta);color:#fff}
   main{padding:22px 0 70px}
+  /* QA 03-09: com a app.html, el xip de cmsync.js no ha de quedar damunt de la barra de prova (aquí només amb cm_preview). */
+  body:has(#barra-prova) #cm-sync-xip{bottom:84px!important}
   .vista{display:none}.vista.actiu{display:block}
   .card{background:#fff;border:1px solid var(--linia);border-radius:14px;padding:20px;margin-bottom:18px}
   .card h2{font-size:1rem;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
@@ -63,7 +65,7 @@
   .banner.ok{display:block;background:#ECFDF5;border:1px solid #A7F3D0;color:var(--verd-fosc)}
   .banner.err{display:block;background:#FEF2F2;border:1px solid #FECACA;color:#B91C1C}
   .avis-priv{background:#FFF7ED;border:1px solid #FED7AA;color:var(--violeta-fosc);border-radius:11px;padding:10px 14px;font-size:.78rem;margin-bottom:16px}
-  .buit{color:var(--boira);font-size:.87rem;text-align:center;padding:22px 0}
+  .buit{color:#64748B;font-size:.87rem;text-align:center;padding:22px 0} /* QA 03-09: Gris Boira només decoratiu (bíblia §4): com a text feia 2,5:1; #64748B fa 4,76 sobre blanc i 4,54 sobre Gasa */
   .cita{display:flex;align-items:center;gap:12px;padding:11px 12px;border:1px solid var(--linia);border-radius:11px;margin-bottom:8px;background:#fff}
   .cita .hora{font-family:'Sora';font-weight:700;color:var(--blau);font-size:1.05rem;min-width:52px}
   .cita .cos{flex:1;min-width:0}
@@ -87,7 +89,7 @@
   .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:18px}
   .kpi{background:#fff;border:1px solid var(--linia);border-radius:12px;padding:14px 16px}
   .kpi .v{font-family:'Sora';font-weight:700;font-size:1.35rem;color:var(--blau)}
-  .kpi .l{font-size:.72rem;color:var(--boira);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+  .kpi .l{font-size:.72rem;color:#64748B;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
   table{width:100%;border-collapse:collapse;font-size:.84rem}
   th{text-align:left;background:var(--blau);color:#fff;padding:8px 10px;font-weight:600;white-space:nowrap}
   td{padding:8px 10px;border-bottom:1px solid var(--linia);vertical-align:middle}

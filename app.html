@@ -1172,8 +1172,9 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
     var usades={};CAMPS_IMPORT.forEach(function(c){if(pend.mapa[c]!=null)usades[pend.mapa[c]]=true});
     var fora=nomsCol.filter(function(n,i){return !usades[i]&&netText(cap[i])});
     if(fora.length)res.push(esc(Tf('Columnas del archivo que no se importan: {c}. La ficha de FacturaMed guarda nombre, NIF y contacto.',{c:fora.join(', ')})));
-    var totalDespres=pacients().length+r.nous.length;
-    if(totalDespres>500)res.push('<span style="color:#B45309">'+esc(Tf('Aviso: la sincronización entre dispositivos admite por ahora 500 fichas. Con {n}, las fichas se guardan en este dispositivo pero no se sincronizarán hasta que se amplíe el límite.',{n:totalDespres}))+'</span>');
+    /* ENG-27 (03/09/2026): l'avís dels 500 ja no hi és. La sincronització puja
+       per lots (cmsync.js) i no hi ha cap sostre per consulta: l'únic límit real
+       és el localStorage del navegador (la mesura és a 04_Arquitectura). */
     $('pi-resum').innerHTML='<p style="margin:0;font-size:.88rem;line-height:1.55">'+res.join('<br>')+'</p>';
     var PILL={nou:['f1','nueva'],jaExisteix:['','ya existe'],senseNom:['r1','sin nombre'],repetit:['','repetida'],nifDuplicat:['r1','NIF de otra ficha']};
     var mostra=r.files.slice(0,8),hm='';
@@ -1210,7 +1211,9 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
     while(files.length&&!files[files.length-1].some(function(c){return c.trim()}))files.pop();
     var ambDades=files.filter(function(r){return r.some(function(c){return c.trim()})}).length;
     if(!ambDades){avis('err','El archivo no tiene filas con datos.');return}
-    if(ambDades>5001){avis('err','El archivo tiene más de 5.000 filas. Divídalo en varios.');return}
+    /* ENG-27: 20.000 files (abans 5.000). Sense sostre per consulta, el fitxer
+       d'una consulta de tota una vida ha de cabre en una sola importació. */
+    if(ambDades>20001){avis('err','El archivo tiene más de 20.000 filas. Divídalo en varios.');return}
     var cap=filaCapcalera(files);
     importPendent={nomFitxer:nom,files:files,cap:cap,mapa:detectaMapa(files[cap])};
     pintaImportPacients();
@@ -2141,7 +2144,6 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
   "Filas repetidas dentro del archivo (se importan una sola vez): {n}.":["Files repetides dins del fitxer (s'importen una sola vegada): {n}.","In der Datei doppelte Zeilen (werden nur einmal importiert): {n}.","Rows repeated within the file (imported only once): {n}."],
   "Filas con un NIF que ya pertenece a otra ficha (no se importan): {n}.":["Files amb un NIF que ja pertany a una altra fitxa (no s'importen): {n}.","Zeilen mit einer Ausweisnummer, die schon zu einer anderen Karte gehört (werden nicht importiert): {n}.","Rows with an ID number that already belongs to another record (not imported): {n}."],
   "Columnas del archivo que no se importan: {c}. La ficha de FacturaMed guarda nombre, NIF y contacto.":["Columnes del fitxer que no s'importen: {c}. La fitxa de FacturaMed desa nom, NIF i contacte.","Spalten der Datei, die nicht importiert werden: {c}. Die FacturaMed-Karte speichert Name, Ausweisnummer und Kontakt.","Columns in the file that are not imported: {c}. The FacturaMed record stores name, ID number and contact."],
-  "Aviso: la sincronización entre dispositivos admite por ahora 500 fichas. Con {n}, las fichas se guardan en este dispositivo pero no se sincronizarán hasta que se amplíe el límite.":["Avís: la sincronització entre dispositius admet de moment 500 fitxes. Amb {n}, les fitxes es desen en aquest dispositiu però no se sincronitzaran fins que s'ampliï el límit.","Hinweis: Die Synchronisierung zwischen Geräten unterstützt derzeit 500 Karten. Mit {n} werden die Karten auf diesem Gerät gespeichert, aber erst synchronisiert, wenn das Limit erhöht wird.","Notice: sync between devices currently supports 500 records. With {n}, records are saved on this device but will not sync until the limit is raised."],
   "Primeras {n} filas, tal como quedarán:":["Primeres {n} files, tal com quedaran:","Die ersten {n} Zeilen, so wie sie gespeichert werden:","First {n} rows, as they will be saved:"],
   "Contacto":["Contacte","Kontakt","Contact"],
   "Resultado":["Resultat","Ergebnis","Result"],
@@ -2159,7 +2161,7 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
   "Este archivo es un Excel antiguo (.xls). Ábralo en Excel y guárdelo como .xlsx o como CSV.":["Aquest fitxer és un Excel antic (.xls). Obriu-lo a l'Excel i deseu-lo com a .xlsx o com a CSV.","Diese Datei ist ein altes Excel-Format (.xls). Öffnen Sie sie in Excel und speichern Sie sie als .xlsx oder CSV.","This is an old Excel file (.xls). Open it in Excel and save it as .xlsx or CSV."],
   "Este formato no se puede leer directamente. Expórtelo como Excel (.xlsx) o como CSV.":["Aquest format no es pot llegir directament. Exporteu-lo com a Excel (.xlsx) o com a CSV.","Dieses Format kann nicht direkt gelesen werden. Exportieren Sie es als Excel (.xlsx) oder CSV.","This format cannot be read directly. Export it as Excel (.xlsx) or CSV."],
   "El archivo no tiene filas con datos.":["El fitxer no té files amb dades.","Die Datei enthält keine Datenzeilen.","The file has no rows with data."],
-  "El archivo tiene más de 5.000 filas. Divídalo en varios.":["El fitxer té més de 5.000 files. Dividiu-lo en diversos.","Die Datei hat mehr als 5.000 Zeilen. Teilen Sie sie auf.","The file has more than 5,000 rows. Split it into several files."],
+  "El archivo tiene más de 20.000 filas. Divídalo en varios.":["El fitxer té més de 20.000 files. Dividiu-lo en diversos.","Die Datei hat mehr als 20.000 Zeilen. Teilen Sie sie auf.","The file has more than 20,000 rows. Split it into several files."],
   "Este navegador no puede leer .xlsx. Guarde el archivo como CSV o use Google Chrome.":["Aquest navegador no pot llegir .xlsx. Deseu el fitxer com a CSV o feu servir Google Chrome.","Dieser Browser kann keine .xlsx-Dateien lesen. Speichern Sie die Datei als CSV oder verwenden Sie Google Chrome.","This browser cannot read .xlsx files. Save the file as CSV or use Google Chrome."],
   "No hay pacientes que exportar.":["No hi ha pacients per exportar.","Keine Patienten zum Exportieren.","No patients to export."],
   "Pacientes exportados a Excel: {n}.":["Pacients exportats a Excel: {n}.","Nach Excel exportierte Patienten: {n}.","Patients exported to Excel: {n}."],

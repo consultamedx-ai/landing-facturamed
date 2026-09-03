@@ -70,14 +70,48 @@
   }
 
   // ---- push / pull ----
+  /* ENG-27 (03/09/2026) · SENSE SOSTRE PER CONSULTA: es puja per lots.
+     Decisio d'en Roger (2/09): «una consulta privada pot arribar a tenir milers
+     de pacients; vull que no hi hagi un maxim». El servidor conserva un sostre
+     PER PETICIO (MAX_PACIENTS_SYNC = 500, MAX_CITES_SYNC = 2000: anti-abus), pero
+     cap per consulta. Aqui les fitxes es parteixen en lots de 500 i les cites en
+     lots de 2000, i s'envien EN SERIE (un sync.push darrere l'altre), tots amb
+     complet:false: cap lot, per si sol, es «tot el meu estat». El lot i porta el
+     tros i de pacients I el tros i de cites: son la meitat de peticions que
+     enviar-los separats, i no hi ha cap dependencia entre ells (sync.push mai
+     omple Cita.pacientId). Una peticio amb els dos arrays buits no s'envia.
+
+     Al final, i NOMES si el dispositiu te dades, una sola crida sync.tanca amb
+     la llista completa de noms i d'ids (cap fitxa: 5.000 noms son ~100 KB)
+     perque el servidor faci l'esborrat propagat que abans feia complet:true.
+     El guard «un dispositiu buit no buida el servidor» es conserva: sense
+     dades, ni tanca. Si un lot falla, la cadena s'atura, ni tanca ni pull, i
+     el xip diu «Error», com abans. L'unic sostre que queda es el localStorage
+     del navegador (mesura a 04_Arquitectura). */
+  var LOT = { pac: 500, cites: 2000 };   // = sostre per peticio del servidor
+  function ambOk(r) { if (r && r.ok === false) throw r; return r; }
   function push() {
     if (!org) return Promise.resolve();
+    var o = org;   // fixat aqui: un canvi de context a mig cami no barreja lots
     var pac = llegeix(K.pac), cit = llegeix(K.cites);
-    // `complet` indica al servidor que aquest es tot el meu estat i que pot esborrar
-    // el que no hi surti. Nomes si tinc dades: un dispositiu buit no ha de buidar res.
-    var complet = (pac.length > 0 || cit.length > 0);
-    return api('sync.push', { organitzacioId: org, pacients: pac, cites: cit, complet: complet })
-      .then(function (r) { if (r && r.ok === false) throw r; return r; });
+    var n = Math.max(Math.ceil(pac.length / LOT.pac), Math.ceil(cit.length / LOT.cites));
+    var cadena = Promise.resolve({ ok: true });
+    function lot(i) {
+      return function () {
+        return api('sync.push', { organitzacioId: o,
+          pacients: pac.slice(i * LOT.pac, (i + 1) * LOT.pac),
+          cites: cit.slice(i * LOT.cites, (i + 1) * LOT.cites),
+          complet: false }).then(ambOk);
+      };
+    }
+    for (var i = 0; i < n; i++) cadena = cadena.then(lot(i));
+    if (pac.length || cit.length) cadena = cadena.then(function () {
+      return api('sync.tanca', { organitzacioId: o,
+        pacients: pac.map(function (p) { return p && p.nom; }).filter(Boolean),
+        cites: cit.map(function (c) { return c && c.id; }).filter(function (id) { return id != null; })
+      }).then(ambOk);
+    });
+    return cadena;
   }
   function pull() {
     if (!org) return Promise.resolve();

@@ -102,6 +102,14 @@
 .act-cal{border:1px solid rgba(13,59,102,.18);border-radius:12px;padding:14px 16px;margin:0 0 22px;background:rgba(13,59,102,.04)}
 .act-cal-tit{font-weight:700;margin-bottom:4px}
 .act-cal p{margin:0;line-height:1.55}
+/* ENG-25 · la línia legal de la porta 0 (contracte del 03/09, §5): el mateix
+   cos secundari que .act-sub (#5B6B7C, 5,2:1 sobre Blanc Gasa) i l'enllaç en
+   Blau Clínic, subratllat perquè es vegi que ho és. S'obre en una pestanya
+   nova: l'activació és una pàgina amb estat a mitges i no s'ha de perdre per
+   anar a llegir les condicions. */
+.act-legal{font-size:.86rem;color:#5B6B7C;line-height:1.55;margin:0 0 18px}
+.act-legal a{color:#0D3B66;font-weight:600;text-decoration:underline;text-underline-offset:2px}
+.act-legal a:focus-visible{outline:2px solid #0D3B66;outline-offset:2px}
 .act-camps{display:flex;flex-direction:column;gap:14px;margin:0 0 18px}
 .act-camp label{display:block;font-weight:600;font-size:.86rem;margin-bottom:5px}
 .act-camp input{width:100%;padding:11px 13px;border:1px solid rgba(148,163,184,.5);border-radius:10px;font:inherit;background:#fff}
@@ -199,6 +207,8 @@
       <div class="act-cal-tit" id="a0-cal-tit"></div>
       <p id="a0-cal-txt"></p>
     </div>
+    <!-- ENG-25 · acceptació de les condicions del servei i del contracte d'encàrrec, abans dels botons -->
+    <p class="act-legal" id="a0-legal"></p>
     <div class="act-botons">
       <button class="act-b act-b-si" type="button" id="a0-segueix"></button>
       <button class="act-b act-b-no" type="button" id="a0-surt"></button>
@@ -495,6 +505,7 @@
            "<b>Les factures de prova es queden com a prova</b> i les podrà consultar sempre, però <b>la seva facturació legal comença de zero</b>, amb la seva sèrie pròpia. És així perquè ha de ser així."],
       calTit:"Què necessitarà tenir a mà",
       calTxt:"Per activar el compte necessitarà: <b>el seu NIF</b>, <b>l'adreça fiscal</b>, <b>el número de col·legiat</b> i <b>una targeta</b>. Són cinc minuts. Si li falta alguna cosa, pot deixar-ho a mitges i continuar quan vulgui: no es perd res.",
+      legal:"En activar el compte accepta <a href='legal.html' target='_blank' rel='noopener'>les condicions del servei i el contracte d'encàrrec de tractament de dades</a>.",
       segueix:"Continuar", arano:"Ara no",
       p1tit:"Les seves dades fiscals", p1sub:"Només el que falta per poder facturar de veritat. Es desa a mesura que l'escriu.",
       lNom:"Nom i cognoms", lNif:"NIF", lCol:"Número de col·legiat", lAdr:"Adreça fiscal",
@@ -521,6 +532,7 @@
            "<b>Las facturas de prueba se quedan como prueba</b> y podrá consultarlas siempre, pero <b>su facturación legal empieza de cero</b>, con su serie propia. Es así porque tiene que ser así."],
       calTit:"Qué necesitará tener a mano",
       calTxt:"Para activar la cuenta necesitará: <b>su NIF</b>, <b>la dirección fiscal</b>, <b>el número de colegiado</b> y <b>una tarjeta</b>. Son cinco minutos. Si le falta algo, puede dejarlo a medias y continuar cuando quiera: no se pierde nada.",
+      legal:"Al activar la cuenta acepta <a href='legal-es.html' target='_blank' rel='noopener'>las condiciones del servicio y el contrato de encargo de tratamiento de datos</a>.",
       segueix:"Continuar", arano:"Ahora no",
       p1tit:"Sus datos fiscales", p1sub:"Solo lo que falta para poder facturar de verdad. Se guarda a medida que lo escribe.",
       lNom:"Nombre y apellidos", lNif:"NIF", lCol:"Número de colegiado", lAdr:"Dirección fiscal",
@@ -547,6 +559,7 @@
            "<b>Your test invoices stay test invoices</b> and you will always be able to consult them, but <b>your legal invoicing starts from zero</b>, with your own series. It is this way because it has to be."],
       calTit:"What you will need at hand",
       calTxt:"To activate the account you will need: <b>your tax ID</b>, <b>your fiscal address</b>, <b>your licence number</b> and <b>a card</b>. It takes five minutes. If something is missing you can stop halfway and continue whenever you want: nothing is lost.",
+      legal:"By activating the account you accept <a href='legal.html' target='_blank' rel='noopener'>the terms of service and the data processing agreement</a>.",
       segueix:"Continue", arano:"Not now",
       p1tit:"Your fiscal details", p1sub:"Only what is missing in order to invoice for real. It is saved as you type.",
       lNom:"Full name", lNif:"Tax ID", lCol:"Licence number", lAdr:"Fiscal address",
@@ -573,6 +586,7 @@
            "<b>Ihre Testrechnungen bleiben Testrechnungen</b> und Sie können sie jederzeit einsehen, aber <b>Ihre rechtliche Rechnungsstellung beginnt bei null</b>, mit Ihrer eigenen Serie. Das ist so, weil es so sein muss."],
       calTit:"Was Sie bereithalten sollten",
       calTxt:"Zum Aktivieren des Kontos brauchen Sie: <b>Ihre Steuernummer</b>, <b>die Rechnungsadresse</b>, <b>Ihre Arztnummer</b> und <b>eine Karte</b>. Es dauert fünf Minuten. Wenn Ihnen etwas fehlt, können Sie mittendrin aufhören und später weitermachen: es geht nichts verloren.",
+      legal:"Mit der Aktivierung des Kontos akzeptieren Sie <a href='legal.html' target='_blank' rel='noopener'>die Nutzungsbedingungen und den Auftragsverarbeitungsvertrag</a>.",
       segueix:"Weiter", arano:"Jetzt nicht",
       p1tit:"Ihre Steuerdaten", p1sub:"Nur was zum echten Rechnungstellen noch fehlt. Es wird beim Tippen gespeichert.",
       lNom:"Vor- und Nachname", lNif:"Steuernummer", lCol:"Arztnummer", lAdr:"Rechnungsadresse",
@@ -668,6 +682,7 @@
     $('a0-cos').innerHTML=t.cos.map(function(p){return '<p>'+p+'</p>'}).join('');
     $('a0-cal-tit').textContent=t.calTit;
     $('a0-cal-txt').innerHTML=t.calTxt;
+    $('a0-legal').innerHTML=t.legal;   /* ENG-25 · porta l'enllaç dins: legal.html, o legal-es.html en castellà */
     $('a0-segueix').textContent=t.segueix;
     $('a0-surt').textContent=t.arano;
     $('a0-segueix').onclick=function(){marca(0,'completada');desaPas(1);porta1()};

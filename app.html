@@ -45,6 +45,14 @@
   input,select,textarea{width:100%;padding:9px 12px;border:1px solid var(--linia);border-radius:9px;font:inherit;font-size:.9rem;background:var(--gasa)}
   input:focus,select:focus{outline:2px solid var(--teal);background:#fff}
   .fila{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  /* ENG-28 · el desplegable «Más datos (opcional)» del formulari de pacient i
+     l'etiqueta fixa sota Observaciones. Mateixos estils que els camps de
+     sempre: el resum en Blau Clínic com els enllaços, i el text de l'etiqueta
+     en #475569 com la resta de notes informatives (Gris Boira és només
+     decoratiu: Disseny/03 §4). */
+  details.mes-dades{margin-top:12px}
+  details.mes-dades summary{cursor:pointer;font-size:.8rem;font-weight:600;color:var(--blau);user-select:none}
+  .nota-obs{font-size:.72rem;color:#475569;margin-top:4px;line-height:1.4}
   .btn{display:inline-block;background:var(--verd);color:var(--tinta-teal);border:none;cursor:pointer;font-family:inherit;font-weight:600;font-size:.93rem;padding:11px 20px;border-radius:99px;margin-top:14px;transition:background .15s}
   .btn:hover{background:var(--verd-fosc)}
   .btn.sec{background:#fff;color:var(--blau);border:1.5px solid var(--linia)}
@@ -319,8 +327,26 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
         <input id="p-nom" placeholder="Anna Ferrer Puig">
         <label for="p-nif">NIF (opcional, para factura nominal)</label>
         <input id="p-nif" placeholder="00000000X" maxlength="9">
-        <label for="p-contacte">Email o teléfono (opcional)</label>
-        <input id="p-contacte" placeholder="anna@mail.com">
+        <!-- ENG-28 · el contacte es parteix en telèfon i correu, i la resta de la
+             fitxa (adreça, naixement, mútua, observacions) va darrere d'un
+             desplegable tancat: la fitxa curta segueix sent de 20 segons.
+             Els maxlength són els límits de tallat() del servidor (contracte §4). -->
+        <label for="p-telefon">Teléfono (opcional)</label>
+        <input id="p-telefon" type="tel" placeholder="600 000 000" maxlength="40" autocomplete="off">
+        <label for="p-correu">Email (opcional)</label>
+        <input id="p-correu" type="email" placeholder="anna@mail.com" maxlength="120" autocomplete="off">
+        <details class="mes-dades" id="p-mes">
+          <summary>Más datos (opcional)</summary>
+          <label for="p-adreca">Dirección</label>
+          <input id="p-adreca" placeholder="C/ Salut 1, 17001 Girona" maxlength="200" autocomplete="off">
+          <div class="fila">
+            <div><label for="p-naixement">Fecha de nacimiento</label><input id="p-naixement" type="date"></div>
+            <div><label for="p-mutua">Mutua (si tiene)</label><input id="p-mutua" placeholder="Adeslas, Sanitas…" maxlength="80" autocomplete="off"></div>
+          </div>
+          <label for="p-observacions">Observaciones</label>
+          <textarea id="p-observacions" rows="2" maxlength="300"></textarea>
+          <p class="nota-obs">Observaciones administrativas — no escriba información clínica: este campo se sincroniza.</p>
+        </details>
         <button class="btn" id="b-pacient" type="button">Guardar paciente</button>
       </div>
       <div class="card">
@@ -358,8 +384,21 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
             <div><label for="pd-nom">Nombre y apellidos</label><input id="pd-nom"></div>
             <div><label for="pd-nif">NIF</label><input id="pd-nif" maxlength="9"></div>
           </div>
-          <label for="pd-contacte">Email o teléfono</label>
-          <input id="pd-contacte">
+          <!-- ENG-28 · els 8 camps de la fitxa administrativa (04_Arquitectura, Part A).
+               Mateixos identificadors que al formulari, amb el prefix pd-. -->
+          <div class="fila">
+            <div><label for="pd-telefon">Teléfono</label><input id="pd-telefon" type="tel" maxlength="40" autocomplete="off"></div>
+            <div><label for="pd-correu">Email</label><input id="pd-correu" type="email" maxlength="120" autocomplete="off"></div>
+          </div>
+          <label for="pd-adreca">Dirección</label>
+          <input id="pd-adreca" maxlength="200" autocomplete="off">
+          <div class="fila">
+            <div><label for="pd-naixement">Fecha de nacimiento</label><input id="pd-naixement" type="date"></div>
+            <div><label for="pd-mutua">Mutua (si tiene)</label><input id="pd-mutua" maxlength="80" autocomplete="off"></div>
+          </div>
+          <label for="pd-observacions">Observaciones</label>
+          <textarea id="pd-observacions" rows="2" maxlength="300"></textarea>
+          <p class="nota-obs">Observaciones administrativas — no escriba información clínica: este campo se sincroniza.</p>
           <span class="accions-fila" style="margin-top:12px">
             <button class="btn mini" id="pd-guardar" type="button">💾 Guardar cambios</button>
             <button class="btn perill mini" id="pd-esborrar" type="button">🗑 Borrar paciente</button>
@@ -648,6 +687,73 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
   function pacients(){return llegeix(K.pac,[])}
   function registres(){return llegeix(K.reg,[])}
 
+  /* ═══════════════════════════════════════════════════════════════════════
+     ENG-28 (03/09/2026) · LA FITXA CREIX
+     ───────────────────────────────────────────────────────────────────────
+     Decisió d'en Roger (2/09): la fitxa administrativa passa de tres camps
+     (nom, NIF, contacte) a vuit: nom, nif, telefon, correu, adreca, naixement
+     (sempre 'YYYY-MM-DD' o ''), mutua i observacions. El mateix vocabulari al
+     servidor (a Prisma el correu es diu `email`; al JSON de sync, `correu`) i
+     als tres productes. Cap camp clínic (invariant C.9): les observacions són
+     administratives, la interfície ho diu amb una etiqueta fixa sota el camp,
+     i NO hi ha cap filtre de contingut: s'avisa, i el responsable és el metge.
+
+     El `contacte` antic («934 000 673 · anna@mail.com») es parteix amb el
+     MATEIX criteri que lib/pacient.js del servidor: trossos separats per
+     · , ; | / o per dos espais o més (i per un espai simple si el tros porta
+     una @); el primer tros amb @ és el correu, i la resta, unida amb un espai,
+     el telèfon. Es fa en carregar i després de cada baixada (cm-sync-pull):
+     una fitxa vella pot arribar d'un altre dispositiu, d'una còpia restaurada
+     o d'un servidor que encara la torni així. */
+  var CAMPS_FITXA=['telefon','correu','adreca','naixement','mutua','observacions'];
+  function separaContacte(text){
+    var trossos=[];
+    String(text==null?'':text).split(/\s*[·,;|\/]\s*|\s{2,}/).forEach(function(t){
+      t=t.trim();if(!t)return;
+      if(t.indexOf('@')>=0)t.split(/\s+/).forEach(function(x){if(x)trossos.push(x)});
+      else trossos.push(t);
+    });
+    var correu='',tel=[];
+    trossos.forEach(function(t){if(!correu&&t.indexOf('@')>=0)correu=t;else tel.push(t)});
+    return {telefon:tel.join(' '),correu:correu};
+  }
+  /* Normalitza una llista de fitxes al model d'ENG-28, in situ; torna si ha
+     canviat res. Una fitxa amb `contacte` i sense telèfon ni correu es
+     parteix; el `contacte` desapareix sempre (el servidor el torna DERIVAT de
+     telèfon i correu perquè un app.html vell en memòria cau el pugui pintar;
+     aquí ja no serveix de res i, deixat, quedaria desfasat al primer canvi). */
+  function normalitzaFitxes(ps){
+    var canvi=false;
+    (ps||[]).forEach(function(p){
+      if(!p||typeof p!=='object'||!('contacte' in p))return;
+      if(!p.telefon&&!p.correu){var s=separaContacte(p.contacte);p.telefon=s.telefon;p.correu=s.correu}
+      delete p.contacte;canvi=true;
+    });
+    return canvi;
+  }
+  /* En carregar i després de cada cm-sync-pull. S'escriu al localStorage
+     directament i NO amb desa(): això és una migració de format, no un canvi
+     del metge, i desa() dispararia una pujada després de cada baixada (cada
+     5 minuts, mentre el servidor torni el `contacte` derivat). La forma nova
+     puja igualment amb el proper canvi o el proper cicle, que llegeixen el
+     localStorage tal com queda aquí. */
+  function normalitzaPacientsDesats(){
+    var ps=pacients();
+    if(normalitzaFitxes(ps))try{localStorage.setItem(K.pac,JSON.stringify(ps))}catch(e){}
+  }
+  /* El contacte a la taula: telèfon · correu (i, defensivament, el contacte
+     antic d'una fitxa que encara no hagi passat per normalitzaFitxes). */
+  function contacteDe(p){return [p.telefon,p.correu].filter(Boolean).join(' · ')||p.contacte||''}
+  /* Els sis camps nous llegits del formulari (prefix 'p-' o 'pd-'). La data
+     només en YYYY-MM-DD, que és el que dóna <input type="date">; qualsevol
+     altra cosa queda buida, com fa el servidor. */
+  function campsFitxa(pre){
+    var o={};
+    CAMPS_FITXA.forEach(function(c){var el=$(pre+c);o[c]=el?el.value.trim():''});
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(o.naixement))o.naixement='';
+    return o;
+  }
+
   // ---------- migració des de la demo v1 ----------
   safe(function(){
     if(conf())return;
@@ -830,7 +936,7 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
     var rs=registres();
     ps.slice().sort(function(a,b){return a.nom.localeCompare(b.nom)}).forEach(function(p){
       var n=rs.filter(function(r){return r.pacientNom===p.nom}).length;
-      h+='<tr><td><strong>'+esc(p.nom)+'</strong></td><td>'+esc(p.nif||'—')+'</td><td>'+esc(p.contacte||'—')+'</td><td>'+n+'</td>'+
+      h+='<tr><td><strong>'+esc(p.nom)+'</strong></td><td>'+esc(p.nif||'—')+'</td><td>'+esc(contacteDe(p)||'—')+'</td><td>'+n+'</td>'+
          '<td><button class="btn sec mini" data-fitxa="'+esc(p.nom)+'" type="button">'+esc(T('Ver ficha'))+'</button></td></tr>';
     });
     el.innerHTML=h+'</tbody></table>';
@@ -843,7 +949,9 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
     var p=pacients().find(function(x){return x.nom===nom});
     if(!p){$('p-detall').style.display='none';fitxaOberta=null;return}
     fitxaOberta=nom;
-    $('pd-nom').value=p.nom;$('pd-nif').value=p.nif||'';$('pd-contacte').value=p.contacte||'';
+    normalitzaFitxes([p]);   // ENG-28 · una fitxa vella no perd el contacte en obrir-la i desar-la
+    $('pd-nom').value=p.nom;$('pd-nif').value=p.nif||'';
+    CAMPS_FITXA.forEach(function(c){$('pd-'+c).value=p[c]||''});
     var rs=registres().filter(function(r){return r.pacientNom===nom});
     $('pd-nfact').textContent=rs.length;
     $('pd-total').textContent=fmt2(rs.reduce(function(a,r){return a+parseFloat(r.total)},0))+' €';
@@ -868,8 +976,9 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
       var nom=$('p-nom').value.trim();if(!nom){avis('err','El nombre es obligatorio.');return}
       var ps=pacients();
       if(ps.some(function(p){return p.nom.toLowerCase()===nom.toLowerCase()})){avis('err','Ese paciente ya existe.');return}
-      ps.push({nom:nom,nif:$('p-nif').value.trim().toUpperCase(),contacte:$('p-contacte').value.trim()});
-      desa(K.pac,ps);$('p-nom').value='';$('p-nif').value='';$('p-contacte').value='';
+      ps.push(Object.assign({nom:nom,nif:$('p-nif').value.trim().toUpperCase()},campsFitxa('p-')));
+      desa(K.pac,ps);$('p-nom').value='';$('p-nif').value='';
+      CAMPS_FITXA.forEach(function(c){$('p-'+c).value=''});$('p-mes').open=false;
       pintaTot();$('f-pacient').value=nom;
       avis('ok','Ficha creada. Ya puede facturar a este paciente.');
     });
@@ -882,7 +991,7 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
       var p=ps.find(function(x){return x.nom===vell});if(!p)return;
       var canviaNom=nou!==vell;
       if(canviaNom&&!confirm(T('Va a renombrar al paciente en su ficha, sus facturas y sus informes. ¿Continuar?')))return;
-      p.nom=nou;p.nif=$('pd-nif').value.trim().toUpperCase();p.contacte=$('pd-contacte').value.trim();
+      p.nom=nou;p.nif=$('pd-nif').value.trim().toUpperCase();Object.assign(p,campsFitxa('pd-'));delete p.contacte;
       desa(K.pac,ps);
       if(canviaNom){
         var rs=registres();rs.forEach(function(r){if(r.pacientNom===vell)r.pacientNom=nou});desa(K.reg,rs);
@@ -1237,7 +1346,7 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
       var rs=registres();
       /* Capçaleres en castellà sempre: és un document (ENG-4d), com el CSV de la gestoria. */
       var files=[['Nombre y apellidos','NIF','Contacto','Facturas']].concat(ps.slice().sort(function(a,b){return a.nom.localeCompare(b.nom)}).map(function(p){
-        return [p.nom,p.nif||'',p.contacte||'',rs.filter(function(r){return r.pacientNom===p.nom}).length];
+        return [p.nom,p.nif||'',contacteDe(p),rs.filter(function(r){return r.pacientNom===p.nom}).length];   // ENG-28 · lectura del contacte partit (les columnes noves, a l'ordre següent)
       }));
       descarrega('FacturaMed_pacientes_'+new Date().toISOString().slice(0,10)+'.xlsx',xlsxEscriu('Pacientes',files),'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
       avis('ok',Tf('Pacientes exportados a Excel: {n}.',{n:ps.length}));
@@ -1302,11 +1411,12 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
     adreca:'Carrer de Casp, 46, 3r 2a — 08010 Barcelona', web:''
   };
   var EXEMPLE_PACIENTS=[
-    {nom:'Laia Puigdefàbregas Mas',nif:'11111111H',contacte:'laia.p@example.com'},
-    {nom:'Jordi Serra Vidal',      nif:'22222222J',contacte:'jserra@example.com'},
-    {nom:'Carmen López Ruiz',      nif:'33333333P',contacte:'934 000 673'},
-    {nom:'Youssef El Amrani',      nif:'X1111111G',contacte:'y.elamrani@example.com'},
-    {nom:'Hannah Müller',          nif:'',         contacte:'h.mueller@example.com'}
+    /* ENG-28 · el contacte ja neix partit en telèfon i correu */
+    {nom:'Laia Puigdefàbregas Mas',nif:'11111111H',telefon:'',           correu:'laia.p@example.com'},
+    {nom:'Jordi Serra Vidal',      nif:'22222222J',telefon:'',           correu:'jserra@example.com'},
+    {nom:'Carmen López Ruiz',      nif:'33333333P',telefon:'934 000 673',correu:''},
+    {nom:'Youssef El Amrani',      nif:'X1111111G',telefon:'',           correu:'y.elamrani@example.com'},
+    {nom:'Hannah Müller',          nif:'',         telefon:'',           correu:'h.mueller@example.com'}
   ];
   /* dies enrere · pacient (index) · concepte · base · exempta */
   var EXEMPLE_FACTURES=[
@@ -1502,7 +1612,7 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
     var ps=pacients();
     EXEMPLE_PACIENTS.forEach(function(x){
       if(ps.some(function(y){return y.nom===x.nom}))return;
-      ps.push({nom:x.nom,nif:x.nif,contacte:x.contacte,exemple:MARCA_EXEMPLE});
+      ps.push({nom:x.nom,nif:x.nif,telefon:x.telefon,correu:x.correu,adreca:'',naixement:'',mutua:'',observacions:'',exemple:MARCA_EXEMPLE});
     });
     desa(K.pac,ps);
     sembraAgenda();
@@ -1728,7 +1838,8 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
      recullen totes de cop. Si algun dia el bloc necessita res més, s'afegeix
      en aquesta llista i prou. */
   window.__fm = { safe: safe, registres: registres, avis: avis,
-                  descarrega: descarrega, T: T, Tf: Tf, conf: conf };
+                  descarrega: descarrega, T: T, Tf: Tf, conf: conf,
+                  separaContacte: separaContacte };   // ENG-28 · perquè l'arnès provi el criteri exacte
   /* ENG-13 · la barra nomes es veu en prova. Es torna a mirar a cada repintat
      perque l'estat pot canviar amb la pagina oberta (algu activa el pagament
      en una altra pestanya i torna aqui). */
@@ -1748,7 +1859,8 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
     var a=$('barra-prova-cta');
     if(a){a.textContent=T('Activar mi cuenta');a.href='hub.html?activar=1&tornar=app'}
   }
-  window.addEventListener('cm-sync-pull',function(){try{pintaTot()}catch(e){}});
+  /* ENG-28 · el que baixa del servidor es normalitza abans de pintar-ho. */
+  window.addEventListener('cm-sync-pull',function(){try{normalitzaPacientsDesats();pintaTot()}catch(e){}});
 
   safe(function(){$('r-filtre').addEventListener('input',pintaRegistre)},'filtre');
 
@@ -1818,7 +1930,8 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
           var d=JSON.parse(lector.result);
           if(d.app!=='FacturaMed'||!d.config)throw new Error('formato');
           if(!confirm(Tf('Esto SUSTITUIRÁ todos los datos actuales por la copia del {data}. ¿Continuar?',{data:(d.data||'').slice(0,10)})))return;
-          desa(K.conf,d.config);desa(K.pac,d.pacients||[]);desa(K.reg,d.registres||[]);
+          var pc=d.pacients||[];normalitzaFitxes(pc);   // ENG-28 · una còpia d'abans porta `contacte`
+          desa(K.conf,d.config);desa(K.pac,pc);desa(K.reg,d.registres||[]);
           pintaTot();avis('ok','Copia restaurada.');
         }catch(e){avis('err','El archivo no es una copia válida de FacturaMed.')}
       };
@@ -2081,6 +2194,7 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
     if(!conf()){
       desa(K.conf,{nom:'',nif:'',colegiat:'',adreca:'',series:[{codi:String(new Date().getFullYear()),seguent:1}]});
     }
+    normalitzaPacientsDesats();   // ENG-28 · fitxes d'abans del model de 8 camps
     pintaTot();
   },'init');
 
@@ -2147,6 +2261,16 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
   "Primeras {n} filas, tal como quedarán:":["Primeres {n} files, tal com quedaran:","Die ersten {n} Zeilen, so wie sie gespeichert werden:","First {n} rows, as they will be saved:"],
   "Contacto":["Contacte","Kontakt","Contact"],
   "Resultado":["Resultat","Ergebnis","Result"],
+  /* ENG-28 · la fitxa creix: telèfon i correu separats, i els quatre camps nous */
+  "Teléfono (opcional)":["Telèfon (opcional)","Telefon (optional)","Phone (optional)"],
+  "Email (opcional)":["Email (opcional)","E-Mail (optional)","Email (optional)"],
+  "Email":["Email","E-Mail","Email"],
+  "Más datos (opcional)":["Més dades (opcional)","Weitere Angaben (optional)","More details (optional)"],
+  "Dirección":["Adreça","Adresse","Address"],
+  "Fecha de nacimiento":["Data de naixement","Geburtsdatum","Date of birth"],
+  "Mutua (si tiene)":["Mútua (si en té)","Versicherung (falls vorhanden)","Insurer (if any)"],
+  "Observaciones":["Observacions","Bemerkungen","Notes"],
+  "Observaciones administrativas — no escriba información clínica: este campo se sincroniza.":["Observacions administratives — no hi escrigui informació clínica: aquest camp se sincronitza.","Verwaltungsbemerkungen — keine klinischen Angaben eintragen: dieses Feld wird synchronisiert.","Administrative notes — do not enter clinical information: this field is synced."],
   "nueva":["nova","neu","new"],
   "ya existe":["ja existeix","gibt es schon","already exists"],
   "sin nombre":["sense nom","ohne Namen","no name"],

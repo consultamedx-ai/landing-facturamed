@@ -246,8 +246,10 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
         <input id="np-nom" placeholder="Nombre del paciente" autocomplete="off">
         <label for="np-nif">NIF (opcional)</label>
         <input id="np-nif" placeholder="12345678Z" autocomplete="off" style="text-transform:uppercase">
-        <label for="np-tel">Contacto (teléfono / email)</label>
-        <input id="np-tel" placeholder="+34 600 000 000" autocomplete="off">
+        <!-- ENG-28 · la fitxa ràpida desa el telèfon (camp `telefon`); el correu
+             i la resta de la fitxa s'omplen a FacturaMed. «Teléfono» ja és al diccionari. -->
+        <label for="np-tel">Teléfono</label>
+        <input id="np-tel" type="tel" placeholder="+34 600 000 000" maxlength="40" autocomplete="off">
         <button class="btn" id="b-nova-fitxa" type="button">＋ Crear ficha</button>
       </div>
       <div class="card">
@@ -353,7 +355,9 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
     nom=nom.trim();if(!nom)return;
     var ps=pacients();
     if(!ps.some(function(p){return p.nom.toLowerCase()===nom.toLowerCase()})){
-      ps.push({nom:nom,nif:'',contacte:tel||''});desa(K.pac,ps);
+      /* ENG-28 · model de 8 camps de la fitxa: el telèfon va a `telefon`
+         (abans `contacte`). La resta de camps els omple FacturaMed. */
+      ps.push({nom:nom,nif:'',telefon:tel||''});desa(K.pac,ps);
     }
   }
   function pintaPacients(){
@@ -367,7 +371,9 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
     ps.slice().sort(function(a,b){return a.nom.localeCompare(b.nom)}).forEach(function(p){
       var futures=cs.filter(function(c){return c.pacient===p.nom&&c.data>=isoAvui()&&c.estat!=='cancelada'}).sort(function(a,b){return (a.data+a.hora).localeCompare(b.data+b.hora)});
       var prox=futures.length?dataLlegible(futures[0].data)+' '+futures[0].hora:'—';
-      h+='<tr><td><strong>'+esc(p.nom)+'</strong></td><td>'+esc(p.nif||'—')+'</td><td>'+esc(p.contacte||'—')+'</td><td>'+esc(prox)+'</td></tr>';
+      /* ENG-28 · telèfon, si no correu; i `contacte` només per a una fitxa
+         d'abans que encara no hagi passat per FacturaMed (lectura defensiva). */
+      h+='<tr><td><strong>'+esc(p.nom)+'</strong></td><td>'+esc(p.nif||'—')+'</td><td>'+esc(p.telefon||p.correu||p.contacte||'—')+'</td><td>'+esc(prox)+'</td></tr>';
     });
     el.innerHTML=h+'</tbody></table>';
   }
@@ -504,7 +510,7 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
       var nom=$('np-nom').value.trim();if(!nom){avis('err',L('indicanom'));return}
       var ps=pacients();
       if(ps.some(function(p){return p.nom.toLowerCase()===nom.toLowerCase()})){avis('err',L('fitxaexisteix'));return}
-      ps.push({nom:nom,nif:$('np-nif').value.trim().toUpperCase(),contacte:$('np-tel').value.trim()});
+      ps.push({nom:nom,nif:$('np-nif').value.trim().toUpperCase(),telefon:$('np-tel').value.trim()});   // ENG-28
       desa(K.pac,ps);
       $('np-nom').value='';$('np-nif').value='';$('np-tel').value='';
       pintaTot();avis('ok',L('fitxacreada'));

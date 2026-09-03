@@ -45,6 +45,13 @@
   input,select,textarea{width:100%;padding:9px 12px;border:1px solid var(--linia);border-radius:9px;font:inherit;font-size:.9rem;background:var(--gasa)}
   input:focus,select:focus{outline:2px solid var(--teal);background:#fff}
   .fila{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  /* DIS-12 · selectors de columna del panell d'importació: a 1024 px van 5 per
+     fila (cel·les de 179 px) i dues etiquetes («fecha de nacimiento»,
+     «observaciones») es parteixen en dues línies, de manera que els <select>
+     d'una mateixa fila quedaven a alçades diferents. Cada cel·la alinea el
+     seu contingut a baix: l'etiqueta creix cap amunt i els selectors formen
+     una línia. */
+  #pi-mapa>div{display:flex;flex-direction:column;justify-content:flex-end}
   /* ENG-28 · el desplegable «Más datos (opcional)» del formulari de pacient i
      l'etiqueta fixa sota Observaciones. Mateixos estils que els camps de
      sempre: el resum en Blau Clínic com els enllaços, i el text de l'etiqueta
@@ -59,6 +66,12 @@
   .btn.sec:hover{background:var(--gasa)}
   .btn.mini{padding:6px 13px;font-size:.78rem;margin:0}
   .btn.perill{background:#fff;color:var(--vermell);border:1.5px solid #FECACA}
+  /* DIS-12 · botó desactivat: el patró de la casa és el d'escriba.html
+     (.btn[disabled]{opacity:.45;cursor:not-allowed}; hub.html fa el mateix amb
+     .5), en CSS i no com a style.opacity posat des del JS. El contrast efectiu
+     del text (Tinta Teal sobre verd al 45 % sobre blanc) és 1,63:1: WCAG 1.4.3
+     no exigeix contrast als controls inactius, i el cursor diu el mateix. */
+  .btn[disabled]{opacity:.45;cursor:not-allowed}
   .check{display:flex;gap:8px;align-items:center;margin-top:10px;font-size:.84rem}
   .check input{width:auto}
   table{width:100%;border-collapse:collapse;font-size:.84rem}
@@ -75,6 +88,10 @@
      mínim 4,5:1 de la regla 9 (marca); #0E7490 (el mateix to, més fosc) dóna
      5,15:1, com els 5,21:1 de f1 i els 5,91:1 de r1. */
   .pill.info{background:#ECFEFF;color:#0E7490}
+  /* DIS-12 (03/09/2026) · la pastilla neutra («ya existe», «repetida») deixa
+     d'anar amb colors en línia i segueix el mateix patró que f1, r1 i info:
+     #475569 sobre #F1F5F9 són 6,92:1 (regla 9: mínim 4,5:1). */
+  .pill.gris{background:#F1F5F9;color:#475569}
   .banner{border-radius:11px;padding:11px 15px;font-size:.86rem;margin-bottom:14px;display:none}
   .banner.ok{display:block;background:#ECFDF5;border:1px solid #A7F3D0;color:var(--verd-fosc)}
   .banner.err{display:block;background:#FEF2F2;border:1px solid #FECACA;color:#B91C1C}
@@ -371,7 +388,8 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
       <h2><span>Importar pacientes</span>
         <button class="btn sec mini" id="pi-tancar" type="button">✕ Cancelar</button>
       </h2>
-      <p style="font-size:.82rem;color:var(--boira);margin-top:0">El archivo se lee en su ordenador y no se envía a ningún sitio.</p>
+      <!-- DIS-12 · text informatiu (una promesa de privacitat): en #475569 (7,58:1), no en Gris Boira (2,56:1; només decoratiu, bíblia §4) -->
+      <p style="font-size:.82rem;color:#475569;margin-top:0">El archivo se lee en su ordenador y no se envía a ningún sitio.</p>
       <p id="pi-fitxer" style="font-size:.82rem;color:var(--grafit);margin-top:0"></p>
       <div class="fila" id="pi-mapa" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr))"></div>
       <!-- ENG-28 · mode «completar fitxes existents»: DESMARCADA per defecte, i només omple camps buits (mai un de ple) -->
@@ -1359,7 +1377,8 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
        per lots (cmsync.js) i no hi ha cap sostre per consulta: l'únic límit real
        és el localStorage del navegador (la mesura és a 04_Arquitectura). */
     $('pi-resum').innerHTML='<p style="margin:0;font-size:.88rem;line-height:1.55">'+res.join('<br>')+'</p>';
-    var PILL={nou:['f1','nueva'],jaExisteix:['','ya existe'],senseNom:['r1','sin nombre'],repetit:['','repetida'],nifDuplicat:['r1','NIF de otra ficha'],completa:['info','se completa']};
+    /* DIS-12 · cada estat té la seva classe .pill.* (la neutra és .gris): cap color en línia. */
+    var PILL={nou:['f1','nueva'],jaExisteix:['gris','ya existe'],senseNom:['r1','sin nombre'],repetit:['gris','repetida'],nifDuplicat:['r1','NIF de otra ficha'],completa:['info','se completa']};
     var mostra=r.files.slice(0,8),hm='';
     /* ENG-28 · les columnes noves només es pinten si el fitxer les té (un CSV
        de nom i NIF no ha d'ensenyar quatre columnes buides). La data surt ja
@@ -1367,14 +1386,14 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
     var ETQ_EXTRA={adreca:'Dirección',naixement:'Fecha de nacimiento',mutua:'Mutua',observacions:'Observaciones'};
     var extra=['adreca','naixement','mutua','observacions'].filter(function(c){return pend.mapa[c]!=null});
     if(mostra.length){
-      hm='<p style="font-size:.78rem;color:var(--boira);margin:0 0 6px">'+esc(Tf('Primeras {n} filas, tal como quedarán:',{n:mostra.length}))+'</p>'+
+      hm='<p style="font-size:.78rem;color:#475569;margin:0 0 6px">'+esc(Tf('Primeras {n} filas, tal como quedarán:',{n:mostra.length}))+'</p>'+
          '<table><thead><tr><th>'+esc(T('Nombre y apellidos'))+'</th><th>NIF</th><th>'+esc(T('Contacto'))+'</th>'+
          extra.map(function(c){return '<th>'+esc(T(ETQ_EXTRA[c]))+'</th>'}).join('')+'<th>'+esc(T('Resultado'))+'</th></tr></thead><tbody>';
       mostra.forEach(function(x){
         var p=PILL[x.estat],contacte=[x.fitxa.telefon,x.fitxa.correu].filter(Boolean).join(' · ');
         hm+='<tr><td><strong>'+esc(x.fitxa.nom||'—')+'</strong></td><td>'+esc(x.fitxa.nif||'—')+'</td><td>'+esc(contacte||'—')+'</td>'+
             extra.map(function(c){return '<td>'+esc(x.fitxa[c]||'—')+'</td>'}).join('')+
-            '<td><span class="pill'+(p[0]?' '+p[0]:'')+'"'+(p[0]?'':' style="background:#F1F5F9;color:#475569"')+'>'+esc(T(p[1]))+'</span></td></tr>';
+            '<td><span class="pill '+p[0]+'">'+esc(T(p[1]))+'</span></td></tr>';
       });
       hm+='</tbody></table>';
       /* La mateixa etiqueta fixa que sota el camp: el que hi ha a la columna d'observacions se sincronitza. */
@@ -1383,7 +1402,7 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
     $('pi-mostra').innerHTML=hm;
     var b=$('pi-importar'),nn=r.nous.length,nc=r.completen.length;
     b.textContent=nn&&nc?Tf('Importar {n} y completar {m}',{n:nn,m:nc}):nc?(nc===1?T('Completar 1 ficha'):Tf('Completar {n} fichas',{n:nc})):nn===1?T('Importar 1 paciente'):Tf('Importar {n} pacientes',{n:nn});
-    b.disabled=!(nn||nc);b.style.opacity=(nn||nc)?'':'.5';
+    b.disabled=!(nn||nc);   /* DIS-12 · l'aspecte del botó desactivat el posa .btn[disabled] (CSS), no cap style en línia */
     card.style.display='block';
   }
   async function llegeixFitxerPacients(f){
@@ -2331,13 +2350,17 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
 /* Traductor d'interfície ConsultaMed (CA/DE/EN) — segur: només canvia text visible estàtic */
 (function(){
   var DICT={
-  /* ENG-26 · importar (Excel/CSV) i exportar (Excel) pacients. */
+  /* ENG-26 · importar (Excel/CSV) i exportar (Excel) pacients.
+     DIS-12 (03/09/2026) · textos DE revisats: registre formal («bereits
+     vorhanden», no «gibt es schon»/«schon da»), «Spalte: Name» (la columna
+     pot dur el nom sencer, no només el «Vorname»), «Ausweisnummer» a tot
+     arreu on el castellà diu NIF, i «CSV-Datei» com a «Excel-Datei». */
   "⬆ Importar Excel/CSV":["⬆ Importar Excel/CSV","⬆ Excel/CSV importieren","⬆ Import Excel/CSV"],
   "⬇ Exportar Excel":["⬇ Exportar Excel","⬇ Excel exportieren","⬇ Export Excel"],
   "Importar pacientes":["Importar pacients","Patienten importieren","Import patients"],
   "✕ Cancelar":["✕ Cancel·lar","✕ Abbrechen","✕ Cancel"],
   "El archivo se lee en su ordenador y no se envía a ningún sitio.":["El fitxer es llegeix al seu ordinador i no s'envia enlloc.","Die Datei wird auf Ihrem Rechner gelesen und nirgendwohin gesendet.","The file is read on your computer and is not sent anywhere."],
-  "Columna del nombre":["Columna del nom","Spalte: Vorname","Name column"],
+  "Columna del nombre":["Columna del nom","Spalte: Name","Name column"],
   "Columna de los apellidos":["Columna dels cognoms","Spalte: Nachname","Surname column"],
   "Columna del 2º apellido":["Columna del 2n cognom","Spalte: 2. Nachname","2nd surname column"],
   "Columna del NIF":["Columna del NIF","Spalte: Ausweisnummer","ID number column"],
@@ -2348,10 +2371,10 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
   "Archivo: {f} · filas con datos: {n} · encabezados en la fila {r}.":["Fitxer: {f} · files amb dades: {n} · capçaleres a la fila {r}.","Datei: {f} · Zeilen mit Daten: {n} · Überschriften in Zeile {r}.","File: {f} · rows with data: {n} · headers in row {r}."],
   "Elija en qué columna está el nombre para poder importar.":["Trieu en quina columna hi ha el nom per poder importar.","Wählen Sie die Spalte mit dem Namen, um importieren zu können.","Choose which column holds the name in order to import."],
   "Fichas nuevas que se crearán: {n}.":["Fitxes noves que es crearan: {n}.","Neue Karten, die angelegt werden: {n}.","New records to be created: {n}."],
-  "Ya existían con el mismo nombre (no se modifican): {n}.":["Ja existien amb el mateix nom (no es modifiquen): {n}.","Gab es schon mit demselben Namen (bleiben unverändert): {n}.","Already existed with the same name (left untouched): {n}."],
+  "Ya existían con el mismo nombre (no se modifican): {n}.":["Ja existien amb el mateix nom (no es modifiquen): {n}.","Bereits vorhanden mit demselben Namen (bleiben unverändert): {n}.","Already existed with the same name (left untouched): {n}."],
   "Filas sin nombre (no se importan): {n}.":["Files sense nom (no s'importen): {n}.","Zeilen ohne Namen (werden nicht importiert): {n}.","Rows without a name (not imported): {n}."],
-  "Filas repetidas dentro del archivo (se importan una sola vez): {n}.":["Files repetides dins del fitxer (s'importen una sola vegada): {n}.","In der Datei doppelte Zeilen (werden nur einmal importiert): {n}.","Rows repeated within the file (imported only once): {n}."],
-  "Filas con un NIF que ya pertenece a otra ficha (no se importan): {n}.":["Files amb un NIF que ja pertany a una altra fitxa (no s'importen): {n}.","Zeilen mit einer Ausweisnummer, die schon zu einer anderen Karte gehört (werden nicht importiert): {n}.","Rows with an ID number that already belongs to another record (not imported): {n}."],
+  "Filas repetidas dentro del archivo (se importan una sola vez): {n}.":["Files repetides dins del fitxer (s'importen una sola vegada): {n}.","Doppelte Zeilen in der Datei (werden nur einmal importiert): {n}.","Rows repeated within the file (imported only once): {n}."],
+  "Filas con un NIF que ya pertenece a otra ficha (no se importan): {n}.":["Files amb un NIF que ja pertany a una altra fitxa (no s'importen): {n}.","Zeilen mit einer Ausweisnummer, die bereits zu einer anderen Karte gehört (werden nicht importiert): {n}.","Rows with an ID number that already belongs to another record (not imported): {n}."],
   "Columnas del archivo que no se importan: {c}. La ficha de FacturaMed guarda nombre, NIF, teléfono, email, dirección, fecha de nacimiento, mutua y observaciones.":["Columnes del fitxer que no s'importen: {c}. La fitxa de FacturaMed desa nom, NIF, telèfon, correu, adreça, data de naixement, mútua i observacions.","Spalten der Datei, die nicht importiert werden: {c}. Die FacturaMed-Karte speichert Name, Ausweisnummer, Telefon, E-Mail, Adresse, Geburtsdatum, Versicherung und Bemerkungen.","Columns in the file that are not imported: {c}. The FacturaMed record stores name, ID number, phone, email, address, date of birth, insurer and notes."],
   "Primeras {n} filas, tal como quedarán:":["Primeres {n} files, tal com quedaran:","Die ersten {n} Zeilen, so wie sie gespeichert werden:","First {n} rows, as they will be saved:"],
   "Contacto":["Contacte","Kontakt","Contact"],
@@ -2372,7 +2395,7 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
   "Columna de la mutua":["Columna de la mútua","Spalte: Versicherung","Insurer column"],
   "Columna de las observaciones":["Columna de les observacions","Spalte: Bemerkungen","Notes column"],
   "Mutua":["Mútua","Versicherung","Insurer"],
-  "Completar las fichas que ya existen con los datos que falten (nunca sobrescribe lo que ya está)":["Completar les fitxes que ja existeixen amb les dades que faltin (mai no sobreescriu el que ja hi ha)","Vorhandene Karten mit den fehlenden Angaben ergänzen (überschreibt nie, was schon da ist)","Complete existing records with the missing data (never overwrites what is already there)"],
+  "Completar las fichas que ya existen con los datos que falten (nunca sobrescribe lo que ya está)":["Completar les fitxes que ja existeixen amb les dades que faltin (mai no sobreescriu el que ja hi ha)","Vorhandene Karten mit den fehlenden Angaben ergänzen (überschreibt nie, was bereits vorhanden ist)","Complete existing records with the missing data (never overwrites what is already there)"],
   "Fichas que ya existen y se completarán con los datos que faltan: {n}.":["Fitxes que ja existeixen i es completaran amb les dades que falten: {n}.","Vorhandene Karten, die mit den fehlenden Angaben ergänzt werden: {n}.","Existing records to be completed with the missing data: {n}."],
   "se completa":["es completa","wird ergänzt","will be completed"],
   "Completar 1 ficha":["Completar 1 fitxa","1 Karte ergänzen","Complete 1 record"],
@@ -2380,16 +2403,16 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
   "Importar {n} y completar {m}":["Importar {n} i completar {m}","{n} importieren und {m} ergänzen","Import {n} and complete {m}"],
   "Fichas existentes completadas con los datos que faltaban: {n}.":["Fitxes existents completades amb les dades que faltaven: {n}.","Vorhandene Karten mit den fehlenden Angaben ergänzt: {n}.","Existing records completed with the missing data: {n}."],
   "nueva":["nova","neu","new"],
-  "ya existe":["ja existeix","gibt es schon","already exists"],
+  "ya existe":["ja existeix","bereits vorhanden","already exists"],
   "sin nombre":["sense nom","ohne Namen","no name"],
   "repetida":["repetida","doppelt","duplicate"],
-  "NIF de otra ficha":["NIF d'una altra fitxa","Nummer einer anderen Karte","ID of another record"],
+  "NIF de otra ficha":["NIF d'una altra fitxa","Ausweisnummer einer anderen Karte","ID of another record"],
   "Importar {n} pacientes":["Importar {n} pacients","{n} Patienten importieren","Import {n} patients"],
   "Importar 1 paciente":["Importar 1 pacient","1 Patienten importieren","Import 1 patient"],
   "Pacientes importados: {n}.":["Pacients importats: {n}.","Importierte Patienten: {n}.","Patients imported: {n}."],
-  "Pacientes importados: {n}. Ya existían y no se han tocado: {m}.":["Pacients importats: {n}. Ja existien i no s'han tocat: {m}.","Importierte Patienten: {n}. Gab es schon und wurden nicht verändert: {m}.","Patients imported: {n}. Already existed and left untouched: {m}."],
-  "Nada que importar: todas las filas ya existen o no tienen nombre.":["Res a importar: totes les files ja existeixen o no tenen nom.","Nichts zu importieren: alle Zeilen existieren schon oder haben keinen Namen.","Nothing to import: every row already exists or has no name."],
-  "No se ha podido leer el archivo. Use un Excel (.xlsx) o un CSV.":["No s'ha pogut llegir el fitxer. Feu servir un Excel (.xlsx) o un CSV.","Die Datei konnte nicht gelesen werden. Verwenden Sie eine Excel-Datei (.xlsx) oder eine CSV.","The file could not be read. Use an Excel file (.xlsx) or a CSV."],
+  "Pacientes importados: {n}. Ya existían y no se han tocado: {m}.":["Pacients importats: {n}. Ja existien i no s'han tocat: {m}.","Importierte Patienten: {n}. Bereits vorhanden und unverändert: {m}.","Patients imported: {n}. Already existed and left untouched: {m}."],
+  "Nada que importar: todas las filas ya existen o no tienen nombre.":["Res a importar: totes les files ja existeixen o no tenen nom.","Nichts zu importieren: alle Zeilen sind bereits vorhanden oder haben keinen Namen.","Nothing to import: every row already exists or has no name."],
+  "No se ha podido leer el archivo. Use un Excel (.xlsx) o un CSV.":["No s'ha pogut llegir el fitxer. Feu servir un Excel (.xlsx) o un CSV.","Die Datei konnte nicht gelesen werden. Verwenden Sie eine Excel-Datei (.xlsx) oder eine CSV-Datei.","The file could not be read. Use an Excel file (.xlsx) or a CSV."],
   "Este archivo es un Excel antiguo (.xls). Ábralo en Excel y guárdelo como .xlsx o como CSV.":["Aquest fitxer és un Excel antic (.xls). Obriu-lo a l'Excel i deseu-lo com a .xlsx o com a CSV.","Diese Datei ist ein altes Excel-Format (.xls). Öffnen Sie sie in Excel und speichern Sie sie als .xlsx oder CSV.","This is an old Excel file (.xls). Open it in Excel and save it as .xlsx or CSV."],
   "Este formato no se puede leer directamente. Expórtelo como Excel (.xlsx) o como CSV.":["Aquest format no es pot llegir directament. Exporteu-lo com a Excel (.xlsx) o com a CSV.","Dieses Format kann nicht direkt gelesen werden. Exportieren Sie es als Excel (.xlsx) oder CSV.","This format cannot be read directly. Export it as Excel (.xlsx) or CSV."],
   "El archivo no tiene filas con datos.":["El fitxer no té files amb dades.","Die Datei enthält keine Datenzeilen.","The file has no rows with data."],

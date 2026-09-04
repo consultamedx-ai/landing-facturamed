@@ -1165,20 +1165,71 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
       function(m,a,b){return a?'_x'+a+'_':String.fromCharCode(parseInt(b,16))});
   }
   function xmlTots(node,nom){return Array.prototype.slice.call(node.getElementsByTagNameNS('*',nom))}
+  /* ENG-26 lot 2 (04/09/2026) · QUIN full es llegeix, i dir-ho.
+
+     Tres coses, i totes tres surten del mateix defecte de fons: el lector
+     endevinava quin full havia de llegir i no ho deia enlloc.
+
+     · Els fulls «hidden» i «veryHidden» se salten. Un full amagat no existeix
+       per al metge (a l'Excel no el veu), i llegir-lo feia que un llibre amb un
+       full «Config» al davant sortís buit i inimportable. Si TOTS són amagats
+       es llegeix igualment el primer: val més llegir-ne un d'amagat que no
+       llegir res.
+     · El full no se substitueix en silenci. Si el llibre declara un «r:id» i el
+       paquet no el sap resoldre (no hi ha la relació, o la part no és al zip),
+       ja no s'agafa un altre full: s'avisa. Sense «r:id» —cosa que l'ECMA-376
+       no permet, però que hem vist— queden dos recursos INDEPENDENTS: la
+       convenció «xl/worksheets/sheetN.xml» i la primera relació de full del
+       paquet. Si tots dos diuen el mateix, es llegeix; si es contradiuen, no
+       s'endevina: s'avisa. Això és el que tanca el cas de l'informe §2.8, on el
+       metge donava d'alta els proveïdors com a pacients mentre els pacients de
+       debò no apareixien enlloc. Agafar la n-èsima relació per posició no
+       serveix: a OPC les relacions s'identifiquen per Id, no per ordre.
+     · I mentre el recurs de la convenció existeixi, s'ordena pel NÚMERO i no
+       per cadena: «sheet10» no pot anar abans que «sheet2» (§2.18).
+
+     «fullLlegit» porta al panell el nom del full i quants n'hi ha, perquè el
+     resum ho digui SEMPRE (§2.11): avui el metge veu «0 filas» d'un fitxer que
+     sap que té pacients i no té cap manera de saber que s'ha llegit «Hoja1».
+     El desplegable per triar el full és interfície nova i no és d'aquest lot. */
+  var fullLlegit=null;
+  var NS_REL='http://schemas.openxmlformats.org/officeDocument/2006/relationships';
+  function partFull(t){t=String(t==null?'':t).replace(/^\//,'');return t.indexOf('xl/')===0?t:'xl/'+t}
+  function numFull(k){var m=String(k).match(/(\d+)\.xml$/);return m?parseInt(m[1],10):0}
   async function xlsxFiles(buf){
     var ents=zipEntrades(buf),wb=await zipText(buf,ents,'xl/workbook.xml');
     if(!wb)throw new Error('no-xlsx');
-    var full=null;
-    try{
-      var s=xmlTots(xmlDoc(wb),'sheet')[0],rid=s&&(s.getAttribute('r:id')||s.getAttributeNS('http://schemas.openxmlformats.org/officeDocument/2006/relationships','id'));
-      var rels=await zipText(buf,ents,'xl/_rels/workbook.xml.rels');
-      if(rid&&rels){
-        var r=xmlTots(xmlDoc(rels),'Relationship').filter(function(x){return x.getAttribute('Id')===rid})[0];
-        if(r){var t=(r.getAttribute('Target')||'').replace(/^\//,'');full=t.indexOf('xl/')===0?t:'xl/'+t}
+    var fulls=[],tria=null,rid=null,rels=null,relsFull=[],full=null,avisa=false;
+    try{fulls=xmlTots(xmlDoc(wb),'sheet')}catch(e){}
+    var amagat=/^\s*(hidden|veryhidden)\s*$/i;
+    var visibles=fulls.filter(function(s){return !amagat.test(s.getAttribute('state')||'')});
+    var llista=visibles.length?visibles:fulls;
+    tria=llista[0]||null;
+    if(tria)rid=tria.getAttribute('r:id')||tria.getAttributeNS(NS_REL,'id')||null;
+    try{rels=await zipText(buf,ents,'xl/_rels/workbook.xml.rels')}catch(e){rels=null}
+    if(rels)try{
+      var tots=xmlTots(xmlDoc(rels),'Relationship');
+      relsFull=tots.filter(function(x){return /\/worksheet$/.test(x.getAttribute('Type')||'')});
+      if(!relsFull.length)relsFull=tots;
+      if(rid){
+        var r=tots.filter(function(x){return x.getAttribute('Id')===rid})[0];
+        if(r)full=partFull(r.getAttribute('Target'));
       }
     }catch(e){}
-    if(!full||!ents[full])full=Object.keys(ents).filter(function(k){return /^xl\/worksheets\/sheet\d+\.xml$/.test(k)}).sort()[0];
-    if(!full)throw new Error('no-xlsx');
+    if(full&&!ents[full])full=null;
+    var conv=Object.keys(ents).filter(function(k){return /^xl\/worksheets\/sheet\d+\.xml$/.test(k)})
+      .sort(function(a,b){return numFull(a)-numFull(b)})[0]||null;
+    if(!full){
+      if(!tria||!rels)full=conv;                 /* cap full declarat, o cap rels al paquet: nomes queda la convencio */
+      else if(rid)avisa=true;                    /* el llibre diu quina part vol i el paquet no la sap resoldre */
+      else{                                      /* sense r:id: els dos recursos han de dir el mateix */
+        var prim=relsFull.length?partFull(relsFull[0].getAttribute('Target')):null;
+        if(conv&&prim&&conv===prim)full=conv;else avisa=true;
+      }
+    }
+    if(avisa)throw new Error('full');
+    if(!full||!ents[full])throw new Error('no-xlsx');
+    fullLlegit={nom:(tria&&netText(tria.getAttribute('name')))||full.replace(/^.*\//,''),total:llista.length||1};
     var sst=[],sstx=await zipText(buf,ents,'xl/sharedStrings.xml');
     if(sstx)xmlTots(xmlDoc(sstx),'si').forEach(function(si){sst.push(desescapa(xmlTots(si,'t').map(function(x){return x.textContent}).join('')))});
     var files=[];
@@ -1194,10 +1245,22 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
         if(t==='s')val=sst[parseInt(v?v.textContent:'-1',10)]||'';
         else if(t==='inlineStr')val=desescapa(xmlTots(c,'t').map(function(x){return x.textContent}).join(''));
         else if(t==='b')val=v&&v.textContent==='1'?'1':'0';
-        else if(v){val=v.textContent;if(t!=='str'&&t!=='d'&&t!=='e'){var num=Number(val);if(isFinite(num))val=String(num)}}
+        /* ENG-26 lot 2 · «<v></v>» (i «<v>   </v>», que fa qualsevol exportador
+           que escrigui l'XML amb sagnat) no és el número 0: la condició era
+           «else if(v)», i «v» és l'ELEMENT, sempre cert. Number('') fa 0 i el
+           NIF es desava com «0» — i amb dues files així la segona quedava
+           marcada «NIF de otra ficha» i es perdia un pacient en silenci. */
+        else if(v&&v.textContent.trim()!==''){val=v.textContent;if(t!=='str'&&t!=='d'&&t!=='e'){var num=Number(val);if(isFinite(num))val=String(num)}}
         while(f.length<col)f.push('');
         f[col]=val;
       });
+      /* ENG-26 lot 2 · les cel·les buides del FINAL de la fila es retallen. Una
+         cel·la amb format i sense valor compta igual per a l'adreçament: amb una
+         sola cel·la perduda a XFD la fila s'inflava fins a 16.384 posicions, el
+         full passava a 16.384 columnes i el desplegable a 98.310 opcions (1,8 s
+         de panell i 350 ms per cada canvi de selector). Les buides del MIG no es
+         toquen: una columna buida enmig del full segueix sent una columna. */
+      while(f.length&&f[f.length-1]==='')f.pop();
       files.push(f);
     });
     return files;
@@ -1480,7 +1543,17 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
     });
     $('pi-completar').checked=!!pend.completar;   // ENG-28 · la casella segueix l'estat del fitxer pendent (desmarcada en carregar-ne un)
     var r=avaluaImport(pend);
-    $('pi-fitxer').textContent=Tf('Archivo: {f} · filas con datos: {n} · encabezados en la fila {r}.',{f:pend.nomFitxer,n:r.files.length,r:pend.cap+1});
+    /* ENG-26 lot 2 (§2.11) · SEMPRE quin full s'ha llegit. Un .xlsx amb «Hoja1»
+       al davant sortia amb «filas con datos: 0» i enlloc de la pàgina no hi
+       havia la paraula «hoja»: el metge sabia que el fitxer tenia pacients i no
+       tenia cap manera de saber que se n'havia llegit un altre full. Amb més
+       d'un full es diu també quants n'hi ha i què ha de fer. (El desplegable per
+       triar-lo és interfície nova i no és d'aquest lot.) */
+    var txtFitxer=Tf('Archivo: {f} · filas con datos: {n} · encabezados en la fila {r}.',{f:pend.nomFitxer,n:r.files.length,r:pend.cap+1});
+    if(pend.full)txtFitxer+=' '+(pend.full.total>1
+      ? Tf('Hoja leída: «{h}», de las {t} hojas del archivo. Si sus pacientes están en otra, muévalos a la primera hoja y vuelva a importar.',{h:pend.full.nom,t:pend.full.total})
+      : Tf('Hoja leída: «{h}».',{h:pend.full.nom}));
+    $('pi-fitxer').textContent=txtFitxer;
     var res=[];
     if(pend.mapa.nom==null&&pend.mapa.cognoms==null)res.push('<strong style="color:var(--vermell)">'+esc(T('Elija en qué columna está el nombre para poder importar.'))+'</strong>');
     else res.push('<strong>'+esc(Tf('Fichas nuevas que se crearán: {n}.',{n:r.nous.length}))+'</strong>');
@@ -1535,12 +1608,18 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
     if(ext==='numbers'||ext==='ods'||ext==='pages'||ext==='doc'||ext==='docx'||ext==='pdf'){avis('err','Este formato no se puede leer directamente. Expórtelo como Excel (.xlsx) o como CSV.');return}
     var buf=await f.arrayBuffer(),u8=new Uint8Array(buf),files;
     csvSenseSeparador=false;   /* només el camí CSV el pot encendre */
+    fullLlegit=null;           /* i només el camí .xlsx omple el full llegit */
     try{
       if(u8.length>=4&&u8[0]===0x50&&u8[1]===0x4B)files=await xlsxFiles(buf);
       else if(u8.length>=8&&u8[0]===0xD0&&u8[1]===0xCF&&u8[2]===0x11&&u8[3]===0xE0){avis('err','Este archivo es un Excel antiguo (.xls). Ábralo en Excel y guárdelo como .xlsx o como CSV.');return}
       else files=csvFiles(decodifica(buf));
     }catch(e){
       if(e&&e.message==='navegador'){avis('err','Este navegador no puede leer .xlsx. Guarde el archivo como CSV o use Google Chrome.');return}
+      /* ENG-26 lot 2 (§2.8) · el llibre declara un full que el paquet no sap
+         resoldre. Abans se n'agafava un altre en silenci; ara es diu, perquè
+         «no s'ha trobat el full» i «no es pot llegir el fitxer» no són el
+         mateix problema ni tenen la mateixa sortida. */
+      if(e&&e.message==='full'){avis('err','No se ha podido encontrar la hoja de cálculo dentro del archivo. Ábralo en Excel, vuelva a guardarlo como .xlsx e inténtelo de nuevo.');return}
       avis('err','No se ha podido leer el archivo. Use un Excel (.xlsx) o un CSV.');return;
     }
     files=files.map(function(r){return r.map(function(c){return c==null?'':String(c)})});
@@ -1551,7 +1630,7 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
        d'una consulta de tota una vida ha de cabre en una sola importació. */
     if(ambDades>20001){avis('err','El archivo tiene más de 20.000 filas. Divídalo en varios.');return}
     var cap=filaCapcalera(files);
-    importPendent={nomFitxer:nom,files:files,cap:cap,mapa:detectaMapa(files[cap]),completar:false,senseSep:csvSenseSeparador};
+    importPendent={nomFitxer:nom,files:files,cap:cap,mapa:detectaMapa(files[cap]),completar:false,senseSep:csvSenseSeparador,full:fullLlegit};
     pintaImportPacients();
     $('p-import').scrollIntoView({behavior:'smooth',block:'start'});
   }
@@ -2540,6 +2619,9 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
   "No se ha podido leer el archivo. Use un Excel (.xlsx) o un CSV.":["No s'ha pogut llegir el fitxer. Feu servir un Excel (.xlsx) o un CSV.","Die Datei konnte nicht gelesen werden. Verwenden Sie eine Excel-Datei (.xlsx) oder eine CSV-Datei.","The file could not be read. Use an Excel file (.xlsx) or a CSV."],
   "Este archivo es un Excel antiguo (.xls). Ábralo en Excel y guárdelo como .xlsx o como CSV.":["Aquest fitxer és un Excel antic (.xls). Obriu-lo a l'Excel i deseu-lo com a .xlsx o com a CSV.","Diese Datei ist ein altes Excel-Format (.xls). Öffnen Sie sie in Excel und speichern Sie sie als .xlsx oder CSV.","This is an old Excel file (.xls). Open it in Excel and save it as .xlsx or CSV."],
   "Este formato no se puede leer directamente. Expórtelo como Excel (.xlsx) o como CSV.":["Aquest format no es pot llegir directament. Exporteu-lo com a Excel (.xlsx) o com a CSV.","Dieses Format kann nicht direkt gelesen werden. Exportieren Sie es als Excel (.xlsx) oder CSV.","This format cannot be read directly. Export it as Excel (.xlsx) or CSV."],
+  "No se ha podido encontrar la hoja de cálculo dentro del archivo. Ábralo en Excel, vuelva a guardarlo como .xlsx e inténtelo de nuevo.":["No s'ha pogut trobar el full de càlcul dins del fitxer. Obriu-lo a l'Excel, torneu-lo a desar com a .xlsx i proveu-ho de nou.","Das Tabellenblatt konnte in der Datei nicht gefunden werden. Öffnen Sie sie in Excel, speichern Sie sie erneut als .xlsx und versuchen Sie es noch einmal.","The sheet could not be found inside the file. Open it in Excel, save it again as .xlsx and try again."],
+  "Hoja leída: «{h}».":["Full llegit: «{h}».","Gelesenes Blatt: «{h}».","Sheet read: “{h}”."],
+  "Hoja leída: «{h}», de las {t} hojas del archivo. Si sus pacientes están en otra, muévalos a la primera hoja y vuelva a importar.":["Full llegit: «{h}», dels {t} fulls del fitxer. Si els vostres pacients són en un altre, moveu-los al primer full i torneu a importar.","Gelesenes Blatt: «{h}», von {t} Blättern der Datei. Wenn Ihre Patienten auf einem anderen Blatt stehen, verschieben Sie sie auf das erste Blatt und importieren Sie erneut.","Sheet read: “{h}”, of the {t} sheets in the file. If your patients are on another one, move them to the first sheet and import again."],
   "No se ha encontrado ningún separador de columnas (; , tabulador o |): el archivo se ha leído como una sola columna.":["No s'ha trobat cap separador de columnes (; , tabulador o |): el fitxer s'ha llegit com una sola columna.","Es wurde kein Spaltentrennzeichen gefunden (; , Tabulator oder |): Die Datei wurde als eine einzige Spalte gelesen.","No column separator was found (; , tab or |): the file has been read as a single column."],
   "El archivo no tiene filas con datos.":["El fitxer no té files amb dades.","Die Datei enthält keine Datenzeilen.","The file has no rows with data."],
   "El archivo tiene más de 20.000 filas. Divídalo en varios.":["El fitxer té més de 20.000 files. Dividiu-lo en diversos.","Die Datei hat mehr als 20.000 Zeilen. Teilen Sie sie auf.","The file has more than 20,000 rows. Split it into several files."],

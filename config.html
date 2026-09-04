@@ -445,10 +445,17 @@
     /* Revisio adversaria 04/09/2026 · UNA SOLA sonda `jo` per carrega. Aquesta
        pagina carrega cmsync.js (pel xip de sincronitzacio) i cmsync.js ja
        pregunta `jo` en arrencar: aixo n'era una segona, identica i seguida, a
-       cada visita. Ara es reaprofita la resposta que cmsync.js comparteix. Si
-       cmsync.js ha decidit no preguntar (no pot haver-hi sessio), resol amb
-       null: exactament el que hauria contestat el servidor, i aqui s'ensenya
-       la pantalla de «fora» igual que abans. Si cmsync.js no hi fos, es
+       cada visita. Ara es reaprofita la resposta que cmsync.js comparteix.
+
+       Addenda del 04/09 (residu 1) · aquella primera versio donava per fet que
+       cmsync.js SEMPRE pregunta, i no es aixi: amb la marca de «sense sessio»
+       fresca i una navegacio interna se salta la sonda a posta. Llavors
+       cmSync.jo() resolia amb null, aqui es llegia com un «no hi ha sessio» i
+       s'ensenyava la pantalla de fora a un metge que SI que en te · la que
+       acabava d'obrir a la pestanya del panell ·, alla on el codi d'abans
+       pintava el panell. Ara cmSync.jo() sonda si ningu no ho ha fet encara i
+       comparteix el resultat: segueix havent-hi UNA sonda per carrega com a
+       molt, i la resposta es sempre la del servidor. Si cmsync.js no hi fos, es
        pregunta aqui com sempre. */
     var sessio=(window.cmSync&&cmSync.jo)?cmSync.jo():api('jo');
     sessio.then(function(r){

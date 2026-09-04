@@ -120,8 +120,8 @@
      el xip diu «Error», com abans. L'unic sostre que queda es el localStorage
      del navegador (mesura a 04_Arquitectura). */
   var LOT = { pac: 500, cites: 2000 };   // = sostre per peticio del servidor
-  /* Revisio adversaria 04/09/2026 · EL SOSTRE DE sync.tanca (MAX_TANCA del
-     servidor: 20.000 per llista). Per sobre, sync.tanca tornava 413, la cadena
+  /* Revisio adversaria 04/09/2026 · EL SOSTRE DE sync.tanca (al servidor n'hi
+     ha DOS: vegeu MAX_TANCA de sota). Per sobre, sync.tanca tornava 413, la cadena
      llancava i el pull NO S'EXECUTAVA MAI MES en aquell dispositiu (el cicle es
      push().then(pull)): el xip es quedava en «Error de sincronitzacio» cada
      cinc minuts i la sincronitzacio quedava morta. SecreMed no purga mai les
@@ -130,7 +130,8 @@
      Roger va demanar que no existis. Ara, per sobre del sostre, el cicle SEMPRE
      acaba i el pull corre:
        - CITES: es tanca amb una FINESTRA. Nomes viatgen els ids de les cites
-         amb data dins dels ultims TANCA_DIES, i el cos porta `citesDesDe` amb
+         amb data dins dels ultims TANCA_DIES · o menys, si dins d'aquells dies
+         tampoc no hi cabien: vegeu l'addenda del residu 2 ·, i el cos porta `citesDesDe` amb
          aquella data; el servidor (corregit en paral.lel) nomes esborra dins de
          la finestra, o sigui que una cita antiga que no ha viatjat no s'esborra
          per haver-se quedat fora de la llista.
@@ -140,8 +141,54 @@
          l'agenda segueix sincronitzada i el dispositiu segueix baixant dades.
      Les dues coses son una degradacio conscient d'un cas extrem; el que no es
      accepta es una sincronitzacio morta. */
-  var MAX_TANCA = 20000;   // = MAX_TANCA de route.js
+  /* Addenda del 04/09/2026 (residu 3) · EL SOSTRE DEL CLIENT I ELS DOS DEL
+     SERVIDOR. Aqui hi deia «el mateix de route.js» i ja no era veritat: route.js
+     en te DOS, MAX_TANCA_PACIENTS = 20.000 i MAX_TANCA_CITES = 30.000 (les
+     fitxes d'una consulta s'estanquen; les cites nomes creixen). El client en fa
+     servir un de sol i el mes petit dels dos, 20.000, A POSTA: per a les cites
+     es conservador —deixa 10.000 de marge per sota del sostre del servidor— i
+     aixi cap dispositiu no pot demanar un tancament que el servidor rebutgi ni
+     que el numero del servidor canvii. El preu es tancar amb finestra una mica
+     abans del que caldria, que no costa res. */
+  var MAX_TANCA = 20000;   // client: el mes PETIT dels dos sostres de route.js, a posta
   var TANCA_DIES = 400;    // finestra d'esborrat de cites quan es passa el sostre
+  /* Addenda del 04/09/2026 (residu 2) · LA FINESTRA HA D'ACOTAR LA LLISTA.
+     Retallar per data no es acotar. Un centre de deu metges a vuit visites al
+     dia fa unes 32.000 cites en 400 dies: totes cauen DINS de la finestra, la
+     llista arribava sencera i el servidor tornava a respondre 413 —la cadena
+     trencada, el pull sense executar-se i el xip en «Error» cada cinc minuts—,
+     que es exactament el defecte que la finestra volia treure. Ara la finestra
+     s'estreny fins que la llista hi cap: s'ordenen les dates i `citesDesDe` puja
+     fins al dia SEGUENT al de la cita numero MAX_TANCA comptant de la mes nova
+     cap enrere. S'exclou el dia sencer del tall a posta: dins de la finestra que
+     s'envia hi ha d'haver TOTES les cites locals, perque el servidor esborra amb
+     `clientId notIn` i una cita que es quedes fora per la vora del tall
+     desapareixeria del servidor. El que no es propaga es l'esborrat de les cites
+     ANTERIORS a `citesDesDe`: es queden al servidor fins que un dispositiu amb
+     menys cites tanqui amb una finestra mes ampla o sense. Es la mateixa
+     degradacio conscient que ja hi ha amb les fitxes; el que no s'accepta es una
+     sincronitzacio morta. */
+  var DATA = /^\d{4}-\d{2}-\d{2}$/;   // la data de la cita es 'AAAA-MM-DD' (secremed.html)
+  function diaSeguent(d) {
+    var t = Date.parse(d + 'T00:00:00Z');
+    return isNaN(t) ? '' : new Date(t + 864e5).toISOString().slice(0, 10);
+  }
+  function finestraCites(cit, sostre) {
+    var desDe = new Date(Date.now() - TANCA_DIES * 864e5).toISOString().slice(0, 10);
+    /* nomes dates comparables: una data que no te la forma no es pot acotar */
+    var dins = cit.filter(function (c) { return c && DATA.test(String(c.data || '')) && String(c.data) >= desDe; });
+    if (dins.length > sostre) {
+      var dates = dins.map(function (c) { return String(c.data); }).sort();
+      var seg = diaSeguent(dates[dates.length - sostre]);
+      if (seg) { desDe = seg; dins = dins.filter(function (c) { return String(c.data) >= desDe; }); }
+    }
+    var ids = dins.map(function (c) { return c.id; }).filter(function (id) { return id != null; });
+    /* Cinturo: si res d'aixo no ha pogut acotar la llista (una data amb la forma
+       bona pero que no existeix al calendari), es tanca sense cites. Aquell cicle
+       no propaga cap esborrat d'agenda, pero ACABA i el pull corre, que es el que
+       no es negocia. */
+    return { desDe: desDe, ids: ids.length > sostre ? [] : ids };
+  }
   function ambOk(r) { if (r && r.ok === false) throw r; return r; }
   /* Revisio adversaria 04/09/2026 · CINTURO PER A L'ORDRE DE PUBLICACIO.
      ENG-28 va partir el `contacte` en `telefon` i `correu`, i el client va deixar
@@ -182,11 +229,9 @@
         pacients: pac.length > MAX_TANCA ? [] : pac.map(function (p) { return p && p.nom; }).filter(Boolean),
         cites: cit.map(function (c) { return c && c.id; }).filter(function (id) { return id != null; }) };
       if (cit.length > MAX_TANCA) {
-        /* la data de la cita es 'AAAA-MM-DD' (secremed.html): es compara com a text */
-        var desDe = new Date(Date.now() - TANCA_DIES * 864e5).toISOString().slice(0, 10);
-        cos.citesDesDe = desDe;
-        cos.cites = cit.filter(function (c) { return c && String(c.data || '') >= desDe; })
-                       .map(function (c) { return c.id; }).filter(function (id) { return id != null; });
+        var f = finestraCites(cit, MAX_TANCA);
+        cos.citesDesDe = f.desDe;
+        cos.cites = f.ids;
       }
       return api('sync.tanca', cos).then(ambOk);
     });
@@ -229,7 +274,17 @@
     // NO obre cap porta nova: es la mateixa sessio i el mateix servidor.
     org: function () { return org; },
     api: api,
-    jo: function () { return joResposta || Promise.resolve(null); }
+    /* Addenda del 04/09/2026 (residu 1) · «una sola sonda per carrega» volia dir
+       no repetir-la, no deixar de fer-la. Quan aqui s'ha decidit no sondar
+       (cmStore.potHaverSessio diu que aquesta navegacio no pot haver creat cap
+       sessio), aixo NO es un «no hi ha sessio»: es un «no ho he preguntat».
+       Resolent amb null, config.html ho pintava com si el servidor hagues dit
+       que no i ensenyava la pantalla de fora a un metge que SI que tenia sessio
+       —oberta a la pestanya del panell—, alla on el codi d'abans pintava el
+       panell. Ara, si ningu no ha preguntat encara, es pregunta aqui i es
+       comparteix: com a molt UNA sonda per carrega, i nomes a les pagines que la
+       demanen (avui, config.html). */
+    jo: function () { if (!joResposta) sonda(window.cmStore || {}); return joResposta; }
   };
 
   // ---- multi-context: triar organitzacio (04_Arquitectura: un metge, N contexts) ----
@@ -270,6 +325,11 @@
 
   // ---- arrencada ----
   function arrenca() {
+    /* Addenda del 04/09/2026 (residu 1) · si una pagina ja ha demanat la sonda
+       amb cmSync.jo() abans que aixo corri, no se'n fa cap altra: la regla es
+       COM A MOLT una sonda per carrega, i no ha de dependre de l'ordre dels
+       <script> de la pagina. */
+    if (joResposta) return;
     /* ENG-22 (nota) · `jo` es l'unica sonda de sessio d'aquesta pagina: push i
        pull nomes surten si respon que si. I si l'ultima vegada va dir que no i
        aquesta carrega no pot haver creat cap sessio (cmStore.potHaverSessio, amb

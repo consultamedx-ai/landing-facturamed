@@ -1194,7 +1194,27 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
      El desplegable per triar el full és interfície nova i no és d'aquest lot. */
   var fullLlegit=null;
   var NS_REL='http://schemas.openxmlformats.org/officeDocument/2006/relationships';
-  function partFull(t){t=String(t==null?'':t).replace(/^\//,'');return t.indexOf('xl/')===0?t:'xl/'+t}
+  /* Addenda del 04/09/2026 (residu 4) · el Target d'una relacio pot ser RELATIU
+     i portar «..» o «.». A l'OPC es resol contra la part que porta el rels · aqui
+     `xl/workbook.xml`, o sigui la base «xl/» ·, i «../xl/worksheets/sheet1.xml» es
+     tan legal com «worksheets/sheet1.xml»; hi ha exportadors que l'escriuen aixi.
+     Sense normalitzar els «..» quedava «xl/../xl/worksheets/sheet1.xml», que no
+     es cap entrada del zip. El codi PUBLICAT encara llegia el full pel recurs de
+     la convencio; d'enca que un «r:id» que no es sap resoldre s'avisa en comptes
+     de substituir-se en silenci, el mateix fitxer va passar de llegir-se a
+     refusar-se. El «xl/» que el Target ja porti no es torna a posar (hi ha
+     exportadors que l'escriuen des de l'arrel del paquet). */
+  function partFull(t){
+    t=String(t==null?'':t).replace(/\\/g,'/').replace(/^\//,'');
+    if(t.indexOf('xl/')!==0)t='xl/'+t;
+    var seg=t.split('/'),cami=[];
+    for(var i=0;i<seg.length;i++){
+      if(seg[i]===''||seg[i]==='.')continue;
+      if(seg[i]==='..'){cami.pop();continue}
+      cami.push(seg[i]);
+    }
+    return cami.join('/');
+  }
   function numFull(k){var m=String(k).match(/(\d+)\.xml$/);return m?parseInt(m[1],10):0}
   async function xlsxFiles(buf){
     var ents=zipEntrades(buf),wb=await zipText(buf,ents,'xl/workbook.xml');

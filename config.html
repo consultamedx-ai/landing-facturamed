@@ -442,7 +442,16 @@
   }
 
   function carrega(){
-    api('jo').then(function(r){
+    /* Revisio adversaria 04/09/2026 · UNA SOLA sonda `jo` per carrega. Aquesta
+       pagina carrega cmsync.js (pel xip de sincronitzacio) i cmsync.js ja
+       pregunta `jo` en arrencar: aixo n'era una segona, identica i seguida, a
+       cada visita. Ara es reaprofita la resposta que cmsync.js comparteix. Si
+       cmsync.js ha decidit no preguntar (no pot haver-hi sessio), resol amb
+       null: exactament el que hauria contestat el servidor, i aqui s'ensenya
+       la pantalla de «fora» igual que abans. Si cmsync.js no hi fos, es
+       pregunta aqui com sempre. */
+    var sessio=(window.cmSync&&cmSync.jo)?cmSync.jo():api('jo');
+    sessio.then(function(r){
       if(!r||!r.ok){$('v-fora').classList.remove('amaga');return}
       usuari=r.usuari;
       var guardada=null; try{guardada=localStorage.getItem('cm_org')}catch(e){}

@@ -1323,7 +1323,24 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
       var f=pend.files[i];
       if(!f.some(function(c){return String(c==null?'':c).trim()}))continue;
       var nom=netText([cel(f,'nom'),cel(f,'cognoms'),cel(f,'cognoms2')].filter(Boolean).join(' '));
-      var fitxa={nom:nom,nif:netNif(cel(f,'nif')),telefon:netTel(cel(f,'tel')).slice(0,40),correu:txt(f,'email',120),
+      /* Revisió adversària 04/09/2026 · una sola columna amb el telèfon i el
+         correu barrejats («Contacto», «Teléfono email», «Email o teléfono»:
+         capçaleres que el patró `tel` accepta de dret) anava sencera al telèfon
+         i deixava el correu buit. És el format que exporta el mateix FacturaMed
+         d'ENG-26 («600 000 000 · anna@mail.com»), o sigui la ruta més probable
+         del món real: el metge exporta, edita a l'Excel i torna a importar. Es
+         parteix amb separaContacte, el mateix criteri que el servidor
+         (lib/pacient.js) i que la normalització de les fitxes velles. Només
+         quan cal —el fitxer no porta columna d'email, o la cel·la del telèfon
+         du una @—: amb un fitxer de columnes separades no es toca res. Si hi ha
+         columna d'email, mana sempre sobre el correu que surti de la partició. */
+      var brut=cel(f,'tel'),correu=txt(f,'email',120),tel=brut;
+      if(mapa.email==null||brut.indexOf('@')>=0){
+        var sc=separaContacte(brut);
+        tel=sc.telefon;
+        if(!correu)correu=netText(sc.correu).slice(0,120);
+      }
+      var fitxa={nom:nom,nif:netNif(cel(f,'nif')),telefon:netTel(tel).slice(0,40),correu:correu,
                  adreca:txt(f,'adreca',200),naixement:dataExcel(cel(f,'naixement')),mutua:txt(f,'mutua',80),observacions:txt(f,'observacions',300)};
       var nif=fitxa.nif,estat,clau=nom.toLowerCase();
       if(!nom){estat='senseNom';r.senseNom++}

@@ -370,13 +370,62 @@
      metge amb sessio que no sincronitza.
      ═════════════════════════════════════════════════════════════════════════ */
   var K_SESSIO = 'cm_sessio';
+  /* ─────────────────────────────────────────────────────────────────────────
+     Revisio adversaria 04/09/2026 · LA MARCA '0' JA NO ES DEFINITIVA.
+     La sessio es crea a app.consultamed.es i es pot crear en una ALTRA
+     pestanya: el metge que entra al panell del servidor i alla es queda no
+     carrega cap pagina de consultamed.es, o sigui que aqui no se n'assabenta
+     ningu. Amb la marca a '0', una recarrega o un enllac del mateix origen no
+     tornaven a preguntar mai: el metge amb sessio veia «Sin conexion con la
+     cuenta» a FacturaMed i a SecreMed i no sincronitzava fins que escrivia una
+     URL a ma. Aixo contradiu el «cap canvi de comportament per a qui si que te
+     sessio» d'ENG-22. Dues valvules, totes dues barates:
+       - la marca porta l'INSTANT ('0:<ms>') i CADUCA als 10 minuts: passada
+         l'estona es torna a preguntar encara que la navegacio no pugui haver
+         creat cap sessio;
+       - tornaASondar() avisa UNA sola vegada quan el document torna a ser
+         visible o rep focus amb la marca a '0': es exactament el moment en que
+         el metge torna de l'altra pestanya.
+     Una marca '0' antiga (sense instant, escrita per una versio anterior) es
+     tracta com a caducada. El dubte segueix caient del canto de preguntar: una
+     sonda de mes es un 401 a la consola; una de menys es un metge amb sessio
+     que no sincronitza.
+     ───────────────────────────────────────────────────────────────────────── */
+  var CADUCITAT_SESSIO = 10 * 60 * 1000;
   function anotaSessio(hiHa) {
-    try { G.localStorage.setItem(K_SESSIO, hiHa ? '1' : '0'); } catch (e) {}
+    try { G.localStorage.setItem(K_SESSIO, hiHa ? '1' : '0:' + Date.now()); } catch (e) {}
   }
-  function potHaverSessio() {
+  /* Instant de la marca «no hi ha sessio», o null si no n'hi ha cap (mai
+     preguntat, o l'ultima vegada hi era). Una marca antiga sense instant torna
+     0, o sigui caducada des de sempre. */
+  function instantSenseSessio() {
     var v = null;
     try { v = G.localStorage.getItem(K_SESSIO); } catch (e) {}
-    if (v !== '0') return true;               // mai preguntat, o l'ultima vegada hi era
+    if (v == null || v.charAt(0) !== '0') return null;
+    var t = parseInt(v.slice(2), 10);
+    return isNaN(t) ? 0 : t;
+  }
+  /* Crida fn() UNA sola vegada, quan el document torna a ser visible o rep
+     focus i la marca segueix dient que no hi ha sessio. Qui sonda es qui passa
+     la funcio (cmsync.js); aqui nomes hi ha el moment. */
+  var jaTornatASondar = false;
+  function tornaASondar(fn) {
+    function mira() {
+      if (jaTornatASondar) return;
+      try { if (G.document.visibilityState === 'hidden') return; } catch (e) {}
+      if (instantSenseSessio() === null) return;   // entretant algu ja hi ha anotat sessio
+      jaTornatASondar = true;
+      try { fn(); } catch (e) {}
+    }
+    try {
+      G.document.addEventListener('visibilitychange', mira);
+      G.addEventListener('focus', mira);
+    } catch (e) {}
+  }
+  function potHaverSessio() {
+    var t = instantSenseSessio();
+    if (t === null) return true;              // mai preguntat, o l'ultima vegada hi era
+    if (Date.now() - t > CADUCITAT_SESSIO) return true;   // la marca ha caducat: es torna a preguntar
     var tipus = 'navigate';
     try {
       var n = G.performance && G.performance.getEntriesByType && G.performance.getEntriesByType('navigation')[0];
@@ -393,6 +442,7 @@
     barraProva: barraProva,
     potHaverSessio: potHaverSessio,
     anotaSessio: anotaSessio,
+    tornaASondar: tornaASondar,
     stats: function () {
       var ls = G.localStorage, stored = 0, raw = 0, keys = 0, i, k, sraw, splain;
       for (i = 0; i < ls.length; i++) {

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://formspree.io; form-action 'self' https://formspree.io">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; form-action 'self'">
 <script src="cmstore.js"></script>
 <meta name="referrer" content="no-referrer">
 <meta name="robots" content="index,follow">
@@ -23,7 +23,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --blau:#0D3B66; --blau2:#0A2E52; --teal:#14B8A6; --teal2:#0D7F74; /* QA 03-09: el teal fosc #0F9488 com a text (kickers, enllaços) feia 3,57:1 sobre Blanc Gasa; #0D7F74 en fa 4,65 (4,88 sobre blanc) */
+    --blau:#0D3B66; --blau2:#0A2E52; --teal:#14B8A6; --teal2:#0F9488;
     --verd:#059669; --violeta:#8B2DA5; --gasa:#F7FAFC; --grafit:#1F2937;
     --boira:#94A3B8; --linia:#E7EDF3; --max:1120px;
   }
@@ -61,7 +61,7 @@
   nav.scrolled .nav-login{color:var(--blau)}
   .nav-cta{background:var(--teal);color:#04201d;font-weight:700;font-size:.88rem;padding:11px 20px;border-radius:99px;transition:transform .2s,box-shadow .2s;box-shadow:0 8px 24px rgba(20,184,166,.35);min-height:44px;display:inline-flex;align-items:center}
   .nav-cta:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(20,184,166,.5)}
-  @media(max-width:560px){.nav-login{display:none}.lang-b,.nav-cta{white-space:nowrap}.nav-cta{font-size:.82rem;padding:11px 15px}.logo-pill img{height:20px}} /* QA 03-09: a 390 px «CAT ▾» i el CTA es partien en dues línies */
+  @media(max-width:560px){.nav-login{display:none}}
   .lang{position:relative}
   .lang-b{font:inherit;font-size:.82rem;font-weight:700;letter-spacing:.04em;background:none;border:1.5px solid currentColor;border-radius:99px;padding:9px 15px;cursor:pointer;min-height:44px;transition:color .3s,opacity .2s}
   nav:not(.scrolled) .lang-b{color:rgba(255,255,255,.85)}
@@ -102,20 +102,19 @@
 
   /* factura de mostra */
   .mock{position:relative;perspective:1400px}
-  .card-glass{position:relative;background:rgba(255,255,255,.92);border:1px solid rgba(255,255,255,.6);border-radius:20px;box-shadow:0 40px 90px rgba(4,20,40,.5);padding:24px 24px 48px;backdrop-filter:blur(6px);animation:float 7s ease-in-out infinite;will-change:transform}
+  .card-glass{position:relative;background:rgba(255,255,255,.92);border:1px solid rgba(255,255,255,.6);border-radius:20px;box-shadow:0 40px 90px rgba(4,20,40,.5);padding:24px;backdrop-filter:blur(6px);animation:float 7s ease-in-out infinite;will-change:transform}
   @keyframes float{0%,100%{transform:translateY(0) rotateX(4deg) rotateY(-6deg)}50%{transform:translateY(-14px) rotateX(2deg) rotateY(-4deg)}}
   @media(prefers-reduced-motion:reduce){.card-glass{animation:none}}
   .demo-tag{position:absolute;top:-12px;right:16px;background:var(--blau);color:#fff;font-size:.62rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:5px 11px;border-radius:99px;box-shadow:0 6px 16px rgba(4,20,40,.3)}
   .cg-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:10px}
   .cg-h strong{font-family:'Sora';color:var(--blau);font-size:.98rem}
-  .chip-vf{font-size:.66rem;font-weight:700;background:#ECFDF5;color:#047857;border:1px solid #A7F3D0;padding:3px 9px;border-radius:99px;white-space:nowrap}
+  .chip-vf{font-size:.66rem;font-weight:700;background:#ECFDF5;color:var(--verd);border:1px solid #A7F3D0;padding:3px 9px;border-radius:99px;white-space:nowrap}
   .cg-l{display:flex;justify-content:space-between;font-size:.83rem;color:#475569;padding:9px 0;border-bottom:1px dashed var(--linia);gap:12px}
   .cg-l .viol{color:var(--violeta);font-weight:600}
   .cg-t{display:flex;justify-content:space-between;font-weight:700;color:var(--blau);padding-top:12px;font-size:.92rem}
   .pill-ia{position:absolute;top:-16px;left:-14px;background:linear-gradient(120deg,var(--violeta),#6F2184);color:#fff;font-size:.72rem;font-weight:700;padding:8px 14px;border-radius:99px;box-shadow:0 12px 28px rgba(139,45,165,.45);display:inline-flex;align-items:center;gap:6px}
-  /* QA 03-09: el QR penja de la cantonada des de fora (i la factura du 24 px més de peu) perquè abans tapava «generat» i l'estat «Correcta ✓» */
-  .qr-box{position:absolute;right:-26px;bottom:-64px;background:#fff;border-radius:14px;padding:12px;box-shadow:0 24px 50px rgba(4,20,40,.4);text-align:center}
-  .qr-box small{display:block;font-size:.56rem;font-weight:700;letter-spacing:.08em;color:#64748B;margin-top:6px}
+  .qr-box{position:absolute;right:-18px;bottom:-24px;background:#fff;border-radius:14px;padding:12px;box-shadow:0 24px 50px rgba(4,20,40,.4);text-align:center}
+  .qr-box small{display:block;font-size:.56rem;font-weight:700;letter-spacing:.08em;color:var(--boira);margin-top:6px}
 
   /* franja de fets */
   .stats{background:var(--blau);color:#fff;padding:34px 0}
@@ -145,11 +144,10 @@
   .flow .node{background:var(--gasa);border:1.5px solid var(--linia);border-radius:99px;padding:12px 22px;font-size:.95rem}
   .flow .node.on{background:var(--blau);color:#fff;border-color:var(--blau)}
   .flow svg{color:var(--teal2);flex:none}
-  .prods{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+  .prods{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:24px}
   .prod{position:relative;background:linear-gradient(#fff,#fff) padding-box,linear-gradient(135deg,var(--pc),transparent 55%) border-box;border:1.5px solid transparent;border-radius:20px;padding:30px 28px;box-shadow:0 12px 36px rgba(13,59,102,.06);transition:transform .2s,box-shadow .2s}
   .prod:hover{transform:translateY(-4px);box-shadow:0 22px 52px rgba(13,59,102,.12)}
   .prod .p-chip{display:inline-block;font-size:.64rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#fff;background:var(--pc);padding:4px 11px;border-radius:99px;margin-bottom:14px}
-  .prod[style*="--verd"] .p-chip{color:#04201d} /* QA 03-09: bíblia v2.3 §4, text sobre Verd en Tinta Teal (blanc: 3,77:1; Tinta Teal: 4,53) */
   .prod img{height:30px;width:auto;margin-bottom:14px}
   .prod p{font-size:.95rem;color:#4B5B6C;margin-bottom:16px}
   .prod ul{list-style:none}
@@ -196,7 +194,7 @@
   .offer .risc{margin-top:22px;font-size:.88rem;color:#5B6B7C;max-width:34em;margin-left:auto;margin-right:auto}
   .offer .btn-of{display:inline-flex;align-items:center;justify-content:center;margin-top:24px;background:linear-gradient(100deg,var(--teal),#0FA396);color:#04201d;font-weight:700;font-size:1rem;padding:16px 34px;border-radius:99px;box-shadow:0 14px 34px rgba(20,184,166,.35);transition:transform .2s,box-shadow .2s;min-height:48px}
   .offer .btn-of:hover{transform:translateY(-3px);box-shadow:0 20px 44px rgba(20,184,166,.5)}
-  .offer .centre{margin-top:18px;font-size:.82rem;color:#64748B} /* QA 03-09: Gris Boira mai per a text informatiu (bíblia §4, 2,56:1); #64748B fa 4,76 sobre blanc */
+  .offer .centre{margin-top:18px;font-size:.82rem;color:var(--boira)}
 
   /* ===== HISTÒRIA ===== */
   #historia .cos{max-width:44em;margin-top:26px;display:grid;gap:18px;font-size:1.02rem;color:#374151}
@@ -222,7 +220,7 @@
   .check input{width:auto;min-height:auto;margin-top:3px}
   .cta{width:100%;margin-top:20px;background:linear-gradient(100deg,var(--teal),#0FA396);color:#04201d;border:none;cursor:pointer;font-family:inherit;font-weight:700;font-size:1rem;padding:16px;border-radius:99px;box-shadow:0 12px 30px rgba(20,184,166,.3);transition:transform .2s,box-shadow .2s;min-height:48px}
   .cta:hover{transform:translateY(-2px);box-shadow:0 16px 38px rgba(20,184,166,.45)}
-  .micro{font-size:.78rem;color:#64748B;text-align:center;margin-top:12px}
+  .micro{font-size:.78rem;color:var(--boira);text-align:center;margin-top:12px}
   #gracies{display:none;max-width:520px;margin:0 auto;background:#fff;border:1px solid var(--linia);border-radius:20px;padding:44px 32px;text-align:center;box-shadow:0 18px 50px rgba(13,59,102,.08)}
   #gracies .okic{width:56px;height:56px;border-radius:50%;background:#ECFDF5;color:var(--verd);display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
   #gracies h3{font-size:1.2rem;margin-bottom:6px}
@@ -254,8 +252,7 @@
     section{padding:72px 0}
     header{padding:110px 0 70px}
     .pains,.facts,.moat,.steps{grid-template-columns:1fr}
-    .qr-box{right:-4px;bottom:-64px}
-    .demo-tag{top:auto;bottom:-12px;right:auto;left:16px} /* QA 03-09: a 390 px trepitjava la pastilla «Informe escrit per IA» */
+    .qr-box{right:-4px;bottom:-18px}
     .offer{padding:32px 22px}
     body{padding-bottom:70px}
   }
@@ -290,7 +287,7 @@
     <div>
       <span class="h-badge"><span class="dot"></span>VeriFactu · mandatory for self-employed doctors in Spain from 1 July 2027</span>
       <h1>The doctor does medicine.<br>The rest is <span class="grad">ConsultaMed</span>.</h1>
-      <p class="h-sub">When the visit ends, the clinical report is written and the VeriFactu invoice issued. Done by an AI that works on your computer — not in the cloud.</p>
+      <p class="h-sub">When the visit ends, the clinical report is written and the VeriFactu invoice issued. With the local agent, it's done by an AI that works on your computer — not in the cloud.</p>
       <div class="h-cta">
         <a class="btn-main" href="#registre">Join the beta</a>
         <a class="btn-ghost" href="#passos">How it works in 60 seconds
@@ -310,7 +307,7 @@
         <div class="cg-l"><span>Dermatology visit</span><span>90,00 €</span></div>
         <div class="cg-l"><span>Patient · Adeslas</span><span>Oct. batch</span></div>
         <div class="cg-l"><span>Visit report</span><span class="viol">generated</span></div>
-        <div class="cg-t"><span>Status</span><span style="color:#047857">Valid ✓</span></div>
+        <div class="cg-t"><span>Status</span><span style="color:var(--verd)">Valid ✓</span></div>
       </div>
       <div class="qr-box" aria-hidden="true">
         <svg width="64" height="64" viewBox="0 0 64 64"><rect width="64" height="64" fill="#fff"/><g fill="#0D3B66"><rect x="4" y="4" width="16" height="16"/><rect x="8" y="8" width="8" height="8" fill="#fff"/><rect x="44" y="4" width="16" height="16"/><rect x="48" y="8" width="8" height="8" fill="#fff"/><rect x="4" y="44" width="16" height="16"/><rect x="8" y="48" width="8" height="8" fill="#fff"/><rect x="28" y="6" width="6" height="6"/><rect x="28" y="18" width="6" height="6"/><rect x="26" y="28" width="8" height="8"/><rect x="40" y="30" width="6" height="6"/><rect x="50" y="28" width="6" height="6"/><rect x="28" y="44" width="6" height="6"/><rect x="38" y="42" width="6" height="6"/><rect x="48" y="44" width="10" height="6"/><rect x="38" y="54" width="6" height="6"/><rect x="52" y="54" width="6" height="6"/></g></svg>
@@ -325,7 +322,7 @@
     <div class="stat"><div class="v"><span data-count="2027">2027</span></div><div class="l">VeriFactu mandatory (1 July, self-employed)</div></div>
     <div class="stat"><div class="v"><span data-count="0">0</span></div><div class="l">clinical reports in the cloud</div></div>
     <div class="stat"><div class="v"><span data-count="2">2</span> min</div><div class="l">of admin per visit</div></div>
-    <div class="stat"><div class="v"><span data-count="50">50</span> €</div><div class="l">per month, full suite</div></div>
+    <div class="stat"><div class="v"><span data-count="79">79</span> €</div><div class="l">per month, full suite</div></div>
   </div>
 </div>
 
@@ -394,6 +391,18 @@
         </ul>
         <span class="by">by ConsultaMed</span>
       </article>
+      <article class="prod reveal d3" style="--pc:#EA7317">
+        <span class="p-chip">Reception &amp; schedule</span>
+        <img src="secremed.png" alt="SecreMed">
+        <p>The day's schedule, patient records and calls to return, in one place. Reception in order — with or without a receptionist.</p>
+        <ul>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>The day at a glance, with appointments pending confirmation</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Patient records shared with FacturaMed and EscribaMed</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Visit reminders ready to send via WhatsApp</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>A tray for calls and errands so none get lost</li>
+        </ul>
+        <span class="by">by ConsultaMed</span>
+      </article>
     </div>
   </div>
 </section>
@@ -450,7 +459,7 @@
     <span class="kicker reveal">Get started</span>
     <h2 class="reveal">Up and running in 60 seconds.</h2>
     <div class="steps">
-      <div class="step reveal d1"><h3>Create your account</h3><p>No card. Name, email and tax ID: enough to start today.</p></div>
+      <div class="step reveal d1"><h3>Create your account</h3><p>No card. Name, email and password: enough to start today.</p></div>
       <div class="step reveal d2"><h3>Set up your practice</h3><p>Invoice series, logo and your usual billing items. One minute, once.</p></div>
       <div class="step reveal d3"><h3>Finish a visit</h3><p>And watch the report and the invoice come out. From then on, it's always like this.</p></div>
     </div>
@@ -468,6 +477,7 @@
       <ul>
         <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Full FacturaMed · unlimited invoices</li>
         <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Full EscribaMed · unlimited reports</li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Full SecreMed · schedule and reception</li>
         <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>All updates included</li>
         <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Direct support from our technical team</li>
       </ul>
@@ -528,41 +538,16 @@
 
 <section id="registre">
   <div class="wrap">
-    <div style="text-align:center;max-width:620px;margin:0 auto 36px">
+    <div style="text-align:center;max-width:620px;margin:0 auto 8px">
       <span class="kicker">Open beta</span>
       <h2 style="margin:0 auto">Your next visit can end with the invoice done.</h2>
       <p class="lead" style="margin:10px auto 0">Immediate access. No card, no commitment.</p>
     </div>
-    <form id="reg" action="https://formspree.io/f/xrenbbza" method="POST">
-      <input type="hidden" name="_subject" value="New ConsultaMed sign-up (v2)">
-      <label for="nom">Full name</label>
-      <input id="nom" name="nombre" type="text" required autocomplete="name" placeholder="Dr. Marta Ferrer">
-      <label for="email">Email</label>
-      <input id="email" name="email" type="email" required autocomplete="email" placeholder="marta@yourpractice.com">
-      <label for="nif">NIF (Spanish tax ID — will appear on your invoices)</label>
-      <input id="nif" name="nif" type="text" required maxlength="9" placeholder="12345678Z" style="text-transform:uppercase">
-      <label for="colegiat">Medical license number</label>
-      <input id="colegiat" name="colegiado" type="text" required maxlength="15" placeholder="080834567" autocomplete="off">
-      <label for="pais">Country of practice</label>
-      <select id="pais" name="pais" required>
-        <option value="ES" selected>Spain</option>
-        <option value="DE">Germany (waitlist)</option>
-        <option value="FR">France (waitlist)</option>
-        <option value="UK">United Kingdom (waitlist)</option>
-        <option value="XX">Other country (waitlist)</option>
-      </select>
-      <label for="especialitat">Specialty</label>
-<select id="especialitat" name="especialidad" required><option value="MEDICINA" selected>Medicine</option><option value="ODONTOLOGIA">Dentistry</option><option value="FISIOTERAPIA">Physiotherapy</option><option value="PSICOLOGIA">Psychology</option><option value="PODOLOGIA">Podiatry</option><option value="NUTRICIO">Nutrition</option><option value="ALTRA">Other</option></select>
-<label for="modo">Account type</label>
-      <select id="modo" name="modo" required><option selected>Private practice (1 professional) — €79/month</option><option>Centre (several professionals) — from €235/month</option></select>
-      <div class="check"><input id="priv" type="checkbox" required><label for="priv" style="margin:0;font-weight:400">I agree that ConsultaMed may use this data to create my account and contact me about the service. I can unsubscribe at any time.</label></div>
-      <button class="cta" type="submit">Create my account and sign in</button>
-      <p class="micro">Trying it costs nothing · €79/month, VAT included, from the first day of real use</p>
-      <p class="micro" style="margin-top:6px">Already have an account? <a href="hub.html" style="color:var(--teal2);font-weight:700">Sign in to ConsultaMed →</a></p>
-    </form>
-    <div id="gracies">
-      <div class="okic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg></div>
-      <h3>Account created</h3><p>Taking you to ConsultaMed…</p>
+    <div style="text-align:center">
+      <a class="btn-main" href="https://app.consultamed.es/registre" style="display:inline-block">Create your account — 1 minute</a>
+      <p class="micro" style="margin-top:14px">You'll try the whole suite in test mode, with sample data if you like.</p>
+      <p class="micro" style="margin-top:6px">Trying it costs nothing · €79/month, VAT included, from the first day of real use</p>
+      <p class="micro" style="margin-top:6px">Already have an account? <a href="https://app.consultamed.es" style="color:var(--teal2);font-weight:700">Sign in →</a></p>
     </div>
   </div>
 </section>
@@ -570,7 +555,7 @@
 <footer>
   <div class="wrap">
     <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap"><span class="foot-logo"><img src="consultamed.png" alt="ConsultaMed"></span><span>The doctor does medicine. The rest is ConsultaMed.</span></div>
-    <div><a href="mailto:consultamedx@gmail.com">consultamedx@gmail.com</a> · <a href="legal-es.html">Legal notice &amp; privacy (ES)</a> · © 2026 ConsultaMed</div>
+    <div><a href="mailto:suport@consultamed.es">suport@consultamed.es</a> · <a href="legal-es.html">Legal notice &amp; privacy (ES)</a> · © 2026 ConsultaMed</div>
   </div>
 </footer>
 
@@ -654,20 +639,6 @@
     window.addEventListener('scroll',upd,{passive:true});upd();
   },'mcta');
 
-  // registre → hub (preconfigura el compte)
-  safe(function(){
-    var form=document.getElementById('reg'),ok=document.getElementById('gracies');
-    if(!form)return;
-    form.addEventListener('submit',function(ev){
-      ev.preventDefault();var d=new FormData(form);
-      safe(function(){var c=null;try{c=JSON.parse(localStorage.getItem('fm2_config'))}catch(e){}
-        if(!c||!c.nom)localStorage.setItem('fm2_config',JSON.stringify({nom:(d.get('nombre')||'').trim(),nif:(d.get('nif')||'').trim().toUpperCase(),colegiat:(d.get('colegiado')||'').trim(),pais:(d.get('pais')||'ES'),adreca:'',series:[{codi:String(new Date().getFullYear()),seguent:1}]}));
-        localStorage.setItem('em_idioma_ui','en');
-      },'pre');
-      var go=function(){form.style.display='none';ok.style.display='block';setTimeout(function(){window.location.href='hub.html?benvinguda=1'},1500)};
-      if(window.fetch)fetch(form.action,{method:'POST',body:d,headers:{'Accept':'application/json'}}).then(go).catch(go);else go();
-    });
-  },'reg');
 })();
 </script>
 </body>

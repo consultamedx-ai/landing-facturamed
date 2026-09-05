@@ -54,7 +54,7 @@
   .brief{background:rgba(255,255,255,.82);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(13,59,102,.08);border-left:5px solid var(--taronja);border-radius:18px;padding:20px 22px;margin-top:28px;box-shadow:0 10px 34px rgba(13,59,102,.08);opacity:0;animation:up .6s .2s both}
   .brief-top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
   .brief-tit{font-family:'Sora';font-weight:700;color:var(--blau);font-size:1.08rem}
-  .brief-tit small{display:block;font-family:'Inter';font-weight:500;color:#64748B;font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;margin-top:2px}
+  .brief-tit small{display:block;font-family:'Inter';font-weight:500;color:var(--boira);font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;margin-top:2px}
   .brief-kpis{font-size:.9rem;color:#5B6B7C}
   .brief-kpis b{color:var(--taronja)}
   .cites{margin-top:14px;display:flex;flex-direction:column;gap:2px}
@@ -70,7 +70,7 @@
   .brief-link:hover{transform:translateX(3px)}
   .buit{color:#64748B;font-size:.94rem;margin-top:6px}
   .seccio{font-family:'Sora';font-weight:700;color:var(--blau);font-size:1.1rem;margin:38px 0 4px;opacity:0;animation:up .6s .28s both}
-  .seccio small{font-family:'Inter';font-weight:500;color:#64748B;font-size:.82rem} /* QA 03-09: Gris Boira només decoratiu (bíblia §4): com a text feia 2,5:1; #64748B fa 4,76 sobre blanc i 4,54 sobre Gasa */
+  .seccio small{font-family:'Inter';font-weight:500;color:var(--boira);font-size:.82rem}
   .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:18px}
   .card{display:block;background:rgba(255,255,255,.78);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(13,59,102,.08);border-radius:20px;padding:24px 22px;text-decoration:none;color:inherit;transition:transform .18s cubic-bezier(.2,.7,.2,1),box-shadow .18s;position:relative;overflow:hidden;opacity:0;animation:up .55s both}
   .card::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--acc,#ccc),transparent 85%)}
@@ -85,7 +85,7 @@
   .card-go{margin-top:14px;font-weight:700;font-size:.9rem;color:var(--acc,#333);position:relative;display:inline-flex;gap:5px;transition:gap .18s}
   .card:hover .card-go{gap:10px}
   .soon-tag{position:absolute;top:16px;right:16px;font-size:.62rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;background:#EEF2F7;color:#64748B;padding:4px 10px;border-radius:99px}
-  .peu{text-align:center;color:#64748B;font-size:.76rem;margin-top:44px}
+  .peu{text-align:center;color:var(--boira);font-size:.76rem;margin-top:44px}
   @media(max-width:640px){.grid{grid-template-columns:1fr}.hola{font-size:1.7rem}}
   [data-amagat]{display:none !important}
 /* ── ENG-13b ② · pantalla d'activació ─────────────────────────────────── */
@@ -102,14 +102,6 @@
 .act-cal{border:1px solid rgba(13,59,102,.18);border-radius:12px;padding:14px 16px;margin:0 0 22px;background:rgba(13,59,102,.04)}
 .act-cal-tit{font-weight:700;margin-bottom:4px}
 .act-cal p{margin:0;line-height:1.55}
-/* ENG-25 · la línia legal de la porta 0 (contracte del 03/09, §5): el mateix
-   cos secundari que .act-sub (#5B6B7C, 5,2:1 sobre Blanc Gasa) i l'enllaç en
-   Blau Clínic, subratllat perquè es vegi que ho és. S'obre en una pestanya
-   nova: l'activació és una pàgina amb estat a mitges i no s'ha de perdre per
-   anar a llegir les condicions. */
-.act-legal{font-size:.86rem;color:#5B6B7C;line-height:1.55;margin:0 0 18px}
-.act-legal a{color:#0D3B66;font-weight:600;text-decoration:underline;text-underline-offset:2px}
-.act-legal a:focus-visible{outline:2px solid #0D3B66;outline-offset:2px}
 .act-camps{display:flex;flex-direction:column;gap:14px;margin:0 0 18px}
 .act-camp label{display:block;font-weight:600;font-size:.86rem;margin-bottom:5px}
 .act-camp input{width:100%;padding:11px 13px;border:1px solid rgba(148,163,184,.5);border-radius:10px;font:inherit;background:#fff}
@@ -207,8 +199,6 @@
       <div class="act-cal-tit" id="a0-cal-tit"></div>
       <p id="a0-cal-txt"></p>
     </div>
-    <!-- ENG-25 · acceptació de les condicions del servei i del contracte d'encàrrec, abans dels botons -->
-    <p class="act-legal" id="a0-legal"></p>
     <div class="act-botons">
       <button class="act-b act-b-si" type="button" id="a0-segueix"></button>
       <button class="act-b act-b-no" type="button" id="a0-surt"></button>
@@ -384,33 +374,8 @@
     }
     // 1r: el que teniem desat, perque no parpellegi
     try{ var c=JSON.parse(localStorage.getItem('cm_productes')||'null'); if(c) aplica(c); }catch(e){}
-    /* ENG-22 (nota) · cap crida a l'API sense sessio. `jo` es l'UNICA sonda
-       d'aquesta pagina i tota la resta va darrere seu: sense sessio, res mes no
-       surt. I si l'ultima vegada el servidor ja va dir que no (401) i aquesta
-       carrega no pot haver creat cap sessio (recarrega, enrere, enllac des del
-       hub), ni la sonda: ho decideix cmStore.potHaverSessio, que te el perque
-       escrit a cmstore.js. La promesa es comparteix amb l'activacio (mes avall)
-       per window.cmSessio: resol amb la resposta de `jo` si hi ha sessio, i
-       amb null si no. */
-    var st=window.cmStore||{};
-    var sessio=window.cmSessio=(st.potHaverSessio&&!st.potHaverSessio())?Promise.resolve(null):
-      fetch('https://app.consultamed.es/api/s',{method:'POST',credentials:'include',
-        headers:{'Content-Type':'application/json'},body:JSON.stringify({accio:'jo'})})
-      .then(function(r){ if(r.status===401&&st.anotaSessio) st.anotaSessio(false); return r.json(); })
-      .then(function(d){
-        if(!d||!d.ok||!d.usuari) return null;
-        if(st.anotaSessio) st.anotaSessio(true);
-        return d;
-      }).catch(function(){ return null; });
-    // 2n: el que en diu el servidor
-    sessio.then(function(d){
-      if(!d||!d.usuari.productes) return;
-      try{localStorage.setItem('cm_productes',JSON.stringify(d.usuari.productes));}catch(e){}
-      aplica(d.usuari.productes);
-    });
     // GestorMed: si l'usuari pertany a una gestoria, li ensenyem la seva porta.
-    sessio.then(function(u){ if(!u) return;
-      return fetch('https://app.consultamed.es/api/s',{method:'POST',credentials:'include',
+    fetch('https://app.consultamed.es/api/s',{method:'POST',credentials:'include',
       headers:{'Content-Type':'application/json'},body:JSON.stringify({accio:'gestoria.meves'})})
       .then(function(r){return r.json();})
       .then(function(d){
@@ -433,8 +398,17 @@
         go.className='card-go'; go.textContent='Obrir →';
         a.appendChild(lg); a.appendChild(de); a.appendChild(go);
         grid.appendChild(a);
-      });
-    }).catch(function(){});
+      }).catch(function(){});
+
+    // 2n: preguntar-ho al servidor
+    fetch('https://app.consultamed.es/api/s',{method:'POST',credentials:'include',
+      headers:{'Content-Type':'application/json'},body:JSON.stringify({accio:'jo'})})
+      .then(function(r){return r.json();})
+      .then(function(d){
+        if(!d||!d.ok||!d.usuari||!d.usuari.productes) return;
+        try{localStorage.setItem('cm_productes',JSON.stringify(d.usuari.productes));}catch(e){}
+        aplica(d.usuari.productes);
+      }).catch(function(){});
   })();
 
   (function(){
@@ -443,10 +417,10 @@
     if(q.get('preview')==='0') localStorage.removeItem('cm_preview');
     var preview=localStorage.getItem('cm_preview')==='1';
     if(!preview){
-      ['card-secre','card-recept','brief-box'].forEach(function(id){var e=document.getElementById(id); if(e) e.style.display='none';});
+      ['card-recept'].forEach(function(id){var e=document.getElementById(id); if(e) e.style.display='none';});
     }else{
       var w=document.querySelector('.wrap');
-      if(w){var b=document.createElement('div');b.textContent='● Mode preview actiu · SecreMed i ReceptaMed només visibles per a tu';
+      if(w){var b=document.createElement('div');b.textContent='● Mode preview actiu · ReceptaMed només visible per a tu';
         b.style.cssText='display:inline-block;background:rgba(148,163,184,.14);color:#5B6B7C;font-size:.72rem;font-weight:600;padding:6px 13px;border-radius:99px;margin-bottom:18px';w.insertBefore(b,w.firstChild);}
     }
   })();
@@ -505,7 +479,6 @@
            "<b>Les factures de prova es queden com a prova</b> i les podrà consultar sempre, però <b>la seva facturació legal comença de zero</b>, amb la seva sèrie pròpia. És així perquè ha de ser així."],
       calTit:"Què necessitarà tenir a mà",
       calTxt:"Per activar el compte necessitarà: <b>el seu NIF</b>, <b>l'adreça fiscal</b>, <b>el número de col·legiat</b> i <b>una targeta</b>. Són cinc minuts. Si li falta alguna cosa, pot deixar-ho a mitges i continuar quan vulgui: no es perd res.",
-      legal:"En activar el compte accepta <a href='legal.html' target='_blank' rel='noopener'>les condicions del servei i el contracte d'encàrrec de tractament de dades</a>.",
       segueix:"Continuar", arano:"Ara no",
       p1tit:"Les seves dades fiscals", p1sub:"Només el que falta per poder facturar de veritat. Es desa a mesura que l'escriu.",
       lNom:"Nom i cognoms", lNif:"NIF", lCol:"Número de col·legiat", lAdr:"Adreça fiscal",
@@ -532,7 +505,6 @@
            "<b>Las facturas de prueba se quedan como prueba</b> y podrá consultarlas siempre, pero <b>su facturación legal empieza de cero</b>, con su serie propia. Es así porque tiene que ser así."],
       calTit:"Qué necesitará tener a mano",
       calTxt:"Para activar la cuenta necesitará: <b>su NIF</b>, <b>la dirección fiscal</b>, <b>el número de colegiado</b> y <b>una tarjeta</b>. Son cinco minutos. Si le falta algo, puede dejarlo a medias y continuar cuando quiera: no se pierde nada.",
-      legal:"Al activar la cuenta acepta <a href='legal-es.html' target='_blank' rel='noopener'>las condiciones del servicio y el contrato de encargo de tratamiento de datos</a>.",
       segueix:"Continuar", arano:"Ahora no",
       p1tit:"Sus datos fiscales", p1sub:"Solo lo que falta para poder facturar de verdad. Se guarda a medida que lo escribe.",
       lNom:"Nombre y apellidos", lNif:"NIF", lCol:"Número de colegiado", lAdr:"Dirección fiscal",
@@ -559,7 +531,6 @@
            "<b>Your test invoices stay test invoices</b> and you will always be able to consult them, but <b>your legal invoicing starts from zero</b>, with your own series. It is this way because it has to be."],
       calTit:"What you will need at hand",
       calTxt:"To activate the account you will need: <b>your tax ID</b>, <b>your fiscal address</b>, <b>your licence number</b> and <b>a card</b>. It takes five minutes. If something is missing you can stop halfway and continue whenever you want: nothing is lost.",
-      legal:"By activating the account you accept <a href='legal.html' target='_blank' rel='noopener'>the terms of service and the data processing agreement</a>.",
       segueix:"Continue", arano:"Not now",
       p1tit:"Your fiscal details", p1sub:"Only what is missing in order to invoice for real. It is saved as you type.",
       lNom:"Full name", lNif:"Tax ID", lCol:"Licence number", lAdr:"Fiscal address",
@@ -586,7 +557,6 @@
            "<b>Ihre Testrechnungen bleiben Testrechnungen</b> und Sie können sie jederzeit einsehen, aber <b>Ihre rechtliche Rechnungsstellung beginnt bei null</b>, mit Ihrer eigenen Serie. Das ist so, weil es so sein muss."],
       calTit:"Was Sie bereithalten sollten",
       calTxt:"Zum Aktivieren des Kontos brauchen Sie: <b>Ihre Steuernummer</b>, <b>die Rechnungsadresse</b>, <b>Ihre Arztnummer</b> und <b>eine Karte</b>. Es dauert fünf Minuten. Wenn Ihnen etwas fehlt, können Sie mittendrin aufhören und später weitermachen: es geht nichts verloren.",
-      legal:"Mit der Aktivierung des Kontos akzeptieren Sie <a href='legal.html' target='_blank' rel='noopener'>die Nutzungsbedingungen und den Auftragsverarbeitungsvertrag</a>.",
       segueix:"Weiter", arano:"Jetzt nicht",
       p1tit:"Ihre Steuerdaten", p1sub:"Nur was zum echten Rechnungstellen noch fehlt. Es wird beim Tippen gespeichert.",
       lNom:"Vor- und Nachname", lNif:"Steuernummer", lCol:"Arztnummer", lAdr:"Rechnungsadresse",
@@ -617,16 +587,8 @@
   function netejaPas(){try{localStorage.removeItem(K_PAS)}catch(e){}}
 
   function api(accio,dades){
-    /* ENG-22 (nota) · cap crida sense sessio: s'espera la sonda `jo` del hub
-       (window.cmSessio, mes amunt) i, si no n'hi ha, es respon aqui mateix el
-       que respondria el servidor (el 401 «Sense sessio»), sense sortir a la
-       xarxa: cada porta fa exactament el que feia. Si la sonda no existis (no
-       hauria de passar), es crida com abans: el dubte cau del canto de preguntar. */
-    return (window.cmSessio||Promise.resolve(true)).then(function(u){
-      if(!u) return {ok:false,error:'Sense sessio'};
-      return fetch(API,{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},
-        body:JSON.stringify(Object.assign({accio:accio},dades||{}))}).then(function(r){return r.json()});
-    });
+    return fetch(API,{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(Object.assign({accio:accio},dades||{}))}).then(function(r){return r.json()});
   }
 
   /* ── La barra del hub quan hi ha una activació a mig fer ────────────────── */
@@ -682,7 +644,6 @@
     $('a0-cos').innerHTML=t.cos.map(function(p){return '<p>'+p+'</p>'}).join('');
     $('a0-cal-tit').textContent=t.calTit;
     $('a0-cal-txt').innerHTML=t.calTxt;
-    $('a0-legal').innerHTML=t.legal;   /* ENG-25 · porta l'enllaç dins: legal.html, o legal-es.html en castellà */
     $('a0-segueix').textContent=t.segueix;
     $('a0-surt').textContent=t.arano;
     $('a0-segueix').onclick=function(){marca(0,'completada');desaPas(1);porta1()};

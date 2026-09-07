@@ -251,7 +251,7 @@
   @media(max-width:640px){
     section{padding:72px 0}
     header{padding:110px 0 70px}
-    .pains,.facts,.moat,.steps{grid-template-columns:1fr}
+    .pains,.facts,.moat,.steps{grid-template-columns:1fr}.flow{flex-direction:column;gap:6px}.flow svg{transform:rotate(90deg)}
     .qr-box{right:-4px;bottom:-18px}
     .offer{padding:32px 22px}
     body{padding-bottom:70px}
@@ -357,14 +357,18 @@
 <section id="circuit">
   <div class="wrap">
     <span class="kicker reveal">The circuit</span>
-    <h2 class="reveal">Visit → report → invoice. Without touching a thing.</h2>
-    <p class="lead reveal d1">You talk to your patient. EscribaMed listens and writes the clinical report. FacturaMed issues the invoice with its digital fingerprint and AEAT QR code. All before the patient reaches the door.</p>
+    <h2 class="reveal">Appointment → visit → report → invoice. Without touching a thing.</h2>
+    <p class="lead reveal d1">SecreMed sets up your day: the schedule, the reminder to the patient and what each visit needs. You talk to your patient. EscribaMed listens and writes the clinical report. FacturaMed issues the invoice with its digital fingerprint and AEAT QR code. All before the patient reaches the door. And the next check-up is already in the schedule.</p>
     <div class="flow reveal d1" aria-hidden="true">
+      <span class="node">The appointment is booked</span>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
       <span class="node on">You see the patient</span>
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
       <span class="node">The report writes itself</span>
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
       <span class="node">The invoice goes out</span>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      <span class="node">The check-up is scheduled</span>
     </div>
     <div class="prods">
       <article class="prod reveal d1" style="--pc:var(--verd)">

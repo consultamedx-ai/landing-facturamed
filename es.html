@@ -251,7 +251,7 @@
   @media(max-width:640px){
     section{padding:72px 0}
     header{padding:110px 0 70px}
-    .pains,.facts,.moat,.steps{grid-template-columns:1fr}
+    .pains,.facts,.moat,.steps{grid-template-columns:1fr}.flow{flex-direction:column;gap:6px}.flow svg{transform:rotate(90deg)}
     .qr-box{right:-4px;bottom:-18px}
     .offer{padding:32px 22px}
     body{padding-bottom:70px}
@@ -357,14 +357,18 @@
 <section id="circuit">
   <div class="wrap">
     <span class="kicker reveal">El circuito</span>
-    <h2 class="reveal">Visita → informe → factura. Sin tocar nada.</h2>
-    <p class="lead reveal d1">Usted habla con el paciente. EscribaMed escucha y redacta el informe clínico. FacturaMed emite la factura con huella digital y QR de la AEAT. Todo, antes de que el paciente llegue a la puerta.</p>
+    <h2 class="reveal">Cita → visita → informe → factura. Sin tocar nada.</h2>
+    <p class="lead reveal d1">SecreMed le prepara el día: la agenda, el recordatorio al paciente y qué toca hacer en cada visita. Usted habla con el paciente. EscribaMed escucha y redacta el informe clínico. FacturaMed emite la factura con huella digital y QR de la AEAT. Todo, antes de que el paciente llegue a la puerta. Y la próxima revisión ya queda en la agenda.</p>
     <div class="flow reveal d1" aria-hidden="true">
+      <span class="node">La cita queda en la agenda</span>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
       <span class="node on">Usted visita</span>
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
       <span class="node">El informe se escribe</span>
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
       <span class="node">La factura se emite</span>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      <span class="node">La revisión queda apuntada</span>
     </div>
     <div class="prods">
       <article class="prod reveal d1" style="--pc:var(--verd)">

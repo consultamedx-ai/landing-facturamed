@@ -9,7 +9,7 @@
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://app.consultamed.es http://127.0.0.1:7373 http://localhost:7373; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' ipc: http://ipc.localhost https://app.consultamed.es http://127.0.0.1:7373 http://localhost:7373; form-action 'self'">
 <script src="cmstore.js"></script>
 <script src="cmsync.js?v=20260903" defer></script>
 <meta name="referrer" content="no-referrer">
@@ -17,7 +17,7 @@
 <meta name="robots" content="noindex">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
-<script defer src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<script defer src="qrcode.js"></script>
 <style>
   :root{--blau:#0D3B66;--teal:#14B8A6;--verd:#059669;--tinta-teal:#04201d;/* ENG-16 ⑧ · bíblia v2.3 §4: sobre farciment Teal o Verd, el text va en Tinta Teal i mai en blanc. Blanc sobre #059669 són 3,77:1 i no arriba; Tinta Teal són 4,53:1 i sí. */--verd-fosc:#047857;--gasa:#F7FAFC;--grafit:#1F2937;--boira:#94A3B8;--linia:#E2E8F0;--vermell:#DC2626}
   *{margin:0;padding:0;box-sizing:border-box}

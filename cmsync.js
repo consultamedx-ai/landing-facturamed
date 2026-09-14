@@ -365,6 +365,21 @@
         var guardada = null;
         try { guardada = localStorage.getItem('cm_org'); } catch (e) {}
         triaOrg(guardada);
+        /* P-3 (ENG-13 · escriptori, 14/09/2026) · L'ESTAT DEL COMPTE, ESCRIT PER QUI EL SAP.
+           app.html (K_ESTAT) i cmstore.js (barra de prova) llegeixen cm_estat_compte, i
+           fins avui no l'escrivia ningu: tothom quedava en PROVA. Es demana un cop per
+           carrega, amb l'organitzacio triada, i NOMES s'escriu amb una resposta bona del
+           servidor: sense linia o sense sessio no es toca res (el defecte segur segueix
+           sent PROVA). El mateix criteri que aplica l'app d'escriptori des de la seva
+           memoria cau datada. */
+        api('pagament.estat', { organitzacioId: org }).then(function (p) {
+          if (!p || !p.ok || !p.subscripcio) return;
+          var e = p.subscripcio.estatCompte;
+          try {
+            if (e === 'ACTIU' || e === 'IMPAGAMENT') localStorage.setItem('cm_estat_compte', e);
+            else localStorage.removeItem('cm_estat_compte');
+          } catch (e2) {}
+        }).catch(function () {});
         cicle();
         setInterval(cicle, 5 * 60 * 1000); // refresc suau cada 5 min
         if (xip) xip.addEventListener('click', function (e) {

@@ -18,7 +18,7 @@
 <!-- SecreMed v2 (06/09/2026) · connect-src: el servidor administratiu i, com a
      EscribaMed, l'agent local del Mac del metge (127.0.0.1:7474) per a la IA
      local de les notes. Només se'l sonda quan el metge obre el bloc d'IA. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' https://app.consultamed.es http://127.0.0.1:7474 http://localhost:7474; form-action 'self'; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' ipc: http://ipc.localhost https://app.consultamed.es http://127.0.0.1:7474 http://localhost:7474; form-action 'self'; manifest-src 'self'">
 <script src="cmstore.js"></script>
 <script src="cmsync.js?v=20260903" defer></script>
 <meta name="referrer" content="no-referrer">

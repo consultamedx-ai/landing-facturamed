@@ -16,7 +16,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root{--blau:#0D3B66;--teal:#0F9488;--gasa:#F7FAFC;--grafit:#1F2937;--boira:#94A3B8;--linia:#E7EDF3}
+  :root{--blau:#0D3B66;--teal:#0D7F74;/* QA 03-09: els enllaços en #0F9488 feien 3,57:1 sobre Blanc Gasa; #0D7F74 en fa 4,65 */--gasa:#F7FAFC;--grafit:#1F2937;--boira:#94A3B8;--linia:#E7EDF3}
   *{margin:0;padding:0;box-sizing:border-box}
   body{font-family:'Inter',system-ui,sans-serif;color:var(--grafit);background:var(--gasa);line-height:1.7;-webkit-font-smoothing:antialiased}
   .wrap{max-width:760px;margin:0 auto;padding:0 24px}
@@ -26,7 +26,7 @@
   nav a.torna{font-size:.86rem;font-weight:600;color:var(--blau);text-decoration:none}
   main{padding:48px 0 80px}
   h1{font-family:'Sora';font-size:1.9rem;color:var(--blau);letter-spacing:-.02em;margin-bottom:6px}
-  .data{color:var(--boira);font-size:.85rem;margin-bottom:34px}
+  .data{color:#64748B;font-size:.85rem;margin-bottom:34px}
   h2{font-family:'Sora';font-size:1.25rem;color:var(--blau);margin:40px 0 12px;padding-top:20px;border-top:1px solid var(--linia)}
   h3{font-family:'Sora';font-size:1rem;color:var(--blau);margin:22px 0 8px}
   p,li{font-size:.95rem;color:#374151;margin-bottom:10px}
@@ -37,6 +37,7 @@
   table{border-collapse:collapse;width:100%;margin:14px 0;font-size:.86rem}
   th,td{border:1px solid var(--linia);padding:8px 10px;text-align:left;vertical-align:top}
   th{background:#EEF4F9;color:var(--blau);font-family:'Sora';font-size:.82rem}
+  @media(max-width:640px){table{display:block;overflow-x:auto}} /* QA 03-09: a 390 px les taules desbordaven la pàgina sencera; així es desplacen dins la seva caixa */
   footer{background:#0A2E52;color:#8FA6BD;padding:34px 0;font-size:.82rem;text-align:center}
 </style>
 </head>
@@ -48,7 +49,7 @@
 
 <main class="wrap">
   <h1>Términos y condiciones del servicio</h1>
-  <p class="data">Versión 1.0 · Septiembre de 2026 · consultamed.es · <a href="#dpa">Anexo: contrato de encargo del tratamiento (DPA)</a></p>
+  <p class="data">Versión 1.1 · Septiembre de 2026 · consultamed.es · <a href="#dpa">Anexo: contrato de encargo del tratamiento (DPA)</a></p>
 
   <div class="caixa"><strong>Qué es este documento.</strong> Es el contrato entre ConsultaMed y el profesional o la clínica que contrata el servicio. Se acepta al contratar, marcando la casilla correspondiente antes del pago. El <strong>anexo final</strong> es el contrato de encargo del tratamiento (DPA) exigido por el artículo 28 del RGPD: forma parte de estos Términos y se acepta con ellos. La información sobre protección de datos está en el <a href="legal-es.html#privacidad">aviso legal y privacidad</a>.</div>
 
@@ -79,7 +80,7 @@
   <p>3.5. El Cliente se obliga a no utilizar el Servicio para obtener consejo clínico automatizado dirigido a pacientes y a mantener los flujos de validación humana.</p>
 
   <h2 id="cuenta">4 · Cuenta, acceso y uso aceptable</h2>
-  <p>4.1. El Cliente garantiza que los datos de registro son veraces (incluida, en su caso, la colegiación profesional) y custodiará sus credenciales. La <strong>verificación de la dirección de correo es obligatoria</strong> para activar la sincronización y las invitaciones; el doble factor de autenticación se ofrecerá y podrá exigirse cuando esté disponible en la plataforma.</p>
+  <p>4.1. El Cliente garantiza que los datos de registro son veraces (incluida, en su caso, la colegiación profesional) y custodiará sus credenciales. La <strong>verificación de la dirección de correo es obligatoria</strong> antes de que el Servicio sincronice datos con el servidor y para enviar invitaciones; el doble factor de autenticación se ofrecerá y podrá exigirse cuando esté disponible en la plataforma.</p>
   <p>4.2. Queda prohibido: (a) usar el Servicio de forma contraria a la ley o a derechos de terceros; (b) intentar acceder a datos de otros clientes u organizaciones; (c) realizar ingeniería inversa, extracción masiva o pruebas de intrusión no autorizadas; (d) revender el Servicio sin acuerdo escrito; (e) introducir contenido ilícito o software malicioso; (f) usar el Servicio para decisiones clínicas automatizadas sin supervisión humana.</p>
   <p>4.3. El Cliente es responsable de informar al paciente y, cuando proceda, de obtener los consentimientos necesarios (por ejemplo, para grabar la consulta en EscribaMed), <strong>teniendo en cuenta lo establecido en la cláusula 3.4 cuando el dictado se realiza sin el agente local</strong>, y con el apoyo de los materiales que ConsultaMed facilita.</p>
   <p>4.4. El contenido clínico reside en el dispositivo del Cliente: <strong>la custodia del dispositivo y de sus copias locales corresponde al Cliente</strong>, que aplicará medidas razonables (bloqueo de sesión, cifrado de disco y copias de seguridad).</p>
@@ -92,8 +93,8 @@
   <p>5.5. El Cliente puede cancelar en cualquier momento desde su panel; la cancelación surte efecto al final del período pagado, <strong>sin permanencia ni penalización</strong>.</p>
 
   <h2 id="datos">6 · Datos: propiedad, portabilidad y GestorMed</h2>
-  <p>6.1. Los datos introducidos o generados por el Cliente le pertenecen. Respecto de los <strong>datos administrativos de pacientes</strong> alojados en el servidor (identificación, contacto y citas), ConsultaMed actúa como <strong>encargado del tratamiento</strong> conforme al anexo (DPA). El <strong>contenido clínico no llega a los servidores de ConsultaMed</strong> y queda fuera del alcance del servicio de alojamiento, con la excepción descrita en la cláusula 3.4, que no es un tratamiento de ConsultaMed.</p>
-  <p>6.2. El Cliente puede exportar sus datos en formatos estándar en cualquier momento. Tras la terminación, los datos del servidor se conservarán 30 días para su descarga y después se suprimirán, salvo obligación legal de conservación (por ejemplo, los registros de facturación de VeriFactu, que se conservan por el plazo que fije la normativa).</p>
+  <p>6.1. Los datos introducidos o generados por el Cliente le pertenecen. Respecto de los <strong>datos administrativos de pacientes</strong> alojados en el servidor (la ficha administrativa —identificación, contacto, dirección, fecha de nacimiento, mutua y observaciones administrativas— y las citas, sin el motivo de la visita), ConsultaMed actúa como <strong>encargado del tratamiento</strong> conforme al anexo (DPA). El <strong>contenido clínico no llega a los servidores de ConsultaMed</strong> y queda fuera del alcance del servicio de alojamiento, con la excepción descrita en la cláusula 3.4, que no es un tratamiento de ConsultaMed.</p>
+  <p>6.2. El Cliente puede exportar sus datos en formatos estándar en cualquier momento. Tras la terminación, los datos del servidor se conservan como mínimo 30 días para que el Cliente pueda descargarlos; pasado ese plazo, ConsultaMed le avisa y los suprime, en todo caso antes de que transcurran tres meses desde la terminación (cláusula i del anexo). Si el Cliente borra la cuenta él mismo, la supresión es inmediata. Todo ello, salvo obligación legal de conservación (por ejemplo, los datos de facturación de la suscripción, que ConsultaMed conserva durante los plazos que fija la normativa mercantil y tributaria).</p>
   <p>6.3. ConsultaMed <strong>no utiliza datos de pacientes para entrenar modelos de inteligencia artificial</strong> propios ni de terceros.</p>
   <p>6.4. <strong>GestorMed.</strong> Si el Cliente lo activa expresamente, ConsultaMed comunicará a la gestoría que el Cliente designe un <strong>resumen fiscal agregado</strong> (número de facturas, bases, cuotas de IVA, fechas e indicador de integridad de la cadena de facturación), <strong>sin ningún dato de paciente</strong>. La autorización es revocable en cualquier momento desde el panel, con efecto inmediato para los períodos siguientes.</p>
 
@@ -119,7 +120,7 @@
 
   <h3>Partes y alcance</h3>
   <p><strong>Responsable del tratamiento</strong>: el profesional sanitario o la entidad cliente identificado en el registro (el "Cliente"). <strong>Encargado del tratamiento</strong>: CONSULTAMED SOFTWARE, S.L., NIF B93977551 (el "Encargado").</p>
-  <p><strong>Delimitación esencial.</strong> El Encargado trata por cuenta del Cliente <strong>únicamente datos administrativos</strong>: identificación y contacto de pacientes, citas, fichas administrativas, datos del personal del Cliente y, si se activa GestorMed, el resumen fiscal agregado. El <strong>contenido clínico</strong> (transcripciones, informes, historiales y motivo de la visita) <strong>no se envía ni se trata en los sistemas del Encargado</strong>: reside en el dispositivo del Cliente. Respecto de ese contenido, el Encargado no es encargado del tratamiento porque no tiene acceso ni posibilidad de acceso. <strong>Excepción que el Cliente debe conocer</strong>: el dictado por voz sin el agente local se procesa en el servicio de reconocimiento de voz del navegador del Cliente (cláusula 3.4 de los Términos); ese tratamiento es ajeno al Encargado, que no interviene en él ni puede controlarlo.</p>
+  <p><strong>Delimitación esencial.</strong> El Encargado trata por cuenta del Cliente <strong>únicamente datos administrativos</strong>: la ficha administrativa de los pacientes (identificación, contacto, dirección, fecha de nacimiento, mutua y observaciones administrativas), las citas (sin el motivo de la visita), datos del personal del Cliente y, si se activa GestorMed, el resumen fiscal agregado. El <strong>contenido clínico</strong> (transcripciones, informes, historiales y motivo de la visita) <strong>no se envía ni se trata en los sistemas del Encargado</strong>: reside en el dispositivo del Cliente. Respecto de ese contenido, el Encargado no es encargado del tratamiento porque no tiene acceso ni posibilidad de acceso. <strong>Excepción que el Cliente debe conocer</strong>: el dictado por voz sin el agente local se procesa en el servicio de reconocimiento de voz del navegador del Cliente (cláusula 3.4 de los Términos); ese tratamiento es ajeno al Encargado, que no interviene en él ni puede controlarlo.</p>
 
   <h3>Objeto, duración y naturaleza</h3>
   <p>El Encargado tratará los datos mencionados exclusivamente para prestar el servicio de cuentas, sincronización y colaboración de la plataforma, durante la vigencia de la suscripción. Operaciones: recogida, registro, estructuración, conservación, consulta, comunicación al propio Cliente (y a la gestoría que designe) y supresión.</p>
@@ -134,8 +135,8 @@
     <li><strong>e) Asistencia.</strong> Atender, por cuenta del Cliente, las solicitudes de ejercicio de derechos que se reciban, trasladándolas sin dilación, y asistir al Cliente en las evaluaciones de impacto y consultas previas que sean razonables. Para el contenido clínico, que reside en el dispositivo del Cliente, la asistencia se limita a las herramientas de exportación y borrado que el producto incorpora.</li>
     <li><strong>f) Violaciones de seguridad.</strong> Notificar al Cliente <strong>sin dilación indebida</strong> desde que se tenga constancia, con la información del art. 33.3 RGPD, y colaborar en las notificaciones a la autoridad de control y a los interesados que correspondan al Cliente.</li>
     <li><strong>g) Prohibición de entrenamiento.</strong> El Encargado no utilizará datos de pacientes para entrenar, ajustar o mejorar modelos de inteligencia artificial propios o de terceros, y así lo exigirá contractualmente a sus proveedores.</li>
-    <li><strong>h) Localización.</strong> La base de datos del Servicio se aloja en la <strong>Unión Europea (Fráncfort)</strong>. Algunos subencargados de infraestructura y correo procesan datos en Estados Unidos, amparados en el marco de privacidad de datos UE-EE. UU. o en cláusulas contractuales tipo con medidas suplementarias (Anexo II).</li>
-    <li><strong>i) Fin del servicio.</strong> A elección del Cliente, devolución en formato estándar y/o supresión en 30 días, salvo la conservación exigida por ley.</li>
+    <li><strong>h) Localización.</strong> La base de datos del Servicio se aloja en la <strong>Unión Europea (Fráncfort)</strong>. Algunos subencargados de infraestructura, de copias de seguridad y de correo procesan datos en Estados Unidos, amparados en el marco de privacidad de datos UE-EE. UU. o en cláusulas contractuales tipo con medidas suplementarias (Anexo II).</li>
+    <li><strong>i) Fin del servicio.</strong> <em>Devolución:</em> el Cliente puede exportar sus datos en formato estándar en cualquier momento, también durante los 30 días posteriores a la finalización. <em>Supresión:</em> pasados esos 30 días, el Encargado avisa al Cliente y suprime los datos del servidor, en todo caso antes de que transcurran tres meses desde la finalización; si el Cliente borra la cuenta él mismo, la supresión es inmediata. Las copias de seguridad cifradas no conservan ningún dato suprimido más de 90 días, no se utilizan para ninguna otra finalidad y, si alguna vez hubiera que restaurar una, se volverían a aplicar las supresiones realizadas después de la fecha de la copia. Todo ello, salvo la conservación exigida por ley.</li>
     <li><strong>j) Auditoría.</strong> El Encargado pondrá a disposición la información necesaria para demostrar el cumplimiento y admitirá auditorías del Cliente, con preaviso razonable de 30 días, como máximo una vez al año, en horario laboral, sin acceso a datos de otros clientes y a cargo del Cliente.</li>
   </ul>
 
@@ -149,7 +150,7 @@
   <p>Cada parte responde de los daños causados por su incumplimiento conforme al art. 82 RGPD. Se aplican los límites de responsabilidad de la cláusula 8, que no operarán respecto de sanciones firmes causadas exclusivamente por el incumplimiento probado de la otra parte.</p>
 
   <h3>Anexo I · Medidas de seguridad</h3>
-  <p>Cifrado TLS en tránsito y cifrado en reposo en la base de datos gestionada; aislamiento lógico por organización aplicado en cada operación de escritura y consulta; verificación de correo obligatoria antes de sincronizar o invitar; contraseñas con requisitos mínimos y bloqueo de cuenta por intentos fallidos; limitación de peticiones por dirección IP; tokens de un solo uso conservados solo como huella criptográfica; cierre de todas las sesiones al cambiar la contraseña; registro de eventos de seguridad con comprobación diaria automatizada; copias de seguridad con restauración puntual del proveedor y copias propias cifradas con prueba de restauración; auditoría interna de seguridad de prelanzamiento con correcciones desplegadas y verificadas; plan de respuesta a incidentes con notificación en 72 horas cuando proceda; y minimización estructural: el contenido clínico no llega a los sistemas del Encargado.</p>
+  <p>Cifrado TLS en tránsito y cifrado en reposo en la base de datos gestionada; aislamiento lógico por organización aplicado en cada operación de escritura y consulta; verificación de correo obligatoria antes de sincronizar o invitar; contraseñas con requisitos mínimos y bloqueo de cuenta por intentos fallidos; limitación de peticiones por dirección IP; tokens de un solo uso conservados solo como huella criptográfica; cierre de todas las sesiones al cambiar la contraseña; registro de eventos de seguridad con revisión periódica; restauración puntual del proveedor de base de datos (ventana corta) y copias de seguridad diarias propias, cifradas, con prueba de restauración en cada ejecución y conservación máxima de 90 días; auditoría interna de seguridad de prelanzamiento con correcciones desplegadas y verificadas; plan de respuesta a incidentes con notificación en 72 horas cuando proceda; y minimización estructural: el contenido clínico no llega a los sistemas del Encargado.</p>
 
   <h3>Anexo II · Subencargados autorizados</h3>
   <table>
@@ -157,10 +158,11 @@
     <tr><td><strong>Neon, LLC</strong> (grupo Databricks, Inc.)</td><td>Base de datos PostgreSQL</td><td><strong>Unión Europea (Fráncfort)</strong>; para el soporte del proveedor, marco UE-EE. UU. y cláusulas contractuales tipo</td></tr>
     <tr><td><strong>Vercel Inc.</strong></td><td>Infraestructura del servidor de cuentas</td><td>Estados Unidos — cláusulas contractuales tipo</td></tr>
     <tr><td><strong>Resend</strong> (Plus Five Five, Inc.)</td><td>Correo transaccional</td><td>Estados Unidos — marco UE-EE. UU. y cláusulas contractuales tipo</td></tr>
+    <tr><td><strong>GitHub, Inc.</strong></td><td>Copias de seguridad de la base de datos (GitHub Actions): el volcado se cifra dentro del mismo proceso de copia y se conserva cifrado un máximo de 90 días</td><td>Estados Unidos — marco de privacidad de datos UE-EE. UU.</td></tr>
   </table>
   <p>La lista viva y completa de proveedores, incluidos los que no tratan datos de pacientes, está en el apartado «Destinatarios» del <a href="legal-es.html#privacidad">aviso legal y privacidad</a>. <strong>Stripe Payments Europe, Limited</strong> procesa los pagos de la suscripción y trata datos de facturación del Cliente, <strong>no datos de pacientes</strong>; por eso no figura en este anexo.</p>
 
-  <p style="margin-top:36px;color:var(--boira);font-size:.82rem">Versión 1.0 · Septiembre de 2026. Publicaremos cualquier modificación con el aviso previo que prevé la cláusula 10, indicando la fecha de versión.</p>
+  <p style="margin-top:36px;color:#64748B;font-size:.82rem">Versión 1.1 · Septiembre de 2026. Publicaremos cualquier modificación con el aviso previo que prevé la cláusula 10, indicando la fecha de versión.</p>
 </main>
 
 <footer><div class="wrap">ConsultaMed · El médico hace de médico. Lo demás, ConsultaMed. · <a href="mailto:legal@consultamed.es" style="color:#B9CBDD">legal@consultamed.es</a></div></footer>

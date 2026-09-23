@@ -16,7 +16,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root{--blau:#0D3B66;--teal:#0F9488;--gasa:#F7FAFC;--grafit:#1F2937;--boira:#94A3B8;--linia:#E7EDF3}
+  :root{--blau:#0D3B66;--teal:#0D7F74;/* QA 03-09: els enllaços en #0F9488 feien 3,57:1 sobre Blanc Gasa; #0D7F74 en fa 4,65 */--gasa:#F7FAFC;--grafit:#1F2937;--boira:#94A3B8;--linia:#E7EDF3}
   *{margin:0;padding:0;box-sizing:border-box}
   body{font-family:'Inter',system-ui,sans-serif;color:var(--grafit);background:var(--gasa);line-height:1.7;-webkit-font-smoothing:antialiased}
   .wrap{max-width:760px;margin:0 auto;padding:0 24px}
@@ -26,7 +26,7 @@
   nav a.torna{font-size:.86rem;font-weight:600;color:var(--blau);text-decoration:none}
   main{padding:48px 0 80px}
   h1{font-family:'Sora';font-size:1.9rem;color:var(--blau);letter-spacing:-.02em;margin-bottom:6px}
-  .data{color:var(--boira);font-size:.85rem;margin-bottom:34px}
+  .data{color:#64748B;font-size:.85rem;margin-bottom:34px}
   h2{font-family:'Sora';font-size:1.25rem;color:var(--blau);margin:40px 0 12px;padding-top:20px;border-top:1px solid var(--linia)}
   h3{font-family:'Sora';font-size:1rem;color:var(--blau);margin:22px 0 8px}
   p,li{font-size:.95rem;color:#374151;margin-bottom:10px}
@@ -37,6 +37,7 @@
   table{border-collapse:collapse;width:100%;margin:14px 0;font-size:.86rem}
   th,td{border:1px solid var(--linia);padding:8px 10px;text-align:left;vertical-align:top}
   th{background:#EEF4F9;color:var(--blau);font-family:'Sora';font-size:.82rem}
+  @media(max-width:640px){table{display:block;overflow-x:auto}} /* QA 03-09: a 390 px les taules desbordaven la pàgina sencera; així es desplacen dins la seva caixa */
   footer{background:#0A2E52;color:#8FA6BD;padding:34px 0;font-size:.82rem;text-align:center}
 </style>
 </head>
@@ -48,7 +49,7 @@
 
 <main class="wrap">
   <h1>Termes i condicions del servei</h1>
-  <p class="data">Versió 1.0 · Setembre de 2026 · consultamed.es · <a href="#dpa">Annex: contracte d'encàrrec del tractament (DPA)</a></p>
+  <p class="data">Versió 1.1 · Setembre de 2026 · consultamed.es · <a href="#dpa">Annex: contracte d'encàrrec del tractament (DPA)</a></p>
 
   <div class="caixa"><strong>Què és aquest document.</strong> És el contracte entre ConsultaMed i el professional o la clínica que contracta el servei. S'accepta en contractar, marcant la casella corresponent abans del pagament. L'<strong>annex final</strong> és el contracte d'encàrrec del tractament (DPA) exigit per l'article 28 del RGPD: forma part d'aquests Termes i s'accepta amb ells. La informació sobre protecció de dades és a l'<a href="legal.html#privacitat">avís legal i privacitat</a>.</div>
 
@@ -79,7 +80,7 @@
   <p>3.5. El Client s'obliga a no utilitzar el Servei per obtenir consell clínic automatitzat adreçat a pacients i a mantenir els fluxos de validació humana.</p>
 
   <h2 id="compte">4 · Compte, accés i ús acceptable</h2>
-  <p>4.1. El Client garanteix que les dades de registre són veraces (inclosa, si escau, la col·legiació professional) i custodiarà les seves credencials. La <strong>verificació de l'adreça de correu és obligatòria</strong> per activar la sincronització i les invitacions; el doble factor d'autenticació s'oferirà i es podrà exigir quan estigui disponible a la plataforma.</p>
+  <p>4.1. El Client garanteix que les dades de registre són veraces (inclosa, si escau, la col·legiació professional) i custodiarà les seves credencials. La <strong>verificació de l'adreça de correu és obligatòria</strong> abans que el Servei sincronitzi dades amb el servidor i per enviar invitacions; el doble factor d'autenticació s'oferirà i es podrà exigir quan estigui disponible a la plataforma.</p>
   <p>4.2. Queda prohibit: (a) usar el Servei de manera contrària a la llei o a drets de tercers; (b) intentar accedir a dades d'altres clients o organitzacions; (c) fer enginyeria inversa, extracció massiva o proves d'intrusió no autoritzades; (d) revendre el Servei sense acord escrit; (e) introduir contingut il·lícit o programari maliciós; (f) usar el Servei per a decisions clíniques automatitzades sense supervisió humana.</p>
   <p>4.3. El Client és responsable d'informar el pacient i, quan escaigui, d'obtenir-ne els consentiments necessaris (per exemple, per gravar la consulta a EscribaMed), <strong>tenint en compte el que estableix la clàusula 3.4 quan el dictat es fa sense l'agent local</strong>, i amb el suport dels materials que ConsultaMed facilita.</p>
   <p>4.4. El contingut clínic resideix al dispositiu del Client: <strong>la custòdia del dispositiu i de les seves còpies locals correspon al Client</strong>, que hi aplicarà mesures raonables (bloqueig de sessió, xifratge de disc i còpies de seguretat).</p>
@@ -92,8 +93,8 @@
   <p>5.5. El Client pot cancel·lar en qualsevol moment des del seu panell; la cancel·lació té efecte al final del període pagat, <strong>sense permanència ni penalització</strong>.</p>
 
   <h2 id="dades">6 · Dades: propietat, portabilitat i GestorMed</h2>
-  <p>6.1. Les dades introduïdes o generades pel Client li pertanyen. Respecte de les <strong>dades administratives de pacients</strong> allotjades al servidor (identificació, contacte i cites), ConsultaMed actua com a <strong>encarregat del tractament</strong> d'acord amb l'annex (DPA). El <strong>contingut clínic no arriba als servidors de ConsultaMed</strong> i queda fora de l'abast del servei d'allotjament, amb l'excepció descrita a la clàusula 3.4, que no és un tractament de ConsultaMed.</p>
-  <p>6.2. El Client pot exportar les seves dades en formats estàndard en qualsevol moment. Després de la terminació, les dades del servidor es conservaran 30 dies per a la seva descàrrega i després se suprimiran, llevat d'obligació legal de conservació (per exemple, els registres de facturació de VeriFactu, que es conserven pel termini que fixi la normativa).</p>
+  <p>6.1. Les dades introduïdes o generades pel Client li pertanyen. Respecte de les <strong>dades administratives de pacients</strong> allotjades al servidor (la fitxa administrativa —identificació, contacte, adreça, data de naixement, mútua i observacions administratives— i les cites, sense el motiu de la visita), ConsultaMed actua com a <strong>encarregat del tractament</strong> d'acord amb l'annex (DPA). El <strong>contingut clínic no arriba als servidors de ConsultaMed</strong> i queda fora de l'abast del servei d'allotjament, amb l'excepció descrita a la clàusula 3.4, que no és un tractament de ConsultaMed.</p>
+  <p>6.2. El Client pot exportar les seves dades en formats estàndard en qualsevol moment. Després de la terminació, les dades del servidor es conserven com a mínim 30 dies perquè el Client les pugui descarregar; passat aquest termini, ConsultaMed l'avisa i les suprimeix, en tot cas abans que passin tres mesos des de la terminació (clàusula i de l'annex). Si el Client esborra el compte ell mateix, la supressió és immediata. Tot això, llevat d'obligació legal de conservació (per exemple, les dades de facturació de la subscripció, que ConsultaMed conserva pels terminis que fixa la normativa mercantil i tributària).</p>
   <p>6.3. ConsultaMed <strong>no utilitza dades de pacients per entrenar models d'intel·ligència artificial</strong> propis ni de tercers.</p>
   <p>6.4. <strong>GestorMed.</strong> Si el Client ho activa expressament, ConsultaMed comunicarà a la gestoria que el Client designi un <strong>resum fiscal agregat</strong> (nombre de factures, bases, quotes d'IVA, dates i indicador d'integritat de la cadena de facturació), <strong>sense cap dada de pacient</strong>. L'autorització és revocable en qualsevol moment des del panell, amb efecte immediat per als períodes següents.</p>
 
@@ -119,7 +120,7 @@
 
   <h3>Parts i abast</h3>
   <p><strong>Responsable del tractament</strong>: el professional sanitari o l'entitat client identificat al registre (el "Client"). <strong>Encarregat del tractament</strong>: CONSULTAMED SOFTWARE, S.L., NIF B93977551 (l'"Encarregat").</p>
-  <p><strong>Delimitació essencial.</strong> L'Encarregat tracta per compte del Client <strong>únicament dades administratives</strong>: identificació i contacte de pacients, cites, fitxes administratives, dades del personal del Client i, si s'activa GestorMed, el resum fiscal agregat. El <strong>contingut clínic</strong> (transcripcions, informes, historials i motiu de la visita) <strong>no s'envia ni es tracta als sistemes de l'Encarregat</strong>: resideix al dispositiu del Client. Respecte d'aquest contingut, l'Encarregat no és encarregat del tractament perquè no hi té accés ni possibilitat d'accés. <strong>Excepció que el Client ha de conèixer</strong>: el dictat per veu sense l'agent local es processa al servei de reconeixement de veu del navegador del Client (clàusula 3.4 dels Termes); aquell tractament és aliè a l'Encarregat, que no hi intervé ni el pot controlar.</p>
+  <p><strong>Delimitació essencial.</strong> L'Encarregat tracta per compte del Client <strong>únicament dades administratives</strong>: la fitxa administrativa dels pacients (identificació, contacte, adreça, data de naixement, mútua i observacions administratives), les cites (sense el motiu de la visita), dades del personal del Client i, si s'activa GestorMed, el resum fiscal agregat. El <strong>contingut clínic</strong> (transcripcions, informes, historials i motiu de la visita) <strong>no s'envia ni es tracta als sistemes de l'Encarregat</strong>: resideix al dispositiu del Client. Respecte d'aquest contingut, l'Encarregat no és encarregat del tractament perquè no hi té accés ni possibilitat d'accés. <strong>Excepció que el Client ha de conèixer</strong>: el dictat per veu sense l'agent local es processa al servei de reconeixement de veu del navegador del Client (clàusula 3.4 dels Termes); aquell tractament és aliè a l'Encarregat, que no hi intervé ni el pot controlar.</p>
 
   <h3>Objecte, durada i naturalesa</h3>
   <p>L'Encarregat tractarà les dades esmentades exclusivament per prestar el servei de comptes, sincronització i col·laboració de la plataforma, durant la vigència de la subscripció. Operacions: recollida, registre, estructuració, conservació, consulta, comunicació al mateix Client (i a la gestoria que designi) i supressió.</p>
@@ -134,8 +135,8 @@
     <li><strong>e) Assistència.</strong> Atendre, per compte del Client, les sol·licituds d'exercici de drets que es rebin, traslladant-les sense dilació, i assistir el Client en les avaluacions d'impacte i consultes prèvies que siguin raonables. Per al contingut clínic, que resideix al dispositiu del Client, l'assistència es limita a les eines d'exportació i esborrat que el producte incorpora.</li>
     <li><strong>f) Violacions de seguretat.</strong> Notificar al Client <strong>sense dilació indeguda</strong> des que se'n tingui constància, amb la informació de l'art. 33.3 RGPD, i col·laborar en les notificacions a l'autoritat de control i als interessats que corresponguin al Client.</li>
     <li><strong>g) Prohibició d'entrenament.</strong> L'Encarregat no utilitzarà dades de pacients per entrenar, ajustar o millorar models d'intel·ligència artificial propis o de tercers, i així ho exigirà contractualment als seus proveïdors.</li>
-    <li><strong>h) Localització.</strong> La base de dades del Servei s'allotja a la <strong>Unió Europea (Frankfurt)</strong>. Alguns subencarregats d'infraestructura i correu processen dades als Estats Units, emparats en el marc de privacitat de dades UE-EUA o en clàusules contractuals tipus amb mesures suplementàries (Annex II).</li>
-    <li><strong>i) Final del servei.</strong> A elecció del Client, devolució en format estàndard i/o supressió en 30 dies, llevat de la conservació exigida per llei.</li>
+    <li><strong>h) Localització.</strong> La base de dades del Servei s'allotja a la <strong>Unió Europea (Frankfurt)</strong>. Alguns subencarregats d'infraestructura, de còpies de seguretat i de correu processen dades als Estats Units, emparats en el marc de privacitat de dades UE-EUA o en clàusules contractuals tipus amb mesures suplementàries (Annex II).</li>
+    <li><strong>i) Final del servei.</strong> <em>Devolució:</em> el Client pot exportar les seves dades en format estàndard en qualsevol moment, també durant els 30 dies posteriors a la finalització. <em>Supressió:</em> passats aquests 30 dies, l'Encarregat avisa el Client i suprimeix les dades del servidor, en tot cas abans que passin tres mesos des de la finalització; si el Client esborra el compte ell mateix, la supressió és immediata. Les còpies de seguretat xifrades no conserven cap dada suprimida més de 90 dies, no s'utilitzen per a cap altra finalitat i, si mai calgués restaurar-ne una, es tornarien a aplicar les supressions fetes després de la data de la còpia. Tot això, llevat de la conservació exigida per llei.</li>
     <li><strong>j) Auditoria.</strong> L'Encarregat posarà a disposició la informació necessària per demostrar el compliment i admetrà auditories del Client, amb preavís raonable de 30 dies, com a màxim una vegada l'any, en horari laboral, sense accés a dades d'altres clients i a càrrec del Client.</li>
   </ul>
 
@@ -149,7 +150,7 @@
   <p>Cada part respon dels danys causats pel seu incompliment d'acord amb l'art. 82 RGPD. S'apliquen els límits de responsabilitat de la clàusula 8, que no operaran respecte de sancions fermes causades exclusivament per l'incompliment provat de l'altra part.</p>
 
   <h3>Annex I · Mesures de seguretat</h3>
-  <p>Xifratge TLS en trànsit i xifratge en repòs a la base de dades gestionada; aïllament lògic per organització aplicat a cada operació d'escriptura i consulta; verificació de correu obligatòria abans de sincronitzar o convidar; contrasenyes amb requisits mínims i bloqueig de compte per intents fallits; limitació de peticions per adreça IP; tokens d'un sol ús conservats només com a empremta criptogràfica; tancament de totes les sessions en canviar la contrasenya; registre d'esdeveniments de seguretat amb comprovació diària automatitzada; còpies de seguretat amb restauració puntual del proveïdor i còpies pròpies xifrades amb prova de restauració; auditoria interna de seguretat de prellançament amb correccions desplegades i verificades; pla de resposta a incidents amb notificació en 72 hores quan escaigui; i minimització estructural: el contingut clínic no arriba als sistemes de l'Encarregat.</p>
+  <p>Xifratge TLS en trànsit i xifratge en repòs a la base de dades gestionada; aïllament lògic per organització aplicat a cada operació d'escriptura i consulta; verificació de correu obligatòria abans de sincronitzar o convidar; contrasenyes amb requisits mínims i bloqueig de compte per intents fallits; limitació de peticions per adreça IP; tokens d'un sol ús conservats només com a empremta criptogràfica; tancament de totes les sessions en canviar la contrasenya; registre d'esdeveniments de seguretat amb revisió periòdica; restauració puntual del proveïdor de base de dades (finestra curta) i còpies de seguretat diàries pròpies, xifrades, amb prova de restauració a cada execució i conservació màxima de 90 dies; auditoria interna de seguretat de prellançament amb correccions desplegades i verificades; pla de resposta a incidents amb notificació en 72 hores quan escaigui; i minimització estructural: el contingut clínic no arriba als sistemes de l'Encarregat.</p>
 
   <h3>Annex II · Subencarregats autoritzats</h3>
   <table>
@@ -157,10 +158,11 @@
     <tr><td><strong>Neon, LLC</strong> (grup Databricks, Inc.)</td><td>Base de dades PostgreSQL</td><td><strong>Unió Europea (Frankfurt)</strong>; per al suport del proveïdor, marc UE-EUA i clàusules contractuals tipus</td></tr>
     <tr><td><strong>Vercel Inc.</strong></td><td>Infraestructura del servidor de comptes</td><td>Estats Units — clàusules contractuals tipus</td></tr>
     <tr><td><strong>Resend</strong> (Plus Five Five, Inc.)</td><td>Correu transaccional</td><td>Estats Units — marc UE-EUA i clàusules contractuals tipus</td></tr>
+    <tr><td><strong>GitHub, Inc.</strong></td><td>Còpies de seguretat de la base de dades (GitHub Actions): el bolcat es xifra dins del mateix procés de còpia i es conserva xifrat un màxim de 90 dies</td><td>Estats Units — marc de privacitat de dades UE-EUA</td></tr>
   </table>
   <p>La llista viva i completa de proveïdors, inclosos els que no tracten dades de pacients, és a l'apartat «Destinataris» de l'<a href="legal.html#privacitat">avís legal i privacitat</a>. <strong>Stripe Payments Europe, Limited</strong> processa els pagaments de la subscripció i tracta dades de facturació del Client, <strong>no dades de pacients</strong>; per això no figura en aquest annex.</p>
 
-  <p style="margin-top:36px;color:var(--boira);font-size:.82rem">Versió 1.0 · Setembre de 2026. Publicarem qualsevol modificació amb l'avís previ que preveu la clàusula 10, indicant la data de versió.</p>
+  <p style="margin-top:36px;color:#64748B;font-size:.82rem">Versió 1.1 · Setembre de 2026. Publicarem qualsevol modificació amb l'avís previ que preveu la clàusula 10, indicant la data de versió.</p>
 </main>
 
 <footer><div class="wrap">ConsultaMed · El metge fa de metge. La resta, ConsultaMed. · <a href="mailto:legal@consultamed.es" style="color:#B9CBDD">legal@consultamed.es</a></div></footer>

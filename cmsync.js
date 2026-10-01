@@ -25,7 +25,11 @@
     ok:   ['☁ Sincronizado', '☁ Sincronitzat', '☁ Synchronisiert', '☁ Synced'],
     err:  ['☁ Error de sincronización', '☁ Error de sincronització', '☁ Sync-Fehler', '☁ Sync error'],
     verif:['☁ Confirme su correo', '☁ Confirmi el seu correu', '☁ E-Mail bestätigen', '☁ Confirm your email'],
-    obrir:['Abrir', 'Obrir', 'Öffnen', 'Open']
+    obrir:['Abrir', 'Obrir', 'Öffnen', 'Open'],
+    /* A-020 ronda 2 (P-LEG-29 c) · en mode de prova no se sincronitza res: el
+       servidor torna 403 «prova». El xip ho ha de DIR, no pintar un error. */
+    prova:['☁ Modo de prueba: no se sincroniza', '☁ Mode de prova: no se sincronitza', '☁ Testmodus: keine Synchronisierung', '☁ Test mode: not syncing'],
+    activar:['Activar la cuenta', 'Activar el compte', 'Konto aktivieren', 'Activate account']
   };
   function t(k) { return TXT[k][IDX[idi()]]; }
 
@@ -89,6 +93,13 @@
       xip.style.cursor = orgs.length > 1 ? 'pointer' : 'default';
       xip.style.opacity = '1';
       setTimeout(function () { if (xip) xip.style.opacity = '.45'; }, 2500);
+    } else if (estat === 'prova') {
+      /* Mateix groc que «verifica»: ja esta mesurat sobre el fons compost del xip
+         (text #92400E 5,60:1 · enllac Blau Clinic 9,04:1). Un color nou demanaria
+         tornar a mesurar les tres pagines. */
+      xip.style.background = 'rgba(234,179,8,.15)'; xip.style.color = '#92400E';
+      xip.innerHTML = t('prova') + ' · <a href="hub.html?activar=1" style="color:#0D3B66;font-weight:700;text-decoration:none">' + t('activar') + '</a>';
+      xip.style.opacity = '1';
     } else if (estat === 'verifica') {
       // El servidor accepta la sessio pero encara no el correu: NO es pot dir "sincronitzat".
       xip.style.background = 'rgba(234,179,8,.15)'; xip.style.color = '#92400E';
@@ -247,13 +258,17 @@
       window.dispatchEvent(new Event('cm-sync-pull'));
     });
   }
+  /* A-020 ronda 2 (P-LEG-29 c) · L'error EXACTE, no una coincidencia: «prova» surt
+     dins de moltes frases del servidor i una coincidencia parcial amagaria errors de
+     debo darrere d'un xip que diu que tot esta be. */
+  function calProva(e) { return !!(e && e.error === 'prova'); }
   function calVerificar(e) {
     return !!(e && typeof e.error === 'string' && /correu electronic|correo electr/i.test(e.error));
   }
   function cicle() {
     pintaXip('sync');
     return push().then(pull).then(function () { pintaXip('ok'); })
-      .catch(function (e) { pintaXip(calVerificar(e) ? 'verifica' : 'err'); });
+      .catch(function (e) { pintaXip(calProva(e) ? 'prova' : calVerificar(e) ? 'verifica' : 'err'); });
   }
 
   // ---- API publica: els productes criden cmSync.canvi(clau) en desar ----
@@ -266,7 +281,7 @@
       timer = setTimeout(function () {
         pintaXip('sync');
         push().then(function (r) { pintaXip(r && r.ok ? 'ok' : 'err'); })
-          .catch(function (e) { pintaXip(calVerificar(e) ? 'verifica' : 'err'); });
+          .catch(function (e) { pintaXip(calProva(e) ? 'prova' : calVerificar(e) ? 'verifica' : 'err'); });
       }, 1200);
     },
     ara: cicle,

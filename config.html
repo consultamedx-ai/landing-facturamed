@@ -341,7 +341,7 @@
           var n=$('gv-nom').value.trim(), m=$('gv-mail').value.trim();
           if(!n||m.indexOf('@')<0){ avisa('avis-gest','—',true); return; }
           bv.disabled=true;
-          api('encarrec.vincula',{organitzacioId:org.id,nom:n,email:m}).then(function(r){
+          api('encarrec.vincula',{organitzacioId:org.id,nom:n,email:m,idioma:lang}).then(function(r){
             bv.disabled=false;
             if(r&&r.ok){ avisa('avis-gest',(tt.g_env||'Convit enviat'),false); pintaGestoria(); }
             else avisa('avis-gest',(r&&r.error)||'Error',true);

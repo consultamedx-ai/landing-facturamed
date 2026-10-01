@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ca">
+<html lang="es">
 <head>
 <script>
 /* Anti-clickjacking (auditoria 31/07/2026, H3). GitHub Pages no permet capcaleres,
@@ -17,11 +17,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://app.consultamed.es; form-action 'self'; manifest-src 'self'">
 <meta name="robots" content="noindex,nofollow">
-<title>GestorMed — ConsultaMed</title>
+<title>GestorMed Despatx — ConsultaMed</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root{--blau:#0D3B66;--teal:#14B8A6;--verd:#059669;--ambre:#D97706;--vermell:#B91C1C;--gasa:#F7FAFC;--grafit:#1F2937;--boira:#94A3B8;--linia:#E7EDF3}
+  :root{--blau:#0D3B66;--teal:#14B8A6;--teal-fosc:#0D7F74;--verd:#059669;--ambre:#D97706;--vermell:#B91C1C;--gasa:#F7FAFC;--grafit:#1F2937;--boira:#94A3B8;--linia:#E7EDF3;--gris-text:#64748B}
   *{box-sizing:border-box;margin:0;padding:0}
   body{font-family:'Inter',system-ui,sans-serif;color:var(--grafit);line-height:1.5;min-height:100vh;
     background:radial-gradient(1100px 620px at 10% -8%,rgba(20,184,166,.12),transparent 58%),radial-gradient(1000px 640px at 102% -2%,rgba(13,59,102,.13),transparent 56%),var(--gasa);background-attachment:fixed}
@@ -29,48 +29,99 @@
   .nav{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 26px;background:rgba(255,255,255,.72);backdrop-filter:blur(16px);border-bottom:1px solid var(--linia);position:sticky;top:0;z-index:40}
   .logo-img{height:28px;width:auto;display:block}
   .logout{font-size:.82rem;font-weight:600;color:#5B6B7C;text-decoration:none;border:1px solid var(--linia);padding:8px 15px;border-radius:99px;background:#fff;cursor:pointer;font-family:inherit}
-  .wrap{max-width:1080px;margin:0 auto;padding:34px 22px 64px}
-  h1{font-family:'Sora';font-weight:800;font-size:2rem;color:var(--blau);letter-spacing:-.6px}
+  .lang{display:inline-flex;border:1px solid var(--linia);border-radius:99px;overflow:hidden;background:#fff}
+  .lang button{border:0;background:none;font:inherit;font-size:.78rem;font-weight:700;padding:7px 11px;cursor:pointer;color:#5B6B7C}
+  .lang button[aria-pressed="true"]{background:var(--blau);color:#fff}
+  .wrap{max-width:1180px;margin:0 auto;padding:30px 22px 64px}
+  h1{font-family:'Sora';font-weight:800;font-size:1.9rem;color:var(--blau);letter-spacing:-.6px}
+  h2{font-family:'Sora';font-weight:700;font-size:1.15rem;color:var(--blau)}
   .sub{color:#5B6B7C;margin-top:6px;font-size:1rem}
-  .seccio{font-family:'Sora';font-weight:700;color:var(--blau);font-size:1.08rem;margin:30px 0 10px}
+  .seccio{font-family:'Sora';font-weight:700;color:var(--blau);font-size:1.08rem;margin:26px 0 10px}
   .targeta{background:rgba(255,255,255,.86);backdrop-filter:blur(10px);border:1px solid rgba(13,59,102,.08);border-radius:18px;padding:20px 22px;box-shadow:0 2px 14px rgba(13,59,102,.05)}
   label{display:block;font-size:.82rem;font-weight:600;color:#5B6B7C;margin:12px 0 5px}
-  input,select{width:100%;padding:11px 13px;border:1px solid var(--linia);border-radius:11px;font:inherit;font-size:.95rem;background:#fff}
-  input:focus,select:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 3px rgba(20,184,166,.14)}
+  input,select,textarea{width:100%;padding:10px 12px;border:1px solid var(--linia);border-radius:11px;font:inherit;font-size:.93rem;background:#fff;color:var(--grafit)}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 3px rgba(20,184,166,.14)}
+  select.mini,input.mini{width:auto;padding:6px 9px;font-size:.84rem;border-radius:9px}
   .btn{border:none;background:linear-gradient(100deg,var(--teal),#0FA396);color:#04201d;font-family:inherit;font-weight:700;font-size:.93rem;padding:11px 20px;border-radius:99px;cursor:pointer;box-shadow:0 8px 20px rgba(20,184,166,.24)}
   .btn.sec{background:#fff;border:1px solid var(--linia);color:#334155;box-shadow:none;font-weight:600}
+  .btn.mini{padding:6px 12px;font-size:.8rem;box-shadow:none}
+  .btn.perill{background:#fff;border:1px solid rgba(185,28,28,.35);color:var(--vermell);box-shadow:none}
+  .btn:disabled{opacity:.55;cursor:not-allowed}
   .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:6px}
   .kpi{background:#fff;border:1px solid var(--linia);border-radius:14px;padding:14px 16px}
   .kpi .v{font-family:'Sora';font-weight:800;font-size:1.6rem;color:var(--blau);line-height:1.1}
-  .kpi .l{font-size:.76rem;color:#64748B;text-transform:uppercase;letter-spacing:.04em;margin-top:4px}
+  .kpi .l{font-size:.76rem;color:var(--gris-text);text-transform:uppercase;letter-spacing:.04em;margin-top:4px}
+  .scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
   table{width:100%;border-collapse:collapse;font-size:.9rem}
-  th{text-align:left;font-size:.72rem;text-transform:uppercase;letter-spacing:.04em;color:#64748B;font-weight:600;padding:9px 10px;border-bottom:1px solid var(--linia)}
-  td{padding:11px 10px;border-bottom:1px solid var(--linia);vertical-align:middle}
-  td.n{text-align:right;font-variant-numeric:tabular-nums}
+  th{text-align:left;font-size:.72rem;text-transform:uppercase;letter-spacing:.04em;color:var(--gris-text);font-weight:600;padding:9px 10px;border-bottom:1px solid var(--linia);white-space:nowrap}
+  td{padding:10px 10px;border-bottom:1px solid var(--linia);vertical-align:middle}
+  td.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
   tr:last-child td{border-bottom:0}
+  tr.fila-clic{cursor:pointer}
+  tr.fila-clic:hover td{background:rgba(20,184,166,.06)}
   .sem{display:inline-flex;align-items:center;gap:6px;font-size:.78rem;font-weight:700;padding:4px 10px;border-radius:99px;white-space:nowrap}
-  .sem.ok{background:rgba(5,150,105,.12);color:var(--verd)}
-  .sem.avis{background:rgba(217,119,6,.14);color:var(--ambre)}
-  .sem.mal{background:rgba(185,28,28,.12);color:var(--vermell)}
+  .sem::before{content:'';width:8px;height:8px;border-radius:50%;background:currentColor}
+  .sem.verd,.sem.ok{background:rgba(5,150,105,.12);color:var(--verd)}
+  .sem.groc,.sem.avis{background:rgba(217,119,6,.14);color:var(--ambre)}
+  .sem.vermell,.sem.mal{background:rgba(185,28,28,.12);color:var(--vermell)}
+  .sem.llest{background:rgba(13,127,116,.12);color:var(--teal-fosc)}
   .sem.gris{background:#EEF2F7;color:#5B6B7C}
+  .sem.ok::before,.sem.avis::before,.sem.mal::before{display:none}
+  .xip{display:inline-block;font-size:.72rem;font-weight:700;padding:3px 8px;border-radius:99px;background:#EEF2F7;color:#475569;margin:2px 3px 2px 0;white-space:nowrap}
+  .xip.cm{background:rgba(13,59,102,.1);color:var(--blau)}
+  .xip.prov{background:rgba(217,119,6,.14);color:var(--ambre)}
+  .xip.dom{background:rgba(13,127,116,.12);color:var(--teal-fosc)}
+  .xip.alerta{background:rgba(185,28,28,.12);color:var(--vermell)}
   .avis{margin-top:12px;padding:11px 15px;border-radius:11px;font-size:.89rem;font-weight:600;display:none}
   .avis.ok{background:rgba(20,184,166,.12);color:#0F7A70;display:block}
   .avis.err{background:rgba(234,115,23,.12);color:#B45309;display:block}
-  .nota{font-size:.8rem;color:#64748B;line-height:1.6;margin-top:10px} /* QA 03-09: Gris Boira només decoratiu (bíblia §4): com a text feia 2,5:1; #64748B fa 4,76 sobre blanc i 4,54 sobre Gasa */
-  .buit{color:#64748B;font-size:.92rem;padding:22px 4px;text-align:center}
+  .nota{font-size:.8rem;color:var(--gris-text);line-height:1.6;margin-top:10px}
+  .buit{color:var(--gris-text);font-size:.92rem;padding:22px 4px;text-align:center}
   .centrat{max-width:460px;margin:70px auto;text-align:center}
-  .amaga{display:none}
+  .amaga{display:none !important}
   .fila-conv{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
-  @media(max-width:720px){h1{font-size:1.6rem}.wrap{padding:24px 14px 50px}table{font-size:.84rem}td,th{padding:8px 6px}}
+  .banner{margin-top:16px;padding:10px 14px;border-radius:12px;background:rgba(217,119,6,.12);color:#8A4B00;font-size:.86rem;font-weight:600;display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+  .banner a{color:inherit}
+  .tabs{display:flex;gap:6px;margin-top:22px;border-bottom:1px solid var(--linia);flex-wrap:wrap}
+  .tabs button{border:0;background:none;font:inherit;font-weight:700;font-size:.92rem;color:#5B6B7C;padding:10px 14px;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-1px}
+  .tabs button[aria-selected="true"]{color:var(--blau);border-bottom-color:var(--teal)}
+  .tab{display:none}.tab.actiu{display:block}
+  .controls{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin:14px 0}
+  .controls > div{flex:1 1 150px;min-width:140px}
+  .controls label{margin-top:0}
+  .resum-xips{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 14px}
+  .resum-xips button{border:1px solid var(--linia);background:#fff;font:inherit;font-size:.82rem;font-weight:700;padding:7px 12px;border-radius:99px;cursor:pointer;display:inline-flex;gap:8px;align-items:center}
+  .resum-xips button[aria-pressed="true"]{outline:2px solid var(--blau)}
+  .resum-xips .n{font-family:'Sora';font-weight:800}
+  .graella{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:0 18px}
+  .marques{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:6px 14px;margin-top:8px}
+  .marques label,.matriu label{display:flex;gap:8px;align-items:center;font-weight:500;color:var(--grafit);margin:4px 0;font-size:.9rem}
+  .marques input,.matriu input{width:auto}
+  .matriu{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:4px 14px;margin-top:8px}
+  .matriu .desde{margin-left:auto}
+  .obl{border:1px solid var(--linia);border-radius:14px;padding:14px 16px;margin-top:12px;background:#fff}
+  .obl h3{font-family:'Sora';font-size:1rem;color:var(--blau);display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .periode{border-top:1px dashed var(--linia);padding:10px 0 6px;margin-top:8px}
+  .periode .cap{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+  .docs{margin-top:8px;display:grid;gap:6px}
+  .doc{display:grid;grid-template-columns:minmax(180px,1.6fr) auto auto minmax(120px,1fr);gap:8px;align-items:center;font-size:.86rem}
+  .cm-bloc{margin-top:10px;padding:10px 12px;border-radius:12px;background:rgba(13,59,102,.06);font-size:.86rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:6px 14px}
+  .cm-bloc b{font-family:'Sora';color:var(--blau)}
+  .dies{font-family:'Sora';font-weight:800;color:var(--blau)}
+  .dies.neg{color:var(--vermell)}
+  .motiu{font-size:.8rem;color:var(--gris-text);display:block;margin-top:2px;white-space:normal}
+  .capçalera-client{display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+  @media(max-width:720px){h1{font-size:1.55rem}.wrap{padding:22px 14px 50px}table{font-size:.84rem}td,th{padding:8px 6px}.nav{padding:11px 14px}.doc{grid-template-columns:1fr 1fr}.doc > :first-child{grid-column:1/-1}}
 </style>
 </head>
 <body>
 
 <nav class="nav">
   <a href="hub.html"><img class="logo-img" src="consultamed.png" alt="ConsultaMed"></a>
-  <div style="display:flex;gap:10px;align-items:center">
-    <a class="logout" href="hub.html">← Panell</a>
-    <button class="logout" id="b-sortir" type="button">Tancar sessió</button>
+  <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:flex-end">
+    <span class="lang" role="group" aria-label="Idioma"><button type="button" data-l="es" aria-pressed="true">ES</button><button type="button" data-l="ca" aria-pressed="false">CA</button></span>
+    <a class="logout" href="hub.html" data-k="tornar">← Panel</a>
+    <button class="logout" id="b-sortir" type="button" data-k="sortir">Cerrar sesión</button>
   </div>
 </nav>
 
@@ -78,102 +129,517 @@
 
   <!-- Sense sessió -->
   <div id="v-fora" class="centrat amaga">
-    <h1>GestorMed</h1>
-    <p class="sub">El panell de la gestoria. Cal iniciar sessió.</p>
-    <p style="margin-top:22px"><a class="btn" id="b-entrar" href="#" style="text-decoration:none;display:inline-block">Iniciar sessió</a></p>
+    <h1>GestorMed Despatx</h1>
+    <p class="sub" data-k="fora_sub">El panel de la gestoría. Hay que iniciar sesión.</p>
+    <p style="margin-top:22px"><a class="btn" id="b-entrar" href="#" style="text-decoration:none;display:inline-block" data-k="entrar">Iniciar sesión</a></p>
   </div>
 
   <!-- Sense gestoria: crear-la -->
   <div id="v-crea" class="amaga">
-    <h1>GestorMed</h1>
-    <p class="sub">Encara no té cap gestoria. Creï-la i comenci a convidar els seus metges.</p>
+    <h1>GestorMed Despatx</h1>
+    <p class="sub" data-k="crea_sub">Todavía no tiene ninguna gestoría. Créela y empiece a añadir clientes.</p>
     <div class="targeta" style="max-width:520px;margin-top:22px">
-      <label for="g-nom">Nom de la gestoria</label>
-      <input id="g-nom" placeholder="Assessoria Puig i Associats" autocomplete="organization">
-      <label for="g-nif">NIF (opcional)</label>
+      <label for="g-nom" data-k="crea_nom">Nombre de la gestoría</label>
+      <input id="g-nom" placeholder="Asesoría Puig y Asociados" autocomplete="organization">
+      <label for="g-nif" data-k="crea_nif">NIF (opcional)</label>
       <input id="g-nif" placeholder="B12345678" style="text-transform:uppercase">
-      <p style="margin-top:16px"><button class="btn" id="b-crea" type="button">Crear la gestoria</button></p>
+      <p style="margin-top:16px"><button class="btn" id="b-crea" type="button" data-k="crea_btn">Crear la gestoría</button></p>
       <div class="avis" id="avis-crea"></div>
+    </div>
+  </div>
+
+  <!-- A-020 ronda 2 (P-LEG-27, Legal §3.2) · LA PORTA DEL CONTRACTE. El servidor no
+       respon cap acció del Despatx si el despatx no ha acceptat la versió vigent
+       (403 «termes»). Dues gestories hi arriben sense haver acceptat res: les d'abans
+       d'avui i les que entren per l'enllaç d'un metge (/encarrec). Aquí no s'entra
+       fins que un ADMIN accepta. Els textos els fixa Legal; no s'improvisen. -->
+  <div id="v-termes" class="amaga">
+    <h1 data-k="tm_titol">Antes de continuar: las condiciones del panel</h1>
+    <div class="targeta" style="max-width:640px;margin-top:22px">
+      <p data-k="tm_text">Para utilizar GestorMed Despatx es necesario que el despacho acepte sus condiciones, que incluyen el encargo del tratamiento de los datos de sus clientes (artículo 28 del RGPD). El panel es gratuito.</p>
+      <div id="tm-admin" class="amaga">
+        <label style="display:flex;gap:10px;align-items:flex-start;margin-top:18px;font-weight:400">
+          <input type="checkbox" id="tm-accepta" style="width:auto;margin-top:4px">
+          <span data-k="tm_casella">Acepto, en nombre del despacho, las <a href="https://consultamed.es/terminos-despacho.html" target="_blank" rel="noopener">Condiciones de GestorMed Despatx</a> y su anexo de encargo del tratamiento.</span>
+        </label>
+        <p style="margin-top:16px"><button class="btn" id="b-termes" type="button" data-k="tm_btn" disabled>Aceptar y continuar</button></p>
+      </div>
+      <p class="nota amaga" id="tm-nomes-admin" data-k="tm_no_admin">Debe aceptarlas un administrador del despacho.</p>
+      <div class="avis" id="avis-termes"></div>
     </div>
   </div>
 
   <!-- Panell -->
   <div id="v-dins" class="amaga">
-    <h1 id="g-titol">GestorMed</h1>
-    <p class="sub" id="g-sub"></p>
+    <h1 id="g-titol">GestorMed Despatx</h1>
+    <p class="sub" id="g-sub" data-k="sub">Centro de control de plazos fiscales de todos sus clientes</p>
+    <div class="banner amaga" id="banner-prova"><span id="banner-txt"></span><a href="#" id="b-reinicia" data-k="reinicia">Reiniciar los datos de prueba</a></div>
 
-    <div class="seccio">Trimestre</div>
-    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-      <select id="periode" style="max-width:180px"></select>
-      <span class="nota" style="margin:0">Els imports són els que el metge ha emès amb FacturaMed.</span>
+    <div class="tabs" role="tablist">
+      <button type="button" role="tab" data-tab="tauler" aria-selected="true" data-k="tab_tauler">Tablero</button>
+      <button type="button" role="tab" data-tab="cartera" aria-selected="false" data-k="tab_cartera">Cartera</button>
+      <button type="button" role="tab" data-tab="metges" aria-selected="false" data-k="tab_metges">Médicos ConsultaMed</button>
     </div>
 
-    <div class="seccio">Resum</div>
-    <div class="kpis" id="kpis"></div>
-
-    <div class="seccio">Els seus metges</div>
-    <div class="targeta">
-      <div id="taula"></div>
-      <div class="avis" id="avis-panell"></div>
-      <p class="nota">
-        <strong>Què veu vostè i què no.</strong> Veu quantes factures ha emès cada metge, la base, l'IVA,
-        la data de l'última i si la cadena VeriFactu és íntegra. <strong>No veu cap nom de pacient ni
-        cap concepte de factura</strong>: això no surt mai de l'ordinador del metge. Quan necessiti les dades
-        de veritat, el metge li envia el fitxer amb un clic.
-      </p>
-    </div>
-
-    <div class="seccio">Convidar un metge</div>
-    <div class="targeta">
-      <div class="fila-conv">
-        <div style="flex:1 1 260px"><label for="c-email">Correu electrònic del metge</label>
-          <input id="c-email" type="email" placeholder="metge@exemple.cat" autocomplete="off"></div>
-        <button class="btn" id="b-convidar" type="button">Convidar</button>
+    <!-- TAULER -->
+    <section class="tab actiu" id="t-tauler">
+      <div class="controls">
+        <div><label for="f-horitzo" data-k="f_horitzo">Próximos</label>
+          <select id="f-horitzo"><option value="14" data-k="h14">14 días</option><option value="30" data-k="h30">30 días</option><option value="60" data-k="h60">60 días</option><option value="90" data-k="h90">90 días</option></select></div>
+        <div><label for="f-client" data-k="f_client">Cliente</label><select id="f-client"></select></div>
+        <div><label for="f-model" data-k="f_model">Modelo</label><select id="f-model"></select></div>
+        <div><label for="f-estat" data-k="f_estat">Estado</label>
+          <select id="f-estat"><option value="" data-k="e_tots">Todos</option><option value="vermell" data-k="e_vermell">Vence / vencido</option><option value="groc" data-k="e_groc">Falta documentación</option><option value="llest" data-k="e_llest">Listo para presentar</option><option value="verd" data-k="e_verd">Presentado</option><option value="gris" data-k="e_gris">No procede / aún no</option></select></div>
+        <div style="flex:0 0 auto"><button class="btn sec" id="b-neteja" type="button" data-k="neteja">Quitar filtros</button></div>
       </div>
-      <div class="avis" id="avis-conv"></div>
-      <p class="nota">Rebrà un correu. Fins que no accepti, vostè no veu res seu. Ell ho pot revocar quan vulgui.</p>
-    </div>
+      <div class="resum-xips" id="tauler-resum"></div>
+      <div class="targeta">
+        <div class="scroll" id="tauler-taula"></div>
+        <p class="nota" id="tauler-nota"></p>
+      </div>
+    </section>
+
+    <!-- CARTERA -->
+    <section class="tab" id="t-cartera">
+      <div class="controls" style="justify-content:space-between">
+        <div style="flex:0 0 auto"><button class="btn" id="b-nou-client" type="button" data-k="nou_client">+ Nuevo cliente</button></div>
+        <p class="nota" style="margin:0;flex:1 1 260px" data-k="cartera_nota">Los médicos ConsultaMed entran solos cuando aceptan la vinculación. El resto de clientes se añaden a mano con sus datos administrativos.</p>
+      </div>
+      <div class="targeta" id="client-form-card" style="display:none;margin-bottom:16px">
+        <h2 id="client-form-titol" data-k="form_titol">Nuevo cliente</h2>
+        <div class="graella">
+          <!-- A-020 ronda 2 · L3 (Legal): a la v1 NO es demana ni el NIF ni el contacte
+               del client del despatx. No fan cap funcio —no hi ha correus ni AEAT— i
+               «nom + NIF + té pendent el 130 + telèfon» és exactament el que fa servir
+               la pesca que es fa passar per l'AEAT. La gestoria ja els té al seu
+               programa, i l'annex d'encàrrec els cobreix el dia que calguin. -->
+          <div><label for="c-nom" data-k="c_nom">Nombre o razón social</label><input id="c-nom" maxlength="120" autocomplete="off"></div>
+          <div><label for="c-tipus" data-k="c_tipus">Tipo</label><select id="c-tipus"></select></div>
+          <div><label for="c-irpf" data-k="c_irpf">Régimen de IRPF</label><select id="c-irpf"></select></div>
+          <div><label for="c-iva" data-k="c_iva">Régimen de IVA</label><select id="c-iva"></select></div>
+        </div>
+        <label for="c-notes" data-k="c_notes">Notas administrativas · nunca datos de salud ni datos personales innecesarios (máx. 300)</label>
+        <textarea id="c-notes" maxlength="300" rows="2"></textarea>
+        <div class="seccio" style="font-size:.95rem;margin-top:16px" data-k="c_marques">Situación</div>
+        <div class="marques" id="c-marques"></div>
+        <div class="seccio" style="font-size:.95rem;margin-top:16px" data-k="c_matriu">Obligaciones (sugeridas por el régimen; ajústelas)</div>
+        <div class="matriu" id="c-matriu"></div>
+        <p class="nota" data-k="c_matriu_nota">«Desde» es el primer período que el tablero vigila: un cliente que entra en octubre no aparece con tres trimestres viejos en rojo.</p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;align-items:center">
+          <button class="btn" id="b-desa-client" type="button" data-k="desa">Guardar</button>
+          <button class="btn sec" id="b-cancel-client" type="button" data-k="cancel">Cancelar</button>
+          <button class="btn perill" id="b-esborra-client" type="button" data-k="esborra" style="margin-left:auto">Eliminar cliente</button>
+        </div>
+        <div class="avis" id="avis-client"></div>
+      </div>
+      <div class="targeta"><div class="scroll" id="cartera-taula"></div></div>
+    </section>
+
+    <!-- FITXA DE CLIENT -->
+    <section class="tab" id="t-client">
+      <div class="capçalera-client">
+        <div><h2 id="cl-nom"></h2><div id="cl-xips" style="margin-top:6px"></div></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn sec mini" id="b-cl-edita" type="button" data-k="cl_edita">Editar datos</button><button class="btn sec mini" id="b-cl-tornar" type="button" data-k="cl_tornar">← Cartera</button></div>
+      </div>
+      <div id="cl-obligacions"></div>
+      <p class="nota" data-k="cl_nota">Los estados y las fechas se guardan al cambiarlos. Los documentos son solo estados y referencias: el panel no guarda ningún archivo.</p>
+    </section>
+
+    <!-- METGES CONSULTAMED (el panell de compliment VeriFactu de sempre) -->
+    <section class="tab" id="t-metges">
+      <!-- EL BOTÓ DE CANAL (A-020, F4): l'enllaç d'alta amb el codi ?g= de la gestoria (ENG-20) -->
+      <div class="seccio" data-k="c_titol">Invite a un médico con su enlace</div>
+      <div class="targeta" id="canal">
+        <div class="kpis" id="canal-kpis"></div>
+        <label for="canal-url" data-k="c_enllac">Su enlace de alta (lleva el código de su gestoría)</label>
+        <div class="fila-conv"><input id="canal-url" readonly style="flex:1 1 320px;font-family:'JetBrains Mono',monospace;font-size:.88rem"><button class="btn sec" id="b-copia-url" type="button" data-k="c_copia">Copiar enlace</button></div>
+        <label for="canal-text" data-k="c_text">Texto corto para enviar (correo o mensaje)</label>
+        <textarea id="canal-text" rows="4" readonly></textarea>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;align-items:center">
+          <button class="btn" id="b-copia-text" type="button" data-k="c_copia_text">Copiar texto</button>
+          <a class="btn sec" id="b-mailto" href="#" style="text-decoration:none" data-k="c_mailto">Abrir en el correo</a>
+        </div>
+        <p class="nota" data-k="c_nota">Quien cree su cuenta con este enlace queda atribuido a su gestoría. Para ver su facturación, además hay que vincularlo: invítelo desde «Invitar a un médico» o que él le vincule desde su Configuración.</p>
+        <div class="avis" id="avis-canal"></div>
+      </div>
+      <div class="seccio" data-k="m_trimestre">Trimestre</div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <select id="periode" style="max-width:180px"></select>
+        <span class="nota" style="margin:0" data-k="m_imports">Los importes son los que el médico ha emitido con FacturaMed.</span>
+      </div>
+      <div class="seccio" data-k="m_resum">Resumen</div>
+      <div class="kpis" id="kpis"></div>
+      <div class="seccio" data-k="m_metges">Sus médicos</div>
+      <div class="targeta">
+        <div class="scroll" id="taula"></div>
+        <div class="avis" id="avis-panell"></div>
+        <p class="nota" data-k="m_nota"><strong>Qué ve usted y qué no.</strong> Ve cuántas facturas ha emitido cada médico, la base, el IVA, la fecha de la última y si la cadena VeriFactu es íntegra. <strong>No ve ningún nombre de paciente ni ningún concepto de factura</strong>: eso no sale nunca del ordenador del médico. Cuando necesite los datos de verdad, el médico se los envía con un clic.</p>
+      </div>
+      <div class="seccio" data-k="m_convidar">Invitar a un médico</div>
+      <div class="targeta">
+        <div class="fila-conv">
+          <div style="flex:1 1 260px"><label for="c-email" data-k="m_correu">Correo electrónico del médico</label>
+            <input id="c-email" type="email" placeholder="medico@ejemplo.es" autocomplete="off"></div>
+          <button class="btn" id="b-convidar" type="button" data-k="m_btn_convidar">Invitar</button>
+        </div>
+        <div class="avis" id="avis-conv"></div>
+        <p class="nota" data-k="m_conv_nota">Recibirá un correo. Hasta que no acepte, usted no ve nada suyo. Él lo puede revocar cuando quiera.</p>
+      </div>
+    </section>
   </div>
 
 </div>
 
+<script src="terminis-aeat.js"></script>
+<script src="gm-terminis.js"></script>
+<script src="gm-dades.js"></script>
 <script>
 (function(){
   'use strict';
   var API='https://app.consultamed.es/api/s', ENTRA='https://app.consultamed.es';
+  /* La clau de l'acceptació, igual que a lib/despatx.js del servidor. */
+  var ACCIO_TERMES='despatx.termes.accepta';
   var $=function(id){return document.getElementById(id)};
+  var qs=(function(){var o={};try{new URLSearchParams(location.search).forEach(function(v,k){o[k]=v})}catch(e){}return o})();
+  var PROVA = qs.prova==='1';
+
+  // ---------- idioma (patró de config.html: data-k + T[lang]) ----------
+  var T={
+    es:{tornar:'← Panel',sortir:'Cerrar sesión',fora_sub:'El panel de la gestoría. Hay que iniciar sesión.',entrar:'Iniciar sesión',
+      crea_sub:'Todavía no tiene ninguna gestoría. Créela y empiece a añadir clientes.',crea_nom:'Nombre de la gestoría',crea_nif:'NIF (opcional)',crea_btn:'Crear la gestoría',crea_falta:'Hace falta el nombre de la gestoría',
+      sub:'Centro de control de plazos fiscales de todos sus clientes',reinicia:'Reiniciar los datos de prueba',
+      banner:'Despacho de prueba · datos ficticios que viven solo en este navegador · hoy (simulado): {d}',banner_local:'Datos locales de prueba (fase F1): la cartera y los estados viven solo en este navegador · hoy: {d}',
+      tab_tauler:'Tablero',tab_cartera:'Cartera',tab_metges:'Médicos ConsultaMed',
+      f_horitzo:'Próximos',h14:'14 días',h30:'30 días',h60:'60 días',h90:'90 días',f_client:'Cliente',f_model:'Modelo',f_estat:'Estado',
+      e_tots:'Todos',e_vermell:'Vence / vencido',e_groc:'Falta documentación',e_llest:'Listo para presentar',e_verd:'Presentado',e_gris:'No procede / aún no',neteja:'Quitar filtros',tots_clients:'Todos los clientes',tots_models:'Todos los modelos',
+      col_client:'Cliente',col_obl:'Obligación',col_periode:'Período',col_venc:'Vence',col_dies:'Días',col_estat:'Estado',col_docs:'Documentación',col_tipus:'Tipo',col_regim:'Régimen',col_obls:'Obligaciones',
+      tm_titol:'Antes de continuar: las condiciones del panel',
+      tm_text:'Para utilizar GestorMed Despatx es necesario que el despacho acepte sus condiciones, que incluyen el encargo del tratamiento de los datos de sus clientes (artículo 28 del RGPD). El panel es gratuito.',
+      tm_casella:'Acepto, en nombre del despacho, las <a href="https://consultamed.es/terminos-despacho.html" target="_blank" rel="noopener">Condiciones de GestorMed Despatx</a> y su anexo de encargo del tratamiento.',
+      tm_btn:'Aceptar y continuar',tm_no_admin:'Debe aceptarlas un administrador del despacho.',
+      ref_etiqueta:'Referencia interna · sin datos personales',
+      tauler_buit:'Nada vence en este plazo con estos filtros.',
+      nota_tauler:'Plazos transcritos del Calendario del contribuyente {any} de la AEAT (verificado el {v}); los períodos marcados «provisional» vencen en un año cuyo calendario la AEAT aún no ha publicado y se calculan con la regla general. No se aplican festivos autonómicos ni locales. Cubre el juego estándar de autónomo y pyme: no cubre SII, grandes empresas ni declaraciones mensuales. «Dom.» = último día para domiciliar el pago. Es una ayuda: la referencia oficial es la sede de la AEAT.',
+      sem_verd:'Presentado',sem_groc:'Falta documentación',sem_vermell:'Vence',sem_vencut:'Vencido',sem_llest:'Listo',sem_gris:'—',
+      prov:'provisional',dom:'Dom. {d}',cm:'ConsultaMed · datos que llegan solos',cadena:'cadena VeriFactu no íntegra',cm_prova:'PRUEBA · facturas sin validez fiscal',
+      nou_client:'+ Nuevo cliente',cartera_nota:'Los médicos ConsultaMed entran solos cuando aceptan la vinculación. El resto de clientes se añaden a mano con sus datos administrativos.',
+      form_titol:'Nuevo cliente',form_titol_edita:'Editar cliente',c_nom:'Nombre o razón social',c_tipus:'Tipo',c_irpf:'Régimen de IRPF',c_iva:'Régimen de IVA',
+      c_notes:'Notas administrativas · nunca datos de salud ni datos personales innecesarios (máx. 300)',c_marques:'Situación',c_matriu:'Obligaciones (sugeridas por el régimen; ajústelas)',c_matriu_nota:'«Desde» es el primer período que el tablero vigila: un cliente que entra en octubre no aparece con tres trimestres viejos en rojo.',
+      desa:'Guardar',cancel:'Cancelar',esborra:'Eliminar cliente',desat:'Guardado',falta_nom:'Hace falta el nombre',confirma_esborra:'¿Eliminar este cliente y todos sus estados? No se puede deshacer.',desde:'desde',
+      cl_edita:'Editar datos',cl_tornar:'← Cartera',cl_nota:'Los estados y las fechas se guardan al cambiarlos. Los documentos son solo estados y referencias: el panel no guarda ningún archivo.',
+      p_pendent:'Pendiente',p_presentada:'Presentada',p_noprocedeix:'No procede',d_falta:'Falta',d_rebuda:'Recibida',d_presentada:'Presentada',ref:'referencia (p. ej. correo del 12/10)',auto:'llega solo de FacturaMed',
+      cm_factures:'facturas',cm_base_s:'base sujeta',cm_base_e:'base exenta',cm_quota:'IVA',cm_dates:'fechas',cm_cadena_ok:'cadena íntegra ✓',cm_cadena_ko:'⚠ cadena no íntegra',cm_enviat:'trimestre enviado el',cm_no_enviat:'aún no ha enviado el trimestre',cm_canviat:'ha facturado después de enviar ({n} vs {m}): pida el CSV actualizado',cm_sense:'sin datos todavía',
+      c_titol:'Invite a un médico con su enlace',c_enllac:'Su enlace de alta (lleva el código de su gestoría)',c_copia:'Copiar enlace',c_text:'Texto corto para enviar (correo o mensaje)',c_copia_text:'Copiar texto',c_mailto:'Abrir en el correo',c_copiat:'Copiado',
+      c_nota:'Quien cree su cuenta con este enlace queda atribuido a su gestoría. Para ver su facturación, además hay que vincularlo: invítelo desde «Invitar a un médico» o que él le vincule desde su Configuración.',
+      c_k_registrats:'cuentas creadas con su enlace',c_k_vinculats:'médicos vinculados',c_k_pendents:'invitaciones pendientes',c_assumpte:'ConsultaMed: su cuenta para facturar con VeriFactu',
+      c_missatge:'Hola,\nDesde {gestoria} trabajamos con ConsultaMed para recibir su facturación del trimestre con un clic, sin pedirle nada. Cree su cuenta con este enlace, que ya lleva nuestro código:\n{url}\nCuando la tenga, acepte nuestra vinculación desde Configuración.\nUn saludo,\n{gestoria}',
+      c_err:'No se ha podido obtener el código de su gestoría.',
+      m_trimestre:'Trimestre',m_imports:'Los importes son los que el médico ha emitido con FacturaMed.',m_resum:'Resumen',m_metges:'Sus médicos',m_convidar:'Invitar a un médico',m_correu:'Correo electrónico del médico',m_btn_convidar:'Invitar',m_conv_nota:'Recibirá un correo. Hasta que no acepte, usted no ve nada suyo. Él lo puede revocar cuando quiera.',
+      m_nota:'<strong>Qué ve usted y qué no.</strong> Ve cuántas facturas ha emitido cada médico, la base, el IVA, la fecha de la última y si la cadena VeriFactu es íntegra. <strong>No ve ningún nombre de paciente ni ningún concepto de factura</strong>: eso no sale nunca del ordenador del médico. Cuando necesite los datos de verdad, el médico se los envía con un clic.',
+      k_actius:'médicos activos',k_factures:'facturas en el trimestre',k_base:'base imponible',k_iva:'IVA repercutido',k_noenviat:'no han enviado',k_trencada:'cadena rota',
+      s_pendent:'Invitación pendiente',s_sense:'Sin datos todavía',s_trencada:'⚠ Cadena rota',s_cap:'Ninguna factura este trimestre',s_noenviat:'No le ha enviado el trimestre',s_enviat:'✓ Enviado',
+      mc_metge:'Médico',mc_estat:'Estado',mc_factures:'Facturas',mc_base:'Base',mc_iva:'IVA',mc_ultima:'Última',retirar:'Retirar',retirar_conf:'¿Retirar esta invitación? El médico ya no la podrá aceptar.',retirat:'Invitación retirada.',
+      metges_buit:'Todavía no tiene ningún médico. Empiece invitando a uno más abajo.',metges_prova:'En el despacho de prueba las invitaciones están desactivadas.',
+      correu_invalid:'Correo no válido',conv_creat:'Invitación creada, pero el correo no ha salido.',conv_enviat:'Invitación enviada a {e}',err:'Error',err_con:'Error de conexión'},
+    ca:{tornar:'← Panell',sortir:'Tancar sessió',fora_sub:'El panell de la gestoria. Cal iniciar sessió.',entrar:'Iniciar sessió',
+      crea_sub:'Encara no té cap gestoria. Creï-la i comenci a afegir clients.',crea_nom:'Nom de la gestoria',crea_nif:'NIF (opcional)',crea_btn:'Crear la gestoria',crea_falta:'Cal el nom de la gestoria',
+      sub:'Centre de control de terminis fiscals de tots els seus clients',reinicia:'Reiniciar les dades de prova',
+      banner:'Despatx de prova · dades fictícies que viuen només en aquest navegador · avui (simulat): {d}',banner_local:'Dades locals de prova (fase F1): la cartera i els estats viuen només en aquest navegador · avui: {d}',
+      tab_tauler:'Tauler',tab_cartera:'Cartera',tab_metges:'Metges ConsultaMed',
+      f_horitzo:'Propers',h14:'14 dies',h30:'30 dies',h60:'60 dies',h90:'90 dies',f_client:'Client',f_model:'Model',f_estat:'Estat',
+      e_tots:'Tots',e_vermell:'Venç / vençut',e_groc:'Falta documentació',e_llest:'Llest per presentar',e_verd:'Presentat',e_gris:'No procedeix / encara no',neteja:'Treure filtres',tots_clients:'Tots els clients',tots_models:'Tots els models',
+      col_client:'Client',col_obl:'Obligació',col_periode:'Període',col_venc:'Venç',col_dies:'Dies',col_estat:'Estat',col_docs:'Documentació',col_tipus:'Tipus',col_regim:'Règim',col_obls:'Obligacions',
+      tm_titol:'Abans de continuar: les condicions del panell',
+      tm_text:'Per fer servir GestorMed Despatx cal que el despatx n\'accepti les condicions, que inclouen l\'encàrrec del tractament de les dades dels seus clients (article 28 del RGPD). El panell és gratuït.',
+      tm_casella:'Accepto, en nom del despatx, les <a href="https://consultamed.es/termes-despatx.html" target="_blank" rel="noopener">Condicions de GestorMed Despatx</a> i el seu annex d\'encàrrec del tractament.',
+      tm_btn:'Acceptar i continuar',tm_no_admin:'Les ha d\'acceptar un administrador del despatx.',
+      ref_etiqueta:'Referència interna · sense dades personals',
+      tauler_buit:'No venç res en aquest termini amb aquests filtres.',
+      nota_tauler:'Terminis transcrits del Calendari del contribuent {any} de l\'AEAT (verificat el {v}); els períodes marcats «provisional» vencen en un any del qual l\'AEAT encara no ha publicat el calendari i es calculen amb la regla general. No s\'apliquen festius autonòmics ni locals. Cobreix el joc estàndard d\'autònom i pime: no cobreix SII, grans empreses ni declaracions mensuals. «Dom.» = últim dia per domiciliar el pagament. És una ajuda: la referència oficial és la seu de l\'AEAT.',
+      sem_verd:'Presentat',sem_groc:'Falta documentació',sem_vermell:'Venç',sem_vencut:'Vençut',sem_llest:'Llest',sem_gris:'—',
+      prov:'provisional',dom:'Dom. {d}',cm:'ConsultaMed · dades que arriben soles',cadena:'cadena VeriFactu no íntegra',cm_prova:'PROVA · factures sense validesa fiscal',
+      nou_client:'+ Nou client',cartera_nota:'Els metges ConsultaMed hi entren sols quan accepten la vinculació. La resta de clients s\'afegeixen a mà amb les seves dades administratives.',
+      form_titol:'Nou client',form_titol_edita:'Editar client',c_nom:'Nom o raó social',c_tipus:'Tipus',c_irpf:'Règim d\'IRPF',c_iva:'Règim d\'IVA',
+      c_notes:'Notes administratives · mai dades de salut ni dades personals innecessàries (màx. 300)',c_marques:'Situació',c_matriu:'Obligacions (suggerides pel règim; ajusti-les)',c_matriu_nota:'«Des de» és el primer període que el tauler vigila: un client que entra a l\'octubre no surt amb tres trimestres vells en vermell.',
+      desa:'Desar',cancel:'Cancel·lar',esborra:'Eliminar client',desat:'Desat',falta_nom:'Cal el nom',confirma_esborra:'Eliminar aquest client i tots els seus estats? No es pot desfer.',desde:'des de',
+      cl_edita:'Editar dades',cl_tornar:'← Cartera',cl_nota:'Els estats i les dates es desen en canviar-los. Els documents són només estats i referències: el panell no guarda cap fitxer.',
+      p_pendent:'Pendent',p_presentada:'Presentada',p_noprocedeix:'No procedeix',d_falta:'Falta',d_rebuda:'Rebuda',d_presentada:'Presentada',ref:'referència (p. ex. correu del 12/10)',auto:'arriba sol de FacturaMed',
+      cm_factures:'factures',cm_base_s:'base subjecta',cm_base_e:'base exempta',cm_quota:'IVA',cm_dates:'dates',cm_cadena_ok:'cadena íntegra ✓',cm_cadena_ko:'⚠ cadena no íntegra',cm_enviat:'trimestre enviat el',cm_no_enviat:'encara no ha enviat el trimestre',cm_canviat:'ha facturat després d\'enviar ({n} vs {m}): demani el CSV actualitzat',cm_sense:'sense dades encara',
+      c_titol:'Convidi un metge amb el seu enllaç',c_enllac:'El seu enllaç d\'alta (porta el codi de la seva gestoria)',c_copia:'Copiar l\'enllaç',c_text:'Text curt per enviar (correu o missatge)',c_copia_text:'Copiar el text',c_mailto:'Obrir al correu',c_copiat:'Copiat',
+      c_nota:'Qui creï el compte amb aquest enllaç queda atribuït a la seva gestoria. Per veure\'n la facturació, a més cal vincular-lo: convidi\'l des de «Convidar un metge» o que ell la vinculi des de la seva Configuració.',
+      c_k_registrats:'comptes creats amb el seu enllaç',c_k_vinculats:'metges vinculats',c_k_pendents:'convits pendents',c_assumpte:'ConsultaMed: el seu compte per facturar amb VeriFactu',
+      c_missatge:'Hola,\nDes de {gestoria} treballem amb ConsultaMed per rebre la seva facturació del trimestre amb un clic, sense demanar-li res. Creï el seu compte amb aquest enllaç, que ja porta el nostre codi:\n{url}\nQuan el tingui, accepti la nostra vinculació des de Configuració.\nSalutacions,\n{gestoria}',
+      c_err:'No s\'ha pogut obtenir el codi de la seva gestoria.',
+      m_trimestre:'Trimestre',m_imports:'Els imports són els que el metge ha emès amb FacturaMed.',m_resum:'Resum',m_metges:'Els seus metges',m_convidar:'Convidar un metge',m_correu:'Correu electrònic del metge',m_btn_convidar:'Convidar',m_conv_nota:'Rebrà un correu. Fins que no accepti, vostè no veu res seu. Ell ho pot revocar quan vulgui.',
+      m_nota:'<strong>Què veu vostè i què no.</strong> Veu quantes factures ha emès cada metge, la base, l\'IVA, la data de l\'última i si la cadena VeriFactu és íntegra. <strong>No veu cap nom de pacient ni cap concepte de factura</strong>: això no surt mai de l\'ordinador del metge. Quan necessiti les dades de veritat, el metge li envia el fitxer amb un clic.',
+      k_actius:'metges actius',k_factures:'factures al trimestre',k_base:'base imposable',k_iva:'IVA repercutit',k_noenviat:'no han enviat',k_trencada:'cadena trencada',
+      s_pendent:'Convit pendent',s_sense:'Sense dades encara',s_trencada:'⚠ Cadena trencada',s_cap:'Cap factura aquest trimestre',s_noenviat:'No li ha enviat el trimestre',s_enviat:'✓ Enviat',
+      mc_metge:'Metge',mc_estat:'Estat',mc_factures:'Factures',mc_base:'Base',mc_iva:'IVA',mc_ultima:'Última',retirar:'Retirar',retirar_conf:'Retirar aquest convit? El metge ja no el podrà acceptar.',retirat:'Convit retirat.',
+      metges_buit:'Encara no té cap metge. Comenci convidant-ne un a baix.',metges_prova:'Al despatx de prova els convits estan desactivats.',
+      correu_invalid:'Correu invàlid',conv_creat:'Convit creat, però el correu no ha sortit.',conv_enviat:'Convit enviat a {e}',err:'Error',err_con:'Error de connexió'}
+  };
+  var lang=(function(){
+    var l=qs.idioma; if(l!=='ca'&&l!=='es'){ try{l=localStorage.getItem('em_idioma_ui')}catch(e){l=null} }
+    if(l!=='ca'&&l!=='es'){ l=(navigator.language||'').toLowerCase().indexOf('ca')===0?'ca':'es'; }
+    return l;
+  })();
+  function t(k,v){ var s=(T[lang]&&T[lang][k])||T.es[k]||k; if(v) Object.keys(v).forEach(function(x){s=s.split('{'+x+'}').join(v[x])}); return s; }
+  function traduir(){
+    document.documentElement.lang=lang;
+    document.querySelectorAll('[data-k]').forEach(function(el){
+      var k=el.getAttribute('data-k'); if(!T[lang][k]) return;
+      /* tm_casella porta l'enllaç al contracte (Legal §3.1): amb textContent la
+         gestoria veuria l'etiqueta <a> escrita i no podria obrir-lo. */
+      if(k==='m_nota'||k==='tm_casella') el.innerHTML=T[lang][k]; else el.textContent=T[lang][k];
+    });
+    document.querySelectorAll('.lang button').forEach(function(b){b.setAttribute('aria-pressed',b.getAttribute('data-l')===lang?'true':'false')});
+  }
+  function fixaIdioma(l){ lang=l; try{localStorage.setItem('em_idioma_ui',l)}catch(e){} traduir(); pintaTot(); }
+
+  // ---------- utilitats ----------
   function api(accio,dades){
     return fetch(API,{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify(Object.assign({accio:accio},dades||{}))}).then(function(r){return r.json()});
+      body:JSON.stringify(Object.assign({accio:accio},dades||{}))}).then(function(r){return r.json()})
+      .then(function(d){
+        /* A-020 ronda 2 (P-LEG-27) · el 403 «termes» de la porta no és un error de
+           connexió: és la pantalla d'acceptació (Legal §3.2). Es tracta AQUÍ i no a
+           cada crida, perquè una porta per oblit no és una porta i la cartera (F2c)
+           hi afegirà set accions més. */
+        if(d&&d.ok===false&&d.error==='termes'&&accio!==ACCIO_TERMES) mostraTermes();
+        return d;
+      });
   }
   function avisa(id,txt,err){var a=$(id);if(!a)return;a.textContent=txt;a.className='avis '+(err?'err':'ok');setTimeout(function(){a.className='avis'},7000)}
-  function eur(v){ return (v==null?'—':(Math.round(v*100)/100).toLocaleString('ca-ES',{minimumFractionDigits:2,maximumFractionDigits:2})+' €'); }
-  function dataCurta(d){ if(!d) return '—'; var p=String(d).split('-'); return p.length===3?p[2]+'/'+p[1]:d; }
-  function esc(t){var d=document.createElement('div');d.textContent=t==null?'':t;return d.innerHTML}
+  function eur(v){ return (v==null?'—':(Math.round(v*100)/100).toLocaleString(lang==='ca'?'ca-ES':'es-ES',{minimumFractionDigits:2,maximumFractionDigits:2})+' €'); }
+  function dataCurta(d){ if(!d) return '—'; var p=String(d).slice(0,10).split('-'); return p.length===3?p[2]+'/'+p[1]:d; }
+  function dataLlarga(d){ if(!d) return '—'; var p=String(d).slice(0,10).split('-'); return p.length===3?p[2]+'/'+p[1]+'/'+p[0]:d; }
+  function esc(s){var d=document.createElement('div');d.textContent=s==null?'':s;return d.innerHTML}
+  function nomModel(codi){ var m=gm.model(codi); return m?(m.nom[lang]||m.nom.es):codi; }
+  function etiqueta(o,k){ return o&&o[k]?(o[k][lang]||o[k].es):k; }
 
+  // ---------- estat de la pàgina ----------
+  var gm=window.gmTerminis.carrega(window.GM_TERMINIS);
+  var gd=window.gmDades.configura({magatzem:(function(){try{return window.localStorage}catch(e){return null}})(),terminis:gm});
   var gestoria=null, periodeSel=null;
+  var AVUI = (qs.avui&&/^\d{4}-\d{2}-\d{2}$/.test(qs.avui)&&PROVA)?qs.avui:gd.avuiISO();
+  var horitzo=14, filtre={clientId:'',model:'',estat:''}, clientObert=null, editant=null;
 
-  function periodes(){
-    var out=[], d=new Date();
-    for(var i=0;i<6;i++){
-      var y=d.getFullYear(), q=Math.floor(d.getMonth()/3)+1;
-      out.push(y+'T'+q);
-      d.setMonth(d.getMonth()-3);
+  // ═══════════════════════════ TAULER ═══════════════════════════
+  function despatx(){ return gd.despatxA(AVUI); }
+  function omplePerFiltres(){
+    var d=despatx();
+    var sc=$('f-client'), sm=$('f-model');
+    sc.innerHTML='<option value="">'+esc(t('tots_clients'))+'</option>'+d.clients.slice().sort(function(a,b){return a.nom.localeCompare(b.nom)}).map(function(c){return '<option value="'+esc(c.id)+'">'+esc(c.nom)+'</option>'}).join('');
+    var usats={}; d.obligacions.forEach(function(o){usats[o.model]=1});
+    sm.innerHTML='<option value="">'+esc(t('tots_models'))+'</option>'+Object.keys(usats).sort().map(function(m){return '<option value="'+m+'">'+m+' · '+esc(nomModel(m))+'</option>'}).join('');
+    sc.value=filtre.clientId; sm.value=filtre.model; $('f-estat').value=filtre.estat; $('f-horitzo').value=String(horitzo);
+  }
+  function semChip(f){
+    var txt = f.color==='vermell' ? (f.dies<0?t('sem_vencut'):t('sem_vermell')) : t('sem_'+f.color);
+    return '<span class="sem '+f.color+'">'+esc(txt)+'</span>';
+  }
+  function docsTxt(f){
+    var tot=f.documents.length, ok=f.documents.filter(function(x){return x.estat!=='FALTA'}).length;
+    var falten=f.documents.filter(function(x){return x.estat==='FALTA'}).map(function(x){return etiqueta(x,'nom')});
+    return '<span title="'+esc(falten.join(' · '))+'">'+ok+'/'+tot+'</span>'+(falten.length?'<span class="motiu">'+esc(falten.join(' · '))+'</span>':'');
+  }
+  function pintaTauler(){
+    var files=gm.tauler(despatx(),AVUI,{dies:horitzo,filtre:{clientId:filtre.clientId||undefined,model:filtre.model||undefined,estat:filtre.estat||undefined}});
+    var tots=gm.tauler(despatx(),AVUI,{dies:horitzo,filtre:{clientId:filtre.clientId||undefined,model:filtre.model||undefined}});
+    var r=gm.resum(tots);
+    $('tauler-resum').innerHTML=['vermell','groc','llest','verd','gris'].map(function(c){
+      return '<button type="button" data-color="'+c+'" aria-pressed="'+(filtre.estat===c?'true':'false')+'"><span class="sem '+c+'">'+esc(c==='vermell'?t('e_vermell'):t('sem_'+c)==='—'?t('e_gris'):t('sem_'+c))+'</span><span class="n">'+(r[c]||0)+'</span></button>';
+    }).join('');
+    Array.prototype.forEach.call($('tauler-resum').querySelectorAll('button'),function(b){b.addEventListener('click',function(){var c=b.getAttribute('data-color');filtre.estat=filtre.estat===c?'':c;$('f-estat').value=filtre.estat;pintaTauler()})});
+    if(!files.length){ $('tauler-taula').innerHTML='<div class="buit">'+esc(t('tauler_buit'))+'</div>'; }
+    else {
+      var h='<table><thead><tr><th>'+esc(t('col_client'))+'</th><th>'+esc(t('col_obl'))+'</th><th>'+esc(t('col_periode'))+'</th><th>'+esc(t('col_venc'))+'</th><th class="n">'+esc(t('col_dies'))+'</th><th>'+esc(t('col_estat'))+'</th><th>'+esc(t('col_docs'))+'</th></tr></thead><tbody>';
+      files.forEach(function(f){
+        var xips='';
+        if(f.client.organitzacioId) xips+='<span class="xip cm" title="'+esc(t('cm'))+'">ConsultaMed</span>';
+        if(f.consultamed&&f.consultamed.prova) xips+='<span class="xip prov">'+esc(t('cm_prova'))+'</span>';
+        if(f.consultamed&&f.consultamed.integra===false&&f.consultamed.estat!=='sense-dades') xips+='<span class="xip alerta">'+esc(t('cadena'))+'</span>';
+        var venc=dataLlarga(f.fi)+(f.provisional?' <span class="xip prov">'+esc(t('prov'))+'</span>':'')+(f.domiciliacio?' <span class="xip dom">'+esc(t('dom',{d:dataCurta(f.domiciliacio)}))+'</span>':'');
+        h+='<tr class="fila-clic" data-client="'+esc(f.clientId)+'" data-model="'+f.model+'" data-periode="'+f.periode+'" data-color="'+f.color+'">'+
+          '<td><strong>'+esc(f.client.nom)+'</strong>'+(xips?'<br>'+xips:'')+'</td>'+
+          '<td><strong>'+f.model+'</strong><span class="motiu">'+esc(nomModel(f.model))+'</span></td>'+
+          '<td>'+esc(gm.etiquetaPeriode(f.periode,lang))+'</td>'+
+          '<td>'+venc+'</td>'+
+          '<td class="n"><span class="dies'+(f.dies<0?' neg':'')+'">'+f.dies+'</span></td>'+
+          '<td>'+semChip(f)+'<span class="motiu">'+esc(f.motiu[lang]||f.motiu.es)+'</span></td>'+
+          '<td>'+docsTxt(f)+'</td></tr>';
+      });
+      $('tauler-taula').innerHTML=h+'</tbody></table>';
+      Array.prototype.forEach.call($('tauler-taula').querySelectorAll('tr.fila-clic'),function(tr){tr.addEventListener('click',function(){obreClient(tr.getAttribute('data-client'),tr.getAttribute('data-model'))})});
     }
+    var c=gm.cataleg();
+    $('tauler-nota').textContent=t('nota_tauler',{any:c.verificat.calendari.replace('AEAT ',''),v:dataLlarga(c.verificat.data)});
+  }
+
+  // ═══════════════════════════ CARTERA ═══════════════════════════
+  function pintaCartera(){
+    var d=despatx();
+    if(!d.clients.length){ $('cartera-taula').innerHTML='<div class="buit">—</div>'; return; }
+    var reg=gm.cataleg().regims;
+    var h='<table><thead><tr><th>'+esc(t('col_client'))+'</th><th>'+esc(t('col_tipus'))+'</th><th>'+esc(t('col_regim'))+'</th><th>'+esc(t('col_obls'))+'</th><th></th></tr></thead><tbody>';
+    d.clients.slice().sort(function(a,b){return a.nom.localeCompare(b.nom)}).forEach(function(c){
+      var obl=gd.obligacionsDe(c.id).map(function(o){return o.model}).sort();
+      h+='<tr class="fila-clic" data-id="'+esc(c.id)+'"><td><strong>'+esc(c.nom)+'</strong>'+(c.organitzacioId?'<br><span class="xip cm">'+esc(t('cm'))+'</span>':'')+'</td>'+
+        '<td>'+esc(etiqueta(reg.tipus[c.tipus],'')||c.tipus)+(c.domicilia?'<br><span class="xip dom">'+esc(etiqueta(reg.marques.domicilia,''))+'</span>':'')+'</td>'+
+        '<td><span class="motiu">'+esc((reg.regimIrpf[c.regimIrpf]||{})[lang]||'')+'</span><span class="motiu">'+esc((reg.regimIva[c.regimIva]||{})[lang]||'')+'</span></td>'+
+        '<td>'+obl.map(function(m){return '<span class="xip">'+m+'</span>'}).join('')+'</td>'+
+        '<td class="n"><button class="btn sec mini" type="button" data-edita="'+esc(c.id)+'">'+esc(t('cl_edita'))+'</button></td></tr>';
+    });
+    $('cartera-taula').innerHTML=h+'</tbody></table>';
+    Array.prototype.forEach.call($('cartera-taula').querySelectorAll('tr.fila-clic'),function(tr){tr.addEventListener('click',function(e){ if(e.target.closest('[data-edita]')) return; obreClient(tr.getAttribute('data-id')) })});
+    Array.prototype.forEach.call($('cartera-taula').querySelectorAll('[data-edita]'),function(b){b.addEventListener('click',function(){obreForm(b.getAttribute('data-edita'))})});
+  }
+  function etiquetaObj(o){ return o?(o[lang]||o.es):'' }
+  function opcions(sel,obj,valor){ sel.innerHTML=Object.keys(obj).map(function(k){return '<option value="'+k+'">'+esc(etiquetaObj(obj[k]))+'</option>'}).join(''); if(valor) sel.value=valor; }
+  function obreForm(id){
+    var reg=gm.cataleg().regims, c=id?gd.client(id):null;
+    editant=c?c.id:null;
+    $('client-form-titol').textContent=c?t('form_titol_edita'):t('form_titol');
+    $('c-nom').value=c?c.nom:''; $('c-notes').value=c?(c.notes||''):'';
+    opcions($('c-tipus'),reg.tipus,c?c.tipus:'AUTONOM'); opcions($('c-irpf'),reg.regimIrpf,c?c.regimIrpf:'DIRECTA'); opcions($('c-iva'),reg.regimIva,c?c.regimIva:'GENERAL');
+    $('c-marques').innerHTML=Object.keys(reg.marques).map(function(k){return '<label><input type="checkbox" data-marca="'+k+'"'+(c&&c[k]?' checked':'')+'> '+esc(etiquetaObj(reg.marques[k]))+'</label>'}).join('');
+    $('b-esborra-client').style.display=c?'':'none';
+    pintaMatriu(c);
+    ['c-tipus','c-irpf','c-iva'].forEach(function(i){$(i).onchange=function(){ if(!editant) pintaMatriu(null) }});
+    Array.prototype.forEach.call($('c-marques').querySelectorAll('input'),function(i){i.onchange=function(){ if(!editant) pintaMatriu(null) }});
+    $('client-form-card').style.display='';
+    $('c-nom').focus();
+  }
+  function clientDelForm(){
+    var c={nom:$('c-nom').value.trim(),tipus:$('c-tipus').value,regimIrpf:$('c-irpf').value,regimIva:$('c-iva').value,notes:$('c-notes').value.trim().slice(0,300)||null};
+    Array.prototype.forEach.call($('c-marques').querySelectorAll('input'),function(i){c[i.getAttribute('data-marca')]=i.checked});
+    return c;
+  }
+  function pintaMatriu(c){
+    var actual=c?gd.obligacionsDe(c.id):null;
+    var suggerides=gm.obligacionsSuggerides(clientDelForm());
+    var h='';
+    gm.models().forEach(function(m){
+      var o=actual?actual.filter(function(x){return x.model===m})[0]:null;
+      var marcat=actual?!!o:suggerides.indexOf(m)>=0;
+      var ps=gm.periodesDe(m,AVUI,{enrere:400,endavant:120});
+      var desDe=o&&o.desDe?o.desDe:gm.periodeActual(m,AVUI);
+      if(desDe&&ps.indexOf(desDe)<0) ps.push(desDe);
+      h+='<label><input type="checkbox" data-model="'+m+'"'+(marcat?' checked':'')+'> <strong>'+m+'</strong> <span class="motiu" style="display:inline">'+esc(nomModel(m))+'</span>'+
+         '<select class="mini desde" data-desde="'+m+'" title="'+esc(t('desde'))+'">'+ps.map(function(p){return '<option value="'+p+'"'+(p===desDe?' selected':'')+'>'+esc(t('desde'))+' '+esc(gm.etiquetaPeriode(p,lang))+'</option>'}).join('')+'</select></label>';
+    });
+    $('c-matriu').innerHTML=h;
+  }
+  function desaClient(){
+    var c=clientDelForm();
+    if(!c.nom){avisa('avis-client',t('falta_nom'),true);return}
+    if(editant){ c.id=editant; var vell=gd.client(editant); c.organitzacioId=vell.organitzacioId||null; c.creatEl=vell.creatEl; }
+    else c.creatEl=AVUI;
+    var desat=gd.clientDesa(c);
+    var models=[], desDe={};
+    Array.prototype.forEach.call($('c-matriu').querySelectorAll('input[data-model]'),function(i){ if(i.checked){ var m=i.getAttribute('data-model'); models.push(m); var s=$('c-matriu').querySelector('[data-desde="'+m+'"]'); if(s) desDe[m]=s.value; } });
+    gd.obligacionsDesa(desat.id,models,desDe);
+    models.forEach(function(m){ gd.obligacioDesDe(desat.id,m,desDe[m]) });
+    $('client-form-card').style.display='none'; editant=null;
+    avisa('avis-client',t('desat'));
+    pintaTot();
+  }
+
+  // ═══════════════════════════ FITXA DE CLIENT ═══════════════════════════
+  function obreClient(id,model){
+    var c=gd.client(id); if(!c) return;
+    clientObert=id;
+    var reg=gm.cataleg().regims;
+    $('cl-nom').textContent=c.nom;
+    var x=[];
+    if(c.organitzacioId) x.push('<span class="xip cm">'+esc(t('cm'))+'</span>');
+    x.push('<span class="xip">'+esc(etiquetaObj(reg.tipus[c.tipus]))+'</span>');
+    x.push('<span class="xip">'+esc(etiquetaObj(reg.regimIrpf[c.regimIrpf]))+'</span>');
+    x.push('<span class="xip">'+esc(etiquetaObj(reg.regimIva[c.regimIva]))+'</span>');
+    if(c.domicilia) x.push('<span class="xip dom">'+esc(etiquetaObj(reg.marques.domicilia))+'</span>');
+    $('cl-xips').innerHTML=x.join('');
+    var files=gm.tauler(despatx(),AVUI,{dies:200,enrere:200,filtre:{clientId:id}});
+    var perModel={}; files.forEach(function(f){(perModel[f.model]=perModel[f.model]||[]).push(f)});
+    var h='';
+    gd.obligacionsDe(id).map(function(o){return o.model}).sort().forEach(function(m){
+      var ps=perModel[m]||[];
+      h+='<div class="obl" id="obl-'+m+'"><h3><span>'+m+'</span><span style="font-weight:600;color:var(--grafit);font-size:.92rem">'+esc(nomModel(m))+'</span></h3>';
+      if(!ps.length) h+='<p class="nota">—</p>';
+      ps.forEach(function(f){
+        var p=f.presentacio||{}, estat=p.estat||'PENDENT';
+        h+='<div class="periode" data-periode="'+f.periode+'"><div class="cap">'+
+          '<div><strong>'+esc(gm.etiquetaPeriode(f.periode,lang))+'</strong> · '+esc(t('col_venc').toLowerCase())+' '+dataLlarga(f.fi)+(f.provisional?' <span class="xip prov">'+esc(t('prov'))+'</span>':'')+(f.domiciliacio?' <span class="xip dom">'+esc(t('dom',{d:dataCurta(f.domiciliacio)}))+'</span>':'')+(f.font?' <a href="'+esc(f.font)+'" target="_blank" rel="noopener" style="font-size:.75rem;color:var(--gris-text)">AEAT</a>':'')+'</div>'+
+          '<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">'+semChip(f)+
+            '<select class="mini" data-pres="'+f.periode+'" data-model="'+m+'"><option value="PENDENT"'+(estat==='PENDENT'?' selected':'')+'>'+esc(t('p_pendent'))+'</option><option value="PRESENTADA"'+(estat==='PRESENTADA'?' selected':'')+'>'+esc(t('p_presentada'))+'</option><option value="NO_PROCEDEIX"'+(estat==='NO_PROCEDEIX'?' selected':'')+'>'+esc(t('p_noprocedeix'))+'</option></select>'+
+            '<input class="mini" type="date" data-presdata="'+f.periode+'" data-model="'+m+'" value="'+esc(p.presentadaEl||'')+'"'+(estat==='PRESENTADA'?'':' style="display:none"')+'>'+
+            '<input class="mini" type="text" data-presref="'+f.periode+'" data-model="'+m+'" aria-label="'+esc(t('ref_etiqueta'))+'" title="'+esc(t('ref_etiqueta'))+'" placeholder="'+esc(t('ref'))+'" value="'+esc(p.referencia||'')+'" maxlength="60" style="width:150px"'+(estat==='PRESENTADA'?'':' style="display:none"')+'>'+
+          '</div></div>'+
+          '<span class="motiu">'+esc(f.motiu[lang]||f.motiu.es)+'</span>';
+        if(f.consultamed){
+          var cm=f.consultamed, r=null; despatx().resums.forEach(function(x){ if(x.organitzacioId===c.organitzacioId&&x.periode===f.periode) r=x; });
+          h+='<div class="cm-bloc">';
+          if(cm.estat==='sense-dades'||!r) h+='<span>'+esc(t('cm_sense'))+'</span>';
+          else {
+            if(cm.prova) h+='<span class="xip prov" style="grid-column:1/-1;justify-self:start">'+esc(t('cm_prova'))+'</span>';
+            h+='<span><b>'+r.factures+'</b> '+esc(t('cm_factures'))+'</span><span><b>'+esc(eur(r.baseSubjecta))+'</b> '+esc(t('cm_base_s'))+'</span><span><b>'+esc(eur(r.baseExempta))+'</b> '+esc(t('cm_base_e'))+'</span><span><b>'+esc(eur(r.quota))+'</b> '+esc(t('cm_quota'))+'</span>'+
+               '<span>'+esc(t('cm_dates'))+': '+dataCurta(r.primeraData)+' – '+dataCurta(r.darreraData)+'</span><span>'+(r.cadenaIntegra?esc(t('cm_cadena_ok')):'<span class="xip alerta">'+esc(t('cm_cadena_ko'))+'</span>')+'</span>'+
+               '<span>'+(cm.estat==='rebut'?esc(t('cm_enviat'))+' '+dataLlarga(cm.data):cm.estat==='canviat'?esc(t('cm_canviat',{n:cm.factures,m:cm.enviades})):esc(t('cm_no_enviat')))+'</span>';
+          }
+          h+='</div>';
+        }
+        h+='<div class="docs">';
+        f.documents.forEach(function(d){
+          h+='<div class="doc"><span>'+esc(etiquetaObj(d.nom))+(d.auto?' <span class="xip cm">'+esc(t('auto'))+'</span>':'')+'</span>'+
+            '<select class="mini" data-doc="'+d.clau+'" data-model="'+m+'" data-periode="'+f.periode+'"><option value="FALTA"'+(d.estat==='FALTA'?' selected':'')+'>'+esc(t('d_falta'))+'</option><option value="REBUDA"'+(d.estat==='REBUDA'?' selected':'')+'>'+esc(t('d_rebuda'))+'</option><option value="PRESENTADA"'+(d.estat==='PRESENTADA'?' selected':'')+'>'+esc(t('d_presentada'))+'</option></select>'+
+            '<input class="mini" type="date" data-docdata="'+d.clau+'" data-model="'+m+'" data-periode="'+f.periode+'" value="'+esc(d.data||'')+'">'+
+            '<input class="mini" type="text" data-docref="'+d.clau+'" data-model="'+m+'" aria-label="'+esc(t('ref_etiqueta'))+'" title="'+esc(t('ref_etiqueta'))+'" data-periode="'+f.periode+'" placeholder="'+esc(t('ref'))+'" value="'+esc(d.referencia||'')+'" maxlength="120"></div>';
+        });
+        h+='</div></div>';
+      });
+      h+='</div>';
+    });
+    $('cl-obligacions').innerHTML=h||'<p class="buit">—</p>';
+    // estats: es desen en canviar
+    Array.prototype.forEach.call($('cl-obligacions').querySelectorAll('[data-pres]'),function(s){ s.addEventListener('change',function(){ desaPres(s.getAttribute('data-model'),s.getAttribute('data-pres')) }) });
+    Array.prototype.forEach.call($('cl-obligacions').querySelectorAll('[data-presdata],[data-presref]'),function(i){ i.addEventListener('change',function(){ desaPres(i.getAttribute('data-model'),i.getAttribute('data-presdata')||i.getAttribute('data-presref')) }) });
+    Array.prototype.forEach.call($('cl-obligacions').querySelectorAll('[data-doc],[data-docdata],[data-docref]'),function(i){ i.addEventListener('change',function(){ desaDoc(i.getAttribute('data-model'),i.getAttribute('data-periode'),i.getAttribute('data-doc')||i.getAttribute('data-docdata')||i.getAttribute('data-docref')) }) });
+    mostraTab('client');
+    if(model){ var el=$('obl-'+model); if(el) el.scrollIntoView({block:'start',behavior:'smooth'}); }
+  }
+  function desaPres(model,periode){
+    var s=$('cl-obligacions').querySelector('[data-pres="'+periode+'"][data-model="'+model+'"]');
+    var d=$('cl-obligacions').querySelector('[data-presdata="'+periode+'"][data-model="'+model+'"]');
+    var r=$('cl-obligacions').querySelector('[data-presref="'+periode+'"][data-model="'+model+'"]');
+    var estat=s.value, data=d.value||AVUI;
+    gd.presentacioDesa({clientId:clientObert,model:model,periode:periode,estat:estat,presentadaEl:estat==='PENDENT'?null:data,referencia:r.value.trim()||null});
+    refrescaDesDeFitxa();
+  }
+  // Un canvi a la fitxa es veu al tauler i a la cartera sense recarregar
+  function refrescaDesDeFitxa(){ var y=window.scrollY; obreClient(clientObert); pintaTauler(); pintaCartera(); window.scrollTo(0,y); }
+  function desaDoc(model,periode,clau){
+    var s=$('cl-obligacions').querySelector('[data-doc="'+clau+'"][data-model="'+model+'"][data-periode="'+periode+'"]');
+    var d=$('cl-obligacions').querySelector('[data-docdata="'+clau+'"][data-model="'+model+'"][data-periode="'+periode+'"]');
+    var r=$('cl-obligacions').querySelector('[data-docref="'+clau+'"][data-model="'+model+'"][data-periode="'+periode+'"]');
+    gd.documentDesa({clientId:clientObert,model:model,periode:periode,clau:clau,estat:s.value,data:s.value==='FALTA'?null:(d.value||AVUI),referencia:r.value.trim()||null});
+    refrescaDesDeFitxa();
+  }
+
+  // ═══════════════════════════ METGES CONSULTAMED ═══════════════════════════
+  function periodes(){
+    var out=[], d=new Date(AVUI+'T12:00:00');
+    for(var i=0;i<6;i++){ out.push(d.getFullYear()+'T'+(Math.floor(d.getMonth()/3)+1)); d.setMonth(d.getMonth()-3); }
     return out;
   }
-
-  // Semàfor: no és una nota al metge, és un avís de feina per a la gestoria
-  function semafor(m){
-    if(m.estat!=='ACTIU') return '<span class="sem gris">Convit pendent</span>';
-    if(m.factures==null)  return '<span class="sem gris">Sense dades encara</span>';
-    if(m.cadenaIntegra===false) return '<span class="sem mal">⚠ Cadena trencada</span>';
-    if(m.factures===0)    return '<span class="sem avis">Cap factura aquest trimestre</span>';
-    if(!m.enviatEl)       return '<span class="sem avis">No li ha enviat el trimestre</span>';
-    return '<span class="sem ok">✓ Enviat</span>';
+  // Semàfor VeriFactu: no és una nota al metge, és un avís de feina per a la gestoria
+  function semaforMetge(m){
+    if(m.estat!=='ACTIU') return '<span class="sem gris">'+esc(t('s_pendent'))+'</span>';
+    if(m.factures==null)  return '<span class="sem gris">'+esc(t('s_sense'))+'</span>';
+    if(m.cadenaIntegra===false) return '<span class="sem mal">'+esc(t('s_trencada'))+'</span>';
+    if(m.factures===0)    return '<span class="sem avis">'+esc(t('s_cap'))+'</span>';
+    if(!m.enviatEl)       return '<span class="sem avis">'+esc(t('s_noenviat'))+'</span>';
+    return '<span class="sem ok">'+esc(t('s_enviat'))+'</span>';
   }
-
-  function pinta(d){
+  function pintaMetges(d){
     var ms=d.metges||[];
     var actius=ms.filter(function(m){return m.estat==='ACTIU'});
     var base=actius.reduce(function(a,m){return a+(m.base||0)},0);
@@ -181,102 +647,191 @@
     var fact=actius.reduce(function(a,m){return a+(m.factures||0)},0);
     var pendents=actius.filter(function(m){return m.factures!=null && !m.enviatEl}).length;
     var trencats=actius.filter(function(m){return m.cadenaIntegra===false}).length;
-
-    $('kpis').innerHTML=
-      kpi(actius.length,'metges actius')+
-      kpi(fact,'factures al trimestre')+
-      kpi(eur(base),'base imposable')+
-      kpi(eur(quota),'IVA repercutit')+
-      kpi(pendents,'no han enviat', pendents?'var(--ambre)':null)+
-      (trencats?kpi(trencats,'cadena trencada','var(--vermell)'):'');
-
-    if(!ms.length){ $('taula').innerHTML='<div class="buit">Encara no té cap metge. Comenci convidant-ne un a baix.</div>'; return; }
-    var h='<table><thead><tr><th>Metge</th><th>Estat</th><th class="n">Factures</th><th class="n">Base</th><th class="n">IVA</th><th class="n">Última</th><th></th></tr></thead><tbody>';
+    $('kpis').innerHTML=kpi(actius.length,t('k_actius'))+kpi(fact,t('k_factures'))+kpi(eur(base),t('k_base'))+kpi(eur(quota),t('k_iva'))+kpi(pendents,t('k_noenviat'),pendents?'var(--ambre)':null)+(trencats?kpi(trencats,t('k_trencada'),'var(--vermell)'):'');
+    if(!ms.length){ $('taula').innerHTML='<div class="buit">'+esc(t('metges_buit'))+'</div>'; return; }
+    var h='<table><thead><tr><th>'+esc(t('mc_metge'))+'</th><th>'+esc(t('mc_estat'))+'</th><th class="n">'+esc(t('mc_factures'))+'</th><th class="n">'+esc(t('mc_base'))+'</th><th class="n">'+esc(t('mc_iva'))+'</th><th class="n">'+esc(t('mc_ultima'))+'</th><th></th></tr></thead><tbody>';
     ms.forEach(function(m){
       var qui=(m.professionals&&m.professionals.length)?m.professionals.join(', '):m.nom;
-      h+='<tr><td><strong>'+esc(qui)+'</strong>'+
-         (m.colegiat?'<br><span style="color:var(--boira);font-size:.78rem">Col. '+esc(m.colegiat)+'</span>':'')+
-         '</td><td>'+semafor(m)+'</td>'+
-         '<td class="n">'+(m.factures==null?'—':m.factures)+'</td>'+
-         '<td class="n">'+eur(m.base)+'</td>'+
-         '<td class="n">'+eur(m.quota)+'</td>'+
-         '<td class="n">'+dataCurta(m.darreraData)+'</td>'+
-         // Nomes els convits pendents es poden retirar. Un vincle ACTIU el talla
-         // el metge des de la seva Configuracio, no la gestoria.
-         '<td class="n">'+(m.estat==='ACTIU'?'':
-            '<button class="btn sec mini" type="button" data-anulla="'+esc(m.encarrecId)+'">Retirar</button>')+'</td></tr>';
+      h+='<tr><td><strong>'+esc(qui)+'</strong>'+(m.colegiat?'<br><span style="color:var(--boira);font-size:.78rem">Col. '+esc(m.colegiat)+'</span>':'')+'</td><td>'+semaforMetge(m)+'</td>'+
+         '<td class="n">'+(m.factures==null?'—':m.factures)+'</td><td class="n">'+eur(m.base)+'</td><td class="n">'+eur(m.quota)+'</td><td class="n">'+dataCurta(m.darreraData)+'</td>'+
+         // Nomes els convits pendents es poden retirar. Un vincle ACTIU el talla el metge des de la seva Configuracio, no la gestoria.
+         '<td class="n">'+(m.estat==='ACTIU'||PROVA?'':'<button class="btn sec mini" type="button" data-anulla="'+esc(m.encarrecId)+'">'+esc(t('retirar'))+'</button>')+'</td></tr>';
     });
     $('taula').innerHTML=h+'</tbody></table>';
-
-    // Delegacio: la taula es torna a pintar sencera a cada carrega, aixi que
-    // enganxar el gestor al contenidor evita quedar-se amb botons orfes.
     Array.prototype.forEach.call($('taula').querySelectorAll('[data-anulla]'), function(b){
       b.addEventListener('click', function(){
-        if(!confirm('Retirar aquest convit? El metge ja no el podrà acceptar.')) return;
+        if(!confirm(t('retirar_conf'))) return;
         b.disabled=true;
         api('encarrec.anulla',{gestoriaId:gestoria.id, encarrecId:b.getAttribute('data-anulla')})
-          .then(function(r){
-            if(r&&r.ok){ avisa('avis-panell','Convit retirat.'); carregaPanell(); }
-            else { b.disabled=false; avisa('avis-panell',(r&&r.error)||'Error',true); }
-          }).catch(function(){ b.disabled=false; avisa('avis-panell','Error de connexió',true); });
+          .then(function(r){ if(r&&r.ok){ avisa('avis-panell',t('retirat')); carregaMetges(); } else { b.disabled=false; avisa('avis-panell',(r&&r.error)||t('err'),true); } })
+          .catch(function(){ b.disabled=false; avisa('avis-panell',t('err_con'),true); });
       });
     });
   }
-  function kpi(v,l,color){
-    return '<div class="kpi"><div class="v"'+(color?' style="color:'+color+'"':'')+'>'+v+'</div><div class="l">'+l+'</div></div>';
+  function kpi(v,l,color){ return '<div class="kpi"><div class="v"'+(color?' style="color:'+color+'"':'')+'>'+v+'</div><div class="l">'+esc(l)+'</div></div>'; }
+  // Al despatx de prova els metges surten del joc de dades (encàrrecs implícits dels clients amb organització)
+  function metgesDeProva(){
+    var d=despatx();
+    return { metges: d.clients.filter(function(c){return c.organitzacioId}).map(function(c){
+      var r=null,e=null; d.resums.forEach(function(x){if(x.organitzacioId===c.organitzacioId&&x.periode===periodeSel)r=x}); d.enviaments.forEach(function(x){if(x.organitzacioId===c.organitzacioId&&x.periode===periodeSel)e=x});
+      return { encarrecId:'prova-'+c.id, estat:'ACTIU', nom:c.nom, professionals:[], colegiat:null, factures:r?r.factures:null, base:r?r.base:null, quota:r?r.quota:null, darreraData:r?r.darreraData:null, cadenaIntegra:r?r.cadenaIntegra:null, enviatEl:e?e.enviatEl:null };
+    }) };
+  }
+  // ═══ EL BOTÓ DE CANAL (F4): enllaç ?g=CODI (ENG-20) + text curt + tres recomptes ═══
+  var REGISTRE='https://app.consultamed.es/registre?g=';
+  function pintaCanal(d){
+    var url=REGISTRE+encodeURIComponent(d.codi);
+    $('canal-url').value=url;
+    $('canal-kpis').innerHTML=kpi(d.registrats,t('c_k_registrats'))+kpi(d.vinculats,t('c_k_vinculats'))+kpi(d.pendents,t('c_k_pendents'),d.pendents?'var(--ambre)':null);
+    var text=t('c_missatge',{gestoria:gestoria.nom,url:url});
+    $('canal-text').value=text;
+    $('b-mailto').href='mailto:?subject='+encodeURIComponent(t('c_assumpte'))+'&body='+encodeURIComponent(text);
+  }
+  function copia(text,idAvis){
+    var fet=function(){avisa(idAvis,t('c_copiat'))}, mal=function(){avisa(idAvis,t('err'),true)};
+    if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(text).then(fet,mal); return; }
+    try{ var ta=document.createElement('textarea'); ta.value=text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); fet(); }catch(e){ mal(); }
+  }
+  function carregaCanal(){
+    if(PROVA){ pintaCanal({codi:'PROVA1',registrats:4,vinculats:3,pendents:1}); return; }
+    if(!gestoria) return;
+    api('gestoria.codi',{gestoriaId:gestoria.id}).then(function(d){
+      if(!d||!d.ok){ avisa('avis-canal',(d&&d.error)||t('c_err'),true); return; }
+      pintaCanal(d);
+    }).catch(function(){avisa('avis-canal',t('err_con'),true)});
   }
 
-  function carregaPanell(){
+  function carregaMetges(){
+    carregaCanal();
+    if(PROVA){ pintaMetges(metgesDeProva()); return; }
     if(!gestoria) return;
     api('gestoria.panell',{gestoriaId:gestoria.id,periode:periodeSel}).then(function(d){
-      if(!d||!d.ok){ avisa('avis-panell',(d&&d.error)||'Error',true); return; }
-      pinta(d);
-    }).catch(function(){avisa('avis-panell','Error de connexió',true)});
+      if(!d||!d.ok){ avisa('avis-panell',(d&&d.error)||t('err'),true); return; }
+      pintaMetges(d);
+    }).catch(function(){avisa('avis-panell',t('err_con'),true)});
   }
 
+  // ═══════════════════════════ ARRENCADA ═══════════════════════════
+  function mostraTab(nom){
+    document.querySelectorAll('.tab').forEach(function(s){s.classList.toggle('actiu',s.id==='t-'+nom)});
+    document.querySelectorAll('.tabs button').forEach(function(b){b.setAttribute('aria-selected',b.getAttribute('data-tab')===nom||(nom==='client'&&b.getAttribute('data-tab')==='cartera')?'true':'false')});
+  }
+  function pintaTot(){
+    $('banner-txt').textContent=t(PROVA?'banner':'banner_local',{d:dataLlarga(AVUI)});
+    omplePerFiltres(); pintaTauler(); pintaCartera(); if(clientObert&&$('t-client').classList.contains('actiu')) obreClient(clientObert); carregaMetges();
+  }
+  function entraAlPanell(){
+    $('v-dins').classList.remove('amaga');
+    $('g-titol').textContent=gestoria.nom;
+    $('banner-prova').classList.remove('amaga');
+    var sel=$('periode'); sel.innerHTML='';
+    periodes().forEach(function(p,i){ var o=document.createElement('option'); o.value=p; o.textContent=p.replace('T',' · T'); if(!i)o.selected=true; sel.appendChild(o); });
+    /* El trimestre que la gestoria té entre mans no és el que acaba de començar:
+       és el que encara es pot presentar (l'1-20 d'octubre, el 3T). Ho diu el
+       catàleg (primer període del 303 que no ha vençut), no un càlcul propi. */
+    var feina=gm.periodeActual('303',AVUI);
+    if(feina&&sel.querySelector('option[value="'+feina+'"]')) sel.value=feina;
+    periodeSel=sel.value;
+    sel.addEventListener('change',function(){periodeSel=sel.value;carregaMetges()});
+    if(qs.tab) mostraTab(qs.tab);
+    pintaTot();
+  }
+  /* Els metges ConsultaMed entren sols: es demana gestoria.panell del trimestre
+     que es pot presentar, de l'anterior i del que hi ha en curs (només agregats,
+     invariant 6) i la capa de dades els aboca a la cartera i als resums. */
+  function periodeAnterior(p){ var q=gm.parsePeriode(p); if(!q||q.tipus!=='T') return null; return q.n===1?(q.any-1)+'T4':q.any+'T'+(q.n-1); }
+  function carregaConsultaMed(){
+    if(PROVA||!gestoria) return Promise.resolve();
+    var feina=gm.periodeActual('303',AVUI), ara=AVUI.slice(0,4)+'T'+(Math.floor((parseInt(AVUI.slice(5,7),10)-1)/3)+1);
+    var pers=[]; [feina,periodeAnterior(feina),ara].forEach(function(p){ if(p&&pers.indexOf(p)<0) pers.push(p); });
+    return pers.reduce(function(prom,p){
+      return prom.then(function(){ return api('gestoria.panell',{gestoriaId:gestoria.id,periode:p}).then(function(d){ if(d&&d.ok) gd.importaPanell(p,d.metges,AVUI); }).catch(function(){}); });
+    },Promise.resolve()).then(pintaTot);
+  }
   function carrega(){
+    if(PROVA){ gd.carrega({reinicia:qs.reinicia==='1'}); gestoria={id:'prova',nom:gd.despatx().gestoria.nom}; entraAlPanell(); return; }
     api('gestoria.meves').then(function(r){
       if(!r||!r.ok){ $('v-fora').classList.remove('amaga'); return; }
       if(!r.gestories||!r.gestories.length){ $('v-crea').classList.remove('amaga'); return; }
       gestoria=r.gestories[0];
-      $('v-dins').classList.remove('amaga');
-      $('g-titol').textContent=gestoria.nom;
-      $('g-sub').textContent='GestorMed · panell de compliment VeriFactu dels seus metges';
-      var sel=$('periode');
-      periodes().forEach(function(p,i){
-        var o=document.createElement('option'); o.value=p; o.textContent=p.replace('T',' · T'); if(!i)o.selected=true;
-        sel.appendChild(o);
-      });
-      periodeSel=sel.value;
-      sel.addEventListener('change',function(){periodeSel=sel.value;carregaPanell()});
-      carregaPanell();
+      /* A-020 ronda 2 (P-LEG-27) · la porta, ABANS del panell: si el despatx no ha
+         acceptat el contracte, el servidor no respon cap acció del Despatx i el que
+         es veuria és un panell buit amb un avís de connexió. */
+      if(gestoria.termesPendents){ mostraTermes(); return}
+      obreLaCartera();
     }).catch(function(){$('v-fora').classList.remove('amaga')});
+  }
+  /* Legal §3.2 · La pantalla. Només un ADMIN pot acceptar en nom del despatx: un
+     empleat convidat no pot obligar-lo (Legal §6), i ha de saber per què no entra. */
+  function mostraTermes(){
+    if(!gestoria) return;
+    ['v-fora','v-crea','v-dins'].forEach(function(id){var e=$(id); if(e) e.classList.add('amaga')});
+    $('v-termes').classList.remove('amaga');
+    var admin=gestoria.rol==='ADMIN';
+    $('tm-admin').classList.toggle('amaga',!admin);
+    $('tm-nomes-admin').classList.toggle('amaga',admin);
+  }
+  function obreLaCartera(){
+    // F1/F2: la cartera d'una gestoria real viu (de moment) al seu navegador, a la seva clau, i comença buida.
+    gd.configura({magatzem:(function(){try{return window.localStorage}catch(e){return null}})(),terminis:gm,clau:'gm_despatx_'+gestoria.id});
+    gd.carrega({buit:true,gestoria:gestoria,reinicia:qs.reinicia==='1'});
+    entraAlPanell();
+    carregaConsultaMed();
   }
 
   document.addEventListener('DOMContentLoaded',function(){
+    traduir();
+    document.querySelectorAll('.lang button').forEach(function(b){b.addEventListener('click',function(){fixaIdioma(b.getAttribute('data-l'))})});
+    document.querySelectorAll('.tabs button').forEach(function(b){b.addEventListener('click',function(){mostraTab(b.getAttribute('data-tab'))})});
     $('b-entrar').href=ENTRA;
-    $('b-sortir').addEventListener('click',function(){
-      api('logout').then(function(){location.href='https://consultamed.es/'});
-    });
+    $('b-sortir').addEventListener('click',function(){ if(PROVA){location.href='hub.html';return} api('logout').then(function(){location.href='https://consultamed.es/'}); });
+    $('b-reinicia').addEventListener('click',function(e){e.preventDefault(); gd.carrega({reinicia:true}); clientObert=null; mostraTab('tauler'); pintaTot();});
     $('b-crea').addEventListener('click',function(){
       var nom=$('g-nom').value.trim();
-      if(!nom){avisa('avis-crea','Cal el nom de la gestoria',true);return}
+      if(!nom){avisa('avis-crea',t('crea_falta'),true);return}
       $('b-crea').disabled=true;
       api('gestoria.crea',{nom:nom,nif:$('g-nif').value.trim()}).then(function(d){
         $('b-crea').disabled=false;
-        if(d&&d.ok){ location.reload(); } else avisa('avis-crea',(d&&d.error)||'Error',true);
-      }).catch(function(){$('b-crea').disabled=false;avisa('avis-crea','Error de connexió',true)});
+        if(d&&d.ok){ location.reload(); } else avisa('avis-crea',(d&&d.error)||t('err'),true);
+      }).catch(function(){$('b-crea').disabled=false;avisa('avis-crea',t('err_con'),true)});
     });
+    $('tm-accepta').addEventListener('change',function(){ $('b-termes').disabled=!$('tm-accepta').checked; });
+    $('b-termes').addEventListener('click',function(){
+      if(!$('tm-accepta').checked||!gestoria) return;
+      var b=$('b-termes'); b.disabled=true;
+      api(ACCIO_TERMES,{gestoriaId:gestoria.id,accepta:true}).then(function(d){
+        if(!d||!d.ok){ b.disabled=false; avisa('avis-termes',(d&&d.error)||t('err'),true); return}
+        gestoria.termesPendents=false;
+        $('v-termes').classList.add('amaga');
+        obreLaCartera();
+      }).catch(function(){ b.disabled=false; avisa('avis-termes',t('err_con'),true); });
+    });
+    $('b-copia-url').addEventListener('click',function(){copia($('canal-url').value,'avis-canal')});
+    $('b-copia-text').addEventListener('click',function(){copia($('canal-text').value,'avis-canal')});
     $('b-convidar').addEventListener('click',function(){
+      if(PROVA){ avisa('avis-conv',t('metges_prova'),true); return; }
       var em=$('c-email').value.trim();
-      if(!em||em.indexOf('@')<0){avisa('avis-conv','Correu invàlid',true);return}
+      if(!em||em.indexOf('@')<0){avisa('avis-conv',t('correu_invalid'),true);return}
       $('b-convidar').disabled=true;
-      api('encarrec.convida',{gestoriaId:gestoria.id,email:em}).then(function(d){
+      api('encarrec.convida',{gestoriaId:gestoria.id,email:em,idioma:lang}).then(function(d){
         $('b-convidar').disabled=false;
-        if(d&&d.ok){ $('c-email').value=''; avisa('avis-conv',d.enviat===false?'Convit creat, però el correu no ha sortit.':'Convit enviat a '+em,d.enviat===false); carregaPanell(); }
-        else avisa('avis-conv',(d&&d.error)||'Error',true);
-      }).catch(function(){$('b-convidar').disabled=false;avisa('avis-conv','Error de connexió',true)});
+        if(d&&d.ok){ $('c-email').value=''; avisa('avis-conv',d.enviat===false?t('conv_creat'):t('conv_enviat',{e:em}),d.enviat===false); carregaMetges(); }
+        else avisa('avis-conv',(d&&d.error)||t('err'),true);
+      }).catch(function(){$('b-convidar').disabled=false;avisa('avis-conv',t('err_con'),true)});
     });
+    // tauler
+    $('f-horitzo').addEventListener('change',function(){horitzo=parseInt($('f-horitzo').value,10)||14;pintaTauler()});
+    $('f-client').addEventListener('change',function(){filtre.clientId=$('f-client').value;pintaTauler()});
+    $('f-model').addEventListener('change',function(){filtre.model=$('f-model').value;pintaTauler()});
+    $('f-estat').addEventListener('change',function(){filtre.estat=$('f-estat').value;pintaTauler()});
+    $('b-neteja').addEventListener('click',function(){filtre={clientId:'',model:'',estat:''};horitzo=14;omplePerFiltres();pintaTauler()});
+    // cartera
+    $('b-nou-client').addEventListener('click',function(){obreForm(null)});
+    $('b-desa-client').addEventListener('click',desaClient);
+    $('b-cancel-client').addEventListener('click',function(){$('client-form-card').style.display='none';editant=null});
+    $('b-esborra-client').addEventListener('click',function(){ if(!editant) return; if(!confirm(t('confirma_esborra'))) return; gd.clientEsborra(editant); editant=null; $('client-form-card').style.display='none'; if(clientObert){clientObert=null;mostraTab('cartera')} pintaTot(); });
+    $('b-cl-tornar').addEventListener('click',function(){mostraTab('cartera')});
+    $('b-cl-edita').addEventListener('click',function(){ mostraTab('cartera'); obreForm(clientObert); });
     carrega();
   });
 })();

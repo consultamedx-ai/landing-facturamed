@@ -122,6 +122,8 @@
 .act-represa{display:block;background:rgba(20,184,166,.12);border:1px solid rgba(20,184,166,.4);color:#0B5F57;
   border-radius:12px;padding:12px 16px;margin:0 0 20px;font-weight:600;text-decoration:none}
 .act-represa:hover{background:rgba(20,184,166,.2)}
+  /* A-020 (F2) · un despatx (compte sense organitzacio) no veu els productes de metge ni la barra de prova */
+  html[data-sense-org] #card-factura,html[data-sense-org] #card-escriba,html[data-sense-org] #card-secre,html[data-sense-org] #card-recept,html[data-sense-org] #barra-prova{display:none !important}
 </style>
 </head>
 <body>
@@ -408,6 +410,12 @@
         if(!d||!d.ok||!d.usuari||!d.usuari.productes) return;
         try{localStorage.setItem('cm_productes',JSON.stringify(d.usuari.productes));}catch(e){}
         aplica(d.usuari.productes);
+        /* A-020 (F2) · un compte sense cap organitzacio es un despatx (gestoria):
+           no ha de veure ni els productes de metge ni la barra «activar el
+           compte» (que porta a Stripe). El seu lloc es gestoria.html, que la
+           targeta de GestorMed (a dalt) ja li obre. La regla viu al CSS
+           (html[data-sense-org]) perque sobrevisqui als repintats d'idioma. */
+        if(d.usuari.organitzacions&&!d.usuari.organitzacions.length) document.documentElement.setAttribute('data-sense-org','1');
       }).catch(function(){});
   })();
 

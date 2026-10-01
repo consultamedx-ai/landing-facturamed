@@ -2177,7 +2177,8 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
      en aquesta llista i prou. */
   window.__fm = { safe: safe, registres: registres, avis: avis,
                   descarrega: descarrega, T: T, Tf: Tf, conf: conf,
-                  separaContacte: separaContacte, dataExcel: dataExcel };   // ENG-28 · perquè l'arnès provi el criteri exacte i les dates
+                  separaContacte: separaContacte, dataExcel: dataExcel,   // ENG-28 · perquè l'arnès provi el criteri exacte i les dates
+                  huellaAlta: huellaAlta, esProva: esProva, enProva: enProva };   // A-020 (F3) · el bloc GestorMed verifica la cadena de veritat i no barreja la sèrie PROVA
   /* ENG-13 · la barra nomes es veu en prova. Es torna a mirar a cada repintat
      perque l'estat pot canviar amb la pagina oberta (algu activa el pagament
      en una altra pestanya i torna aqui). */
@@ -2896,6 +2897,21 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
   // El paquet de veritat (CSV amb tot) es genera aqui i se l'emporta el metge.
   // ═══════════════════════════════════════════════════════════════════
   safe(function () {
+    /* A-020 (F3, GestorMed Despatx) · Tres correccions al que pujava fins avui:
+       (1) la integritat de la cadena es COMPROVA amb la mateixa rutina que el
+           boto «Verificar integridad» (huellaAlta), no s'afirma amb un `true`;
+       (2) no es barregen mai les factures de la serie PROVA amb les reals: un
+           compte en prova envia les seves marcades prova:true, un compte actiu
+           nomes les reals;
+       (3) el trimestre que s'envia es el que encara es pot presentar, no el
+           que acaba de comencar; i el resum porta el desglossament que demana
+           un 303 (base subjecta i base exempta). Segueixen sent agregats. */
+    var huellaAlta = __fm.huellaAlta, esProva = __fm.esProva || function () { return false; }, enProva = __fm.enProva || function () { return false; };
+    DICT['Se enviará {per} a {gestoria}'] = ["S'enviarà {per} a {gestoria}", '{per} wird gesendet an {gestoria}', '{per} will be sent to {gestoria}'];
+    DICT['{gestoria} ya ve en su panel el resumen del trimestre {per} —{n} facturas, base sujeta {bs} €, base exenta {be} €, IVA {q} €, fechas de la primera y la última e integridad de la cadena VeriFactu—, que se actualiza solo mientras la vinculación esté activa. Al continuar, quedará constancia de que le ha enviado el trimestre y se descargará en este ordenador el CSV con el detalle, que usted le envía por correo: ese archivo sí incluye pacientes y conceptos, y no pasa por ConsultaMed. ¿Continuar?'] =
+      ["{gestoria} ja veu al seu panell el resum del trimestre {per} —{n} factures, base subjecta {bs} €, base exempta {be} €, IVA {q} €, dates de la primera i l'última i integritat de la cadena VeriFactu—, que s'actualitza sol mentre la vinculació estigui activa. En continuar, quedarà constància que li ha enviat el trimestre i es descarregarà en aquest ordinador el CSV amb el detall, que vostè li envia per correu: aquest fitxer sí que inclou pacients i conceptes, i no passa per ConsultaMed. Continuar?",
+       '{gestoria} sieht die Quartalsübersicht {per} bereits im eigenen Panel — {n} Rechnungen, steuerpflichtige Basis {bs} €, befreite Basis {be} €, MwSt {q} €, Datum der ersten und letzten Rechnung und Integrität der VeriFactu-Kette —, und sie wird automatisch aktualisiert, solange die Verknüpfung aktiv ist. Beim Fortfahren wird festgehalten, dass Sie das Quartal übermittelt haben, und die CSV mit den Details wird auf diesem Rechner heruntergeladen; diese senden Sie per E-Mail: diese Datei enthält sehr wohl Patienten und Positionen und läuft nicht über ConsultaMed. Fortfahren?',
+       '{gestoria} already sees the {per} quarter summary in their panel — {n} invoices, taxable base {bs} €, exempt base {be} €, VAT {q} €, first and last invoice dates and whether the VeriFactu chain is intact — and it updates by itself while the link is active. If you continue, it will be recorded that you sent them the quarter and the detailed CSV will be downloaded on this computer for you to email them: that file does include patients and items, and it does not go through ConsultaMed. Continue?'];
     function periodeDe(fecha) {           // "2026-08-14" -> "2026T3"
       var p = String(fecha || '').split('-');
       if (p.length < 2) return null;
@@ -2905,30 +2921,76 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
       var d = new Date();
       return d.getFullYear() + 'T' + (Math.floor(d.getMonth() / 3) + 1);
     }
+    /* EL TRIMESTRE QUE S'ENVIA no es el del calendari: es el que encara es pot
+       presentar. L'1-20 d'octubre (1-30 al gener) la gestoria treballa el
+       trimestre que acaba de tancar-se; fins avui el boto enviava el que
+       acabava de comencar, amb cinc dies de factures. Aqui nomes cal triar el
+       trimestre bo; el termini exacte (dies inhabils, domiciliacio) viu al
+       cataleg del panell de la gestoria (terminis-aeat.json). */
+    function periodeAEnviar() {
+      var d = new Date(), any = d.getFullYear(), mes = d.getMonth(), dia = d.getDate();
+      var q = Math.floor(mes / 3) + 1;
+      if (mes % 3 === 0 && dia <= (mes === 0 ? 30 : 20)) { q -= 1; if (q === 0) { q = 4; any -= 1; } }
+      return any + 'T' + q;
+    }
+    function etiqueta(per) { var p = String(per).split('T'); return p.length === 2 ? p[1] + 'T ' + p[0] : per; }
     function num(v) { return parseFloat(String(v || '0').replace(',', '.')) || 0; }
+    // Nomes les factures de l'AMBIT en que estem (com verificaCadena, ENG-13).
+    function ambit() { var enP = !!enProva(); return registres().filter(function (r) { return !!esProva(r) === enP; }); }
 
-    function resumDe(periode) {
-      var rs = registres().filter(function (r) { return periodeDe(r.fecha) === periode; });
+    function resumDe(periode, rsAmbit) {
+      var rs = (rsAmbit || ambit()).filter(function (r) { return periodeDe(r.fecha) === periode; });
       var dates = rs.map(function (r) { return r.fecha; }).sort();
+      var suma = function (llista, camp) { return Math.round(llista.reduce(function (a, r) { return a + num(r[camp]); }, 0) * 100) / 100; };
       return {
         periode: periode,
         factures: rs.length,
-        base: Math.round(rs.reduce(function (a, r) { return a + num(r.base); }, 0) * 100) / 100,
-        quota: Math.round(rs.reduce(function (a, r) { return a + num(r.quota); }, 0) * 100) / 100,
-        total: Math.round(rs.reduce(function (a, r) { return a + num(r.total); }, 0) * 100) / 100,
+        base: suma(rs, 'base'), quota: suma(rs, 'quota'), total: suma(rs, 'total'),
+        baseExempta: suma(rs.filter(function (r) { return !!r.exempta; }), 'base'),
+        baseSubjecta: suma(rs.filter(function (r) { return !r.exempta; }), 'base'),
         primeraData: dates[0] || null,
         darreraData: dates[dates.length - 1] || null,
-        cadenaIntegra: true,
+        prova: !!enProva(),
         _files: rs
       };
     }
+    // La cadena de l'ambit, sencera i en ordre: la mateixa comprovacio que
+    // «Verificar integridad». Sense huellaAlta, no es pot afirmar res: false.
+    function cadenaIntegra(rs) {
+      if (!huellaAlta) return Promise.resolve(false);
+      var i = 0, ant = '';
+      function pas() {
+        if (i >= rs.length) return Promise.resolve(true);
+        var r = rs[i++];
+        if ((r.anterior || '') !== ant) return Promise.resolve(false);
+        return huellaAlta(r).then(function (h) { if (h !== r.huella) return false; ant = r.huella; return pas(); });
+      }
+      return pas().catch(function () { return false; });
+    }
+    // Consentiment explicit del metge, un cop per consulta i dispositiu (§5.2 de l'F0).
+    var K_CONSENT = 'fm2_gestoria_consent';
+    function consentDonat() { try { var c = JSON.parse(localStorage.getItem(K_CONSENT) || '{}'); return !!c[cmSync.org()]; } catch (e) { return false; } }
+    function consentDesa() { try { var c = JSON.parse(localStorage.getItem(K_CONSENT) || '{}'); c[cmSync.org()] = new Date().toISOString(); localStorage.setItem(K_CONSENT, JSON.stringify(c)); } catch (e) {} }
 
+    // Sense encarrec ACTIU no es puja res: ni el semafor. Fins avui el resum
+    // pujava sempre (nomes el veia una gestoria vinculada, pero pujava); ara el
+    // cami sense consentiment no mou res (criteri de l'F3 de l'ordre A-020).
+    var vinculat = false;
     function puja() {
-      if (!window.cmSync || !cmSync.actiu() || !cmSync.org()) return Promise.resolve();
-      var r = resumDe(periodeAvui());
-      delete r._files;
-      return cmSync.api('resum.push', Object.assign({ organitzacioId: cmSync.org() }, r))
-        .catch(function () {});
+      if (!vinculat || !window.cmSync || !cmSync.actiu() || !cmSync.org()) return Promise.resolve();
+      var rs = ambit();
+      return cadenaIntegra(rs).then(function (ok) {
+        // El trimestre que es pot presentar i el que hi ha en curs (un de sol
+        // si coincideixen): aixi la gestoria veu una factura de setembre emesa
+        // a l'octubre, i el seu quadre ho detecta.
+        var pers = [periodeAEnviar()]; if (periodeAvui() !== pers[0]) pers.push(periodeAvui());
+        return pers.reduce(function (p, per) {
+          return p.then(function () {
+            var r = resumDe(per, rs); delete r._files; r.cadenaIntegra = ok;
+            return cmSync.api('resum.push', Object.assign({ organitzacioId: cmSync.org() }, r)).catch(function () {});
+          });
+        }, Promise.resolve());
+      }).catch(function () {});
     }
 
     // El boto nomes apareix si hi ha una gestoria vinculada i activa
@@ -2936,13 +2998,31 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
       if (!window.cmSync || !cmSync.actiu() || !cmSync.org()) return;
       cmSync.api('encarrec.meva', { organitzacioId: cmSync.org() }).then(function (d) {
         if (!d || !d.ok || !d.encarrec || d.encarrec.estat !== 'ACTIU') return;
-        var b = $('b-gestoria');
+        vinculat = true;
+        puja();
+        /* TROBALLA A-020 (F3): aqui es feia servir `$('b-gestoria')`, i `$` no
+           existeix en aquest <script> (nomes a l'altre; el pont __fm no el
+           publica). El ReferenceError quedava engolit pel .catch de sota i el
+           boto NO APAREIXIA MAI, ni amb l'encarrec actiu — sense cap error a
+           la consola. Per aixo l'E2E del 05/08 (que cridava l'API directament)
+           i la verificacio del 14/08 (consola neta) no ho van veure. */
+        var b = document.getElementById('b-gestoria');
         if (!b) return;
         b.style.display = '';
-        b.title = Tf('Se enviará a {gestoria}', { gestoria: (d.encarrec.gestoria.nom || T('su gestoría')) });
+        var gestoriaNom = d.encarrec.gestoria.nom || T('su gestoría');
+        b.title = Tf('Se enviará {per} a {gestoria}', { per: etiqueta(periodeAEnviar()), gestoria: gestoriaNom });
         b.addEventListener('click', function () {
-          var per = periodeAvui(), r = resumDe(per);
+          var per = periodeAEnviar(), rs = ambit(), r = resumDe(per, rs);
           if (!r.factures) { avis('err', Tf('No hay facturas en el trimestre {per}.', { per: per })); return; }
+          /* CONSENTIMENT EXPLICIT, un cop per consulta i dispositiu: el primer
+             clic ensenya exactament que s'envia (i que no) i no mou res si el
+             metge diu que no. L'encarrec acceptat autoritza la gestoria; aixo
+             autoritza l'enviament. */
+          if (!consentDonat()) {
+            if (!confirm(Tf('{gestoria} ya ve en su panel el resumen del trimestre {per} —{n} facturas, base sujeta {bs} €, base exenta {be} €, IVA {q} €, fechas de la primera y la última e integridad de la cadena VeriFactu—, que se actualiza solo mientras la vinculación esté activa. Al continuar, quedará constancia de que le ha enviado el trimestre y se descargará en este ordenador el CSV con el detalle, que usted le envía por correo: ese archivo sí incluye pacientes y conceptos, y no pasa por ConsultaMed. ¿Continuar?',
+              { gestoria: gestoriaNom, per: etiqueta(per), n: r.factures, bs: r.baseSubjecta, be: r.baseExempta, q: r.quota }))) return;
+            consentDesa();
+          }
           // 1r: el paquet, generat aqui i descarregat pel metge
           var cap = ['Numero','Fecha','Tipo','Paciente','NIF paciente','Concepto','Base','Cuota IVA','Total','Exenta art20','Rectifica a','Huella'];
           var files = r._files.map(function (x) {
@@ -2955,19 +3035,24 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
           descarrega('FacturaMed_' + per + '.csv', '﻿' + cap.join(';') + '\n' + files.join('\n'), 'text/csv;charset=utf-8');
           // 2n: al servidor, nomes el semafor i la constancia. El CSV no hi va.
           var sr = Object.assign({}, r); delete sr._files;
-          cmSync.api('resum.push', Object.assign({ organitzacioId: cmSync.org() }, sr));
-          cmSync.api('enviament.registra', { organitzacioId: cmSync.org(), periode: per, factures: r.factures })
+          cadenaIntegra(rs).then(function (integra) {
+            sr.cadenaIntegra = integra;
+            return cmSync.api('resum.push', Object.assign({ organitzacioId: cmSync.org() }, sr));
+          }).catch(function () {}).then(function () {
+            return cmSync.api('enviament.registra', { organitzacioId: cmSync.org(), periode: per, factures: r.factures });
+          })
             .then(function (d2) {
               avis(d2 && d2.ok ? 'ok' : 'err', d2 && d2.ok
                 ? Tf('Trimestre {per} listo ({n} facturas). Su gestoría ya lo ve en su panel; adjunte el CSV descargado en su correo.', { per: per, n: r.factures })
                 : 'Se ha descargado el CSV pero no se ha podido avisar a la gestoría.');
             });
         });
-      }).catch(function () {});
+      }).catch(function (e) { console.warn('gestormed', e); });   // un error engolit en silenci va amagar dos mesos que el boto no sortia
     }
 
-    // El semafor es refresca en carregar i cada cop que s'emet o s'esborra una factura
-    setTimeout(function () { puja(); mira(); }, 1800);
+    // El semafor es refresca en carregar (si hi ha encarrec actiu: mira() crida
+    // puja()) i cada cop que s'emet o s'esborra una factura
+    setTimeout(mira, 1800);
     window.addEventListener('fm-registre-canvi', puja);
   }, 'gestormed');
 

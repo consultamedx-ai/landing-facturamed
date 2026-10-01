@@ -1,0 +1,227 @@
+{
+  "versio": "2026.1",
+  "verificat": {
+    "calendari": "AEAT 2026",
+    "data": "2026-09-15",
+    "per": "Enginyeria ConsultaMed · ordre A-020 · F1",
+    "arrel": "https://sede.agenciatributaria.gob.es/Sede/ayuda/calendario-contribuyente/calendario-contribuyente-2026/",
+    "criteri": {
+      "es": "Las fechas de 2026 están transcritas del Calendario del contribuyente 2026 de la AEAT (una página por vencimiento, citada en cada entrada). Los períodos que vencen en un año sin calendario publicado se calculan con la regla general (día 20, día 30, 31 de enero, último día de febrero, 30 de junio, 25 de julio) trasladada al primer día hábil si cae en sábado, domingo o festivo nacional, y se marcan PROVISIONAL hasta que la AEAT publique el calendario. Los festivos autonómicos y locales no se aplican. Cubre el juego estándar de autónomo y pyme; no cubre SII, grandes empresas ni declaraciones mensuales.",
+      "ca": "Les dates del 2026 estan transcrites del Calendari del contribuent 2026 de l'AEAT (una pàgina per venciment, citada a cada entrada). Els períodes que vencen en un any sense calendari publicat es calculen amb la regla general (dia 20, dia 30, 31 de gener, últim dia de febrer, 30 de juny, 25 de juliol) traslladada al primer dia hàbil si cau en dissabte, diumenge o festiu nacional, i es marquen PROVISIONAL fins que l'AEAT publiqui el calendari. Els festius autonòmics i locals no s'apliquen. Cobreix el joc estàndard d'autònom i pime; no cobreix SII, grans empreses ni declaracions mensuals."
+    },
+    "regla_inhabils": {
+      "font": "https://sede.agenciatributaria.gob.es/Sede/ayuda/calendario-contribuyente/calendario-contribuyente-2026/recuerde/vencimientos-dias-inhabiles-sabados-festivos.html",
+      "text": "Si el vencimiento coincide con una festividad local o autonómica, el plazo finaliza el primer día hábil siguiente (el calendario estatal ya lleva desplazados los sábados, domingos y festivos nacionales)."
+    },
+    "domiciliacio": {
+      "font": "https://sede.agenciatributaria.gob.es/Sede/ayuda/calendario-contribuyente/calendario-contribuyente-2026/plazos-presentacion-autoliquidaciones-domiciliacion-bancaria.html"
+    }
+  },
+  "llindar_urgent_dies": 5,
+  "festius_nacionals": {
+    "nota": "Festius d'àmbit estatal no substituïbles (calendari laboral, BOE). Només s'usen per calcular dates PROVISIONALS d'anys sense calendari AEAT publicat. Els del 2027 són provisionals fins que el BOE publiqui el calendari laboral.",
+    "2026": ["2026-01-01", "2026-01-06", "2026-04-03", "2026-05-01", "2026-08-15", "2026-10-12", "2026-11-01", "2026-12-06", "2026-12-08", "2026-12-25"],
+    "2027": ["2027-01-01", "2027-01-06", "2027-03-26", "2027-05-01", "2027-08-15", "2027-10-12", "2027-11-01", "2027-12-06", "2027-12-08", "2027-12-25"]
+  },
+  "regims": {
+    "tipus": {
+      "AUTONOM":    { "es": "Autónomo/a",       "ca": "Autònom/a" },
+      "SOCIETAT":   { "es": "Sociedad",         "ca": "Societat" },
+      "PARTICULAR": { "es": "Particular",       "ca": "Particular" }
+    },
+    "regimIrpf": {
+      "DIRECTA":   { "es": "Estimación directa",   "ca": "Estimació directa" },
+      "OBJECTIVA": { "es": "Estimación objetiva (módulos)", "ca": "Estimació objectiva (mòduls)" },
+      "SOCIETATS": { "es": "Impuesto sobre Sociedades", "ca": "Impost sobre Societats" },
+      "CAP":       { "es": "Sin actividad económica", "ca": "Sense activitat econòmica" }
+    },
+    "regimIva": {
+      "GENERAL": { "es": "IVA régimen general (o simplificado)", "ca": "IVA règim general (o simplificat)" },
+      "EXEMPT":  { "es": "Actividad exenta de IVA (art. 20 LIVA)", "ca": "Activitat exempta d'IVA (art. 20 LIVA)" },
+      "CAP":     { "es": "No sujeto a IVA", "ca": "No subjecte a IVA" }
+    },
+    "marques": {
+      "tePersonal":      { "es": "Paga nóminas o facturas de profesionales con retención", "ca": "Paga nòmines o factures de professionals amb retenció" },
+      "pagaLloguer":     { "es": "Paga alquiler de local con retención", "ca": "Paga lloguer de local amb retenció" },
+      "intracomunitari": { "es": "Opera con otros países de la UE", "ca": "Opera amb altres països de la UE" },
+      "capitalMobiliari":{ "es": "Paga dividendos o intereses con retención", "ca": "Paga dividends o interessos amb retenció" },
+      "domicilia":       { "es": "Domicilia los pagos (plazo anterior)", "ca": "Domicilia els pagaments (termini anterior)" }
+    }
+  },
+  "models": {
+    "303": {
+      "nom": { "es": "IVA · autoliquidación trimestral", "ca": "IVA · autoliquidació trimestral" },
+      "grup": "IVA", "periodicitat": "T",
+      "regla": { "T": { "inici": 1, "fi": 20 }, "T4": { "fi": 30 } },
+      "aplica": { "tipus": ["AUTONOM", "SOCIETAT"], "regimIva": ["GENERAL"] },
+      "documents": [
+        { "clau": "emeses",  "nom": { "es": "Facturas emitidas del trimestre", "ca": "Factures emeses del trimestre" } },
+        { "clau": "rebudes", "nom": { "es": "Facturas recibidas (gastos)", "ca": "Factures rebudes (despeses)" } },
+        { "clau": "llibre",  "nom": { "es": "Libro registro de IVA al día", "ca": "Llibre registre d'IVA al dia" } }
+      ],
+      "consultamed": { "documentAuto": "emeses" }
+    },
+    "130": {
+      "nom": { "es": "IRPF · pago fraccionado (estimación directa)", "ca": "IRPF · pagament fraccionat (estimació directa)" },
+      "grup": "IRPF", "periodicitat": "T",
+      "regla": { "T": { "inici": 1, "fi": 20 }, "T4": { "fi": 30 } },
+      "aplica": { "tipus": ["AUTONOM"], "regimIrpf": ["DIRECTA"] },
+      "documents": [
+        { "clau": "ingressos", "nom": { "es": "Libro de ingresos (facturas emitidas)", "ca": "Llibre d'ingressos (factures emeses)" } },
+        { "clau": "despeses",  "nom": { "es": "Justificantes de gastos deducibles", "ca": "Justificants de despeses deduïbles" } }
+      ],
+      "consultamed": { "documentAuto": "ingressos" }
+    },
+    "131": {
+      "nom": { "es": "IRPF · pago fraccionado (módulos)", "ca": "IRPF · pagament fraccionat (mòduls)" },
+      "grup": "IRPF", "periodicitat": "T",
+      "regla": { "T": { "inici": 1, "fi": 20 }, "T4": { "fi": 30 } },
+      "aplica": { "tipus": ["AUTONOM"], "regimIrpf": ["OBJECTIVA"] },
+      "documents": [
+        { "clau": "moduls", "nom": { "es": "Datos de los módulos (personal, superficie, consumo)", "ca": "Dades dels mòduls (personal, superfície, consum)" } }
+      ]
+    },
+    "111": {
+      "nom": { "es": "Retenciones · trabajo y profesionales", "ca": "Retencions · treball i professionals" },
+      "grup": "Retencions", "periodicitat": "T",
+      "regla": { "T": { "inici": 1, "fi": 20 }, "T4": { "fi": 20 } },
+      "aplica": { "tipus": ["AUTONOM", "SOCIETAT"], "marques": ["tePersonal"] },
+      "documents": [
+        { "clau": "nomines", "nom": { "es": "Nóminas del trimestre", "ca": "Nòmines del trimestre" } },
+        { "clau": "professionals", "nom": { "es": "Facturas de profesionales con retención", "ca": "Factures de professionals amb retenció" } }
+      ]
+    },
+    "115": {
+      "nom": { "es": "Retenciones · alquileres", "ca": "Retencions · lloguers" },
+      "grup": "Retencions", "periodicitat": "T",
+      "regla": { "T": { "inici": 1, "fi": 20 }, "T4": { "fi": 20 } },
+      "aplica": { "tipus": ["AUTONOM", "SOCIETAT"], "marques": ["pagaLloguer"] },
+      "documents": [
+        { "clau": "rebuts", "nom": { "es": "Recibos de alquiler del trimestre", "ca": "Rebuts de lloguer del trimestre" } }
+      ]
+    },
+    "123": {
+      "nom": { "es": "Retenciones · capital mobiliario", "ca": "Retencions · capital mobiliari" },
+      "grup": "Retencions", "periodicitat": "T",
+      "regla": { "T": { "inici": 1, "fi": 20 }, "T4": { "fi": 20 } },
+      "aplica": { "tipus": ["SOCIETAT"], "marques": ["capitalMobiliari"] },
+      "documents": [
+        { "clau": "justificants", "nom": { "es": "Justificantes de dividendos o intereses pagados", "ca": "Justificants de dividends o interessos pagats" } }
+      ]
+    },
+    "349": {
+      "nom": { "es": "Operaciones intracomunitarias (trimestral)", "ca": "Operacions intracomunitàries (trimestral)" },
+      "grup": "IVA", "periodicitat": "T",
+      "regla": { "T": { "inici": 1, "fi": 20 }, "T4": { "fi": 30 } },
+      "aplica": { "tipus": ["AUTONOM", "SOCIETAT"], "marques": ["intracomunitari"] },
+      "documents": [
+        { "clau": "intracom", "nom": { "es": "Facturas intracomunitarias con NIF-IVA del cliente o proveedor", "ca": "Factures intracomunitàries amb NIF-IVA del client o proveïdor" } }
+      ]
+    },
+    "347": {
+      "nom": { "es": "Operaciones con terceros (anual)", "ca": "Operacions amb tercers (anual)" },
+      "grup": "Informatives", "periodicitat": "A",
+      "regla": { "A": { "inici": { "mes": 2, "dia": 1 }, "fi": { "mes": 2, "dia": "ultim" } } },
+      "aplica": { "tipus": ["AUTONOM", "SOCIETAT"], "regimIva": ["GENERAL"] },
+      "documents": [
+        { "clau": "tercers", "nom": { "es": "Listado de clientes y proveedores con más de 3.005,06 € en el año", "ca": "Llista de clients i proveïdors amb més de 3.005,06 € l'any" } }
+      ]
+    },
+    "390": {
+      "nom": { "es": "IVA · resumen anual", "ca": "IVA · resum anual" },
+      "grup": "IVA", "periodicitat": "A",
+      "regla": { "A": { "inici": { "mes": 1, "dia": 1 }, "fi": { "mes": 1, "dia": 30 } } },
+      "aplica": { "tipus": ["AUTONOM", "SOCIETAT"], "regimIva": ["GENERAL"] },
+      "documents": [
+        { "clau": "trimestres", "nom": { "es": "Los cuatro 303 del año presentados", "ca": "Els quatre 303 de l'any presentats" } }
+      ]
+    },
+    "180": {
+      "nom": { "es": "Resumen anual · retenciones de alquileres", "ca": "Resum anual · retencions de lloguers" },
+      "grup": "Retencions", "periodicitat": "A",
+      "regla": { "A": { "inici": { "mes": 1, "dia": 1 }, "fi": { "mes": 1, "dia": 31 } } },
+      "aplica": { "tipus": ["AUTONOM", "SOCIETAT"], "marques": ["pagaLloguer"] },
+      "documents": [
+        { "clau": "rebuts-any", "nom": { "es": "Recibos de alquiler de todo el año y datos del arrendador", "ca": "Rebuts de lloguer de tot l'any i dades de l'arrendador" } }
+      ]
+    },
+    "190": {
+      "nom": { "es": "Resumen anual · retenciones de trabajo y profesionales", "ca": "Resum anual · retencions de treball i professionals" },
+      "grup": "Retencions", "periodicitat": "A",
+      "regla": { "A": { "inici": { "mes": 1, "dia": 1 }, "fi": { "mes": 1, "dia": 31 } } },
+      "aplica": { "tipus": ["AUTONOM", "SOCIETAT"], "marques": ["tePersonal"] },
+      "documents": [
+        { "clau": "nomines-any", "nom": { "es": "Nóminas y facturas de profesionales de todo el año", "ca": "Nòmines i factures de professionals de tot l'any" } }
+      ]
+    },
+    "100": {
+      "nom": { "es": "IRPF · declaración anual (Renta)", "ca": "IRPF · declaració anual (Renda)" },
+      "grup": "IRPF", "periodicitat": "A",
+      "regla": { "A": { "inici": null, "fi": { "mes": 6, "dia": 30 } }, "nota": { "es": "La AEAT fija cada año el día de inicio de la campaña (2026: 8 de abril).", "ca": "L'AEAT fixa cada any el dia d'inici de la campanya (2026: 8 d'abril)." } },
+      "aplica": { "tipus": ["AUTONOM", "PARTICULAR"] },
+      "documents": [
+        { "clau": "dades-fiscals", "nom": { "es": "Datos fiscales de la AEAT", "ca": "Dades fiscals de l'AEAT" } },
+        { "clau": "certificats", "nom": { "es": "Certificados de retenciones y rendimientos", "ca": "Certificats de retencions i rendiments" } },
+        { "clau": "deduccions", "nom": { "es": "Justificantes de deducciones", "ca": "Justificants de deduccions" } }
+      ]
+    },
+    "200": {
+      "nom": { "es": "Impuesto sobre Sociedades (anual)", "ca": "Impost sobre Societats (anual)" },
+      "grup": "Societats", "periodicitat": "A",
+      "regla": { "A": { "inici": { "mes": 7, "dia": 1 }, "fi": { "mes": 7, "dia": 25 } }, "nota": { "es": "Entidades con ejercicio coincidente con el año natural.", "ca": "Entitats amb exercici coincident amb l'any natural." } },
+      "aplica": { "tipus": ["SOCIETAT"] },
+      "documents": [
+        { "clau": "comptes", "nom": { "es": "Cuentas anuales aprobadas", "ca": "Comptes anuals aprovats" } },
+        { "clau": "major", "nom": { "es": "Libro mayor y balances de cierre", "ca": "Llibre major i balanços de tancament" } }
+      ]
+    },
+    "202": {
+      "nom": { "es": "Sociedades · pago fraccionado", "ca": "Societats · pagament fraccionat" },
+      "grup": "Societats", "periodicitat": "P",
+      "regla": { "P": { "P1": { "mes": 4 }, "P2": { "mes": 10 }, "P3": { "mes": 12 }, "inici": 1, "fi": 20 } },
+      "aplica": { "tipus": ["SOCIETAT"] },
+      "documents": [
+        { "clau": "base", "nom": { "es": "Cuota del último Impuesto sobre Sociedades (o resultado del período)", "ca": "Quota de l'últim Impost sobre Societats (o resultat del període)" } }
+      ]
+    }
+  },
+  "dates_verificades": {
+    "111|2025T4": { "inici": "2026-01-01", "fi": "2026-01-20", "domiciliacio": "2026-01-15", "font": "https://sede.agenciatributaria.gob.es/Sede/ayuda/calendario-contribuyente/calendario-contribuyente-2026/calendario-anual/enero/hasta-20-enero.html" },
+    "115|2025T4": { "inici": "2026-01-01", "fi": "2026-01-20", "domiciliacio": "2026-01-15", "font": "https://sede.agenciatributaria.gob.es/Sede/ayuda/calendario-contribuyente/calendario-contribuyente-2026/calendario-anual/enero/hasta-20-enero.html" },
+    "123|2025T4": { "inici": "2026-01-01", "fi": "2026-01-20", "domiciliacio": "2026-01-15", "font": "https://sede.agenciatributaria.gob.es/Sede/ayuda/calendario-contribuyente/calendario-contribuyente-2026/calendario-anual/enero/hasta-20-enero.html" },
+    "303|2025T4": { "inici": "2026-01-01", "fi": "2026-01-30", "domiciliacio": "2026-01-27", "font": "https://sede.agenciatributaria.gob.es/Sede/ayuda/calendario-contribuyente/calendario-contribuyente-2026/calendario-anual/enero/hasta-30-enero.html" },
+    "130|2025T4": { "inici": "2026-01-01", "fi": "2026-01-30", "domiciliacio": "2026-01-27", "font": "https://sede.agenciatributaria.gob.es/Sede/ayuda/calendario-contribuyente/calendario-contribuyente-2026/calendario-anual/enero/hasta-30-enero.html" },
+    "131|2025T4": { "inici": "2026-01-01", "fi": "2026-01-30", "domiciliacio": "2026-01-27", "font": "https://sede.agenciatributaria.gob.es/Sede/ayuda/calendario-contribuyente/calendario-contribuyente-2026/calendario-anual/enero/hasta-30-enero.html" },
+    "349|2025T4": { "inici": "2026-01-01", "fi": "2026-01-30", "domiciliacio": null, "font": "https://sede.agenciatributaria.gob.es/Sede/ayuda/calendario-contribuyente/calendario-contribuyente-2026/calendario-anual/enero/hasta-30-enero.html" },
+    "390|2025":   { "inici": "2026-01-01", "fi": "2026-01-30", "domiciliacio": null, "font": "https://sede.agenciatributaria.gob.es/Sede/ayuda/calendario-contribuyente/calendario-contribuyente-2026/calendario-anual/enero/hasta-30-enero.html" },
+    "180|2025":   { "inici": "2026-01-01", "fi": "2026-02-02", "domiciliacio": null, "font": "https://sede.agenciatributaria.gob.es/Sede/ayuda/calendario-contribuyente/calendario-contribuyente-2026/calendario-anual/febrero/hasta-2-febrero.html" },
+    "190|2025":   { "inici": "2026-01-01", "fi": "2026-02-02", "domiciliacio": null, "font": "https://sede.agenciatributaria.gob.es/Sede/ayuda/calendario-contribuyente/calendario-contribuyente-2026/calendario-anual/febrero/hasta-2-febrero.html" },
+    "347|2025":   { "inici": "2026-02-01", "fi": "2026-03-02", "domiciliacio": null, "font": "https://sede.agenciatributaria.gob.es/Sede/ayuda/calendario-contribuyente/calendario-contribuyente-2026/calendario-anual/marzo/hasta-2-marzo.html" },
+    "100|2025":   { "inici": "2026-04-08", "fi": "2026-06-30", "domiciliacio": "2026-06-25", "font": "https://sede.agenciatributaria.gob.es/Sede/ayuda/calendario-contribuyente/calendario-contribuyente-2026/calendario-anual/junio/hasta-30-junio.html" },
+    "200|2025":   { "inici": "2026-07-01", "fi": "2026-07-27", "domiciliacio": "2026-07-22", "font": "https://sede.agenciatributaria.gob.es/Sede/ayuda/calendario-contribuyente/calendario-contribuyente-2026/calendario-anual/julio/hasta-27-julio.html" },
+    "111|2026T1": { "inici": "2026-04-01", "fi": "2026-04-20", "domiciliacio": "2026-04-15", "font": "https://sede.agenciatributaria.gob.es/Sede/ayuda/calendario-contribuyente/calendario-contribuyente-2026/calendario-anual/abril/hasta-20-abril.html" },
+    "115|2026T1": { "inici": "2026-04-01", "fi": "2026-04-20", "domiciliacio": "2026-04-15", "font": "https://sede.agenciatributaria.gob.es/Sede/ayuda/calendario-contribuyente/calendario-contribuyente-2026/calendario-anual/abril/hasta-20-abril.html" },
+    "123|2026T1": { "inici": "2026-04-01", "fi": "2026-04-20", "domiciliacio": "2026-04-15", "font": "https://sede.agenciatributaria.gob.es/Sede/ayuda/calendario-contribuyente/calendario-contribuyente-2026/calendario-anual/abril/hasta-20-abril.html" },
+    "303|2026T1": { "inici": "2026-04-01", "fi": "2026-04-20", "domiciliacio": "2026-04-15", "font": "https://sede.agenciatributaria.gob.es/Sede/ayuda/calendario-contribuyente/calendario-contribuyente-2026/calendario-anual/abril/hasta-20-abril.html" },
+    "130|2026T1": { "inici": "2026-04-01", "fi": "2026-04-20", "domiciliacio": "2026-04-15", "font": "https://sede.agenciatributaria.gob.es/Sede/ayuda/calendario-contribuyente/calendario-contribuyente-2026/calendario-anual/abril/hasta-20-abril.html" },
+    "131|2026T1": { "inici": "2026-04-01", "fi": "2026-04-20", "domiciliacio": "2026-04-15", "font": "https://sede.agenciatributaria.gob.es/Sede/ayuda/calendario-contribuyente/calendario-contribuyente-2026/calendario-anual/abril/hasta-20-abril.html" },
+    "349|2026T1": { "inici": "2026-04-01", "fi": "2026-04-20", "domiciliacio": null, "font": "https://sede.agenciatributaria.gob.es/Sede/ayuda/calendario-contribuyente/calendario-contribuyente-2026/calendario-anual/abril/hasta-20-abril.html" },
+    "202|2026P1": { "inici": "2026-04-01", "fi": "2026-04-20", "domiciliacio": "2026-04-15", "font": "https://sede.agenciatributaria.gob.es/Sede/ayuda/calendario-contribuyente/calendario-contribuyente-2026/calendario-anual/abril/hasta-20-abril.html" },
+    "111|2026T2": { "inici": "2026-07-01", "fi": "2026-07-20", "domiciliacio": "2026-07-15", "font": "https://sede.agenciatributaria.gob.es/Sede/ayuda/calendario-contribuyente/calendario-contribuyente-2026/calendario-anual/julio/hasta-20-julio.html" },
+    "115|2026T2": { "inici": "2026-07-01", "fi": "2026-07-20", "domiciliacio": "2026-07-15", "font": "https://sede.agenciatributaria.gob.es/Sede/ayuda/calendario-contribuyente/calendario-contribuyente-2026/calendario-anual/julio/hasta-20-julio.html" },
+    "123|2026T2": { "inici": "2026-07-01", "fi": "2026-07-20", "domiciliacio": "2026-07-15", "font": "https://sede.agenciatributaria.gob.es/Sede/ayuda/calendario-contribuyente/calendario-contribuyente-2026/calendario-anual/julio/hasta-20-julio.html" },
+    "303|2026T2": { "inici": "2026-07-01", "fi": "2026-07-20", "domiciliacio": "2026-07-15", "font": "https://sede.agenciatributaria.gob.es/Sede/ayuda/calendario-contribuyente/calendario-contribuyente-2026/calendario-anual/julio/hasta-20-julio.html" },
+    "130|2026T2": { "inici": "2026-07-01", "fi": "2026-07-20", "domiciliacio": "2026-07-15", "font": "https://sede.agenciatributaria.gob.es/Sede/ayuda/calendario-contribuyente/calendario-contribuyente-2026/calendario-anual/julio/hasta-20-julio.html" },
+    "131|2026T2": { "inici": "2026-07-01", "fi": "2026-07-20", "domiciliacio": "2026-07-15", "font": "https://sede.agenciatributaria.gob.es/Sede/ayuda/calendario-contribuyente/calendario-contribuyente-2026/calendario-anual/julio/hasta-20-julio.html" },
+    "349|2026T2": { "inici": "2026-07-01", "fi": "2026-07-20", "domiciliacio": null, "font": "https://sede.agenciatributaria.gob.es/Sede/ayuda/calendario-contribuyente/calendario-contribuyente-2026/calendario-anual/julio/hasta-20-julio.html" },
+    "111|2026T3": { "inici": "2026-10-01", "fi": "2026-10-20", "domiciliacio": "2026-10-15", "font": "https://sede.agenciatributaria.gob.es/Sede/ayuda/calendario-contribuyente/calendario-contribuyente-2026/calendario-anual/octubre/hasta-20-octubre.html" },
+    "115|2026T3": { "inici": "2026-10-01", "fi": "2026-10-20", "domiciliacio": "2026-10-15", "font": "https://sede.agenciatributaria.gob.es/Sede/ayuda/calendario-contribuyente/calendario-contribuyente-2026/calendario-anual/octubre/hasta-20-octubre.html" },
+    "123|2026T3": { "inici": "2026-10-01", "fi": "2026-10-20", "domiciliacio": "2026-10-15", "font": "https://sede.agenciatributaria.gob.es/Sede/ayuda/calendario-contribuyente/calendario-contribuyente-2026/calendario-anual/octubre/hasta-20-octubre.html" },
+    "303|2026T3": { "inici": "2026-10-01", "fi": "2026-10-20", "domiciliacio": "2026-10-15", "font": "https://sede.agenciatributaria.gob.es/Sede/ayuda/calendario-contribuyente/calendario-contribuyente-2026/calendario-anual/octubre/hasta-20-octubre.html" },
+    "130|2026T3": { "inici": "2026-10-01", "fi": "2026-10-20", "domiciliacio": "2026-10-15", "font": "https://sede.agenciatributaria.gob.es/Sede/ayuda/calendario-contribuyente/calendario-contribuyente-2026/calendario-anual/octubre/hasta-20-octubre.html" },
+    "131|2026T3": { "inici": "2026-10-01", "fi": "2026-10-20", "domiciliacio": "2026-10-15", "font": "https://sede.agenciatributaria.gob.es/Sede/ayuda/calendario-contribuyente/calendario-contribuyente-2026/calendario-anual/octubre/hasta-20-octubre.html" },
+    "349|2026T3": { "inici": "2026-10-01", "fi": "2026-10-20", "domiciliacio": null, "font": "https://sede.agenciatributaria.gob.es/Sede/ayuda/calendario-contribuyente/calendario-contribuyente-2026/calendario-anual/octubre/hasta-20-octubre.html" },
+    "202|2026P2": { "inici": "2026-10-01", "fi": "2026-10-20", "domiciliacio": "2026-10-15", "font": "https://sede.agenciatributaria.gob.es/Sede/ayuda/calendario-contribuyente/calendario-contribuyente-2026/calendario-anual/octubre/hasta-20-octubre.html" },
+    "202|2026P3": { "inici": "2026-12-01", "fi": "2026-12-21", "domiciliacio": "2026-12-16", "font": "https://sede.agenciatributaria.gob.es/Sede/ayuda/calendario-contribuyente/calendario-contribuyente-2026/calendario-anual/diciembre/hasta-21-diciembre.html" }
+  }
+}

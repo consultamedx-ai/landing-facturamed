@@ -124,6 +124,15 @@
 .act-represa:hover{background:rgba(20,184,166,.2)}
   /* A-020 (F2) · un despatx (compte sense organitzacio) no veu els productes de metge ni la barra de prova */
   html[data-sense-org] #card-factura,html[data-sense-org] #card-escriba,html[data-sense-org] #card-secre,html[data-sense-org] #card-recept,html[data-sense-org] #barra-prova{display:none !important}
+/* CEO 01/10/2026 · la guia en PDF */
+.guia{display:flex;align-items:center;gap:14px;margin:26px 0 0;padding:16px 18px;border:1px solid rgba(13,59,102,.14);border-radius:16px;background:rgba(255,255,255,.78);text-decoration:none;color:#0D3B66;transition:border-color .15s,background .15s}
+.guia:hover{border-color:#14B8A6;background:#fff}
+.guia-ic{flex:none;width:42px;height:42px;border-radius:11px;background:#0D3B66;display:flex;align-items:center;justify-content:center}
+.guia-txt{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0}
+.guia-txt strong{font-weight:700;font-size:.98rem}
+.guia-txt small{color:#5B6B7C;font-size:.84rem}
+.guia-go{flex:none;font-weight:700;font-size:.88rem;color:#0D7F74;white-space:nowrap}
+@media(max-width:560px){.guia-go{display:none}}
 </style>
 </head>
 <body>
@@ -175,6 +184,11 @@
     </span>
   </div>
 
+  <a class="guia" id="guia-pdf" href="guia-consultamed.pdf" download="Guia-ConsultaMed.pdf">
+    <span class="guia-ic" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F7FAFC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M12 18v-6"/><path d="M9 15l3 3 3-3"/></svg></span>
+    <span class="guia-txt"><strong data-k="guia_tit">Cómo funciona ConsultaMed</strong><small data-k="guia_sub">La guía de todos los productos, en PDF</small></span>
+    <span class="guia-go" data-k="guia_go">Descargar ↓</span>
+  </a>
   <p class="peu" data-k="peu"></p>
   <div id="cm-espai" style="text-align:center;color:#94A3B8;font-size:.72rem;margin-top:8px"></div>
 </div>
@@ -265,11 +279,12 @@
         visita:"visita", visites:"visites", avui:"avui", conf:"per confirmar", mesmes:"més a l'agenda",
         prod_tit:"Els seus productes", prod_sub:"· triï per on començar", obrir:"Obrir →",
         soon:"Aviat", soon_go:"En camí",
-        d_factura:"Facturació VeriFactu. La factura surt sola, amb empremta encadenada i el seu QR.",
+        d_factura:"Facturació VeriFactu. La factura surt sola, amb empremta encadenada.",
         d_escriba:"L'informe clínic, escrit sol. Vostè parla; la IA redacta. Tot al seu ordinador.",
         d_secre:"Agenda, fitxa del pacient i seguiment. El dia d'un cop d'ull i què toca fer.",
         d_recept:"Receptes privades des de la mateixa visita, signades pel metge.",
         peu:"ConsultaMed · Beta privada · El metge fa de metge. La resta, ConsultaMed.",
+        guia_tit:"Com funciona ConsultaMed", guia_sub:"La guia de tots els productes, en PDF (en castellà)", guia_go:"Descarregar ↓",
         dies:["diumenge","dilluns","dimarts","dimecres","dijous","divendres","dissabte"],
         mesos:["gener","febrer","març","abril","maig","juny","juliol","agost","setembre","octubre","novembre","desembre"],
         estat:{pendent:"Per confirmar",confirmada:"Confirmada",vinguda:"Ha vingut",noshow:"No ha vingut"}, de:"de"},
@@ -280,11 +295,12 @@
         visita:"visita", visites:"visitas", avui:"hoy", conf:"por confirmar", mesmes:"más en la agenda",
         prod_tit:"Sus productos", prod_sub:"· elija por dónde empezar", obrir:"Abrir →",
         soon:"Próximamente", soon_go:"En camino",
-        d_factura:"Facturación VeriFactu. La factura sale sola, con huella encadenada y su QR.",
+        d_factura:"Facturación VeriFactu. La factura sale sola, con huella encadenada.",
         d_escriba:"El informe clínico, escrito solo. Usted habla; la IA redacta. Todo en su ordenador.",
         d_secre:"Agenda, ficha del paciente y seguimiento. El día de un vistazo y qué toca hacer.",
         d_recept:"Recetas privadas desde la misma visita, firmadas por el médico.",
         peu:"ConsultaMed · Beta privada · El médico hace de médico. El resto, ConsultaMed.",
+        guia_tit:"Cómo funciona ConsultaMed", guia_sub:"La guía de todos los productos, en PDF", guia_go:"Descargar ↓",
         dies:["domingo","lunes","martes","miércoles","jueves","viernes","sábado"],
         mesos:["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"],
         estat:{pendent:"Por confirmar",confirmada:"Confirmada",vinguda:"Vino",noshow:"No vino"}, de:"de"},
@@ -295,11 +311,12 @@
         visita:"visit", visites:"visits", avui:"today", conf:"to confirm", mesmes:"more in the agenda",
         prod_tit:"Your products", prod_sub:"· choose where to start", obrir:"Open →",
         soon:"Soon", soon_go:"Coming",
-        d_factura:"VeriFactu invoicing. The invoice comes out on its own, with a chained fingerprint and its QR.",
+        d_factura:"VeriFactu invoicing. The invoice comes out on its own, with a chained fingerprint.",
         d_escriba:"The clinical report, written for you. You talk; the AI writes. All on your computer.",
         d_secre:"Schedule, patient record and follow-up. The day at a glance and what to do next.",
         d_recept:"Private prescriptions from the visit itself, signed by the doctor.",
         peu:"ConsultaMed · Private beta · The doctor does medicine. ConsultaMed does the rest.",
+        guia_tit:"How ConsultaMed works", guia_sub:"The guide to every product, as a PDF (in Spanish)", guia_go:"Download ↓",
         dies:["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],
         mesos:["January","February","March","April","May","June","July","August","September","October","November","December"],
         estat:{pendent:"To confirm",confirmada:"Confirmed",vinguda:"Attended",noshow:"No-show"}, de:""},
@@ -310,11 +327,12 @@
         visita:"Termin", visites:"Termine", avui:"heute", conf:"zu bestätigen", mesmes:"weitere im Kalender",
         prod_tit:"Ihre Produkte", prod_sub:"· wählen Sie, womit Sie beginnen", obrir:"Öffnen →",
         soon:"Bald", soon_go:"In Arbeit",
-        d_factura:"VeriFactu-Rechnungen. Die Rechnung erstellt sich von selbst, mit verketteter Prüfsumme und QR.",
+        d_factura:"VeriFactu-Rechnungen. Die Rechnung erstellt sich von selbst, mit verketteter Prüfsumme.",
         d_escriba:"Der Arztbericht schreibt sich von selbst. Sie sprechen; die KI schreibt. Alles auf Ihrem Rechner.",
         d_secre:"Terminplan, Patientenakte und Nachsorge. Der Tag auf einen Blick und was ansteht.",
         d_recept:"Privatrezepte direkt aus dem Termin, vom Arzt signiert.",
         peu:"ConsultaMed · Private Beta · Der Arzt macht Medizin. Den Rest macht ConsultaMed.",
+        guia_tit:"So funktioniert ConsultaMed", guia_sub:"Der Leitfaden zu allen Produkten als PDF (auf Spanisch)", guia_go:"Herunterladen ↓",
         dies:["Sonntag","Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag"],
         mesos:["Januar","Februar","März","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"],
         estat:{pendent:"Zu bestätigen",confirmada:"Bestätigt",vinguda:"Erschienen",noshow:"Nicht erschienen"}, de:""}

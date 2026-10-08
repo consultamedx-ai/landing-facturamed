@@ -273,6 +273,12 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
         <p style="font-size:.8rem;color:#475569;margin-bottom:4px" id="p-visita-info">Grabe la visita entera y el <strong>agente local EscribaMed</strong> la transcribe e identifica quién habla — todo <strong>dentro de su ordenador</strong>: el audio nunca sale de la consulta.</p>
         <div id="agent-off" style="display:none">
           <p style="font-size:.78rem;color:var(--boira);margin-top:8px" id="agent-off-p2"></p>
+          <!-- ENG-43 · Chrome i l'agent local (Local Network Access): què passarà abans del diàleg de permís, i què fer si s'ha denegat -->
+          <div class="ajuda" id="agent-lna" style="display:none">
+            <p id="agent-lna-abans"></p>
+            <div class="accions-fila" style="margin-top:8px"><button class="btn mini" id="b-agent-connecta" type="button" data-t>Conectar con el agente local</button></div>
+          </div>
+          <div class="ajuda" id="agent-lna-denegat" style="display:none"></div>
         </div>
         <div id="agent-on" style="display:none">
           <label for="v-parlants" data-t>Personas en la consulta</label>
@@ -535,6 +541,7 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
     "no detectado":"no detectat",
     "error":"error",
     "bloqueado":"bloquejat",
+    "Conectar con el agente local":"Connectar amb l'agent local","pendiente de permiso":"pendent de permís","bloqueado en Chrome":"bloquejat a Chrome",   /* ENG-43 */
     "Voz":"Veu",
     "Última visita":"Última visita",
     "Médico":"Metge",
@@ -668,6 +675,7 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
     " · sin identificación de voces":" · no voice identification",
     "agente local: ":"local agent: ",
     "buscando…":"searching…","no detectado":"not detected","error":"error","bloqueado":"blocked",
+    "Conectar con el agente local":"Connect to the local agent","pendiente de permiso":"waiting for permission","bloqueado en Chrome":"blocked in Chrome",   /* ENG-43 */
     "👁 Ver una visita de ejemplo":"👁 See a sample visit",
     "❌ Quitar el ejemplo":"❌ Remove the sample",
     "👁 Ejemplo cargado — este es el resultado que devuelve EscribaMed. No se ha guardado nada.":"👁 Sample loaded — this is what EscribaMed returns. Nothing has been saved.",
@@ -814,6 +822,7 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
     "Ejemplo retirado.":"Beispiel entfernt.",
     "error":"Fehler",
     "bloqueado":"blockiert",
+    "Conectar con el agente local":"Mit dem lokalen Agenten verbinden","pendiente de permiso":"Berechtigung ausstehend","bloqueado en Chrome":"in Chrome blockiert",   /* ENG-43 */
     "Voz":"Stimme",
     "Última visita":"Letzter Besuch",
     "Médico":"Arzt",
@@ -864,6 +873,24 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
       ca:'Un cop instal·lat i engegat, aquest panell s\'activa sol.',
       de:'Nach Installation und Start aktiviert sich dieses Feld von selbst.',
       en:'Once installed and started, this panel activates on its own.'
+    },
+    /* ── ENG-43 · Chrome i l'agent local (Local Network Access, P-ENG-77) ──
+       Des de Chrome 142, una pàgina pública que crida l'agent (127.0.0.1) fa
+       sortir un diàleg de permís. «agent-lna-abans»: què passarà, abans que
+       surti; «agent-lna-denegat»: què fer si s'ha denegat. TEXTOS PROVISIONALS
+       d'Enginyeria fins que Producte els doni (P-ENG-99): només descriuen el
+       diàleg i els passos; cap promesa. */
+    "agent-lna-abans":{
+      es:'<strong>¿Ya ha instalado EscribaMed en este ordenador?</strong> Pulse «Conectar con el agente local». Chrome le preguntará si esta página puede acceder a otras aplicaciones de este ordenador: la aplicación es el agente EscribaMed; pulse <strong>«Permitir»</strong>.',
+      ca:'<strong>Ja ha instal·lat EscribaMed en aquest ordinador?</strong> Premi «Connectar amb l\'agent local». Chrome li preguntarà si aquesta pàgina pot accedir a altres aplicacions d\'aquest ordinador: l\'aplicació és l\'agent EscribaMed; premi <strong>«Permet»</strong>.',
+      de:'<strong>Haben Sie EscribaMed auf diesem Computer schon installiert?</strong> Klicken Sie auf „Mit dem lokalen Agenten verbinden“. Chrome fragt Sie dann, ob diese Seite auf andere Apps auf diesem Computer zugreifen darf: Die App ist der EscribaMed-Agent; klicken Sie auf <strong>„Zulassen“</strong>.',
+      en:'<strong>Have you already installed EscribaMed on this computer?</strong> Click “Connect to the local agent”. Chrome will then ask whether this page may access other apps on this computer: the app is the EscribaMed agent; click <strong>“Allow”</strong>.'
+    },
+    "agent-lna-denegat":{
+      es:'<strong>Chrome tiene bloqueada la conexión con el agente.</strong> Para desbloquearla: pulse el icono que hay a la izquierda de la dirección (consultamed.es), abra la configuración del sitio y, en el permiso de las aplicaciones del dispositivo (en algunas versiones, «red local»), elija «Permitir». Después, vuelva a cargar esta página. También puede pegar esta dirección en una pestaña nueva: <code>chrome://settings/content/siteDetails?site=https://consultamed.es</code>',
+      ca:'<strong>Chrome té bloquejada la connexió amb l\'agent.</strong> Per desbloquejar-la: premi la icona que hi ha a l\'esquerra de l\'adreça (consultamed.es), obri la configuració del lloc i, al permís de les aplicacions del dispositiu (en algunes versions, «xarxa local»), triï «Permet». Després, torni a carregar aquesta pàgina. També pot enganxar aquesta adreça en una pestanya nova: <code>chrome://settings/content/siteDetails?site=https://consultamed.es</code>',
+      de:'<strong>Chrome blockiert die Verbindung zum Agenten.</strong> So heben Sie die Sperre auf: Klicken Sie auf das Symbol links neben der Adresse (consultamed.es), öffnen Sie die Website-Einstellungen und wählen Sie bei der Berechtigung für Apps auf dem Gerät (in manchen Versionen „Lokales Netzwerk“) „Zulassen“. Laden Sie diese Seite danach neu. Sie können auch diese Adresse in einem neuen Tab einfügen: <code>chrome://settings/content/siteDetails?site=https://consultamed.es</code>',
+      en:'<strong>Chrome is blocking the connection to the agent.</strong> To unblock it: click the icon to the left of the address (consultamed.es), open the site settings and, for the apps-on-device permission (in some versions, “Local network”), choose “Allow”. Then reload this page. You can also paste this address into a new tab: <code>chrome://settings/content/siteDetails?site=https://consultamed.es</code>'
     },
     "ajuda-veus":{
       es:'<strong>¿Quién es quién?</strong> Revise la asignación automática y corrija si hace falta:',
@@ -1344,9 +1371,46 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
         var extra=(d.veus?'':TX(' · sin identificación de voces'))+(d.ia?' · IA ✓':'');
         $('chip-agent').textContent='⬤ '+TX('agente local EscribaMed: conectado')+extra;
         if(!clau)fetch(AGENT+'/clau').then(function(r){return r.json()}).then(function(k){clau=k.clau}).catch(function(){});
-      }).catch(function(){clearTimeout(tm);estatAgent=null;chip(false,'no detectado')});
+      }).catch(function(){clearTimeout(tm);estatAgent=null;chip(false,lna.estat==='denied'?'bloqueado en Chrome':lna.estat==='prompt'?'pendiente de permiso':'no detectado')});
     }
-    sondeja();setInterval(function(){if(!document.hidden&&!gravantVisita)sondeja()},10000);
+    /* ENG-43 · Chrome i l'agent local («Local Network Access», P-ENG-77). Des de
+       Chrome 142, una pàgina pública que crida 127.0.0.1 fa sortir un diàleg de
+       permís (des de la 145, el de les aplicacions del dispositiu,
+       «loopback-network»; abans, «local-network-access»). Si el metge el denega,
+       la crida falla, i només es desfà a la configuració del lloc. Per això:
+         · permís per demanar: NO es crida l'agent en obrir la pàgina (el diàleg
+           sortiria a tothom i fora de context); s'explica què passarà, i el botó
+           «Conectar» el fa sortir quan el metge ho decideix;
+         · permís denegat: no es crida; s'explica com desfer-ho, i si el metge ho
+           desfà a la configuració del lloc, es torna a connectar sol;
+         · concedit, un navegador que no en té (Safari, Firefox, Chrome d'abans) o
+           la pàgina servida des del mateix ordinador: com sempre. */
+    var lna={estat:null};
+    var paginaLocal=location.protocol==='file:'||/^(localhost|127\.\d+\.\d+\.\d+|\[::1\]|[^.]+\.localhost)$/i.test(location.hostname);
+    function permisLna(){
+      if(paginaLocal||!navigator.permissions||!navigator.permissions.query)return Promise.resolve(null);
+      return navigator.permissions.query({name:'loopback-network'})
+        .catch(function(){return navigator.permissions.query({name:'local-network-access'})})
+        .catch(function(){return null});
+    }
+    var sondejant=null;
+    function arrencaSondeig(){
+      if(sondejant)return;
+      sondeja();
+      sondejant=setInterval(function(){if(!document.hidden&&!gravantVisita&&lna.estat!=='denied')sondeja()},10000);
+    }
+    function decideixLna(){
+      $('agent-lna').style.display=lna.estat==='prompt'?'block':'none';
+      $('agent-lna-denegat').style.display=lna.estat==='denied'?'block':'none';
+      if(lna.estat==='denied'){chip(false,'bloqueado en Chrome');return}
+      if(lna.estat==='prompt'){chip(false,'pendiente de permiso');return}
+      arrencaSondeig();
+    }
+    $('b-agent-connecta').addEventListener('click',function(){sondeja()});   // el diàleg de Chrome surt ara, en context
+    permisLna().then(function(st){
+      if(st){lna.estat=st.state;st.onchange=function(){lna.estat=st.state;decideixLna()}}
+      decideixLna();
+    });
 
     function cronometre(){
       var s=Math.floor((Date.now()-t0)/1000);

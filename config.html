@@ -21,7 +21,7 @@
 <title>ConsultaMed — Configuració</title>
 <link rel="stylesheet" href="tipografies/tipografies.css">
 <style>
-  :root{--blau:#0D3B66;--teal:#14B8A6;--verd:#059669;--violeta:#8B2DA5;--taronja:#EA7317;--gasa:#F7FAFC;--grafit:#1F2937;--boira:#94A3B8;--linia:#E7EDF3}
+  :root{--blau:#0D3B66;--teal:#14B8A6;--verd:#059669;--violeta:#8B2DA5;--taronja:#EA7317;--gasa:#F7FAFC;--grafit:#1F2937;--boira:#94A3B8;/* DIS-15 · la vora d'un camp de formulari és el que diu que allà hi ha un camp, i la 1.4.11 demana 3:1. El `--linia` fa 1,22:1 sobre la targeta (1,17 on val #E7EDF3): els 132 camps de la suite estaven per sota. Aquest és el to més clar de la mateixa família (214°) que arriba a 3:1 sobre blanc, sobre Blanc Gasa i sobre la targeta: 3,21 / 3,09 / 3,21. El `--linia` es queda per als filets i els separadors, que són decoració. */--vora-camp:#7591B7;--linia:#E7EDF3}
   *{box-sizing:border-box;margin:0;padding:0}
   body{font-family:'Inter',system-ui,sans-serif;color:var(--grafit);line-height:1.5;min-height:100vh;
     background:radial-gradient(1100px 620px at 10% -8%,rgba(20,184,166,.12),transparent 58%),radial-gradient(1000px 640px at 102% -2%,rgba(13,59,102,.13),transparent 56%),var(--gasa);background-attachment:fixed}
@@ -31,6 +31,22 @@
   .nav-dreta{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
   .logout{font-size:.82rem;font-weight:600;color:#5B6B7C;text-decoration:none;border:1px solid var(--linia);padding:8px 15px;border-radius:99px;background:#fff;cursor:pointer;font-family:inherit}
   .logout:hover{border-color:var(--teal);color:var(--blau)}
+  /* DIS-14 ① · a 390 px la capçalera demanava 477 px: els dos botons queien en
+     línies diferents i el logotip es comprimia. El botó «← Tornar al panell» és
+     redundant a mòbil (el logotip ja enllaça amb el panell), i surt de la vista
+     petita; «Tancar sessió» es queda amb les paraules senceres. */
+  .logo-img{flex:0 0 auto}
+  /* DIS-14 ⑤ · l'<a> i el <button> porten la mateixa classe i no feien la mateixa
+     alçada (37,7 px contra 33,0 px): el <button> no hereta el line-height. */
+  .logout{line-height:1.5}
+  @media(max-width:560px){
+    .nav{padding:10px 14px;gap:10px}
+    .logo-img{height:24px}
+    .nav-dreta{gap:8px;flex-wrap:nowrap}
+    .logout{white-space:nowrap;height:44px;padding:0 14px;display:inline-flex;
+      align-items:center;justify-content:center}
+    .nav-dreta a[data-k="tornar"]{display:none}
+  }
   .wrap{max-width:840px;margin:0 auto;padding:36px 22px 64px}
   h1{font-family:'Sora';font-weight:800;font-size:2rem;color:var(--blau);letter-spacing:-.6px}
   .sub{color:#5B6B7C;margin-top:6px;font-size:1rem}
@@ -40,8 +56,8 @@
   .fila:first-of-type{border-top:0}
   .dada{color:#5B6B7C;font-size:.82rem;text-transform:uppercase;letter-spacing:.04em}
   label{display:block;font-size:.82rem;font-weight:600;color:#5B6B7C;margin:12px 0 5px}
-  input,select{width:100%;padding:11px 13px;border:1px solid var(--linia);border-radius:11px;font:inherit;font-size:.95rem;background:#fff}
-  input:focus,select:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 3px rgba(20,184,166,.14)}
+  input,select{width:100%;padding:11px 13px;border:1px solid var(--vora-camp);border-radius:11px;font:inherit;font-size:.95rem;background:#fff}
+  input:focus,select:focus{outline:2px solid var(--blau);outline-offset:1px;border-color:var(--blau);box-shadow:none}
   .btn{border:none;background:linear-gradient(100deg,var(--teal),#0FA396);color:#04201d;font-family:inherit;font-weight:700;font-size:.93rem;padding:11px 20px;border-radius:99px;cursor:pointer;box-shadow:0 8px 20px rgba(20,184,166,.24)}
   .btn:hover{filter:brightness(1.05)}
   .btn.sec{background:#fff;border:1px solid var(--linia);color:#334155;box-shadow:none;font-weight:600}

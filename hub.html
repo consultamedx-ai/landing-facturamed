@@ -41,6 +41,29 @@
   .nav-dreta{display:flex;align-items:center;gap:10px}
   .logout{font-size:.82rem;font-weight:600;color:#5B6B7C;text-decoration:none;border:1px solid var(--linia);padding:8px 15px;border-radius:99px;transition:.16s;background:rgba(255,255,255,.6)}
   .logout:hover{color:var(--blau);border-color:var(--blau);box-shadow:0 4px 14px rgba(13,59,102,.10)}
+  /* DIS-14 ① · la marca no s'encongeix mai: a 390 px es comprimia de 135,5 a
+     105,6 px (−22 %), a l'alemany fins a 84,8 px (−37 %) i a 360 px fins a 54,8 px
+     (−60 %). El punt de ruptura és 560 px: l'encapçalament que més demana (config
+     en català) necessita 503,2 px, i per sota d'això no hi cap tot. */
+  .logo-img{flex:0 0 auto}
+  /* El nom del botó, amagat a la vista però present a l'arbre d'accessibilitat
+     i als lectors de pantalla (no és display:none). */
+  .nom-amagat{position:absolute;width:1px;height:1px;margin:-1px;padding:0;
+    overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
+  .logout .nom{margin-left:.35em}
+  @media(max-width:560px){
+    .nav{padding:10px 14px;gap:10px}
+    .logo-img{height:24px}
+    .nav-dreta{gap:8px;flex-wrap:nowrap}
+    /* 44 px exactes: els tres encapçalaments fan la mateixa alçada i els
+       objectius tàctils compleixen els 44 px que demana la casa. */
+    .logout{white-space:nowrap;height:44px;padding:0 14px;display:inline-flex;
+      align-items:center;justify-content:center}
+    /* ⚙ sol: el nom queda com a nom accessible (no és display:none). */
+    .logout .nom{position:absolute;width:1px;height:1px;margin:-1px;padding:0;
+      overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
+    .logout.nomes-icona{width:44px;padding:0;font-size:1rem}
+  }
   .wrap{max-width:1000px;margin:0 auto;padding:40px 22px 64px}
   .hola{font-family:'Sora';font-weight:800;font-size:2.2rem;color:var(--blau);letter-spacing:-.6px;line-height:1.08;opacity:0;animation:up .6s .05s both}
   .hola .dot{color:var(--teal)}
@@ -139,7 +162,7 @@
 <nav class="nav">
   <span class="logo"><img class="logo-img" src="consultamed.png" alt="ConsultaMed"></span>
   <div class="nav-dreta">
-    <a class="logout" href="config.html">⚙ Configuració</a>
+    <a class="logout nomes-icona" href="config.html"><span aria-hidden="true">⚙</span><span class="nom" data-k="config">Configuració</span></a>
     <a class="logout" href="index.html" data-k="logout">Tancar sessió</a>
   </div>
 </nav>
@@ -271,7 +294,7 @@
   function isoAvui(){var d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
 
   var T={
-    ca:{logout:"Tancar sessió", salut:["Bon dia","Bona tarda","Bona nit"], benvingut:"Benvingut/da",
+    ca:{config:"Configuració", logout:"Tancar sessió", salut:["Bon dia","Bona tarda","Bona nit"], benvingut:"Benvingut/da",
         sub:"Per on comencem avui?", sub_no:"Benvingut/da a ConsultaMed. Per on comencem avui?",
         brief_tit:"La seva agenda d'avui", brief_link:"Obrir SecreMed →",
         buit:"No té visites programades per avui. Quan carregui cites a SecreMed, aquí veurà el seu dia d'un cop d'ull.",
@@ -287,7 +310,7 @@
         dies:["diumenge","dilluns","dimarts","dimecres","dijous","divendres","dissabte"],
         mesos:["gener","febrer","març","abril","maig","juny","juliol","agost","setembre","octubre","novembre","desembre"],
         estat:{pendent:"Per confirmar",confirmada:"Confirmada",vinguda:"Ha vingut",noshow:"No ha vingut"}, de:"de"},
-    es:{logout:"Cerrar sesión", salut:["Buenos días","Buenas tardes","Buenas noches"], benvingut:"Bienvenido/a",
+    es:{config:"Configuración", logout:"Cerrar sesión", salut:["Buenos días","Buenas tardes","Buenas noches"], benvingut:"Bienvenido/a",
         sub:"¿Con qué empezamos hoy?", sub_no:"Bienvenido/a a ConsultaMed. ¿Con qué empezamos hoy?",
         brief_tit:"Su agenda de hoy", brief_link:"Abrir SecreMed →",
         buit:"No hay visitas programadas para hoy. Cuando cargue citas en SecreMed, aquí verá su día de un vistazo.",
@@ -303,7 +326,7 @@
         dies:["domingo","lunes","martes","miércoles","jueves","viernes","sábado"],
         mesos:["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"],
         estat:{pendent:"Por confirmar",confirmada:"Confirmada",vinguda:"Vino",noshow:"No vino"}, de:"de"},
-    en:{logout:"Log out", salut:["Good morning","Good afternoon","Good evening"], benvingut:"Welcome",
+    en:{config:"Settings", logout:"Log out", salut:["Good morning","Good afternoon","Good evening"], benvingut:"Welcome",
         sub:"What shall we start with today?", sub_no:"Welcome to ConsultaMed. What shall we start with today?",
         brief_tit:"Your agenda today", brief_link:"Open SecreMed →",
         buit:"No appointments scheduled for today. When you add appointments in SecreMed, you'll see your day at a glance here.",
@@ -319,7 +342,7 @@
         dies:["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],
         mesos:["January","February","March","April","May","June","July","August","September","October","November","December"],
         estat:{pendent:"To confirm",confirmada:"Confirmed",vinguda:"Attended",noshow:"No-show"}, de:""},
-    de:{logout:"Abmelden", salut:["Guten Morgen","Guten Tag","Guten Abend"], benvingut:"Willkommen",
+    de:{config:"Einstellungen", logout:"Abmelden", salut:["Guten Morgen","Guten Tag","Guten Abend"], benvingut:"Willkommen",
         sub:"Womit fangen wir heute an?", sub_no:"Willkommen bei ConsultaMed. Womit fangen wir heute an?",
         brief_tit:"Ihre Termine heute", brief_link:"SecreMed öffnen →",
         buit:"Für heute sind keine Termine geplant. Sobald Sie Termine in SecreMed anlegen, sehen Sie hier Ihren Tag auf einen Blick.",

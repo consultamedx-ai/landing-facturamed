@@ -20,7 +20,7 @@
 <title>GestorMed Despatx — ConsultaMed</title>
 <link rel="stylesheet" href="tipografies/tipografies.css">
 <style>
-  :root{--blau:#0D3B66;--teal:#14B8A6;--teal-fosc:#0D7F74;--verd:#059669;--ambre:#D97706;--vermell:#B91C1C;--gasa:#F7FAFC;--grafit:#1F2937;--boira:#94A3B8;--linia:#E7EDF3;--gris-text:#64748B}
+  :root{--blau:#0D3B66;--teal:#14B8A6;--teal-fosc:#0D7F74;--verd:#059669;--ambre:#D97706;--vermell:#B91C1C;--gasa:#F7FAFC;--grafit:#1F2937;--boira:#94A3B8;/* DIS-15 · la vora d'un camp de formulari és el que diu que allà hi ha un camp, i la 1.4.11 demana 3:1. El `--linia` fa 1,22:1 sobre la targeta (1,17 on val #E7EDF3): els 132 camps de la suite estaven per sota. Aquest és el to més clar de la mateixa família (214°) que arriba a 3:1 sobre blanc, sobre Blanc Gasa i sobre la targeta: 3,21 / 3,09 / 3,21. El `--linia` es queda per als filets i els separadors, que són decoració. */--vora-camp:#7591B7;--linia:#E7EDF3;--gris-text:#64748B}
   *{box-sizing:border-box;margin:0;padding:0}
   body{font-family:'Inter',system-ui,sans-serif;color:var(--grafit);line-height:1.5;min-height:100vh;
     background:radial-gradient(1100px 620px at 10% -8%,rgba(20,184,166,.12),transparent 58%),radial-gradient(1000px 640px at 102% -2%,rgba(13,59,102,.13),transparent 56%),var(--gasa);background-attachment:fixed}
@@ -28,8 +28,34 @@
   .nav{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 26px;background:rgba(255,255,255,.72);backdrop-filter:blur(16px);border-bottom:1px solid var(--linia);position:sticky;top:0;z-index:40}
   .logo-img{height:28px;width:auto;display:block}
   .logout{font-size:.82rem;font-weight:600;color:#5B6B7C;text-decoration:none;border:1px solid var(--linia);padding:8px 15px;border-radius:99px;background:#fff;cursor:pointer;font-family:inherit}
+  /* DIS-14 ① · igual que a config: el logotip ja enllaça amb el panell.
+     ⑤ · i la mateixa correcció d'alçada entre l'<a> i el <button>. */
+  .logo-img{flex:0 0 auto}
+  .logout{line-height:1.5}
+  @media(max-width:560px){
+    .nav{padding:10px 14px;gap:10px}
+    .logo-img{height:24px}
+    .logout{white-space:nowrap;height:44px;padding:0 14px;display:inline-flex;
+      align-items:center;justify-content:center}
+    .nav a.logout[href="hub.html"]{display:none}
+  }
   .lang{display:inline-flex;border:1px solid var(--linia);border-radius:99px;overflow:hidden;background:#fff}
   .lang button{border:0;background:none;font:inherit;font-size:.78rem;font-weight:700;padding:7px 11px;cursor:pointer;color:#5B6B7C}
+  /* DIS-14b · el selector d'idioma és un control de capçalera com els altres i ha
+     de fer la mateixa alçada i el mateix objectiu tàctil. Mesurat abans: 34,7 px
+     d'alt al costat d'una pastilla de 44, a totes les amplades. La bíblia v2.4 §4
+     demana 44 × 44 a qualsevol control de capçalera a pantalla petita. Els dos
+     segments d'aquest control agrupat mantenen els 44 d'alt i no baixen de 34
+     d'ample: és l'excepció dels controls segmentats, i queda escrita a la bíblia.
+     L'encoixinat baixa d'11 a 8 px perquè a 360 px i en català la capçalera
+     demanava 361,2 px i en tenia 360: hi faltava 1,2 px i el logotip se'n
+     ressentia. Amb 8, en sobren 10,8. */
+  .lang{align-items:stretch}
+  .lang button{min-height:44px;min-width:34px;display:inline-flex;align-items:center;justify-content:center;padding:0 8px}
+  /* el que es toca és el <button>; el grup fa 2 px més per les seves vores, i per
+     això les pastilles del costat també van a 46 i tot queda a la mateixa alçada. */
+  @media(max-width:560px){.nav .logout{height:46px}}
+  @media(min-width:561px){.lang button{min-height:35.7px}}
   .lang button[aria-pressed="true"]{background:var(--blau);color:#fff}
   .wrap{max-width:1180px;margin:0 auto;padding:30px 22px 64px}
   h1{font-family:'Sora';font-weight:800;font-size:1.9rem;color:var(--blau);letter-spacing:-.6px}
@@ -38,8 +64,8 @@
   .seccio{font-family:'Sora';font-weight:700;color:var(--blau);font-size:1.08rem;margin:26px 0 10px}
   .targeta{background:rgba(255,255,255,.86);backdrop-filter:blur(10px);border:1px solid rgba(13,59,102,.08);border-radius:18px;padding:20px 22px;box-shadow:0 2px 14px rgba(13,59,102,.05)}
   label{display:block;font-size:.82rem;font-weight:600;color:#5B6B7C;margin:12px 0 5px}
-  input,select,textarea{width:100%;padding:10px 12px;border:1px solid var(--linia);border-radius:11px;font:inherit;font-size:.93rem;background:#fff;color:var(--grafit)}
-  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 3px rgba(20,184,166,.14)}
+  input,select,textarea{width:100%;padding:10px 12px;border:1px solid var(--vora-camp);border-radius:11px;font:inherit;font-size:.93rem;background:#fff;color:var(--grafit)}
+  input:focus,select:focus,textarea:focus{outline:2px solid var(--blau);outline-offset:1px;border-color:var(--blau);box-shadow:none}
   select.mini,input.mini{width:auto;padding:6px 9px;font-size:.84rem;border-radius:9px}
   .btn{border:none;background:linear-gradient(100deg,var(--teal),#0FA396);color:#04201d;font-family:inherit;font-weight:700;font-size:.93rem;padding:11px 20px;border-radius:99px;cursor:pointer;box-shadow:0 8px 20px rgba(20,184,166,.24)}
   .btn.sec{background:#fff;border:1px solid var(--linia);color:#334155;box-shadow:none;font-weight:600}

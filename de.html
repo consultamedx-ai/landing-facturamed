@@ -308,10 +308,7 @@
         <div class="cg-l"><span>Arztbericht</span><span class="viol">erstellt</span></div>
         <div class="cg-t"><span>Status</span><span style="color:var(--verd)">Gültig ✓</span></div>
       </div>
-      <div class="qr-box" aria-hidden="true">
-        <svg width="64" height="64" viewBox="0 0 64 64"><rect width="64" height="64" fill="#fff"/><g fill="#0D3B66"><rect x="4" y="4" width="16" height="16"/><rect x="8" y="8" width="8" height="8" fill="#fff"/><rect x="44" y="4" width="16" height="16"/><rect x="48" y="8" width="8" height="8" fill="#fff"/><rect x="4" y="44" width="16" height="16"/><rect x="8" y="48" width="8" height="8" fill="#fff"/><rect x="28" y="6" width="6" height="6"/><rect x="28" y="18" width="6" height="6"/><rect x="26" y="28" width="8" height="8"/><rect x="40" y="30" width="6" height="6"/><rect x="50" y="28" width="6" height="6"/><rect x="28" y="44" width="6" height="6"/><rect x="38" y="42" width="6" height="6"/><rect x="48" y="44" width="10" height="6"/><rect x="38" y="54" width="6" height="6"/><rect x="52" y="54" width="6" height="6"/></g></svg>
-        <small>QR VERIFACTU</small>
-      </div>
+      <!-- MKT-8 (7/10/2026): sense el QR dibuixat mentre l'enviament a l'AEAT estigui aturat (Legal, LEG-23) -->
     </div>
   </div>
 </header>
@@ -357,7 +354,7 @@
   <div class="wrap">
     <span class="kicker reveal">Der Ablauf</span>
     <h2 class="reveal">Termin → Behandlung → Bericht → Rechnung. Ohne einen Handgriff.</h2>
-    <p class="lead reveal d1">SecreMed bereitet Ihren Tag vor: den Terminplan, die Erinnerung an den Patienten und was bei jedem Besuch ansteht. Sie sprechen mit dem Patienten. EscribaMed hört zu und schreibt den Arztbericht. FacturaMed stellt die Rechnung mit digitaler Prüfsumme und AEAT-QR-Code aus. Alles, bevor der Patient an der Tür ist. Und die nächste Kontrolle steht schon im Terminplan.</p>
+    <p class="lead reveal d1">SecreMed bereitet Ihren Tag vor: den Terminplan, die Erinnerung an den Patienten und was bei jedem Besuch ansteht. Sie sprechen mit dem Patienten. EscribaMed hört zu und schreibt den Arztbericht. FacturaMed stellt die Rechnung mit verketteter digitaler Prüfsumme und gesetzlicher Serie aus; der VERI*FACTU-QR-Code kommt hinzu, sobald die Übermittlung an die AEAT aktiviert ist. Alles, bevor der Patient an der Tür ist. Und die nächste Kontrolle steht schon im Terminplan.</p>
     <div class="flow reveal d1" aria-hidden="true">
       <span class="node">Der Termin steht im Plan</span>
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
@@ -373,7 +370,7 @@
       <article class="prod reveal d1" style="--pc:var(--verd)">
         <span class="p-chip">Abrechnung</span>
         <img src="facturamed.png" alt="FacturaMed">
-        <p>Die Rechnung entsteht von selbst am Ende des Termins: verkettete Prüfsumme, Verifizierungs-QR und gesetzliche Serie. Fehler werden korrigiert, wie es das Gesetz verlangt — nie durch Löschen.</p>
+        <p>Die Rechnung entsteht von selbst am Ende des Termins: verkettete Prüfsumme, gesetzliche Serie und fälschungssichere Aufzeichnung. Den VERI*FACTU-QR-Code trägt sie, sobald die Übermittlung an die AEAT aktiviert ist. Fehler werden korrigiert, wie es das Gesetz verlangt — nie durch Löschen.</p>
         <ul>
           <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Unbegrenzte VeriFactu-Rechnungen</li>
           <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Korrekturrechnungen mit Rechtsnachweis (R1)</li>
@@ -421,7 +418,7 @@
       </div>
       <div class="fact reveal d1">
         <div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14h1M14 20h1M20 20h1M17 17h1"/></svg></div>
-        <div><h3>Offizieller AEAT-QR-Code</h3><p>Jede Rechnung trägt ihren Verifizierungscode, wie es die VeriFactu-Verordnung verlangt.</p></div>
+        <div><h3>Bereit für den AEAT-QR-Code</h3><p>Verkettete Prüfsumme und gesetzliche Serie sind bereits auf jeder Rechnung. Der VERI*FACTU-QR-Code kommt hinzu, sobald die Übermittlung an die AEAT aktiviert wird.</p></div>
       </div>
       <div class="fact reveal d2">
         <div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/></svg></div>
@@ -513,7 +510,7 @@
     <div class="faqs reveal d1">
       <details>
         <summary>Ist die Rechnungsstellung mit ConsultaMed rechtssicher?<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></summary>
-        <p>Ja. FacturaMed erstellt Rechnungen nach den technischen Anforderungen der spanischen VeriFactu-Verordnung: verkettete digitale Prüfsumme, offizieller QR-Verifizierungscode, gesetzliche Serien und R1-Korrekturrechnungen. Während der Beta läuft die Übermittlung an das spanische Finanzamt (AEAT) in dessen Testumgebung; vor Inkrafttreten der Pflicht schalten wir auf den Produktivbetrieb um.</p>
+        <p>Ja. FacturaMed erstellt Rechnungen und Rechnungsaufzeichnungen mit dem Format und der Verkettung der Aufzeichnungen, die die spanische VeriFactu-Verordnung verlangt: verkettete digitale Prüfsumme, gesetzliche Serien und R1-Korrekturrechnungen. Die Übermittlung an die AEAT ist derzeit deaktiviert: Ihre Rechnungen sind gültig — sie werden normal ausgestellt, nummeriert und verkettet, und Sie bewahren sie auf —, sie werden noch nicht an die AEAT übermittelt und tragen deshalb keinen VERI*FACTU-QR-Code. Wir aktivieren die Übermittlung, bevor sie für Sie verpflichtend wird.</p>
       </details>
       <details>
         <summary>Wo werden meine Daten und die meiner Patienten gespeichert?<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></summary>

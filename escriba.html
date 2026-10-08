@@ -18,11 +18,11 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; media-src blob:; connect-src 'self' ipc: http://ipc.localhost http://127.0.0.1:7474 http://localhost:7474; form-action 'self'; manifest-src 'self'">
 <script src="cmstore.js"></script>
 <meta name="referrer" content="no-referrer">
-<title>EscribaMed · Beta privada — El informe se escribe solo</title>
+<title>EscribaMed · Beta abierta — El informe se escribe solo</title>
 <meta name="robots" content="noindex,nofollow">
 <link rel="stylesheet" href="tipografies/tipografies.css">
 <style>
-  :root{--blau:#0D3B66;--teal:#8B2DA5;--teal-fosc:#6F2184;--verd:#059669;--verd-fosc:#047857;--gasa:#F7FAFC;--grafit:#1F2937;--boira:#94A3B8;--linia:#E2E8F0;--vermell:#DC2626}
+  :root{--blau:#0D3B66;--teal:#8B2DA5;--teal-fosc:#6F2184;--verd:#059669;--verd-fosc:#047857;--gasa:#F7FAFC;--grafit:#1F2937;--boira:#94A3B8;/* DIS-15 · la vora d'un camp de formulari és el que diu que allà hi ha un camp, i la 1.4.11 demana 3:1. El `--linia` fa 1,22:1 sobre la targeta (1,17 on val #E7EDF3): els 132 camps de la suite estaven per sota. Aquest és el to més clar de la mateixa família (214°) que arriba a 3:1 sobre blanc, sobre Blanc Gasa i sobre la targeta: 3,21 / 3,09 / 3,21. El `--linia` es queda per als filets i els separadors, que són decoració. */--vora-camp:#7591B7;--linia:#E2E8F0;--vermell:#DC2626}
   *{margin:0;padding:0;box-sizing:border-box}
   body{font-family:'Inter',system-ui,sans-serif;background:var(--gasa);color:var(--grafit);line-height:1.55;-webkit-font-smoothing:antialiased}
   h1,h2,h3{font-family:'Sora',sans-serif;color:var(--blau)}
@@ -48,8 +48,8 @@
   .card{background:#fff;border:1px solid var(--linia);border-radius:14px;padding:20px;margin-bottom:18px}
   .card h2{font-size:1rem;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
   label{display:block;font-size:.78rem;font-weight:600;margin:11px 0 4px}
-  input,select,textarea{width:100%;padding:9px 12px;border:1px solid var(--linia);border-radius:9px;font:inherit;font-size:.9rem;background:var(--gasa)}
-  input:focus,select:focus,textarea:focus{outline:2px solid var(--teal);background:#fff}
+  input,select,textarea{width:100%;padding:9px 12px;border:1px solid var(--vora-camp);border-radius:9px;font:inherit;font-size:.9rem;background:var(--gasa)}
+  input:focus,select:focus,textarea:focus{outline:2px solid var(--blau);outline-offset:1px;background:#fff}
   textarea{resize:vertical;min-height:44px;line-height:1.5}
   .fila{display:grid;grid-template-columns:1fr 1fr;gap:12px}
   .btn{display:inline-block;background:var(--teal);color:#fff;border:none;cursor:pointer;font-family:inherit;font-weight:600;font-size:.93rem;padding:11px 20px;border-radius:99px;margin-top:14px;transition:background .15s;text-decoration:none}
@@ -152,7 +152,7 @@ nav{background:rgba(255,255,255,.72)!important;backdrop-filter:blur(16px)!import
 .btn.mini{box-shadow:none!important}
 .tabs,#tabs-esc{background:rgba(255,255,255,.82)!important;border:1px solid rgba(13,59,102,.06)!important;box-shadow:0 4px 16px rgba(13,59,102,.06)!important}
 .tab.actiu,.tab-esc.actiu{background:linear-gradient(135deg,var(--acc),var(--acc2))!important;box-shadow:0 4px 12px rgba(139,45,165,.30)}
-input:focus,select:focus,textarea:focus{outline:2px solid var(--acc)!important}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--blau)!important;outline-offset:1px}
 main{animation:cmv2in .5s ease both}
 @keyframes cmv2in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 @media(prefers-reduced-motion:reduce){main{animation:none}}
@@ -160,7 +160,7 @@ main{animation:cmv2in .5s ease both}
 .avis-priv{background:rgba(255,255,255,.88)!important;border:1px solid rgba(217,119,6,.28)!important;border-left:4px solid #D97706!important;color:#7C4A03!important;border-radius:12px!important;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
 .banner{border-radius:12px!important}
 th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:8px}
-:focus-visible{outline:2px solid var(--acc)!important;outline-offset:2px}
+:focus-visible{outline:2px solid var(--blau)!important;outline-offset:2px}
 ::selection{background:rgba(13,59,102,.14)}
 @media print{.avis-priv{display:none!important}}
 @media print{body{background:#fff!important}body::before{display:none!important}}
@@ -199,7 +199,7 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
 
 <main class="wrap">
   <div class="banner" id="banner"></div>
-  <div class="avis-priv" id="avis-priv">🔒 <strong>Beta privada.</strong> No introduzca datos reales de pacientes. El reconocimiento de voz lo realiza el servicio de su navegador (Chrome). Informe siempre al paciente antes de dictar en su presencia.</div>
+  <div class="avis-priv" id="avis-priv">🔒 <strong>Beta abierta.</strong> No introduzca datos reales de pacientes. El reconocimiento de voz lo realiza el servicio de su navegador (Chrome). Informe siempre al paciente antes de dictar en su presencia.</div>
 
 
   <!-- ═══════════════════════════════════════════════════════════════════════
@@ -375,7 +375,7 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
     </div>
     <div id="p-seccions"></div>
     <div class="i-peu">
-      <div class="i-legal" id="p-legal">Documento generado con EscribaMed (beta privada) · ConsultaMed. Contenido dictado y revisado por el facultativo. Datos ficticios — sin validez clínica ni legal.</div>
+      <div class="i-legal" id="p-legal">Documento generado con EscribaMed (beta abierta) · ConsultaMed. Contenido dictado y revisado por el facultativo. Datos ficticios — sin validez clínica ni legal.</div>
       <div class="i-firma" id="p-firma">Firma del facultativo</div>
     </div>
   </div>
@@ -424,7 +424,7 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
     "✅ Próxima visita creada en SecreMed.":"✅ Propera visita creada a SecreMed.",
     "Indica el paciente y la fecha.":"Indica el pacient i la data.",
     "Historial actualizado: el diagnóstico anterior está en Antecedentes.":"Historial actualitzat: el diagnòstic anterior és a Antecedents.",
-    "BETA PRIVADA · solo datos ficticios":"BETA PRIVADA · només dades fictícies",
+    "BETA ABIERTA · solo datos ficticios":"BETA OBERTA · només dades fictícies",
     "1 · Dicte la visita":"1 · Dicti la visita",
     "Paciente":"Pacient",
     "Nombre del paciente (ficticio)":"Nom del pacient (fictici)",
@@ -569,7 +569,7 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
     "✅ Próxima visita creada en SecreMed.":"✅ Next visit created in SecreMed.",
     "Indica el paciente y la fecha.":"Enter the patient and the date.",
     "Historial actualizado: el diagnóstico anterior está en Antecedentes.":"History updated: the previous diagnosis is in Medical history.",
-    "BETA PRIVADA · solo datos ficticios":"PRIVATE BETA · dummy data only",
+    "BETA ABIERTA · solo datos ficticios":"OPEN BETA · dummy data only",
     "1 · Dicte la visita":"1 · Dictate the visit",
     "Paciente":"Patient",
     "Nombre del paciente (ficticio)":"Patient name (fictitious)",
@@ -703,7 +703,7 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
     "✅ Próxima visita creada en SecreMed.":"✅ Nächster Besuch in SecreMed erstellt.",
     "Indica el paciente y la fecha.":"Geben Sie Patient und Datum an.",
     "Historial actualizado: el diagnóstico anterior está en Antecedentes.":"Verlauf aktualisiert: die frühere Diagnose steht unter Vorgeschichte.",
-    "BETA PRIVADA · solo datos ficticios":"PRIVATE BETA · nur fiktive Daten",
+    "BETA ABIERTA · solo datos ficticios":"OFFENE BETA · nur fiktive Daten",
     "1 · Dicte la visita":"1 · Diktieren Sie den Besuch",
     "Paciente":"Patient",
     "Nombre del paciente (ficticio)":"Name des Patienten (fiktiv)",
@@ -823,10 +823,10 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
   function TX(s){ if(LANG==='ca')return TR[s]!==undefined?TR[s]:s; if(LANG==='de')return TR_DE[s]!==undefined?TR_DE[s]:s; if(LANG==='en')return TR_EN[s]!==undefined?TR_EN[s]:s; return s; }
   var HTMLT = {
     "avis-priv":{
-      es:'🔒 <strong>Beta privada.</strong> No introduzca datos reales de pacientes. El <strong>Dictado</strong> usa el servicio de voz del navegador (Chrome, requiere internet). La <strong>Visita completa</strong> se procesa con el agente local, todo dentro de su ordenador. Informe siempre al paciente antes de grabar.',
-      ca:'🔒 <strong>Beta privada.</strong> No introdueixi dades reals de pacients. El <strong>Dictat</strong> fa servir el servei de veu del navegador (Chrome, requereix internet). La <strong>Visita completa</strong> es processa amb l\'agent local, tot dins del seu ordinador. Informi sempre el pacient abans de gravar.',
-      de:'🔒 <strong>Private Beta.</strong> Geben Sie keine echten Patientendaten ein. Das <strong>Diktat</strong> nutzt den Sprachdienst Ihres Browsers (Chrome, benötigt Internet): Demomodus. Der <strong>komplette Besuch</strong> wird mit dem lokalen Agenten verarbeitet — alles auf Ihrem Rechner. Informieren Sie den Patienten stets vor der Aufnahme.',
-      en:'🔒 <strong>Private beta.</strong> Do not enter real patient data. <strong>Dictation</strong> uses your browser\'s voice service (Chrome, needs internet): demo mode. The <strong>full visit</strong> is processed by the local agent, entirely on your computer. Always inform the patient before recording.'
+      es:'🔒 <strong>Beta abierta.</strong> No introduzca datos reales de pacientes. El <strong>Dictado</strong> usa el servicio de voz del navegador (Chrome, requiere internet). La <strong>Visita completa</strong> se procesa con el agente local, todo dentro de su ordenador. Informe siempre al paciente antes de grabar.',
+      ca:'🔒 <strong>Beta oberta.</strong> No introdueixi dades reals de pacients. El <strong>Dictat</strong> fa servir el servei de veu del navegador (Chrome, requereix internet). La <strong>Visita completa</strong> es processa amb l\'agent local, tot dins del seu ordinador. Informi sempre el pacient abans de gravar.',
+      de:'🔒 <strong>Offene Beta.</strong> Geben Sie keine echten Patientendaten ein. Das <strong>Diktat</strong> nutzt den Sprachdienst Ihres Browsers (Chrome, benötigt Internet): Demomodus. Der <strong>komplette Besuch</strong> wird mit dem lokalen Agenten verarbeitet — alles auf Ihrem Rechner. Informieren Sie den Patienten stets vor der Aufnahme.',
+      en:'🔒 <strong>Open beta.</strong> Do not enter real patient data. <strong>Dictation</strong> uses your browser\'s voice service (Chrome, needs internet): demo mode. The <strong>full visit</strong> is processed by the local agent, entirely on your computer. Always inform the patient before recording.'
     },
     "ajuda-dictat":{
       es:'<strong>Truco:</strong> diga el nombre de cada apartado mientras dicta — «<em>motivo de consulta…</em>», «<em>anamnesis…</em>», «<em>exploración…</em>», «<em>diagnóstico…</em>», «<em>tratamiento…</em>», «<em>recomendaciones…</em>» — y EscribaMed ordenará solo el informe. La versión final lo hará sin necesidad de decirlos.',
@@ -925,10 +925,10 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
      Es la Troballa 3 de CS-3. Terminologia clinica anglesa estandard. */
   var TITOLS_EN={'e-motivo':'Reason for consultation','e-anamnesis':'History of present illness','e-antecedentes':'Past medical history','e-exploracion':'Physical examination','e-pruebas':'Investigations','e-diagnostico':'Diagnosis','e-tratamiento':'Treatment','e-recomendaciones':'Recommendations and follow-up','e-transcripcion':'Visit transcript (appendix)'};
   var PRT={
-    es:{doc:'Informe clínico',demo:'PRUEBA · SIN VALIDEZ CLÍNICA',pacient:'Paciente: ',firma:'Firma del facultativo',legal:'Documento generado con EscribaMed (beta privada) · ConsultaMed. Contenido dictado y revisado por el facultativo. Datos ficticios — sin validez clínica ni legal.'},
-    ca:{doc:'Informe clínic',demo:'PROVA · SENSE VALIDESA CLÍNICA',pacient:'Pacient: ',firma:'Signatura del facultatiu',legal:'Document generat amb EscribaMed (beta privada) · ConsultaMed. Contingut dictat i revisat pel facultatiu. Dades fictícies — sense validesa clínica ni legal.'},
-    de:{doc:'Arztbericht',demo:'TEST · OHNE KLINISCHE GÜLTIGKEIT',pacient:'Patient: ',firma:'Unterschrift des Arztes',legal:'Erstellt mit EscribaMed (private Beta) · ConsultaMed. Vom Arzt diktierter und geprüfter Inhalt. Fiktive Daten — ohne klinische oder rechtliche Gültigkeit.'},
-    en:{doc:'Clinical report',demo:'TEST · NOT CLINICALLY VALID',pacient:'Patient: ',firma:'Physician signature',legal:'Document generated with EscribaMed (private beta) · ConsultaMed. Content dictated and reviewed by the physician. Fictitious data — no clinical or legal validity.'}
+    es:{doc:'Informe clínico',demo:'PRUEBA · SIN VALIDEZ CLÍNICA',pacient:'Paciente: ',firma:'Firma del facultativo',legal:'Documento generado con EscribaMed (beta abierta) · ConsultaMed. Contenido dictado y revisado por el facultativo. Datos ficticios — sin validez clínica ni legal.'},
+    ca:{doc:'Informe clínic',demo:'PROVA · SENSE VALIDESA CLÍNICA',pacient:'Pacient: ',firma:'Signatura del facultatiu',legal:'Document generat amb EscribaMed (beta oberta) · ConsultaMed. Contingut dictat i revisat pel facultatiu. Dades fictícies — sense validesa clínica ni legal.'},
+    de:{doc:'Arztbericht',demo:'TEST · OHNE KLINISCHE GÜLTIGKEIT',pacient:'Patient: ',firma:'Unterschrift des Arztes',legal:'Erstellt mit EscribaMed (offene Beta) · ConsultaMed. Vom Arzt diktierter und geprüfter Inhalt. Fiktive Daten — ohne klinische oder rechtliche Gültigkeit.'},
+    en:{doc:'Clinical report',demo:'TEST · NOT CLINICALLY VALID',pacient:'Patient: ',firma:'Physician signature',legal:'Document generated with EscribaMed (open beta) · ConsultaMed. Content dictated and reviewed by the physician. Fictitious data — no clinical or legal validity.'}
   };
   function TIT(){var v=$('e-idioma').value;return v==='ca'?TITOLS_CA:v==='de'?TITOLS_DE:v==='en'?TITOLS_EN:TITOLS_ES}
 

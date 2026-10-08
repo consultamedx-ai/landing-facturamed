@@ -308,10 +308,7 @@
         <div class="cg-l"><span>Visit report</span><span class="viol">generated</span></div>
         <div class="cg-t"><span>Status</span><span style="color:var(--verd)">Valid ✓</span></div>
       </div>
-      <div class="qr-box" aria-hidden="true">
-        <svg width="64" height="64" viewBox="0 0 64 64"><rect width="64" height="64" fill="#fff"/><g fill="#0D3B66"><rect x="4" y="4" width="16" height="16"/><rect x="8" y="8" width="8" height="8" fill="#fff"/><rect x="44" y="4" width="16" height="16"/><rect x="48" y="8" width="8" height="8" fill="#fff"/><rect x="4" y="44" width="16" height="16"/><rect x="8" y="48" width="8" height="8" fill="#fff"/><rect x="28" y="6" width="6" height="6"/><rect x="28" y="18" width="6" height="6"/><rect x="26" y="28" width="8" height="8"/><rect x="40" y="30" width="6" height="6"/><rect x="50" y="28" width="6" height="6"/><rect x="28" y="44" width="6" height="6"/><rect x="38" y="42" width="6" height="6"/><rect x="48" y="44" width="10" height="6"/><rect x="38" y="54" width="6" height="6"/><rect x="52" y="54" width="6" height="6"/></g></svg>
-        <small>QR VERIFACTU</small>
-      </div>
+      <!-- MKT-8 (7/10/2026): sense el QR dibuixat mentre l'enviament a l'AEAT estigui aturat (Legal, LEG-23) -->
     </div>
   </div>
 </header>
@@ -357,7 +354,7 @@
   <div class="wrap">
     <span class="kicker reveal">The circuit</span>
     <h2 class="reveal">Appointment → visit → report → invoice. Without touching a thing.</h2>
-    <p class="lead reveal d1">SecreMed sets up your day: the schedule, the reminder to the patient and what each visit needs. You talk to your patient. EscribaMed listens and writes the clinical report. FacturaMed issues the invoice with its digital fingerprint and AEAT QR code. All before the patient reaches the door. And the next check-up is already in the schedule.</p>
+    <p class="lead reveal d1">SecreMed sets up your day: the schedule, the reminder to the patient and what each visit needs. You talk to your patient. EscribaMed listens and writes the clinical report. FacturaMed issues the invoice with a chained digital fingerprint and legal series; the VERI*FACTU QR code will be added once submission to the AEAT is switched on. All before the patient reaches the door. And the next check-up is already in the schedule.</p>
     <div class="flow reveal d1" aria-hidden="true">
       <span class="node">The appointment is booked</span>
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
@@ -373,7 +370,7 @@
       <article class="prod reveal d1" style="--pc:var(--verd)">
         <span class="p-chip">Invoicing</span>
         <img src="facturamed.png" alt="FacturaMed">
-        <p>The invoice comes out on its own when the visit ends: chained fingerprint, verification QR and legal series. Errors are corrected the way the law requires — never by deleting.</p>
+        <p>The invoice comes out on its own when the visit ends: chained fingerprint, legal series and a tamper-proof record. It will carry the VERI*FACTU QR code once submission to the AEAT is switched on. Errors are corrected the way the law requires — never by deleting.</p>
         <ul>
           <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Unlimited VeriFactu invoices</li>
           <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Corrective invoices with a legal trail (R1)</li>
@@ -421,7 +418,7 @@
       </div>
       <div class="fact reveal d1">
         <div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14h1M14 20h1M20 20h1M17 17h1"/></svg></div>
-        <div><h3>Official AEAT QR code</h3><p>Every invoice carries its verification code, as required by the VeriFactu regulation.</p></div>
+        <div><h3>Ready for the AEAT QR code</h3><p>Every invoice already carries its chained fingerprint and legal series. The VERI*FACTU QR code is added once submission to the AEAT is switched on.</p></div>
       </div>
       <div class="fact reveal d2">
         <div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/></svg></div>
@@ -513,7 +510,7 @@
     <div class="faqs reveal d1">
       <details>
         <summary>Is invoicing with ConsultaMed legal?<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></summary>
-        <p>Yes. FacturaMed generates invoices with the technical requirements of Spain's VeriFactu regulation: a chained digital fingerprint, the official verification QR code, legal series and R1 corrective invoices. During the beta, submission to the Spanish tax agency (AEAT) runs in its test environment; we will switch it to production before the obligation comes into force.</p>
+        <p>Yes. FacturaMed generates invoices and invoicing records with the record format and chaining required by Spain's VeriFactu regulation: a chained digital fingerprint, legal series and R1 corrective invoices. Submission to the AEAT is currently switched off: your invoices are valid — issued, numbered and chained as normal, and kept by you — they are not yet sent to the AEAT, and that is why they do not carry the VERI*FACTU QR code. We will switch it on before submission becomes mandatory for you.</p>
       </details>
       <details>
         <summary>Where are my data and my patients' data stored?<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></summary>

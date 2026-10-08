@@ -22,7 +22,7 @@
 <script src="cmstore.js"></script>
 <script src="cmsync.js?v=20260903" defer></script>
 <meta name="referrer" content="no-referrer">
-<title>SecreMed · Beta privada — La consulta, al día</title>
+<title>SecreMed · Beta abierta — La consulta, al día</title>
 <meta name="robots" content="noindex,nofollow">
 <link rel="stylesheet" href="tipografies/tipografies.css">
 <style>
@@ -37,7 +37,7 @@
      - Gris Boira (#94A3B8) només decoratiu; el text secundari és #64748B
        (4,76:1 sobre blanc) o #475569.
      ═══════════════════════════════════════════════════════════════════════ */
-  :root{--blau:#0D3B66;--teal:#14B8A6;--verd:#059669;--verd-fosc:#047857;--acc:#EA7317;--acc2:#C2410C;--gasa:#F7FAFC;--grafit:#1F2937;--boira:#94A3B8;--linia:#E2E8F0;--vermell:#DC2626;--ambre:#D97706;--tinta-teal:#04201d;--sec:#475569;--sec2:#64748B}
+  :root{--blau:#0D3B66;--teal:#14B8A6;--verd:#059669;--verd-fosc:#047857;--acc:#EA7317;--acc2:#C2410C;--gasa:#F7FAFC;--grafit:#1F2937;--boira:#94A3B8;/* DIS-15 · la vora d'un camp de formulari és el que diu que allà hi ha un camp, i la 1.4.11 demana 3:1. El `--linia` fa 1,22:1 sobre la targeta (1,17 on val #E7EDF3): els 132 camps de la suite estaven per sota. Aquest és el to més clar de la mateixa família (214°) que arriba a 3:1 sobre blanc, sobre Blanc Gasa i sobre la targeta: 3,21 / 3,09 / 3,21. El `--linia` es queda per als filets i els separadors, que són decoració. */--vora-camp:#7591B7;--linia:#E2E8F0;--vermell:#DC2626;--ambre:#D97706;--tinta-teal:#04201d;--sec:#475569;--sec2:#64748B}
   *{margin:0;padding:0;box-sizing:border-box}
   body{font-family:'Inter',system-ui,sans-serif;color:var(--grafit);line-height:1.55;-webkit-font-smoothing:antialiased;position:relative;
     background:radial-gradient(1100px 620px at 6% -10%, rgba(234,115,23,.10), transparent 58%),
@@ -71,9 +71,9 @@
   .card h2 .sub{font-size:.72rem;color:var(--sec2);font-weight:500}
   .card h3{font-size:.85rem;margin:14px 0 6px}
   label{display:block;font-size:.78rem;font-weight:600;margin:11px 0 4px}
-  input,select,textarea{width:100%;padding:9px 12px;border:1px solid var(--linia);border-radius:9px;font:inherit;font-size:.9rem;background:var(--gasa);color:var(--grafit)}
+  input,select,textarea{width:100%;padding:9px 12px;border:1px solid var(--vora-camp);border-radius:9px;font:inherit;font-size:.9rem;background:var(--gasa);color:var(--grafit)}
   textarea{min-height:74px;resize:vertical}
-  input:focus,select:focus,textarea:focus{outline:2px solid var(--acc);background:#fff}
+  input:focus,select:focus,textarea:focus{outline:2px solid var(--blau);outline-offset:1px;background:#fff}
   input[type=checkbox],input[type=radio]{width:auto;margin-right:6px;accent-color:var(--acc2)}
   .fila{display:grid;grid-template-columns:1fr 1fr;gap:12px}
   .fila3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
@@ -310,7 +310,7 @@
 
 <main class="wrap">
   <div class="banner" id="banner"></div>
-  <div class="avis-priv">🔒 <strong>Beta privada.</strong> <span>No introduzca datos reales de pacientes. La agenda y las fichas administrativas se sincronizan con su cuenta; la información clínica se guarda solo en este dispositivo.</span></div>
+  <div class="avis-priv">🔒 <strong>Beta abierta.</strong> <span>No introduzca datos reales de pacientes. La agenda y las fichas administrativas se sincronizan con su cuenta; la información clínica se guarda solo en este dispositivo.</span></div>
 
   <!-- ============ HOY (quadre de comandament) ============ -->
   <section class="vista actiu" id="v-avui">
@@ -2225,7 +2225,7 @@
    JavaScript viuen a LBL, dins del bloc principal, i es repinten amb __reRender. */
 (function(){
   var DICT={
-  "Beta privada.":["Beta privada.","Private Beta.","Private beta."],
+  "Beta abierta.":["Beta oberta.","Offene Beta.","Open beta."],
   "No introduzca datos reales de pacientes. La agenda y las fichas administrativas se sincronizan con su cuenta; la información clínica se guarda solo en este dispositivo.":["No introdueixi dades reals de pacients. L'agenda i les fitxes administratives se sincronitzen amb el seu compte; la informació clínica es desa només en aquest dispositiu.","Geben Sie keine echten Patientendaten ein. Terminplan und Verwaltungskarten werden mit Ihrem Konto synchronisiert; klinische Daten bleiben nur auf diesem Gerät.","Do not enter real patient data. The schedule and administrative records sync with your account; clinical information is stored only on this device."],
   "Hoy":["Avui","Heute","Today"],"Agenda":["Agenda","Terminplan","Schedule"],"Llamadas":["Trucades","Anrufe","Calls"],"Pacientes":["Pacients","Patienten","Patients"],"Seguimiento":["Seguiment","Nachsorge","Follow-up"],"Administración":["Administració","Verwaltung","Admin"],"Ajustes":["Ajustos","Einstellungen","Settings"],
   "Buenos días":["Bon dia","Guten Morgen","Good morning"],"📅 Ver agenda":["📅 Veure l'agenda","📅 Terminplan öffnen","📅 See schedule"],"＋ Nueva cita":["＋ Nova cita","＋ Neuer Termin","＋ New appointment"],

@@ -381,6 +381,7 @@
       m_nota:'<strong>Qué ve usted y qué no.</strong> Ve cuántas facturas ha emitido cada médico, la base, el IVA, la fecha de la última y si la cadena VeriFactu es íntegra. <strong>No ve ningún nombre de paciente ni ningún concepto de factura</strong>: eso no sale nunca del ordenador del médico. Cuando necesite los datos de verdad, el médico se los envía con un clic.',
       k_actius:'médicos activos',k_factures:'facturas en el trimestre',k_base:'base imponible',k_iva:'IVA repercutido',k_noenviat:'no han enviado',k_trencada:'cadena rota',
       s_pendent:'Invitación pendiente',s_sense:'Sin datos todavía',s_trencada:'⚠ Cadena rota',s_cap:'Ninguna factura este trimestre',s_noenviat:'No le ha enviado el trimestre',s_enviat:'✓ Enviado',
+      mc_aeat:'Envío AEAT',aeat_si:'Activado',aeat_no:'Detenido',aeat_nota:'Lo decide el médico en la configuración de su cuenta.',
       mc_metge:'Médico',mc_estat:'Estado',mc_factures:'Facturas',mc_base:'Base',mc_iva:'IVA',mc_ultima:'Última',retirar:'Retirar',retirar_conf:'¿Retirar esta invitación? El médico ya no la podrá aceptar.',retirat:'Invitación retirada.',
       metges_buit:'Todavía no tiene ningún médico. Empiece invitando a uno más abajo.',metges_prova:'En el despacho de prueba las invitaciones están desactivadas.',
       correu_invalid:'Correo no válido',conv_creat:'Invitación creada, pero el correo no ha salido.',conv_enviat:'Invitación enviada a {e}',err:'Error',err_con:'Error de conexión'},
@@ -422,6 +423,7 @@
       m_nota:'<strong>Què veu vostè i què no.</strong> Veu quantes factures ha emès cada metge, la base, l\'IVA, la data de l\'última i si la cadena VeriFactu és íntegra. <strong>No veu cap nom de pacient ni cap concepte de factura</strong>: això no surt mai de l\'ordinador del metge. Quan necessiti les dades de veritat, el metge li envia el fitxer amb un clic.',
       k_actius:'metges actius',k_factures:'factures al trimestre',k_base:'base imposable',k_iva:'IVA repercutit',k_noenviat:'no han enviat',k_trencada:'cadena trencada',
       s_pendent:'Convit pendent',s_sense:'Sense dades encara',s_trencada:'⚠ Cadena trencada',s_cap:'Cap factura aquest trimestre',s_noenviat:'No li ha enviat el trimestre',s_enviat:'✓ Enviat',
+      mc_aeat:'Enviament AEAT',aeat_si:'Activat',aeat_no:'Aturat',aeat_nota:'Ho decideix el metge a la configuració del seu compte.',
       mc_metge:'Metge',mc_estat:'Estat',mc_factures:'Factures',mc_base:'Base',mc_iva:'IVA',mc_ultima:'Última',retirar:'Retirar',retirar_conf:'Retirar aquest convit? El metge ja no el podrà acceptar.',retirat:'Convit retirat.',
       metges_buit:'Encara no té cap metge. Comenci convidant-ne un a baix.',metges_prova:'Al despatx de prova els convits estan desactivats.',
       correu_invalid:'Correu invàlid',conv_creat:'Convit creat, però el correu no ha sortit.',conv_enviat:'Convit enviat a {e}',err:'Error',err_con:'Error de connexió'}
@@ -687,8 +689,16 @@
     if(!m.enviatEl)       return '<span class="sem avis">'+esc(t('s_noenviat'))+'</span>';
     return '<span class="sem ok">'+esc(t('s_enviat'))+'</span>';
   }
+  /* ENG-37 · l'enviament a l'AEAT de cada metge (Legal 22_ §3.8). Nomes amb el Dia D
+     fet, com l'interruptor. */
+  function celaAeat(m){
+    if(m.aeatEnviament===true) return '<span class="sem ok">'+esc(t('aeat_si'))+'</span>';
+    if(m.aeatEnviament===false) return '<span class="sem gris">'+esc(t('aeat_no'))+'</span>';
+    return '—';
+  }
   function pintaMetges(d){
     var ms=d.metges||[];
+    var ambAeat=d.aeatDiaD===true;
     var actius=ms.filter(function(m){return m.estat==='ACTIU'});
     var base=actius.reduce(function(a,m){return a+(m.base||0)},0);
     var quota=actius.reduce(function(a,m){return a+(m.quota||0)},0);
@@ -697,10 +707,10 @@
     var trencats=actius.filter(function(m){return m.cadenaIntegra===false}).length;
     $('kpis').innerHTML=kpi(actius.length,t('k_actius'))+kpi(fact,t('k_factures'))+kpi(eur(base),t('k_base'))+kpi(eur(quota),t('k_iva'))+kpi(pendents,t('k_noenviat'),pendents?'var(--ambre)':null)+(trencats?kpi(trencats,t('k_trencada'),'var(--vermell)'):'');
     if(!ms.length){ $('taula').innerHTML='<div class="buit">'+esc(t('metges_buit'))+'</div>'; return; }
-    var h='<table><thead><tr><th>'+esc(t('mc_metge'))+'</th><th>'+esc(t('mc_estat'))+'</th><th class="n">'+esc(t('mc_factures'))+'</th><th class="n">'+esc(t('mc_base'))+'</th><th class="n">'+esc(t('mc_iva'))+'</th><th class="n">'+esc(t('mc_ultima'))+'</th><th></th></tr></thead><tbody>';
+    var h='<table><thead><tr><th>'+esc(t('mc_metge'))+'</th><th>'+esc(t('mc_estat'))+'</th>'+(ambAeat?'<th title="'+esc(t('aeat_nota'))+'">'+esc(t('mc_aeat'))+'</th>':'')+'<th class="n">'+esc(t('mc_factures'))+'</th><th class="n">'+esc(t('mc_base'))+'</th><th class="n">'+esc(t('mc_iva'))+'</th><th class="n">'+esc(t('mc_ultima'))+'</th><th></th></tr></thead><tbody>';
     ms.forEach(function(m){
       var qui=(m.professionals&&m.professionals.length)?m.professionals.join(', '):m.nom;
-      h+='<tr><td><strong>'+esc(qui)+'</strong>'+(m.colegiat?'<br><span style="color:var(--boira);font-size:.78rem">Col. '+esc(m.colegiat)+'</span>':'')+'</td><td>'+semaforMetge(m)+'</td>'+
+      h+='<tr><td><strong>'+esc(qui)+'</strong>'+(m.colegiat?'<br><span style="color:var(--boira);font-size:.78rem">Col. '+esc(m.colegiat)+'</span>':'')+'</td><td>'+semaforMetge(m)+'</td>'+(ambAeat?'<td title="'+esc(t('aeat_nota'))+'">'+celaAeat(m)+'</td>':'')+
          '<td class="n">'+(m.factures==null?'—':m.factures)+'</td><td class="n">'+eur(m.base)+'</td><td class="n">'+eur(m.quota)+'</td><td class="n">'+dataCurta(m.darreraData)+'</td>'+
          // Nomes els convits pendents es poden retirar. Un vincle ACTIU el talla el metge des de la seva Configuracio, no la gestoria.
          '<td class="n">'+(m.estat==='ACTIU'||PROVA?'':'<button class="btn sec mini" type="button" data-anulla="'+esc(m.encarrecId)+'">'+esc(t('retirar'))+'</button>')+'</td></tr>';

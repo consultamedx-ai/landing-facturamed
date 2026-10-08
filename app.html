@@ -359,6 +359,7 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
           <button class="btn sec mini" id="b-csv" type="button">⬇ Export gestoría (CSV)</button>
           <button class="btn sec mini" id="b-gestoria" type="button" style="display:none">📤 Enviar el trimestre a mi gestoría</button>
           <button class="btn mini" id="b-aeat" type="button" style="display:none">📡 Enviar a AEAT (pruebas)</button>
+          <button class="btn mini no-traduir" id="b-aeat-reintenta" type="button" style="display:none"></button>
         </span>
       </h2>
       <div id="bridge-info" style="font-size:.76rem;color:var(--boira);margin-bottom:8px">Bridge AEAT: comprobando…</div>
@@ -588,11 +589,47 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
           <h2>Estado del producto</h2>
           <p id="cfg-estat-desc" style="font-size:.85rem;color:#475569">✅ Registro con huella encadenada · ✅ Rectificativas · ✅ Export gestoría · ⏳ Remisión automática a la AEAT (pendiente del certificado digital de la empresa y de nuestra declaración responsable del sistema). <strong>Hasta entonces: solo datos de prueba.</strong></p>
           <p id="cfg-estat-desc-actiu" style="display:none;font-size:.85rem;color:#475569">✅ Registro con huella encadenada · ✅ Rectificativas · ✅ Export gestoría · ⏳ Remisión automática a la AEAT (pendiente del certificado digital de la empresa y de nuestra declaración responsable del sistema). Sus facturas se emiten, se numeran y se encadenan con normalidad, pero no se envían a la AEAT y no llevan el código QR de VERI*FACTU.</p>
+          <!-- ENG-37 (A-021) · L'interruptor de l'enviament a l'AEAT. Nomes surt amb el Dia D
+               fet (ho diu el servidor) i mai en mode de prova. Els textos els posa el codi. -->
+          <div id="aeat-interruptor" class="no-traduir" style="display:none;margin-top:12px;padding:12px 14px;border:1px solid var(--linia);border-radius:12px;background:#F8FAFC">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+              <strong id="aeat-etiqueta"></strong>
+              <span id="aeat-estat" class="pill" role="status"></span>
+            </div>
+            <p id="aeat-peu" style="font-size:.84rem;color:#334155;margin:8px 0"></p>
+            <p id="aeat-data" style="font-size:.78rem;color:#475569;margin:0 0 8px"></p>
+            <div class="accions-fila">
+              <button class="btn" id="b-aeat-canvia" type="button"></button>
+              <button class="btn sec" id="b-aeat-corregeix" type="button"></button>
+              <button class="btn sec" id="b-aeat-registre" type="button"></button>
+            </div>
+            <p id="aeat-nota" style="display:none;font-size:.78rem;color:#475569;margin-top:8px"></p>
+            <div id="aeat-correccio" style="display:none;margin-top:10px">
+              <label for="aeat-nova-data" id="aeat-l-data"></label>
+              <select id="aeat-nova-data"><option value="2027-01-01"></option><option value="2027-07-01"></option></select>
+              <label for="aeat-motiu" id="aeat-l-motiu"></label>
+              <input id="aeat-motiu" type="text" maxlength="200" autocomplete="off">
+              <button class="btn sec mini" id="b-aeat-desa-data" type="button"></button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </section>
 </main>
+
+<!-- ENG-37 · Legal 22_ §3.7: arriba la data amb l'enviament aturat i per emetre cal activar-lo. -->
+<div id="aeat-pantalla" class="no-traduir" role="dialog" aria-modal="true" aria-labelledby="aeat-pantalla-titol" style="display:none;position:fixed;inset:0;z-index:80;background:rgba(13,59,102,.55);align-items:center;justify-content:center;padding:16px">
+  <div style="background:#fff;border-radius:16px;max-width:560px;width:100%;padding:22px 24px;box-shadow:0 20px 50px rgba(0,0,0,.25)">
+    <h2 id="aeat-pantalla-titol" style="margin:0 0 10px;font-size:1.15rem"></h2>
+    <p id="aeat-pantalla-text" style="font-size:.9rem;color:#334155;line-height:1.5;margin:0"></p>
+    <p id="aeat-pantalla-nota" style="display:none;font-size:.82rem;color:#475569;margin:10px 0 0"></p>
+    <div class="accions-fila" style="justify-content:flex-end;margin-top:16px">
+      <button class="btn sec" id="b-aeat-pantalla-tanca" type="button"></button>
+      <button class="btn" id="b-aeat-pantalla-activa" type="button"></button>
+    </div>
+  </div>
+</div>
 
 <!-- ============ FACTURA IMPRIMIBLE ============ -->
 <!-- ENG-13 · La barra del mode de prova. 07_Mode_de_Prova §5: fixa i discreta,
@@ -742,7 +779,10 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
   }
   function urlQR(r){
     var p=new URLSearchParams({nif:r.nifEmisor,numserie:r.num,fecha:r.fecha,importe:r.total});
-    return 'https://prewww2.aeat.es/wlpl/TIKE-CONT/ValidarQR?'+p.toString();
+    /* ENG-37 · una factura emesa amb l'enviament activat va a l'AEAT de PRODUCCIO,
+       i el seu QR hi ha d'apuntar. Les altres no porten QR (PROD-19), i aquesta
+       adreca de l'entorn de proves ja no surt a cap factura. */
+    return (r.aeat===true?'https://www2.agenciatributaria.gob.es':'https://prewww2.aeat.es')+'/wlpl/TIKE-CONT/ValidarQR?'+p.toString();
   }
   function llegeix(k,defecte){try{return JSON.parse(localStorage.getItem(k))||defecte}catch(e){return defecte}}
   function desa(k,v){localStorage.setItem(k,JSON.stringify(v));window.cmSync&&cmSync.canvi(k)}
@@ -2094,6 +2134,10 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
     var c=conf();
     /* ENG-13 · en prova la serie NO es tria: la imposa serieDeTreball(). */
     var prova=enProva();
+    /* ENG-37 · des de la data d'obligacio, amb l'enviament aturat no s'emet: la
+       pantalla ho explica i porta al boto d'activar-lo (Legal 22_ §3.7). Totes les
+       factures es registren igual: aqui no hi ha cap opcio per factura. */
+    if(!prova&&!dades.exemple&&aeatCalActivar()){mostraPantallaAeat();return}
     var serie=serieDeTreball(c,dades.serie);
     if(!serie){avis('err','Configure primero una serie de facturación.');return}
     /* ⚠️ ENG-13 · LA LINIA QUE PROTEGEIX LA CADENA REAL.
@@ -2105,6 +2149,9 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
     var rs=registres();
     var r={
       prova:prova,
+      /* ENG-37 · emesa amb l'enviament activat: porta la llegenda i el QR, i va a la
+         cua de l'AEAT. La marca no entra a l'empremta (huellaAlta no la mira). */
+      aeat:(!prova&&aeatActiu())||undefined,
       exemple:dades.exemple===true||undefined,
       num:serie.codi+'-'+String(serie.seguent).padStart(4,'0'),serie:serie.codi,
       /* ENG-13b: el joc d'exemple necessita dates del trimestre, no d'avui.
@@ -2122,6 +2169,7 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
     rs.push(r);desa(K.reg,rs);
     serie.seguent++;desa(K.conf,c);
     pintaTot();mostraFactura(r);
+    if(r.aeat)enviaPendentsAeat('emissio');
     return r;
   }
   safe(function(){
@@ -2277,9 +2325,12 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
     var enP=enProva(),cfg=new URLSearchParams(location.search).get('config')==='1';
     var bn=document.querySelector('.avis-priv');if(bn)bn.style.display=(enP&&!cfg)?'':'none';
     var aa=$('avis-aeat');
-    if(aa){if(enP||cfg){aa.style.display='none'}else{aa.textContent=Tf("Envío a la AEAT: detenido. Sus facturas son válidas: se emiten, se numeran y se encadenan con normalidad, y usted las conserva. Todavía no se envían a la AEAT, y por eso no llevan el código QR de VERI*FACTU. El envío será obligatorio para usted a partir del {fecha}.",{fecha:textDataObligacio(mesObligacio((conf()||{}).nif))});aa.style.display=''}}
+    /* ENG-37 · el rètol el decideix pintaAvisAeat: amb el Dia D, segons l'interruptor
+       (res si envia, l'avis dels 30 dies, o la pantalla de la data); sense, el de Legal. */
+    if(aa){if(enP||cfg){aa.style.display='none'}else{pintaAvisAeat(aa)}}
     var np=$('nota-prova'),nr=$('nota-real');if(np)np.style.display=enP?'':'none';if(nr)nr.style.display=enP?'none':'';
     var ep=$('cfg-estat-desc'),ea=$('cfg-estat-desc-actiu');if(ep)ep.style.display=enP?'':'none';if(ea)ea.style.display=enP?'none':'';
+    safe(pintaInterruptorAeat,'aeat');   // ENG-37
   }
   function pintaBarraProva(){
     safe(pintaTextosCompte,'textos-compte');
@@ -2419,9 +2470,10 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
        I el segell «BETA — SIN VALIDEZ FISCAL» sortia a TOTES les factures, tambe a
        les reals, i s'imprimia: es del mode de prova (Legal 22_ §5, «Compte amb el
        segell»). Una factura d'un compte de pagament es valida i no el porta. */
-    var ambVerifactu=false; /* PROD-19 (CEO, 7/10/2026): tampoc a la factura de PROVA: no s'ha enviat res a l'AEAT, i la de prova no pot semblar més vàlida que la real (Producte 07_ §2.1). Quan ENG-37 activi l'enviament, aquí hi anirà la condició de l'interruptor. */
+    var ambVerifactu=enviadaAmbInterruptor(r); /* ENG-37 · nomes les emeses amb l'enviament activat. PROD-19 (CEO, 7/10/2026): la de PROVA, mai: no s'ha enviat res a l'AEAT, i no pot semblar mes valida que la real (Producte 07_ §2.1). */
     var pb=$('pr-beta');if(pb)pb.style.display=esProva(r)?'':'none';
     var pv=$('pr-verifactu');if(pv)pv.style.display=ambVerifactu?'':'none';
+    if(pv)llegendaAeat(pv,enviadaAmbInterruptor(r));
     var pqb=$('pr-qr-bloc');if(pqb)pqb.style.display=ambVerifactu?'':'none';
     var cont=$('pr-qr');cont.innerHTML='';
     if(ambVerifactu)safe(function(){
@@ -2575,6 +2627,11 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
         pintaBridge(T('Cuenta en modo de prueba: las facturas no se envían a la AEAT. Al activar la cuenta, la serie y la cadena reales empiezan de cero.'),'#B91C1C');
         return;
       }
+      /* ENG-37 · amb el Dia D, mana l'interruptor (pintaPontAeat). I a un pont de
+         PRODUCCIO no s'hi envia mai res a ma: mentre no se sap com es l'interruptor
+         (un dispositiu nou, sense linia), es com si estigues aturat. */
+      pontEntorn=String(d.entorn||'').toUpperCase();
+      if(aeatViu()||pontEntorn==='PRODUCCIO'){await pintaPontAeat(d);return}
       $('b-aeat').style.display='';
       pintaBridge(Tf('Bridge AEAT: ✓ conectado (entorno de PRUEBAS, {cert}) · pendientes: {n}',
         {cert:T(d.certCarregat?'certificado cargado':'SIN certificado'),n:d.pendents}),'var(--verd-fosc)');
@@ -2593,34 +2650,17 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
       if(!bridgeViu){avis('err','Bridge no detectado.');return}
       /* ENG-13 · si l'estat canvia amb la pagina oberta, es torna a mirar aqui. */
       if(enProva()){avis('err','Cuenta en modo de prueba: no se envía nada a la AEAT.');return}
-      var c=conf(),rs=registres(),enviades=0,saltades=0;
+      /* ENG-37 · amb el Dia D (o amb un pont de produccio), aquest boto no hi es:
+         envia l'interruptor. */
+      if(aeatViu()||pontEntorn==='PRODUCCIO')return;
+      /* ENG-37 · nomes la cadena REAL: una factura de prova no surt mai d'aquest
+         ordinador (i el pont, amb la porta 2, la rebutjaria i aturaria la resta). */
+      var c=conf(),rs=registresDe(false),enviades=0,saltades=0;
       for(var i=0;i<rs.length;i++){
         var r=rs[i];
         var previ=window.__aeatEstats[r.num];
         if(previ&&(previ.estat==='acceptat'||previ.estat==='encuat')){saltades++;continue}
-        var ps=pacients(),p=ps.find(function(x){return x.nom===r.pacientNom})||{};
-        var rectificada=null;
-        if(r.rectificaA){
-          var orig=rs.find(function(x){return x.num===r.rectificaA});
-          rectificada={nifEmisor:r.nifEmisor,numSerieFactura:r.rectificaA,fechaExpedicion:orig?orig.fecha:r.fecha};
-        }
-        var payload={
-          registre:{
-            /* ENG-13 · la marca viatja explicitament fins al pont. El prefix de
-               la serie ja el delataria, pero el pont no ha d'haver de deduir res:
-               si algun dia canvia el nom de la serie, la marca segueix sent certa. */
-            prova:esProva(r),
-            nifEmisor:r.nifEmisor,numSerieFactura:r.num,fechaExpedicion:r.fecha,
-            tipoFactura:r.tipo,descripcion:r.concepte,
-            baseImponible:r.base,cuotaTotal:r.quota,importeTotal:r.total,
-            tipoIVA:r.exempta?'Exenta (art. 20.Uno.3\u00ba LIVA)':'21%',
-            huellaAnterior:r.anterior||'',esPrimerRegistro:!!r.esPrimer,
-            fechaHoraHusoGenRegistro:r.gen,tipoHuella:'01',huella:r.huella,
-            rectificada:rectificada,
-            destinatari:(r.tipo==='F1'&&(r.pacientNif||p.nif))?{nombre:r.pacientNom,nif:r.pacientNif||p.nif}:null
-          },
-          emissor:{nifEmisor:c.nif,nombreEmisor:c.nom}
-        };
+        var payload=payloadAeat(r,rs,c);   // ENG-37 · el mateix registre que envia l'interruptor
         try{
           var resp=await fetch(BRIDGE+'/alta',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
           var d=await resp.json();
@@ -2632,6 +2672,310 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
       sondejaBridge();
     });
   },'bridge');
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     ENG-37 (A-021) · L'INTERRUPTOR DE L'ENVIAMENT A L'AEAT
+     ───────────────────────────────────────────────────────────────────────
+     L'estat el decideix el SERVIDOR (aeat.estat, lib/aeat.js): es de
+     l'organitzacio, el mateix a tots els dispositius. Aqui se'n guarda l'ultima
+     resposta (fm2_aeat, que NO se sincronitza: la torna a dir el servidor) per
+     poder treballar sense linia, i el «quin dia es avui» es calcula amb el
+     rellotge d'aqui, en dia civil d'Espanya, exactament com al servidor.
+     Les regles que es veuen en aquesta pantalla (Legal 22_ i l'ordre ENG-37):
+       · totes les factures es registren i s'encadenen igual: cap opcio per factura
+       · l'interruptor nomes surt amb el Dia D fet i mai en mode de prova
+       · des de la data, amb l'enviament aturat, no s'emet: una pantalla ho explica
+         i porta al boto d'activar-lo. Mai s'activa sol
+       · activat: primer s'envia el que hi ha pendent, en l'ordre de la cadena, i
+         despres cada factura nova. Aturat: no surt res d'aquest ordinador
+       · la llegenda VERI*FACTU i el QR, a les factures emeses amb l'enviament
+         activat (i a les de prova, mentre PROD-19 no ho canvii)
+     Els textos son els de Legal (22_ §3), als quatre idiomes; els documents no
+     es tradueixen. */
+  var K_AEAT='fm2_aeat';
+  var AEAT_DATES=['2027-01-01','2027-07-01'];
+  var AEAT_TXT={
+    peuAturat:'Detenido. Sus facturas se emiten, se numeran y se encadenan con normalidad, pero no se envían a la AEAT y no llevan el código QR de VERI*FACTU. A partir del {fecha} el envío será obligatorio para usted.',
+    peuActiu:'Activado. Cada factura se registra y se envía a la AEAT al emitirla, y lleva el código QR de VERI*FACTU. Puede detenerlo mientras el envío no sea obligatorio para usted (hasta el {fecha}).',
+    peuBloquejat:'Activado y bloqueado: desde el {fecha} el envío es obligatorio y debe mantenerse, como mínimo, hasta el 31 de diciembre de {any}.',
+    activaAbans:'Va a activar el envío a la AEAT. Desde este momento, cada factura que emita se enviará a la AEAT y llevará el código QR de VERI*FACTU; primero se enviarán, por orden, las facturas que ya tiene registradas y pendientes de enviar. Puede volver a detenerlo mientras el envío no sea obligatorio para usted (hasta el {fecha}); a partir de esa fecha, si está activado, no podrá detenerlo. ¿Activar el envío?',
+    activaDespres:'Va a activar el envío a la AEAT. Desde el {fecha} el envío es obligatorio para usted y, una vez iniciado, no podrá detenerlo: la ley obliga a mantenerlo como mínimo hasta el 31 de diciembre de {any}, y FacturaMed funciona únicamente en la modalidad VERI*FACTU. Primero se enviarán, por orden, las facturas pendientes. ¿Activar el envío?',
+    atura:'Va a detener el envío a la AEAT. Sus facturas seguirán numerándose y encadenándose igual, pero no se enviarán y dejarán de llevar el código QR de VERI*FACTU. Puede volver a activarlo cuando quiera; al activarlo se enviarán las facturas pendientes. Recuerde que a partir del {fecha} el envío será obligatorio. ¿Detener el envío?',
+    bloqueig:'No se puede detener el envío. Desde el {fecha} el envío a la AEAT es obligatorio para usted y, una vez iniciado, debe mantenerse como mínimo hasta el 31 de diciembre de {any} (artículo 16.5 del Reglamento). Pasada esa fecha tampoco podrá detenerlo con FacturaMed: hacerlo exigiría la modalidad “NO VERI*FACTU” —firma electrónica de cada registro y registro de eventos—, que este programa no incorpora. Sus datos son suyos y puede exportarlos en cualquier momento.',
+    avis:'Faltan {n} días: a partir del {fecha} tendrá que enviar a la AEAT el registro de cada factura que emita (VERI*FACTU). Puede activar el envío cuando quiera desde Configuración. Si llega esa fecha con el envío detenido, no podrá emitir facturas hasta que lo active, y una vez activado ya no podrá detenerlo.',
+    avis1:'Falta 1 día: a partir del {fecha} tendrá que enviar a la AEAT el registro de cada factura que emita (VERI*FACTU). Puede activar el envío cuando quiera desde Configuración. Si llega esa fecha con el envío detenido, no podrá emitir facturas hasta que lo active, y una vez activado ya no podrá detenerlo.',
+    pantallaTitol:'Active el envío a la AEAT para seguir facturando',
+    pantalla:'Desde el {fecha}, la ley le obliga a enviar a la AEAT el registro de cada factura que emita (VERI*FACTU). FacturaMed funciona solo en esa modalidad: para emitir facturas necesita activar el envío. Al activarlo se enviarán también, por orden, las facturas pendientes, y ya no podrá detenerlo (como mínimo, hasta el 31 de diciembre). Si prefiere no enviar, tendrá que facturar con otro sistema; sus facturas y sus datos siguen siendo suyos y puede exportarlos cuando quiera.'
+  };
+  var aeatAvisats={};
+  function avisUnCop(clau,t,m){if(aeatAvisats[clau])return;aeatAvisats[clau]=1;avis(t,m)}
+  function llegeixAeat(){
+    var e=llegeix(K_AEAT,null);
+    if(!e||typeof e!=='object'||typeof e.actiu!=='boolean')return null;
+    var org=null;try{org=localStorage.getItem('cm_org')}catch(x){}
+    return (e.org&&org&&e.org===org)?e:null;   // l'estat es d'una organitzacio: el d'una altra no val aqui
+  }
+  function avuiEspanya(ara){return new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Madrid',year:'numeric',month:'2-digit',day:'2-digit'}).format(ara||new Date())}
+  function diesEntre(de,a){return Math.round((Date.parse(a+'T00:00:00Z')-Date.parse(de+'T00:00:00Z'))/86400000)}
+  // L'estat d'ara: l'ultima resposta del servidor i el rellotge d'aqui (el calcul de lib/aeat.js).
+  function aeatEstat(ara){
+    var s=llegeixAeat();if(!s)return null;
+    var data=AEAT_DATES.indexOf(s.dataObligacio)>=0?s.dataObligacio:AEAT_DATES[0];
+    var dia=avuiEspanya(ara),actiu=s.actiu===true,obligatori=dia>=data,falten=diesEntre(dia,data),any=null;
+    if(actiu&&obligatori){var act=s.activatEl?avuiEspanya(new Date(s.activatEl)):dia;any=Number((act>data?act:data).slice(0,4))}
+    return {diaD:s.diaD===true,prova:s.prova===true,potCanviar:s.potCanviar===true,actiu:actiu,dataObligacio:data,dataOrigen:s.dataOrigen||'defecte',
+      obligatori:obligatori,bloquejat:actiu&&obligatori,calActivar:!actiu&&obligatori,avis30:!actiu&&!obligatori&&falten<=30,dies:obligatori?0:falten,any:any};
+  }
+  // Amb el Dia D, en un compte de pagament (mai en prova, ni el que diu aqui ni el que diu el servidor).
+  function aeatViu(){var e=aeatEstat();return (e&&e.diaD&&!e.prova&&!enProva())?e:null}
+  function aeatActiu(){var e=aeatViu();return !!(e&&e.actiu)}
+  function aeatCalActivar(){var e=aeatViu();return !!(e&&e.calActivar)}
+  function enviadaAmbInterruptor(r){return !!(r&&r.aeat===true&&!esProva(r))}
+  function dataText(data){return textDataObligacio(String(data).slice(5,7)==='07'?7:1)}
+  function desaEstatAeat(org,d){
+    try{localStorage.setItem(K_AEAT,JSON.stringify({org:org,quan:new Date().toISOString(),actiu:d.actiu===true,activatEl:d.activatEl||null,
+      dataObligacio:d.dataObligacio,dataOrigen:d.dataOrigen,diaD:d.diaD===true,prova:d.prova===true,potCanviar:d.potCanviar===true}))}catch(x){}
+  }
+  var aeatSondaEl=0;
+  function aeatAmbServidor(){return !!(window.cmSync&&cmSync.actiu&&cmSync.actiu()&&cmSync.org())}
+  async function aeatRefresca(){
+    if(!aeatAmbServidor())return null;
+    aeatSondaEl=Date.now();
+    var org=cmSync.org(),d=null;
+    try{d=await cmSync.api('aeat.estat',{organitzacioId:org,nif:(conf()||{}).nif||''})}catch(x){return null}
+    if(!d||!d.ok||typeof d.actiu!=='boolean')return null;
+    desaEstatAeat(org,d);
+    safe(pintaTextosCompte,'aeat');
+    if(aeatActiu()&&bridgeViu)enviaPendentsAeat('estat');
+    return d;
+  }
+  function aeatArrenca(){
+    var intents=0;
+    (function prova(){if(aeatAmbServidor()){aeatRefresca();return}if(++intents<20)setTimeout(prova,1500)})();
+    window.addEventListener('cm-sync-pull',function(){if(Date.now()-aeatSondaEl>60000)aeatRefresca()});
+    setInterval(function(){aeatRefresca()},10*60*1000);
+  }
+
+  // ---------- la factura: llegenda i QR ----------
+  function llegendaAeat(el,produccio){
+    if(el.getAttribute('data-oh')===null)el.setAttribute('data-oh',el.innerHTML);
+    /* Al document imprès (castellà sempre): la llegenda de l'Orde HAC/1177/2024, i la
+       de l'entorn de proves nomes per a les de prova. */
+    el.innerHTML=produccio?'Factura verificable en la sede electrónica de la AEAT — <strong>VERI*FACTU</strong>':el.getAttribute('data-oh');
+  }
+
+  // ---------- el rètol de dalt (avis-aeat) ----------
+  function pintaAvisAeat(aa){
+    var e=aeatViu();
+    var data=e?e.dataObligacio:(mesObligacio((conf()||{}).nif)===7?AEAT_DATES[1]:AEAT_DATES[0]);
+    var f=dataText(data);
+    aa.textContent='';
+    if(e&&e.actiu){aa.style.display='none';return}
+    if(e&&e.calActivar){
+      var t=document.createElement('strong');t.textContent=T(AEAT_TXT.pantallaTitol)+' ';
+      var b=document.createElement('button');b.type='button';b.className='btn mini';b.id='b-aeat-avis';b.textContent=T('Activar el envío');
+      b.addEventListener('click',mostraPantallaAeat);
+      aa.appendChild(t);aa.appendChild(b);aa.style.display='';return;
+    }
+    if(e&&e.avis30){aa.textContent=Tf(e.dies===1?AEAT_TXT.avis1:AEAT_TXT.avis,{n:e.dies,fecha:f});aa.style.display='';return}
+    aa.textContent=Tf("Envío a la AEAT: detenido. Sus facturas son válidas: se emiten, se numeran y se encadenan con normalidad, y usted las conserva. Todavía no se envían a la AEAT, y por eso no llevan el código QR de VERI*FACTU. El envío será obligatorio para usted a partir del {fecha}.",{fecha:f});
+    aa.style.display='';
+  }
+
+  // ---------- Configuració → Estat del producte ----------
+  function origenAeat(o){
+    if(o==='manual')return T('corregida a mano');
+    if(String(o).indexOf('nif:')===0)return T('según el NIF del emisor');
+    return T('por defecto: NIF vacío o no válido');
+  }
+  function pintaInterruptorAeat(){
+    var box=$('aeat-interruptor');if(!box)return;
+    var e=aeatViu();
+    if(!e){box.style.display='none';return}
+    box.style.display='';
+    var ea=$('cfg-estat-desc-actiu');if(ea)ea.style.display='none';   // amb el Dia D, el que hi deia ja no es cert: ho diu l'interruptor
+    var f=dataText(e.dataObligacio);
+    $('aeat-etiqueta').textContent=T('Envío a la AEAT (VERI*FACTU)');
+    var st=$('aeat-estat');st.textContent=T(e.actiu?'Activado':'Detenido');
+    st.style.background=e.actiu?'#DCFCE7':'#F1F5F9';st.style.color=e.actiu?'#166534':'#334155';
+    $('aeat-peu').textContent=e.bloquejat?Tf(AEAT_TXT.peuBloquejat,{fecha:f,any:e.any})
+      :e.actiu?Tf(AEAT_TXT.peuActiu,{fecha:f})
+      :e.calActivar?Tf(AEAT_TXT.pantalla,{fecha:f})
+      :Tf(AEAT_TXT.peuAturat,{fecha:f});
+    $('aeat-data').textContent=Tf('Fecha de obligación: {fecha}',{fecha:f})+' ('+origenAeat(e.dataOrigen)+')';
+    var b=$('b-aeat-canvia');b.style.display=e.potCanviar?'':'none';
+    b.textContent=T(e.actiu?'Detener el envío':'Activar el envío');b.className=e.actiu?'btn sec':'btn';
+    var bc=$('b-aeat-corregeix');bc.style.display=e.potCanviar?'':'none';bc.textContent=T('Corregir la fecha');
+    $('b-aeat-registre').textContent=T('⬇ Registro de cambios (CSV)');
+    var n=$('aeat-nota');n.style.display=e.potCanviar?'none':'';n.textContent=T('Solo el médico titular o el administrador del centro puede cambiarlo.');
+    $('aeat-l-data').textContent=T('Fecha de obligación');
+    $('aeat-l-motiu').textContent=T('Motivo (obligatorio para retrasar la fecha)');
+    var op=$('aeat-nova-data').options;op[0].textContent=dataText(AEAT_DATES[0]);op[1].textContent=dataText(AEAT_DATES[1]);
+    $('b-aeat-desa-data').textContent=T('Guardar la fecha');
+  }
+
+  // ---------- la pantalla de quan arriba la data amb l'enviament aturat (Legal 22_ §3.7) ----------
+  function mostraPantallaAeat(){
+    var e=aeatViu();if(!e)return;
+    $('aeat-pantalla-titol').textContent=T(AEAT_TXT.pantallaTitol);
+    $('aeat-pantalla-text').textContent=Tf(AEAT_TXT.pantalla,{fecha:dataText(e.dataObligacio)});
+    var b=$('b-aeat-pantalla-activa');b.textContent=T('Activar el envío');b.style.display=e.potCanviar?'':'none';
+    var n=$('aeat-pantalla-nota');n.textContent=T('Solo el médico titular o el administrador del centro puede cambiarlo.');n.style.display=e.potCanviar?'none':'';
+    $('b-aeat-pantalla-tanca').textContent=T('Ahora no');
+    $('aeat-pantalla').style.display='flex';
+  }
+  function tancaPantallaAeat(){$('aeat-pantalla').style.display='none'}
+
+  // ---------- activar, aturar, corregir la data i el registre ----------
+  var ERRORS_AEAT={
+    bloquejat:'Con el envío ya obligatorio y activado, no se puede cambiar.',
+    motiu:'Para retrasar la fecha hace falta escribir el motivo.',
+    canviat:'Alguien lo ha cambiado al mismo tiempo desde otro dispositivo. Vuelva a mirarlo.',
+    permis:'Solo el médico titular o el administrador del centro puede cambiarlo.'
+  };
+  function errorAeat(d){avis('err',T(ERRORS_AEAT[d&&d.error]||'No se ha podido guardar el cambio. Inténtelo de nuevo.'))}
+  async function canviaAeat(actiu){
+    var e=aeatViu();if(!e||!aeatAmbServidor())return;
+    if(!e.potCanviar){avis('err',T(ERRORS_AEAT.permis));return}
+    var f=dataText(e.dataObligacio);
+    if(!actiu&&e.bloquejat){alert(Tf(AEAT_TXT.bloqueig,{fecha:f,any:e.any}));return}
+    var text=actiu?(e.obligatori?Tf(AEAT_TXT.activaDespres,{fecha:f,any:Number(avuiEspanya().slice(0,4))}):Tf(AEAT_TXT.activaAbans,{fecha:f}))
+      :Tf(AEAT_TXT.atura,{fecha:f});
+    if(!confirm(text))return;
+    var org=cmSync.org(),d=null;
+    try{d=await cmSync.api('aeat.canvia',{organitzacioId:org,actiu:actiu,confirmat:true})}catch(x){}
+    if(!d||!d.ok){errorAeat(d);await aeatRefresca();return}
+    desaEstatAeat(org,d);
+    tancaPantallaAeat();safe(pintaTextosCompte,'aeat');
+    avis('ok',T(actiu?'Envío activado.':'Envío detenido.'));
+    if(actiu)sondejaBridge();   // el pont, si hi es, rep primer les pendents en l'ordre de la cadena
+  }
+  async function corregeixDataAeat(){
+    var e=aeatViu();if(!e||!aeatAmbServidor())return;
+    var org=cmSync.org(),d=null;
+    try{d=await cmSync.api('aeat.data',{organitzacioId:org,data:$('aeat-nova-data').value,motiu:$('aeat-motiu').value.trim()})}catch(x){}
+    if(!d||!d.ok){if(d&&d.error==='igual'){$('aeat-correccio').style.display='none';return}errorAeat(d);return}
+    desaEstatAeat(org,d);$('aeat-correccio').style.display='none';$('aeat-motiu').value='';
+    safe(pintaTextosCompte,'aeat');avis('ok',T('Fecha de obligación guardada.'));
+  }
+  async function exportaRegistreAeat(){
+    if(!aeatAmbServidor())return;
+    var d=null;
+    try{d=await cmSync.api('aeat.registre',{organitzacioId:cmSync.org()})}catch(x){}
+    if(!d||!d.ok||!Array.isArray(d.registre)){errorAeat(d);return}
+    /* Es un document: capcaleres i valors en castella sempre (ENG-4d). */
+    var NOMS={activat:'Activado',aturat:'Detenido',data:'Fecha de obligación'};
+    var camp=function(v){v=String(v??'');return /[";\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v};
+    var files=d.registre.map(function(f){return [f.quan,NOMS[f.accio]||f.accio,f.qui,f.detall||''].map(camp).join(';')});
+    descarrega('FacturaMed_registro_envio_AEAT_'+avuiEspanya()+'.csv','\ufeff'+['Fecha y hora (UTC)','Acción','Quién','Detalle'].join(';')+'\n'+files.join('\n')+'\n','text/csv;charset=utf-8');
+  }
+
+  // ---------- l'enviament: la cadena real, en ordre, i res mes ----------
+  var enviantAeat=false,altraVoltaAeat=false,pontEntorn='';
+  /* L'ordre de la cadena es el de l'emmagatzematge, i ha de quadrar exactament
+     com el mira «Verificar integridad» (verificaCadena): cada registre penja de
+     l'anterior i la seva empremta es la que toca. Si no quadra, no s'envia RES:
+     un registre que no encaixa no surt d'aquest ordinador. */
+  async function cadenaPerEnviar(rs){
+    var ant='';
+    for(var i=0;i<rs.length;i++){
+      var r=rs[i];
+      if((r.anterior||'')!==ant)return null;
+      if(await huellaAlta(r)!==r.huella)return null;
+      ant=r.huella;
+    }
+    return rs;
+  }
+  function payloadAeat(r,rs,c){
+    var ps=pacients(),p=ps.find(function(x){return x.nom===r.pacientNom})||{};
+    var rectificada=null;
+    if(r.rectificaA){
+      var orig=rs.find(function(x){return x.num===r.rectificaA});
+      rectificada={nifEmisor:r.nifEmisor,numSerieFactura:r.rectificaA,fechaExpedicion:orig?orig.fecha:r.fecha};
+    }
+    return {
+      registre:{
+        /* ENG-13 · la marca viatja explicitament fins al pont. El prefix de
+           la serie ja el delataria, pero el pont no ha d'haver de deduir res:
+           si algun dia canvia el nom de la serie, la marca segueix sent certa. */
+        prova:esProva(r),
+        nifEmisor:r.nifEmisor,numSerieFactura:r.num,fechaExpedicion:r.fecha,
+        tipoFactura:r.tipo,descripcion:r.concepte,
+        baseImponible:r.base,cuotaTotal:r.quota,importeTotal:r.total,
+        tipoIVA:r.exempta?'Exenta (art. 20.Uno.3\u00ba LIVA)':'21%',
+        huellaAnterior:r.anterior||'',esPrimerRegistro:!!r.esPrimer,
+        fechaHoraHusoGenRegistro:r.gen,tipoHuella:'01',huella:r.huella,
+        rectificada:rectificada,
+        destinatari:(r.tipo==='F1'&&(r.pacientNif||p.nif))?{nombre:r.pacientNom,nif:r.pacientNif||p.nif}:null
+      },
+      emissor:{nifEmisor:c.nif,nombreEmisor:c.nom}
+    };
+  }
+  /* Envia al pont el que encara no hi es, en l'ordre de la cadena. Nomes amb el
+     Dia D, l'interruptor activat, un compte de pagament i el pont de PRODUCCIO.
+     L'estat de cada registre el sap el pont: es demana cada vegada (/cua). Si ja
+     s'esta enviant, es torna a passar en acabar (una factura nova no s'espera la
+     seguent sonda). */
+  async function enviaPendentsAeat(motiu){
+    if(enviantAeat){altraVoltaAeat=true;return 0}
+    if(!bridgeViu||!aeatActiu())return 0;
+    if(pontEntorn!=='PRODUCCIO'){if(motiu==='boto')avis('err',T('El puente local apunta al entorno de PRUEBAS: con el envío activado no se envía nada hasta que apunte a producción.'));return 0}
+    var c=conf()||{},rs=registresDe(false);
+    enviantAeat=true;var enviades=0,aturada=null;
+    try{
+      var cua=await fetch(BRIDGE+'/cua').then(function(x){return x.json()});
+      window.__aeatEstats=(cua&&cua.estats)||{};
+      var fet=function(r){var e=window.__aeatEstats[r.num];return !!(e&&(e.estat==='acceptat'||e.estat==='encuat'||e.estat==='encuat_sense_cert'))};
+      if(rs.every(fet))return 0;   // res pendent (el finally allibera)
+      var cadena=await cadenaPerEnviar(rs);
+      if(!cadena){avisUnCop('cadena','err',T('La cadena de registros no cuadra: no se envía nada. Verifique la integridad.'));return 0}
+      for(var i=0;i<cadena.length;i++){
+        var r=cadena[i],e=window.__aeatEstats[r.num];
+        if(fet(r))continue;
+        /* Una rebutjada atura la resta (van encadenades): l'ha de mirar una persona. */
+        if(e&&e.estat==='rebutjat'&&motiu!=='boto'){aturada=r.num;break}
+        var resp=await fetch(BRIDGE+'/alta',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payloadAeat(r,rs,c))});
+        var d=await resp.json();
+        if(!d.ok){avis('err',Tf('AEAT rechaz\u00f3 {num}: {motiu}',{num:r.num,motiu:(d.error||'')}));break}
+        window.__aeatEstats[r.num]={estat:d.jaAcceptat?'acceptat':'encuat',csv:d.csv||null};
+        enviades++;
+      }
+    }catch(x){avis('err','Error de conexi\u00f3n con el bridge.')}
+    finally{enviantAeat=false}
+    var br=$('b-aeat-reintenta');
+    if(br){br.textContent=T('📡 Reintentar el envío');br.style.display=aturada?'':'none'}
+    if(aturada)avisUnCop('rebutjat-'+aturada,'err',Tf('La AEAT ha rechazado {num}: revísela antes de seguir enviando.',{num:aturada}));
+    if(enviades)avis('ok',Tf('📡 {n} factura(s) en cola hacia la AEAT. El estado se actualiza solo.',{n:enviades}));
+    pintaRegistre();pintaUltimes();
+    if(altraVoltaAeat){altraVoltaAeat=false;setTimeout(function(){enviaPendentsAeat('emissio')},0)}
+    return enviades;
+  }
+  /* Amb el Dia D, el pont el governa l'interruptor: aturat, no s'hi envia res i el
+     boto d'enviar a ma no hi es; activat, s'envia sol, i nomes si el pont apunta a
+     PRODUCCIO (un QR de produccio d'una factura enviada a proves no verificaria res). */
+  async function pintaPontAeat(d){
+    pontEntorn=String(d.entorn||'').toUpperCase();
+    $('b-aeat').style.display='none';
+    if(!aeatActiu()){var br=$('b-aeat-reintenta');if(br)br.style.display='none';pintaBridge(T('Envío a la AEAT detenido: no se envía nada.'));return}
+    if(pontEntorn!=='PRODUCCIO'){pintaBridge(T('El puente local apunta al entorno de PRUEBAS: con el envío activado no se envía nada hasta que apunte a producción.'),'#B91C1C');return}
+    pintaBridge(Tf('Bridge AEAT: ✓ conectado (producción, {cert}) · pendientes: {n}',
+      {cert:T(d.certCarregat?'certificado cargado':'SIN certificado'),n:d.pendents}),'var(--verd-fosc)');
+    await enviaPendentsAeat('sonda');
+  }
+
+  safe(function(){
+    $('b-aeat-canvia').addEventListener('click',function(){var e=aeatViu();if(e)canviaAeat(!e.actiu)});
+    $('b-aeat-registre').addEventListener('click',exportaRegistreAeat);
+    $('b-aeat-corregeix').addEventListener('click',function(){var e=aeatViu(),f=$('aeat-correccio');if(!e)return;
+      $('aeat-nova-data').value=e.dataObligacio;f.style.display=f.style.display==='none'?'':'none'});
+    $('b-aeat-desa-data').addEventListener('click',corregeixDataAeat);
+    $('b-aeat-pantalla-activa').addEventListener('click',function(){canviaAeat(true)});
+    $('b-aeat-pantalla-tanca').addEventListener('click',tancaPantallaAeat);
+    $('b-aeat-reintenta').addEventListener('click',function(){enviaPendentsAeat('boto')});
+    /* Un NIF nou a la configuracio pot moure la data (nomes cap enrere): es torna a preguntar. */
+    $('b-config').addEventListener('click',function(){setTimeout(aeatRefresca,300)});
+    aeatArrenca();
+  },'aeat');
 
   // ---------- init ----------
   safe(function(){
@@ -2897,6 +3241,48 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
   DICT["Registro con huella SHA-256 encadenada. Las facturas se guardan en este dispositivo: exporte una copia de seguridad periódicamente (Configuración → Copia de seguridad)."]=["Registre amb empremta SHA-256 encadenada. Les factures es desen en aquest dispositiu: exporteu-ne una còpia de seguretat periòdicament (Configuració → Còpia de seguretat).","Registrierung mit verketteter SHA-256-Prüfsumme. Die Rechnungen werden auf diesem Gerät gespeichert: Exportieren Sie regelmäßig eine Sicherung (Einstellungen → Sicherung).","Chained SHA-256 fingerprint. Invoices are stored on this device: export a backup regularly (Settings → Backup)."];
   DICT["✅ Registro con huella encadenada · ✅ Rectificativas · ✅ Export gestoría · ⏳ Remisión automática a la AEAT (pendiente del certificado digital de la empresa y de nuestra declaración responsable del sistema). Sus facturas se emiten, se numeran y se encadenan con normalidad, pero no se envían a la AEAT y no llevan el código QR de VERI*FACTU."]=["✅ Registre amb empremta encadenada · ✅ Rectificatives · ✅ Export gestoria · ⏳ Remissió automàtica a l'AEAT (pendent del certificat digital de l'empresa i de la nostra declaració responsable del sistema). Les seves factures s'emeten, es numeren i s'encadenen amb normalitat, però no s'envien a l'AEAT i no porten el codi QR de VERI*FACTU.","✅ Registrierung mit verketteter Prüfsumme · ✅ Korrekturrechnungen · ✅ Steuerberater-Export · ⏳ Automatische Übermittlung an die AEAT (ausstehend: digitales Zertifikat des Unternehmens und unsere Konformitätserklärung für das System). Ihre Rechnungen werden ganz normal ausgestellt, nummeriert und verkettet, aber nicht an die AEAT gesendet und tragen keinen VERI*FACTU-QR-Code.","✅ Chained-fingerprint records · ✅ Corrective invoices · ✅ Accountant export · ⏳ Automatic AEAT submission (pending the company's digital certificate and our declaration of conformity for the system). Your invoices are issued, numbered and chained as usual, but they are not sent to the AEAT and do not carry the VERI*FACTU QR code."];
   DICT["Envío a la AEAT: detenido. Sus facturas son válidas: se emiten, se numeran y se encadenan con normalidad, y usted las conserva. Todavía no se envían a la AEAT, y por eso no llevan el código QR de VERI*FACTU. El envío será obligatorio para usted a partir del {fecha}."]=["Enviament a l'AEAT: aturat. Les seves factures són vàlides: s'emeten, es numeren i s'encadenen amb normalitat, i vostè les conserva. Encara no s'envien a l'AEAT, i per això no porten el codi QR de VERI*FACTU. L'enviament serà obligatori per a vostè a partir del {fecha}.","Übermittlung an die AEAT: deaktiviert. Ihre Rechnungen sind gültig: Sie werden ganz normal ausgestellt, nummeriert und verkettet, und Sie bewahren sie auf. Sie werden noch nicht an die AEAT gesendet und tragen deshalb keinen VERI*FACTU-QR-Code. Die Übermittlung ist für Sie ab dem {fecha} Pflicht.","AEAT submission: stopped. Your invoices are valid: they are issued, numbered and chained as usual, and you keep them. They are not sent to the AEAT yet, which is why they do not carry the VERI*FACTU QR code. Submission will be mandatory for you from {fecha}."];
+  /* ENG-37 · els textos de l'interruptor (Legal 22_ §3 en castella i catala; alemany i angles, d'Enginyeria). */
+  DICT["Envío a la AEAT (VERI*FACTU)"]=["Enviament a l'AEAT (VERI*FACTU)","Übermittlung an die AEAT (VERI*FACTU)","Submission to the AEAT (VERI*FACTU)"];
+  DICT["Activado"]=["Activat","Aktiviert","Activated"];
+  DICT["Detenido"]=["Aturat","Deaktiviert","Stopped"];
+  DICT["Detenido. Sus facturas se emiten, se numeran y se encadenan con normalidad, pero no se envían a la AEAT y no llevan el código QR de VERI*FACTU. A partir del {fecha} el envío será obligatorio para usted."]=["Aturat. Les seves factures s'emeten, es numeren i s'encadenen amb normalitat, però no s'envien a l'AEAT i no porten el codi QR de VERI*FACTU. A partir del {fecha} l'enviament serà obligatori per a vostè.","Deaktiviert. Ihre Rechnungen werden ganz normal ausgestellt, nummeriert und verkettet, aber nicht an die AEAT gesendet und tragen keinen VERI*FACTU-QR-Code. Ab dem {fecha} ist die Übermittlung für Sie Pflicht.","Stopped. Your invoices are issued, numbered and chained as usual, but they are not sent to the AEAT and do not carry the VERI*FACTU QR code. From {fecha} submission will be mandatory for you."];
+  DICT["Activado. Cada factura se registra y se envía a la AEAT al emitirla, y lleva el código QR de VERI*FACTU. Puede detenerlo mientras el envío no sea obligatorio para usted (hasta el {fecha})."]=["Activat. Cada factura es registra i s'envia a l'AEAT en emetre-la, i porta el codi QR de VERI*FACTU. El pot aturar mentre l'enviament no sigui obligatori per a vostè (fins al {fecha}).","Aktiviert. Jede Rechnung wird bei der Ausstellung registriert und an die AEAT gesendet und trägt den VERI*FACTU-QR-Code. Sie können die Übermittlung deaktivieren, solange sie für Sie nicht Pflicht ist (bis zum {fecha}).","Activated. Each invoice is registered and sent to the AEAT when it is issued, and carries the VERI*FACTU QR code. You can stop it while submission is not mandatory for you (until {fecha})."];
+  DICT["Activado y bloqueado: desde el {fecha} el envío es obligatorio y debe mantenerse, como mínimo, hasta el 31 de diciembre de {any}."]=["Activat i bloquejat: des del {fecha} l'enviament és obligatori i s'ha de mantenir, com a mínim, fins al 31 de desembre de {any}.","Aktiviert und gesperrt: Seit dem {fecha} ist die Übermittlung Pflicht und muss mindestens bis zum 31. Dezember {any} beibehalten werden.","Activated and locked: since {fecha} submission is mandatory and must be kept at least until 31 December {any}."];
+  DICT["Va a activar el envío a la AEAT. Desde este momento, cada factura que emita se enviará a la AEAT y llevará el código QR de VERI*FACTU; primero se enviarán, por orden, las facturas que ya tiene registradas y pendientes de enviar. Puede volver a detenerlo mientras el envío no sea obligatorio para usted (hasta el {fecha}); a partir de esa fecha, si está activado, no podrá detenerlo. ¿Activar el envío?"]=["Activareu l'enviament a l'AEAT. A partir d'ara, cada factura que emeti s'enviarà a l'AEAT i portarà el codi QR de VERI*FACTU; primer s'enviaran, per ordre, les factures que ja té registrades i pendents d'enviar. El pot tornar a aturar mentre l'enviament no sigui obligatori per a vostè (fins al {fecha}); a partir d'aquella data, si està activat, no el podrà aturar. Activar l'enviament?","Sie aktivieren die Übermittlung an die AEAT. Ab sofort wird jede Rechnung, die Sie ausstellen, an die AEAT gesendet und trägt den VERI*FACTU-QR-Code; zuerst werden der Reihe nach die bereits registrierten und noch nicht gesendeten Rechnungen übermittelt. Sie können sie wieder deaktivieren, solange die Übermittlung für Sie nicht Pflicht ist (bis zum {fecha}); ab diesem Datum können Sie sie, wenn sie aktiviert ist, nicht mehr deaktivieren. Übermittlung aktivieren?","You are about to activate submission to the AEAT. From now on, every invoice you issue will be sent to the AEAT and will carry the VERI*FACTU QR code; first, the invoices you have already registered and not yet sent will be sent, in order. You can stop it again while submission is not mandatory for you (until {fecha}); from that date, if it is activated, you will not be able to stop it. Activate submission?"];
+  DICT["Va a activar el envío a la AEAT. Desde el {fecha} el envío es obligatorio para usted y, una vez iniciado, no podrá detenerlo: la ley obliga a mantenerlo como mínimo hasta el 31 de diciembre de {any}, y FacturaMed funciona únicamente en la modalidad VERI*FACTU. Primero se enviarán, por orden, las facturas pendientes. ¿Activar el envío?"]=["Activareu l'enviament a l'AEAT. Des del {fecha} l'enviament és obligatori per a vostè i, un cop iniciat, no el podrà aturar: la llei obliga a mantenir-lo com a mínim fins al 31 de desembre de {any}, i FacturaMed funciona únicament en la modalitat VERI*FACTU. Primer s'enviaran, per ordre, les factures pendents. Activar l'enviament?","Sie aktivieren die Übermittlung an die AEAT. Seit dem {fecha} ist die Übermittlung für Sie Pflicht, und einmal begonnen, können Sie sie nicht mehr deaktivieren: Das Gesetz verlangt, sie mindestens bis zum 31. Dezember {any} beizubehalten, und FacturaMed arbeitet ausschließlich im VERI*FACTU-Modus. Zuerst werden der Reihe nach die ausstehenden Rechnungen gesendet. Übermittlung aktivieren?","You are about to activate submission to the AEAT. Since {fecha} submission is mandatory for you and, once started, you will not be able to stop it: the law requires keeping it at least until 31 December {any}, and FacturaMed works only in VERI*FACTU mode. The pending invoices will be sent first, in order. Activate submission?"];
+  DICT["Va a detener el envío a la AEAT. Sus facturas seguirán numerándose y encadenándose igual, pero no se enviarán y dejarán de llevar el código QR de VERI*FACTU. Puede volver a activarlo cuando quiera; al activarlo se enviarán las facturas pendientes. Recuerde que a partir del {fecha} el envío será obligatorio. ¿Detener el envío?"]=["Aturareu l'enviament a l'AEAT. Les seves factures continuaran numerant-se i encadenant-se igual, però no s'enviaran i deixaran de portar el codi QR de VERI*FACTU. El pot tornar a activar quan vulgui; en activar-lo s'enviaran les factures pendents. Recordi que a partir del {fecha} l'enviament serà obligatori. Aturar l'enviament?","Sie deaktivieren die Übermittlung an die AEAT. Ihre Rechnungen werden weiterhin gleich nummeriert und verkettet, aber nicht gesendet und tragen keinen VERI*FACTU-QR-Code mehr. Sie können sie jederzeit wieder aktivieren; dann werden die ausstehenden Rechnungen gesendet. Denken Sie daran, dass die Übermittlung ab dem {fecha} Pflicht ist. Übermittlung deaktivieren?","You are about to stop submission to the AEAT. Your invoices will still be numbered and chained in the same way, but they will not be sent and will no longer carry the VERI*FACTU QR code. You can activate it again whenever you want; when you do, the pending invoices will be sent. Remember that from {fecha} submission will be mandatory. Stop submission?"];
+  DICT["No se puede detener el envío. Desde el {fecha} el envío a la AEAT es obligatorio para usted y, una vez iniciado, debe mantenerse como mínimo hasta el 31 de diciembre de {any} (artículo 16.5 del Reglamento). Pasada esa fecha tampoco podrá detenerlo con FacturaMed: hacerlo exigiría la modalidad “NO VERI*FACTU” —firma electrónica de cada registro y registro de eventos—, que este programa no incorpora. Sus datos son suyos y puede exportarlos en cualquier momento."]=["No es pot aturar l'enviament. Des del {fecha} l'enviament a l'AEAT és obligatori per a vostè i, un cop iniciat, s'ha de mantenir com a mínim fins al 31 de desembre de {any} (article 16.5 del Reglament). Passada aquesta data tampoc no el podrà aturar amb FacturaMed: fer-ho exigiria la modalitat “NO VERI*FACTU” —signatura electrònica de cada registre i registre d'esdeveniments—, que aquest programa no incorpora. Les seves dades són seves i les pot exportar en qualsevol moment.","Die Übermittlung kann nicht deaktiviert werden. Seit dem {fecha} ist die Übermittlung an die AEAT für Sie Pflicht und muss, einmal begonnen, mindestens bis zum 31. Dezember {any} beibehalten werden (Artikel 16.5 der Verordnung). Auch danach können Sie sie mit FacturaMed nicht deaktivieren: Dafür wäre der Modus „NO VERI*FACTU“ nötig – elektronische Signatur jedes Datensatzes und Ereignisprotokoll –, den dieses Programm nicht enthält. Ihre Daten gehören Ihnen, und Sie können sie jederzeit exportieren.","Submission cannot be stopped. Since {fecha} submission to the AEAT is mandatory for you and, once started, must be kept at least until 31 December {any} (article 16.5 of the Regulation). After that date you will not be able to stop it with FacturaMed either: that would require the “NO VERI*FACTU” mode — an electronic signature on every record and an event log — which this program does not include. Your data is yours and you can export it at any time."];
+  DICT["Faltan {n} días: a partir del {fecha} tendrá que enviar a la AEAT el registro de cada factura que emita (VERI*FACTU). Puede activar el envío cuando quiera desde Configuración. Si llega esa fecha con el envío detenido, no podrá emitir facturas hasta que lo active, y una vez activado ya no podrá detenerlo."]=["Falten {n} dies: a partir del {fecha} haurà d'enviar a l'AEAT el registre de cada factura que emeti (VERI*FACTU). Pot activar l'enviament quan vulgui des de Configuració. Si arriba aquella data amb l'enviament aturat, no podrà emetre factures fins que l'activi, i un cop activat ja no el podrà aturar.","Noch {n} Tage: Ab dem {fecha} müssen Sie den Datensatz jeder ausgestellten Rechnung an die AEAT übermitteln (VERI*FACTU). Sie können die Übermittlung jederzeit in den Einstellungen aktivieren. Wenn dieses Datum mit deaktivierter Übermittlung kommt, können Sie keine Rechnungen ausstellen, bis Sie sie aktivieren, und einmal aktiviert können Sie sie nicht mehr deaktivieren.","{n} days left: from {fecha} you will have to send the AEAT the record of every invoice you issue (VERI*FACTU). You can activate submission whenever you want from Settings. If that date arrives with submission stopped, you will not be able to issue invoices until you activate it, and once activated you will not be able to stop it."];
+  DICT["Falta 1 día: a partir del {fecha} tendrá que enviar a la AEAT el registro de cada factura que emita (VERI*FACTU). Puede activar el envío cuando quiera desde Configuración. Si llega esa fecha con el envío detenido, no podrá emitir facturas hasta que lo active, y una vez activado ya no podrá detenerlo."]=["Falta 1 dia: a partir del {fecha} haurà d'enviar a l'AEAT el registre de cada factura que emeti (VERI*FACTU). Pot activar l'enviament quan vulgui des de Configuració. Si arriba aquella data amb l'enviament aturat, no podrà emetre factures fins que l'activi, i un cop activat ja no el podrà aturar.","Noch 1 Tag: Ab dem {fecha} müssen Sie den Datensatz jeder ausgestellten Rechnung an die AEAT übermitteln (VERI*FACTU). Sie können die Übermittlung jederzeit in den Einstellungen aktivieren. Wenn dieses Datum mit deaktivierter Übermittlung kommt, können Sie keine Rechnungen ausstellen, bis Sie sie aktivieren, und einmal aktiviert können Sie sie nicht mehr deaktivieren.","1 day left: from {fecha} you will have to send the AEAT the record of every invoice you issue (VERI*FACTU). You can activate submission whenever you want from Settings. If that date arrives with submission stopped, you will not be able to issue invoices until you activate it, and once activated you will not be able to stop it."];
+  DICT["Active el envío a la AEAT para seguir facturando"]=["Activeu l'enviament a l'AEAT per continuar facturant","Aktivieren Sie die Übermittlung an die AEAT, um weiter Rechnungen zu stellen","Activate submission to the AEAT to keep invoicing"];
+  DICT["Desde el {fecha}, la ley le obliga a enviar a la AEAT el registro de cada factura que emita (VERI*FACTU). FacturaMed funciona solo en esa modalidad: para emitir facturas necesita activar el envío. Al activarlo se enviarán también, por orden, las facturas pendientes, y ya no podrá detenerlo (como mínimo, hasta el 31 de diciembre). Si prefiere no enviar, tendrá que facturar con otro sistema; sus facturas y sus datos siguen siendo suyos y puede exportarlos cuando quiera."]=["Des del {fecha}, la llei l'obliga a enviar a l'AEAT el registre de cada factura que emeti (VERI*FACTU). FacturaMed funciona només en aquesta modalitat: per emetre factures cal activar l'enviament. En activar-lo s'enviaran també, per ordre, les factures pendents, i ja no el podrà aturar (com a mínim, fins al 31 de desembre). Si prefereix no enviar, haurà de facturar amb un altre sistema; les seves factures i les seves dades continuen sent seves i les pot exportar quan vulgui.","Seit dem {fecha} verpflichtet Sie das Gesetz, den Datensatz jeder ausgestellten Rechnung an die AEAT zu übermitteln (VERI*FACTU). FacturaMed arbeitet nur in diesem Modus: Um Rechnungen auszustellen, müssen Sie die Übermittlung aktivieren. Dabei werden auch die ausstehenden Rechnungen der Reihe nach gesendet, und Sie können sie nicht mehr deaktivieren (mindestens bis zum 31. Dezember). Wenn Sie nicht übermitteln möchten, müssen Sie mit einem anderen System abrechnen; Ihre Rechnungen und Ihre Daten gehören weiterhin Ihnen, und Sie können sie jederzeit exportieren.","Since {fecha}, the law requires you to send the AEAT the record of every invoice you issue (VERI*FACTU). FacturaMed works only in that mode: to issue invoices you need to activate submission. When you do, the pending invoices will also be sent, in order, and you will no longer be able to stop it (at least until 31 December). If you prefer not to send, you will have to invoice with another system; your invoices and your data are still yours and you can export them whenever you want."];
+  DICT["Activar el envío"]=["Activar l'enviament","Übermittlung aktivieren","Activate submission"];
+  DICT["Detener el envío"]=["Aturar l'enviament","Übermittlung deaktivieren","Stop submission"];
+  DICT["Ahora no"]=["Ara no","Jetzt nicht","Not now"];
+  DICT["Fecha de obligación: {fecha}"]=["Data d'obligació: {fecha}","Pflicht ab: {fecha}","Mandatory from: {fecha}"];
+  DICT["Fecha de obligación"]=["Data d'obligació","Pflicht ab","Mandatory from"];
+  DICT["según el NIF del emisor"]=["segons el NIF de l'emissor","laut Steuernummer des Ausstellers","based on the issuer's tax ID"];
+  DICT["corregida a mano"]=["corregida a mà","von Hand korrigiert","corrected by hand"];
+  DICT["por defecto: NIF vacío o no válido"]=["per defecte: NIF buit o no vàlid","Standard: Steuernummer leer oder ungültig","default: tax ID empty or not valid"];
+  DICT["Corregir la fecha"]=["Corregir la data","Datum korrigieren","Correct the date"];
+  DICT["Motivo (obligatorio para retrasar la fecha)"]=["Motiu (obligatori per endarrerir la data)","Grund (Pflicht, um das Datum nach hinten zu verschieben)","Reason (required to move the date later)"];
+  DICT["Guardar la fecha"]=["Desar la data","Datum speichern","Save the date"];
+  DICT["Fecha de obligación guardada."]=["Data d'obligació desada.","Pflichtdatum gespeichert.","Mandatory date saved."];
+  DICT["⬇ Registro de cambios (CSV)"]=["⬇ Registre de canvis (CSV)","⬇ Änderungsprotokoll (CSV)","⬇ Change log (CSV)"];
+  DICT["Solo el médico titular o el administrador del centro puede cambiarlo."]=["Només el metge titular o l'administrador del centre el pot canviar.","Nur der verantwortliche Arzt oder die Zentrumsverwaltung kann das ändern.","Only the account's doctor or the center administrator can change this."];
+  DICT["Con el envío ya obligatorio y activado, no se puede cambiar."]=["Amb l'enviament ja obligatori i activat, no es pot canviar.","Da die Übermittlung bereits Pflicht und aktiviert ist, kann das nicht geändert werden.","With submission already mandatory and activated, this cannot be changed."];
+  DICT["Para retrasar la fecha hace falta escribir el motivo."]=["Per endarrerir la data cal escriure el motiu.","Um das Datum nach hinten zu verschieben, müssen Sie den Grund angeben.","To move the date later you need to write the reason."];
+  DICT["Alguien lo ha cambiado al mismo tiempo desde otro dispositivo. Vuelva a mirarlo."]=["Algú ho ha canviat alhora des d'un altre dispositiu. Torni-ho a mirar.","Jemand hat es gleichzeitig auf einem anderen Gerät geändert. Bitte prüfen Sie es erneut.","Someone changed it at the same time from another device. Please check again."];
+  DICT["No se ha podido guardar el cambio. Inténtelo de nuevo."]=["No s'ha pogut desar el canvi. Torni-ho a provar.","Die Änderung konnte nicht gespeichert werden. Bitte versuchen Sie es erneut.","The change could not be saved. Please try again."];
+  DICT["Envío activado."]=["Enviament activat.","Übermittlung aktiviert.","Submission activated."];
+  DICT["Envío detenido."]=["Enviament aturat.","Übermittlung deaktiviert.","Submission stopped."];
+  DICT["Envío a la AEAT detenido: no se envía nada."]=["Enviament a l'AEAT aturat: no s'envia res.","Übermittlung an die AEAT deaktiviert: Es wird nichts gesendet.","Submission to the AEAT stopped: nothing is sent."];
+  DICT["El puente local apunta al entorno de PRUEBAS: con el envío activado no se envía nada hasta que apunte a producción."]=["El pont local apunta a l'entorn de PROVES: amb l'enviament activat no s'envia res fins que apunti a producció.","Die lokale Bridge zeigt auf die TEST-Umgebung: Bei aktivierter Übermittlung wird nichts gesendet, bis sie auf die Produktion zeigt.","The local bridge points to the TEST environment: with submission activated nothing is sent until it points to production."];
+  DICT["Bridge AEAT: ✓ conectado (producción, {cert}) · pendientes: {n}"]=["Pont AEAT: ✓ connectat (producció, {cert}) · pendents: {n}","AEAT-Bridge: ✓ verbunden (Produktion, {cert}) · offen: {n}","AEAT bridge: ✓ connected (production, {cert}) · pending: {n}"];
+  DICT["La cadena de registros no cuadra: no se envía nada. Verifique la integridad."]=["La cadena de registres no quadra: no s'envia res. Verifiqui la integritat.","Die Datensatzkette stimmt nicht: Es wird nichts gesendet. Prüfen Sie die Integrität.","The record chain does not match: nothing is sent. Verify integrity."];
+  DICT["La AEAT ha rechazado {num}: revísela antes de seguir enviando."]=["L'AEAT ha rebutjat {num}: revisi-la abans de continuar enviant.","Die AEAT hat {num} abgelehnt: Bitte prüfen Sie sie, bevor weiter gesendet wird.","The AEAT rejected {num}: please review it before sending continues."];
+  DICT["📡 {n} factura(s) en cola hacia la AEAT. El estado se actualiza solo."]=["📡 {n} factura(es) a la cua cap a l'AEAT. L'estat s'actualitza sol.","📡 {n} Rechnung(en) in der Warteschlange zur AEAT. Der Status aktualisiert sich selbst.","📡 {n} invoice(s) queued for the AEAT. The status updates by itself."];
+  DICT["📡 Reintentar el envío"]=["📡 Tornar a provar l'enviament","📡 Übermittlung erneut versuchen","📡 Retry submission"];
   var IDX={ca:0,de:1,en:2};
   /* ENG-4: s'hi afegeixen span i strong, com a SecreMed. El guard «si té fills,
      no el toquis» es manté; els títols amb comptadors porten el text dins d'un span. */

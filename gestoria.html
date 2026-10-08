@@ -258,6 +258,19 @@
         <div class="avis" id="avis-client"></div>
       </div>
       <div class="targeta"><div class="scroll" id="cartera-taula"></div></div>
+      <!-- ENG-39 · La copia de la cartera. Mentre F2c no hi sigui, la cartera viu NOMES
+           en aquest navegador (gm_despatx_<id>): si s'esborren les dades de navegacio,
+           es perd. Com la copia de FacturaMed: un JSON per desar, i restaurar-lo. -->
+      <div class="targeta" id="copia-card" style="margin-top:16px">
+        <h2 data-k="copia_titol">Copia de la cartera</h2>
+        <p class="nota" data-k="copia_nota">La cartera vive solo en este navegador: si se borran los datos de navegación, se pierde. Descargue una copia de vez en cuando y guárdela en un lugar seguro.</p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;align-items:center">
+          <button class="btn sec" id="b-copia-baixa" type="button" data-k="copia_baixa">⬇ Descargar una copia (JSON)</button>
+          <button class="btn sec" id="b-copia-restaura" type="button" data-k="copia_restaura">⬆ Restaurar una copia…</button>
+          <input type="file" id="copia-fitxer" accept="application/json,.json" style="display:none" aria-hidden="true" tabindex="-1">
+        </div>
+        <div class="avis" id="avis-copia" role="status"></div>
+      </div>
     </section>
 
     <!-- FITXA DE CLIENT -->
@@ -331,6 +344,11 @@
   // ---------- idioma (patró de config.html: data-k + T[lang]) ----------
   var T={
     es:{tornar:'← Panel',sortir:'Cerrar sesión',fora_sub:'El panel de la gestoría. Hay que iniciar sesión.',entrar:'Iniciar sesión',
+      copia_titol:'Copia de la cartera',copia_nota:'La cartera vive solo en este navegador: si se borran los datos de navegación, se pierde. Descargue una copia de vez en cuando y guárdela en un lugar seguro.',
+      copia_baixa:'⬇ Descargar una copia (JSON)',copia_restaura:'⬆ Restaurar una copia…',copia_feta:'Copia descargada: {n} clientes.',
+      copia_conf:'Esto SUSTITUIRÁ la cartera de este navegador por la copia del {data} ({n} clientes). ¿Continuar?',copia_restaurada:'Copia restaurada: {n} clientes.',
+      copia_no_valida:'El archivo no es una copia válida de la cartera de GestorMed. No se ha cambiado nada.',copia_versio:'Esta copia es de otra versión de GestorMed y no se puede restaurar aquí. No se ha cambiado nada.',
+      copia_altre_despatx:'Esta copia es de otro despacho ({nom}). No se ha cambiado nada.',copia_massa_gran:'El archivo es demasiado grande para ser una copia de la cartera. No se ha cambiado nada.',
       crea_sub:'Todavía no tiene ninguna gestoría. Créela y empiece a añadir clientes.',crea_nom:'Nombre de la gestoría',crea_nif:'NIF (opcional)',crea_btn:'Crear la gestoría',crea_falta:'Hace falta el nombre de la gestoría',
       sub:'Centro de control de plazos fiscales de todos sus clientes',reinicia:'Reiniciar los datos de prueba',
       banner:'Despacho de prueba · datos ficticios que viven solo en este navegador · hoy (simulado): {d}',banner_local:'Datos locales de prueba (fase F1): la cartera y los estados viven solo en este navegador · hoy: {d}',
@@ -367,6 +385,11 @@
       metges_buit:'Todavía no tiene ningún médico. Empiece invitando a uno más abajo.',metges_prova:'En el despacho de prueba las invitaciones están desactivadas.',
       correu_invalid:'Correo no válido',conv_creat:'Invitación creada, pero el correo no ha salido.',conv_enviat:'Invitación enviada a {e}',err:'Error',err_con:'Error de conexión'},
     ca:{tornar:'← Panell',sortir:'Tancar sessió',fora_sub:'El panell de la gestoria. Cal iniciar sessió.',entrar:'Iniciar sessió',
+      copia_titol:'Còpia de la cartera',copia_nota:'La cartera viu només en aquest navegador: si s\'esborren les dades de navegació, es perd. Descarregui\'n una còpia de tant en tant i desi-la en un lloc segur.',
+      copia_baixa:'⬇ Descarregar una còpia (JSON)',copia_restaura:'⬆ Restaurar una còpia…',copia_feta:'Còpia descarregada: {n} clients.',
+      copia_conf:'Això SUBSTITUIRÀ la cartera d\'aquest navegador per la còpia del {data} ({n} clients). Vol continuar?',copia_restaurada:'Còpia restaurada: {n} clients.',
+      copia_no_valida:'El fitxer no és una còpia vàlida de la cartera de GestorMed. No s\'ha canviat res.',copia_versio:'Aquesta còpia és d\'una altra versió de GestorMed i no es pot restaurar aquí. No s\'ha canviat res.',
+      copia_altre_despatx:'Aquesta còpia és d\'un altre despatx ({nom}). No s\'ha canviat res.',copia_massa_gran:'El fitxer és massa gran per ser una còpia de la cartera. No s\'ha canviat res.',
       crea_sub:'Encara no té cap gestoria. Creï-la i comenci a afegir clients.',crea_nom:'Nom de la gestoria',crea_nif:'NIF (opcional)',crea_btn:'Crear la gestoria',crea_falta:'Cal el nom de la gestoria',
       sub:'Centre de control de terminis fiscals de tots els seus clients',reinicia:'Reiniciar les dades de prova',
       banner:'Despatx de prova · dades fictícies que viuen només en aquest navegador · avui (simulat): {d}',banner_local:'Dades locals de prova (fase F1): la cartera i els estats viuen només en aquest navegador · avui: {d}',
@@ -749,6 +772,7 @@
     $('v-dins').classList.remove('amaga');
     $('g-titol').textContent=gestoria.nom;
     $('banner-prova').classList.remove('amaga');
+    $('copia-card').classList.toggle('amaga',PROVA);   // ENG-39 · la copia, nomes d'una cartera de veritat
     var sel=$('periode'); sel.innerHTML='';
     periodes().forEach(function(p,i){ var o=document.createElement('option'); o.value=p; o.textContent=p.replace('T',' · T'); if(!i)o.selected=true; sel.appendChild(o); });
     /* El trimestre que la gestoria té entre mans no és el que acaba de començar:
@@ -796,6 +820,33 @@
     $('tm-admin').classList.toggle('amaga',!admin);
     $('tm-nomes-admin').classList.toggle('amaga',admin);
   }
+  /* ENG-39 · La copia de la cartera. Descarregar: tota la cartera d'aquest
+     navegador en un JSON (gm-dades.js, copia). Restaurar: gm-dades la comprova
+     SENSE tocar res (nomes d'aquest despatx, d'aquesta versio, i cada camp amb la
+     forma que el panell escriu) i, si la gestoria ho confirma, la posa. Una copia
+     que no serveix no canvia res i diu per que. Al despatx de prova no hi es. */
+  var COPIA_MAX_BYTES=5*1024*1024;
+  function descarregaFitxer(nom,text,tipus){
+    var url=URL.createObjectURL(new Blob([text],{type:tipus})), a=document.createElement('a');
+    a.href=url; a.download=nom; a.style.display='none'; document.body.appendChild(a); a.click();
+    setTimeout(function(){URL.revokeObjectURL(url); a.remove();},1000);
+  }
+  function baixaCopia(){
+    if(PROVA||!gestoria) return;
+    var c=gd.copia(new Date().toISOString()); if(!c) return;
+    descarregaFitxer('GestorMed_cartera_'+c.data.slice(0,10)+'.json',JSON.stringify(c,null,1),'application/json');
+    avisa('avis-copia',t('copia_feta',{n:c.despatx.clients.length}));
+  }
+  function restauraCopia(text){
+    var r=gd.llegeixCopia(text,gestoria);
+    if(r.error){ avisa('avis-copia',t(r.error,{nom:r.nom||''}),true); return; }
+    if(!confirm(t('copia_conf',{data:dataLlarga(r.data),n:r.n}))) return;
+    gd.restaura(r.despatx);
+    clientObert=null; editant=null; $('client-form-card').style.display='none';
+    mostraTab('cartera'); pintaTot();
+    avisa('avis-copia',t('copia_restaurada',{n:r.n}));
+    carregaConsultaMed();
+  }
   function obreLaCartera(){
     // F1/F2: la cartera d'una gestoria real viu (de moment) al seu navegador, a la seva clau, i comença buida.
     gd.configura({magatzem:(function(){try{return window.localStorage}catch(e){return null}})(),terminis:gm,clau:'gm_despatx_'+gestoria.id});
@@ -811,6 +862,16 @@
     $('b-entrar').href=ENTRA;
     $('b-sortir').addEventListener('click',function(){ if(PROVA){location.href='hub.html';return} api('logout').then(function(){location.href='https://consultamed.es/'}); });
     $('b-reinicia').addEventListener('click',function(e){e.preventDefault(); gd.carrega({reinicia:true}); clientObert=null; mostraTab('tauler'); pintaTot();});
+    $('b-copia-baixa').addEventListener('click',baixaCopia);   // ENG-39
+    $('b-copia-restaura').addEventListener('click',function(){ if(!PROVA&&gestoria) $('copia-fitxer').click(); });
+    $('copia-fitxer').addEventListener('change',function(){
+      var f=this.files&&this.files[0]; this.value=''; if(!f) return;
+      if(f.size>COPIA_MAX_BYTES){ avisa('avis-copia',t('copia_massa_gran'),true); return; }
+      var lector=new FileReader();
+      lector.onload=function(){ restauraCopia(String(lector.result||'')); };
+      lector.onerror=function(){ avisa('avis-copia',t('copia_no_valida'),true); };
+      lector.readAsText(f);
+    });
     $('b-crea').addEventListener('click',function(){
       var nom=$('g-nom').value.trim();
       if(!nom){avisa('avis-crea',t('crea_falta'),true);return}

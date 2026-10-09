@@ -198,12 +198,15 @@
       <div class="card-desc" data-k="d_factura"></div>
       <div class="card-go" data-k="obrir"></div>
     </a>
-    <span class="card soon" id="card-recept" style="--acc:var(--cian)">
-      <span class="soon-tag" data-k="soon"></span>
+    <!-- ENG-40 · ReceptaMed: un enllaç a recepta.html. Sense cm_preview segueix
+         amagada (la porta de més avall, la mateixa d'abans); amb cm_preview porta
+         l'etiqueta «Preview» en lloc de «soon». Publicar-la és P4, en un lot a part. -->
+    <a class="card" id="card-recept" style="--acc:var(--cian)" href="recepta.html">
+      <span class="soon-tag">Preview</span>
       <div class="card-logo"><img src="receptamed.png" alt="ReceptaMed"></div>
       <div class="card-desc" data-k="d_recept"></div>
-      <div class="card-go" data-k="soon_go"></div>
-    </span>
+      <div class="card-go" data-k="obrir"></div>
+    </a>
   </div>
 
   <a class="guia" id="guia-pdf" href="guia-consultamed.pdf" download="Guia-ConsultaMed.pdf">
@@ -513,10 +516,16 @@
   /* On torna «Ara no». Llista tancada: el que arribi per la URL no s'enganxa
      enlloc, es busca en aquesta taula. Una destinacio que vingui del navegador
      i s'usi tal qual es una redireccio oberta. */
-  var DESTINS={app:'app.html', escriba:'escriba.html', secre:'secremed.html'};
+  var DESTINS={app:'app.html', escriba:'escriba.html', secre:'secremed.html', recepta:'recepta.html'};   /* ENG-40 */
   var tornarClau=q.get('tornar');
   var TORNAR=Object.prototype.hasOwnProperty.call(DESTINS,String(tornarClau))?DESTINS[tornarClau]:'hub.html';
-  var ETIQ_RETORN=Object.prototype.hasOwnProperty.call(DESTINS,String(tornarClau))?('activacio-'+tornarClau):'activacio';
+  /* ENG-40 · L'etiqueta de retorn de Stripe nomes pot ser una que el servidor
+     conegui: lib/retorns.js es una llista tancada, `activacio-recepta` encara no
+     hi es (P-ENG-73) i una de desconeguda hi cau a `compte` (el metge acabaria
+     al panell del servidor). Mentrestant ReceptaMed torna al hub amb la generica.
+     Quan el servidor la conegui, aqui s'hi suma `recepta:1`. */
+  var ETIQ_SERVIDOR={app:1, escriba:1, secre:1};
+  var ETIQ_RETORN=Object.prototype.hasOwnProperty.call(ETIQ_SERVIDOR,String(tornarClau))?('activacio-'+tornarClau):'activacio';
 
   var TA={
     ca:{

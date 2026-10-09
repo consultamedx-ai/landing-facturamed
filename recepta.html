@@ -1,0 +1,2945 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<script>
+/* Anti-clickjacking (auditoria 31/07/2026, H3). GitHub Pages no permet capcaleres,
+   i frame-ancestors dins d'un <meta> l'ignoren tots els navegadors. */
+(function(){ if (self !== top) { try { top.location = self.location; } catch(e) { document.documentElement.style.display='none'; } } })();
+</script>
+
+<meta charset="UTF-8">
+  <!-- ENG-7 · favicon (DIS-3) -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/favicon-180.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#0D3B66">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- ENG-40 · ReceptaMed v1 (A-023). La CSP de secremed.html sense l'agent local
+     (aqui no n'hi ha) i amb font-src 'self': cap recurs de fora. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' ipc: http://ipc.localhost https://app.consultamed.es; form-action 'self'; manifest-src 'self'; font-src 'self'">
+<script src="cmstore.js"></script>
+<script src="cmsync.js?v=20260903" defer></script>
+<meta name="referrer" content="no-referrer">
+<title>ReceptaMed</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="stylesheet" href="tipografies/tipografies.css">
+<style id="rm-page">@page { size: 210mm 148mm; margin: 0 }</style>
+<style>
+  /* ═══════════════════════════════════════════════════════════════════════
+     ReceptaMed v1 · Enginyeria · 7/10/2026 (ENG-40, i l'esmena A2: ENG-41)
+     - Tokens de Disseny v2.4: Blau Clinic, Blanc Gasa, Grafit, Linia, Tinta
+       Clara (tot el text secundari: mai Gris Boira), Tinta Teal.
+     - Accent de ReceptaMed (DIS-16 §5): el boto principal, Cian fosc #0E7490
+       amb Blanc Gasa (5,11:1) i, en passar-hi el ratoli, #0C6179 (6,67:1): el
+       text no canvia mai de color. El Cian #0891B2 nomes on no hi ha text en
+       blanc a sobre (la pestanya activa, els filets), amb Tinta Teal (4,64:1).
+     - Focus: Blau Clinic, 2 px i 2 px de separacio (10,92:1 sobre Gasa).
+     - La recepta impresa (.rm-full) va tota en mm i en #000: es el mateix DOM
+       a la previsualitzacio (escalat) i al paper.
+     ═══════════════════════════════════════════════════════════════════════ */
+  *{box-sizing:border-box;margin:0;padding:0}
+  [hidden]{display:none!important}
+  :root{--blau:#0D3B66;--gasa:#F7FAFC;--grafit:#1F2937;--linia:#E2E8F0;--boira:#94A3B8;--tinta-clara:#4B5B6C;--tinta-teal:#04201D;--acc:#0891B2;--acc2:#0E7490;--acc3:#0C6179;--error:#B91C1C;--avis:#92400E;--ok:#047857}
+  html{-webkit-text-size-adjust:100%}
+  body{font-family:"Inter","Segoe UI",system-ui,-apple-system,Arial,Helvetica,sans-serif;color:var(--grafit);line-height:1.5;background:var(--gasa);min-height:100vh;-webkit-font-smoothing:antialiased}
+  h1,h2,h3{font-family:"Sora","Inter","Segoe UI",system-ui,sans-serif;color:var(--blau);line-height:1.25}
+  a{color:var(--acc2)}
+  :focus-visible{outline:2px solid var(--blau);outline-offset:2px}
+  .rm-ocult{position:absolute!important;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+
+  /* ── capçalera ── */
+  .rm-nav{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.94);border-bottom:1px solid var(--linia)}
+  .rm-nav-in{max-width:1180px;margin:0 auto;padding:0 20px;min-height:58px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .rm-logo{display:inline-flex;align-items:center;flex:0 0 auto}
+  .rm-logo-img{height:29px;width:auto;display:block;flex:0 0 auto}
+  .rm-nav-dreta{display:flex;align-items:center;gap:10px}
+  .rm-nav-enllac{font-size:.85rem;font-weight:600;color:var(--acc2);text-decoration:none;display:inline-flex;align-items:center;min-height:36px;padding:0 6px;border-radius:8px;white-space:nowrap}
+  .rm-nav-enllac:hover{text-decoration:underline}
+  .rm-idioma{font:inherit;font-size:.8rem;font-weight:600;color:var(--blau);background:#fff;border:1px solid var(--linia);border-radius:99px;padding:6px 10px;min-height:36px}
+
+  /* ── estructura ── */
+  .rm-wrap{max-width:1180px;margin:0 auto;padding:22px 20px 110px}
+  .rm-card{background:#fff;border:1px solid var(--linia);border-radius:16px;padding:20px;margin-bottom:18px;box-shadow:0 8px 26px rgba(13,59,102,.05)}
+  .rm-card h2{font-size:1.02rem;margin-bottom:10px}
+  .rm-card h3{font-size:.9rem;margin:16px 0 4px}
+  .rm-nota{font-size:.8rem;color:var(--tinta-clara);margin-top:6px}
+  label{display:block;font-size:.8rem;font-weight:600;margin:12px 0 4px;color:var(--grafit)}
+  input,select,textarea{width:100%;font:inherit;font-size:.92rem;color:var(--grafit);background:#fff;border:1px solid #CBD5E1;border-radius:9px;padding:9px 12px;min-width:0}
+  textarea{resize:vertical;min-height:62px;line-height:1.45}
+  input::placeholder,textarea::placeholder{color:#6B7785}
+  input[readonly]{background:var(--gasa)}
+  input:disabled,select:disabled,textarea:disabled{background:#EEF2F6;color:#475569}
+  input[aria-invalid="true"],select[aria-invalid="true"],textarea[aria-invalid="true"]{border-color:var(--error);box-shadow:0 0 0 1px var(--error)}
+  .rm-check{display:flex;align-items:flex-start;gap:8px;font-weight:500;font-size:.84rem;margin-top:12px;cursor:pointer}
+  .rm-check input{width:auto;margin-top:3px;flex:0 0 auto;accent-color:var(--acc2)}
+  .rm-fila{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}
+  .rm-fila>*{min-width:0}
+  .rm-btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;font:inherit;font-weight:700;font-size:.92rem;border:1.5px solid var(--acc2);background:var(--acc2);color:var(--gasa);border-radius:99px;padding:10px 20px;cursor:pointer;text-decoration:none;min-height:42px}
+  .rm-btn:hover{background:var(--acc3);border-color:var(--acc3);color:var(--gasa)}
+  .rm-btn.sec{background:#fff;color:var(--blau);border-color:#CBD5E1}
+  .rm-btn.sec:hover{background:var(--gasa);color:var(--blau);border-color:var(--blau)}
+  .rm-btn.perill{background:#fff;color:var(--error);border-color:#FECACA}
+  .rm-btn.perill:hover{background:#FEF2F2;color:var(--error);border-color:var(--error)}
+  .rm-btn.mini{font-size:.78rem;padding:5px 12px;min-height:32px}
+  .rm-btn:disabled{opacity:.55;cursor:not-allowed}
+  .rm-btn:disabled:hover{background:var(--acc2);border-color:var(--acc2);color:var(--gasa)}
+  .rm-btn.sec:disabled:hover{background:#fff;color:var(--blau);border-color:#CBD5E1}
+  .rm-botons{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:16px}
+  .rm-banner{border-radius:12px;padding:11px 15px;font-size:.88rem;margin-bottom:14px}
+  .rm-banner.ok{background:#ECFDF5;border:1px solid #A7F3D0;color:var(--ok)}
+  .rm-banner.err{background:#FEF2F2;border:1px solid #FECACA;color:var(--error)}
+  .rm-banner.info{background:#EFF6FF;border:1px solid #BFDBFE;color:#1E40AF}
+  .rm-avis{background:#FFFBEB;border:1px solid #FDE68A;color:var(--avis);border-radius:10px;padding:9px 12px;font-size:.82rem;margin-top:10px}
+  .rm-avis-suau{color:var(--avis);font-size:.8rem;margin-top:5px}
+  .rm-ajuda{font-size:.78rem;color:var(--tinta-clara);margin-top:5px}
+  /* ENG-41 (A2 §4) · els avisos fixos de Legal (23_ §4.8 i §7.3): no detecten res */
+  .rm-avis-fix{background:#F0F9FF;border:1px solid #BAE6FD;border-left:4px solid var(--acc);color:var(--grafit);border-radius:10px;padding:10px 13px;font-size:.82rem;line-height:1.5;margin-top:12px}
+  .rm-avis-fix strong{font-weight:700}
+  .rm-primer{margin:0 0 16px}
+  .rm-primer-tit{font-weight:700;color:var(--blau);margin-bottom:4px}
+  .rm-primer .rm-botons{margin-top:10px}
+  #sec-dades>.rm-avis-fix{margin:0 0 14px}
+  .rm-ok{background:#ECFDF5;border:1px solid #A7F3D0;color:var(--ok);border-radius:10px;padding:10px 13px;font-size:.88rem;font-weight:600;margin-top:14px}
+  .rm-errors{background:#FEF2F2;border:1px solid #FECACA;color:var(--error);border-radius:12px;padding:12px 15px;font-size:.86rem;margin-top:14px}
+  .rm-errors p{font-weight:700;margin-bottom:6px}
+  .rm-errors ul{margin:0 0 0 18px}
+  .rm-errors li{margin:3px 0}
+  .rm-err-camp{font:inherit;color:var(--error);background:none;border:0;text-align:left;text-decoration:underline;cursor:pointer;padding:0}
+  .rm-carregant{color:var(--tinta-clara);text-align:center;padding:60px 0}
+
+  /* ── pantalles neutres (porta tancada · rol) ── */
+  .rm-neutra{max-width:520px;margin:60px auto;text-align:center;background:#fff;border:1px solid var(--linia);border-radius:18px;padding:34px 26px}
+  .rm-neutra-logo{height:44px;width:auto;margin:0 auto 18px;display:block}
+  .rm-neutra-tag{display:inline-block;font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:#EEF2F7;color:var(--tinta-clara);padding:4px 12px;border-radius:99px;margin-bottom:12px}
+  .rm-neutra-txt{color:var(--grafit);font-size:1rem;margin-bottom:22px}
+
+  /* ── selector de metge (mode centre) ── */
+  .rm-metge-tria{background:#fff;border:1px solid var(--linia);border-left:4px solid var(--acc);border-radius:12px;padding:10px 16px 14px;margin-bottom:16px;max-width:520px}
+  .rm-metge-tria label{margin-top:0}
+
+  /* ── pestanyes ── */
+  .rm-tabs{display:flex;gap:4px;background:#fff;border:1px solid var(--linia);border-radius:99px;padding:4px;margin-bottom:18px;width:max-content;max-width:100%;overflow-x:auto}
+  .rm-tab{font:inherit;font-size:.86rem;font-weight:600;color:var(--tinta-clara);background:none;border:0;border-radius:99px;padding:8px 16px;cursor:pointer;white-space:nowrap;min-height:38px}
+  .rm-tab[aria-selected="true"]{background:var(--acc);color:var(--tinta-teal)}
+
+  /* ── nova recepta ── */
+  .rm-nova{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:20px;align-items:start}
+  .rm-pac-cerca-wrap{position:relative}
+  .rm-pac-llista{list-style:none;position:absolute;left:0;right:0;top:100%;z-index:30;background:#fff;border:1px solid #CBD5E1;border-radius:10px;box-shadow:0 12px 28px rgba(13,59,102,.14);margin-top:4px;max-height:320px;overflow:auto}
+  .rm-pac-llista li{padding:9px 12px;cursor:pointer;font-size:.88rem;border-top:1px solid var(--linia)}
+  .rm-pac-llista li:first-child{border-top:0}
+  .rm-pac-llista li[aria-selected="true"],.rm-pac-llista li:hover{background:#E0F2F7}
+  .rm-pac-llista li small{color:var(--tinta-clara);margin-left:6px}
+  .rm-pac-llista li.rm-buida{cursor:default;color:var(--tinta-clara)}
+  .rm-pac-nou{border:1px dashed #CBD5E1;border-radius:12px;padding:4px 14px 14px;margin-top:12px;background:var(--gasa)}
+  .rm-previ-card{position:sticky;top:76px}
+  .rm-previ{position:relative;width:100%;overflow:hidden;border:1px solid #CBD5E1;border-radius:6px;background:#fff;box-shadow:0 6px 18px rgba(13,59,102,.10)}
+  .rm-previ>.rm-impres{position:absolute;left:0;top:0;transform-origin:0 0}
+
+  /* ── historial ── */
+  .rm-filtres{display:grid;grid-template-columns:2fr 1fr 1fr;gap:0 14px;align-items:end}
+  .rm-filtres>*{min-width:0}
+  .rm-export{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+  .rm-compte{font-size:.82rem;color:var(--tinta-clara);margin:14px 0 6px}
+  .rm-taula{width:100%;border-collapse:collapse;font-size:.86rem}
+  .rm-taula th{text-align:left;font-size:.74rem;text-transform:uppercase;letter-spacing:.04em;color:var(--tinta-clara);font-weight:700;padding:8px;border-bottom:2px solid var(--linia)}
+  .rm-taula td{padding:9px 8px;border-bottom:1px solid var(--linia);vertical-align:top}
+  .rm-taula tr.rm-anullada td{color:#475569}
+  .rm-taula tr.rm-anullada .rm-h-med{text-decoration:line-through}
+  .rm-accions{white-space:nowrap}
+  .rm-accions .rm-btn{margin:0 4px 4px 0}
+  .rm-estat{display:inline-block;font-size:.7rem;font-weight:700;padding:2px 9px;border-radius:99px}
+  .rm-estat.emesa{background:#E0F2F7;color:#0B4F63}
+  .rm-estat.anullada{background:#FEF2F2;color:#991B1B}
+  .rm-mostra{display:inline-block;font-size:.66rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:2px 8px;border-radius:99px;background:#FEF3C7;color:var(--avis);margin-left:4px}
+  .rm-buit{color:var(--tinta-clara);text-align:center;padding:24px 0;font-size:.9rem}
+
+  /* ── dades ── */
+  .rm-dades{display:grid;grid-template-columns:1fr 1fr;gap:0 20px;align-items:start}
+  .rm-dades>*{min-width:0}
+  fieldset{border:0}
+  legend{font-size:.8rem;font-weight:600;margin:12px 0 4px}
+  .rm-radio{display:flex;align-items:flex-start;gap:8px;font-weight:500;font-size:.88rem;margin:8px 0;cursor:pointer}
+  .rm-radio input{width:auto;margin-top:4px;accent-color:var(--acc2)}
+  .rm-radio input:disabled+span{color:#64748B}
+
+  /* ── finestres ── */
+  .rm-modal{position:fixed;inset:0;z-index:80;background:rgba(15,23,42,.55);display:flex;align-items:flex-start;justify-content:center;padding:40px 16px;overflow:auto}
+  .rm-modal-caixa{background:#fff;border-radius:16px;padding:22px;width:100%;max-width:880px;box-shadow:0 24px 60px rgba(15,23,42,.35)}
+  .rm-modal-caixa.estreta{max-width:520px}
+  .rm-modal-caixa h2{font-size:1.05rem;margin-bottom:8px}
+  .rm-mv-previ{position:relative;width:100%;overflow:hidden;border:1px solid #CBD5E1;border-radius:6px;background:#fff;margin:12px 0}
+  .rm-mv-previ>.rm-impres{position:absolute;left:0;top:0;transform-origin:0 0}
+  /* a la pantalla, els dos fulls de l'A5 i del paper amb capçalera, l'un sota
+     l'altre i separats per una franja (al paper, cadascun a la seva pagina) */
+  .rm-previ .rm-impres,.rm-mv-previ .rm-impres{background:#CBD5E1}
+  .rm-previ .rm-full+.rm-full,.rm-mv-previ .rm-full+.rm-full{margin-top:4mm}
+
+  body:has(#barra-prova) #cm-sync-xip{bottom:64px!important}
+
+  @media (max-width:860px){
+    .rm-nova{grid-template-columns:1fr}
+    .rm-previ-card{position:static}
+    .rm-dades{grid-template-columns:1fr}
+  }
+  @media (max-width:600px){
+    .rm-taula thead{display:none}
+    .rm-taula,.rm-taula tbody,.rm-taula tr,.rm-taula td{display:block;width:100%}
+    .rm-taula tr{border:1px solid var(--linia);border-radius:12px;padding:8px 10px;margin-bottom:10px}
+    .rm-taula td{border:0;padding:4px 0}
+    .rm-taula td[data-l]::before{content:attr(data-l) " · ";font-weight:700;color:var(--tinta-clara);font-size:.74rem}
+    .rm-filtres{grid-template-columns:1fr}
+  }
+  @media (max-width:560px){
+    .rm-nav-in{padding:0 14px}
+    .rm-wrap{padding:16px 14px 110px}
+    .rm-fila{grid-template-columns:1fr}
+    .rm-tab,.rm-btn,.rm-nav-enllac,.rm-idioma,input:not([type=checkbox]):not([type=radio]),select,textarea{min-height:44px}
+    .rm-tabs{width:100%;flex-wrap:wrap;border-radius:18px}
+    .rm-tab{flex:1 1 auto;padding:8px 10px}
+    .rm-accions .rm-btn{min-width:44px}
+  }
+
+  /* ═══ LA RECEPTA IMPRESA (§8) · mil·límetres i tinta negra ═════════════ */
+  .rm-full{position:relative;width:210mm;height:148mm;background:#fff;overflow:hidden;color:#000;
+    font-family:"Inter","Segoe UI",Arial,Helvetica,sans-serif;font-variant-numeric:proportional-nums;
+    font-size:10pt;line-height:normal;text-align:left;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .rm-full.rm-a4{height:297mm}
+  .rm-impres{width:210mm}
+  .rm-contingut{position:absolute;inset:0}
+  /* ENG-41 (A2 §1 i §2) · DOS COSSOS, sempre junts: la recepta i el full
+     d'informacio per al pacient. Cada cos fa 210 × 148 mm i les seves zones es
+     posen en mm des del seu angle; a l'A4, el del pacient comença a 148,5 mm. */
+  .rm-cos{position:absolute;left:0;top:0;width:210mm;height:148mm}
+  .rm-a4 .rm-cos-pacient{top:148.5mm;height:148.5mm}
+  .rm-z{position:absolute;color:#000}
+  .rm-1l{white-space:nowrap}
+  /* DIS-16 §4 · 94 mm (era 100): el carrero amb la consulta passa d'1 a 7 mm */
+  .rm-z-metge{left:12mm;top:10mm;width:94mm}
+  /* DIS-16 §3 · el nom del metge, en negreta i prou: la Inter no te versaletes i el
+     navegador les falsificaria (el nom encongiria un 20 %) */
+  .rm-l-nom{font-size:12pt;font-weight:700;letter-spacing:.01em;line-height:5.2mm}
+  .rm-l-esp{font-size:10pt;line-height:4.4mm}
+  .rm-l-extra{font-size:9.5pt;line-height:4.2mm}
+  .rm-l-col{font-size:10pt;line-height:4.4mm}
+  .rm-z-consulta{right:12mm;top:10mm;width:85mm;text-align:right}
+  .rm-l-cnom{font-size:10pt;font-weight:700;line-height:4.4mm}
+  .rm-l-l{font-size:10pt;line-height:4.4mm}
+  .rm-l-mail{font-size:9.5pt;line-height:4.2mm}
+  .rm-z-pacient{left:30mm;top:40mm;width:150mm;text-align:center}
+  .rm-p-nom{font-size:15pt;line-height:6.5mm}
+  .rm-p-dades{font-size:10pt;line-height:4.4mm;margin-top:1mm}
+  .rm-z-medicament{left:20mm;top:63mm;width:170mm;text-align:center}
+  .rm-m-principi{font-size:14pt;font-weight:600;line-height:6.2mm}
+  .rm-m-detall{font-size:9.5pt;line-height:4.2mm;margin-top:.8mm}
+  .rm-z-posologia{left:20mm;top:78mm;width:170mm;text-align:center;font-size:13pt;line-height:5.6mm;white-space:pre-line}
+  .rm-z-signatura{left:65mm;top:94mm;width:80mm;height:28mm}
+  /* 7 i 8 · la data i, sota la data, la clausula de proteccio de dades (A2 §3:
+     23_ §6.2 i §6.3), apilades arran del limit de baix de la zona segura (138 mm).
+     Si la clausula hi cap sota la data, la data es queda a 126 mm, on la va posar
+     en Roger; si no, la pila creix cap amunt. Es provisional fins a DIS-17 (P-ENG-96). */
+  .rm-peu{position:absolute;left:12mm;right:12mm;bottom:10mm;min-height:12mm;display:flex;flex-direction:column;align-items:flex-end}
+  .rm-peu .rm-z{position:static}
+  .rm-z-data{width:70mm;text-align:right}
+  .rm-d-dia{font-size:12pt;line-height:5.4mm}
+  /* 23_ §6.3 · 6 pt, interlineat 2,4 mm, en negre, a l'esquerra: l'UNICA excepcio al
+     minim de 8,6 pt (es text fix, no el que escriu el metge). Mai mes petita i mai
+     tallada: si no hi cap, es un error de validacio, no un retall. */
+  .rm-z-clausula{width:186mm;margin-top:.8mm;font-size:6pt;line-height:2.4mm;text-align:left;overflow-wrap:anywhere;color:#000}
+  /* el full del pacient (A2 §1): la mateixa capçalera; la resta, provisional fins a DIS-17 */
+  .rm-z-ftitol{left:12mm;top:37mm;width:186mm;text-align:center;font-size:12pt;font-weight:700;line-height:5.4mm}
+  .rm-z-fpacient{left:30mm;top:46mm;width:150mm;text-align:center}
+  .rm-z-ftractament{left:20mm;top:58mm;width:170mm;text-align:center}
+  .rm-z-fposologia{left:20mm;top:73mm;width:170mm;text-align:center;font-size:13pt;line-height:5.6mm;white-space:pre-line}
+  .rm-z-fvalidesa{left:20mm;top:91mm;width:170mm;text-align:center;font-size:10pt;line-height:4.4mm}
+  .rm-marca-prova{position:absolute;left:105mm;top:77mm;transform:translate(-50%,-50%) rotate(-18deg);font-size:34pt;font-weight:800;letter-spacing:.06em;color:rgba(0,0,0,.20);white-space:nowrap;pointer-events:none}
+  .rm-marca-anullada{position:absolute;left:105mm;top:74mm;transform:translate(-50%,-50%) rotate(-18deg);font-size:46pt;font-weight:800;letter-spacing:.08em;color:rgba(0,0,0,.30);white-space:nowrap;pointer-events:none;border:1.2mm solid rgba(0,0,0,.30);padding:1mm 6mm}
+  .rm-capcalera .rm-z-metge,.rm-capcalera .rm-z-consulta{display:none}
+  .rm-tall{position:absolute;left:0;right:0;top:148.5mm;border-top:.3mm dashed rgba(0,0,0,.55)}
+  .rm-desborda{outline:.4mm dashed #000;outline-offset:.4mm}
+  /* el full d'alineacio: marcs de les 7 zones, creus i el rotul */
+  .rm-alineacio .rm-z{outline:.3mm dashed #000;outline-offset:0;display:flex;align-items:center;justify-content:center}
+  .rm-alineacio .rm-z-metge{height:22.4mm}
+  .rm-alineacio .rm-z-consulta{height:22mm}
+  .rm-alineacio .rm-z-pacient{height:11.9mm}
+  .rm-alineacio .rm-z-medicament{height:11.2mm}
+  .rm-alineacio .rm-z-posologia{height:11.2mm}
+  .rm-alineacio .rm-z-data{height:5.4mm}
+  .rm-alineacio .rm-z-clausula{height:7.2mm}
+  .rm-alineacio .rm-z-ftitol{height:5.4mm}
+  .rm-alineacio .rm-z-fpacient{height:6.5mm}
+  .rm-alineacio .rm-z-ftractament{height:11.2mm}
+  .rm-alineacio .rm-z-fposologia{height:11.2mm}
+  .rm-alineacio .rm-z-fvalidesa{height:8.8mm}
+  .rm-alineacio.rm-capcalera .rm-z-metge,.rm-alineacio.rm-capcalera .rm-z-consulta{display:flex}
+  .rm-alineacio .rm-a-nom{font-size:9pt}
+  .rm-a-rotul.rm-a-rotul-p{top:104mm}
+  .rm-a-nom{font-size:9pt;line-height:4mm;padding:0 1mm;text-align:center;white-space:nowrap}
+  .rm-creu{position:absolute;width:0;height:0}
+  .rm-creu::before{content:"";position:absolute;left:-4mm;top:-.15mm;width:8mm;border-top:.3mm solid #000}
+  .rm-creu::after{content:"";position:absolute;top:-4mm;left:-.15mm;height:8mm;border-left:.3mm solid #000}
+  .rm-creu span{position:absolute;font-size:9pt;line-height:4mm;white-space:nowrap;color:#000}
+  .rm-creu-1{left:12mm;top:10mm}.rm-creu-1 span{left:1.5mm;top:1mm}
+  .rm-creu-2{left:198mm;top:10mm}.rm-creu-2 span{right:1.5mm;top:1mm}
+  .rm-creu-3{left:105mm;top:74mm}.rm-creu-3 span{left:1.5mm;top:1mm}
+  .rm-creu-4{left:12mm;top:138mm}.rm-creu-4 span{left:1.5mm;bottom:1mm}
+  .rm-creu-5{left:198mm;top:138mm}.rm-creu-5 span{right:1.5mm;bottom:1mm}
+  .rm-a-rotul{position:absolute;left:105mm;top:54mm;transform:translateX(-50%);font-size:13pt;font-weight:700;letter-spacing:.04em;white-space:nowrap;color:#000}
+
+  /* el contenidor d'impressio: a pantalla, maquetat pero invisible (es pot
+     mesurar); al paper, l'unica cosa que hi ha */
+  #rm-impressio,#rm-mesura{position:absolute;left:-10000mm;top:0;visibility:hidden;pointer-events:none}
+  @media print{
+    html,body{background:#fff!important;margin:0!important;padding:0!important;min-height:0!important}
+    body > *:not(#rm-impressio){display:none!important}
+    #rm-impressio{position:static;left:auto;visibility:visible}
+    #rm-impressio .rm-full{break-inside:avoid;page-break-inside:avoid}
+    #rm-impressio .rm-full+.rm-full{break-before:page;page-break-before:always}
+    .rm-desborda{outline:0}
+  }
+</style>
+</head>
+<body>
+<nav class="rm-nav" aria-label="ReceptaMed"><div class="rm-nav-in">
+  <span class="rm-logo"><img class="rm-logo-img" src="receptamed.png" alt="ReceptaMed"></span>
+  <div class="rm-nav-dreta">
+    <a class="rm-nav-enllac" href="hub.html">◀ Panel</a>
+    <label for="rm-idioma-ui" class="rm-ocult" data-t="idioma_ui">Idioma de la pantalla</label>
+    <select id="rm-idioma-ui" class="rm-idioma">
+      <option value="ca">Català</option><option value="es">Español</option><option value="de">Deutsch</option><option value="en">English</option>
+    </select>
+  </div>
+</div></nav>
+
+<main id="rm-main" class="rm-wrap"></main>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     L'APLICACIO. Es una plantilla inert: NO es al DOM fins que la porta de
+     previsualitzacio (§9.2) i el rol (§6.5) ho permeten. Amb la porta tancada
+     o amb rol de recepcio, la plantilla s'esborra sense haver-se clonat mai.
+     ═══════════════════════════════════════════════════════════════════════ -->
+<template id="rm-app">
+  <div id="rm-banner" class="rm-banner" role="status" aria-live="polite" hidden></div>
+
+  <!-- ENG-41 (A2 §4) · l'avis del model i de la responsabilitat (23_ §7.3), UNA
+       vegada en obrir ReceptaMed per primer cop: queda vist (rm_config.avisModelVist)
+       quan el metge prem «Entesos». No tapa res: es pot treballar igualment. -->
+  <div id="rm-avis-model-primer" class="rm-avis-fix rm-primer" role="region" aria-labelledby="rm-amp-tit" hidden>
+    <p id="rm-amp-tit" class="rm-primer-tit" data-t="amp_tit">Abans de començar</p>
+    <p data-tr="avis_model"></p>
+    <div class="rm-botons"><button type="button" class="rm-btn sec mini" id="b-avis-model-entesos" data-t="amp_entesos">Entesos</button></div>
+  </div>
+
+  <div class="rm-metge-tria" id="rm-metge-wrap" hidden>
+    <label for="rm-metge" data-t="metge_tria">Metge que fa la recepta</label>
+    <select id="rm-metge" aria-required="true"></select>
+  </div>
+
+  <div class="rm-tabs" role="tablist" data-ta="tabs_aria">
+    <button type="button" class="rm-tab" id="tab-nova" role="tab" aria-controls="sec-nova" aria-selected="true" data-t="tab_nova">Nova recepta</button>
+    <button type="button" class="rm-tab" id="tab-historial" role="tab" aria-controls="sec-historial" aria-selected="false" tabindex="-1" data-t="tab_historial">Historial</button>
+    <button type="button" class="rm-tab" id="tab-dades" role="tab" aria-controls="sec-dades" aria-selected="false" tabindex="-1" data-t="tab_dades">Dades de la recepta</button>
+  </div>
+
+  <!-- ═══ NOVA RECEPTA ═══ -->
+  <section id="sec-nova" role="tabpanel" aria-labelledby="tab-nova">
+    <div class="rm-nova">
+      <div>
+        <div class="rm-card">
+          <h2 data-t="pac_tit">Pacient</h2>
+          <div class="rm-pac-cerca-wrap">
+            <label for="rm-pac-cerca" data-t="pac_cerca">Cerqueu el pacient (nom o DNI/NIE)</label>
+            <input id="rm-pac-cerca" type="search" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" role="combobox" aria-expanded="false" aria-controls="rm-pac-llista" aria-autocomplete="list">
+            <ul id="rm-pac-llista" class="rm-pac-llista" role="listbox" data-ta="pac_llista" hidden></ul>
+          </div>
+          <div class="rm-botons"><button type="button" class="rm-btn sec mini" id="b-pac-nou" aria-expanded="false" aria-controls="rm-pac-nou" data-t="pac_nou">+ Pacient nou</button></div>
+          <div class="rm-pac-nou" id="rm-pac-nou" hidden>
+            <h3 data-t="pn_tit">Fitxa nova</h3>
+            <label for="rm-pn-nom" data-t="pn_nom">Nom i cognoms</label>
+            <input id="rm-pn-nom" type="text" maxlength="80" autocomplete="off">
+            <div class="rm-fila">
+              <div><label for="rm-pn-naix" data-t="pac_naix">Data de naixement</label><input id="rm-pn-naix" type="date" min="1900-01-01"></div>
+              <div><label for="rm-pn-doc-tipus" data-t="pac_doc_tipus">Document</label>
+                <select id="rm-pn-doc-tipus"><option value="DNI" data-t="doc_DNI">DNI</option><option value="NIE" data-t="doc_NIE">NIE</option><option value="PASSAPORT" data-t="doc_PASSAPORT">Passaport (pacient estranger sense DNI ni NIE)</option><option value="REPRESENTANT" data-t="doc_REPRESENTANT">DNI/NIE del pare, de la mare o del representant legal (menor sense document)</option></select></div>
+            </div>
+            <label for="rm-pn-doc-num" data-t="pac_doc_num">Número del document</label>
+            <input id="rm-pn-doc-num" type="text" maxlength="24" autocomplete="off" autocapitalize="characters" spellcheck="false">
+            <p id="rm-pn-err" class="rm-avis" role="alert" hidden></p>
+            <div class="rm-botons"><button type="button" class="rm-btn mini" id="b-pn-crea" data-t="pn_crea">Crear la fitxa</button><button type="button" class="rm-btn sec mini" id="b-pn-cancel" data-t="pn_cancel">Cancel·lar</button></div>
+          </div>
+
+          <label for="rm-pac-nom" data-t="pac_nom">Nom i cognoms del pacient</label>
+          <input id="rm-pac-nom" type="text" readonly aria-required="true" autocomplete="off">
+          <p id="rm-pac-avis-nom" class="rm-avis-suau" data-t="pac_avis_nom" hidden>Comprovi que hi hagi el nom i els dos cognoms, si en té</p>
+          <div class="rm-fila">
+            <div><label for="rm-pac-naix" data-t="pac_naix">Data de naixement</label><input id="rm-pac-naix" type="date" min="1900-01-01" aria-required="true"></div>
+            <div><label for="rm-pac-doc-tipus" data-t="pac_doc_tipus">Document</label>
+              <select id="rm-pac-doc-tipus"><option value="DNI" data-t="doc_DNI">DNI</option><option value="NIE" data-t="doc_NIE">NIE</option><option value="PASSAPORT" data-t="doc_PASSAPORT">Passaport (pacient estranger sense DNI ni NIE)</option><option value="REPRESENTANT" data-t="doc_REPRESENTANT">DNI/NIE del pare, de la mare o del representant legal (menor sense document)</option></select></div>
+          </div>
+          <label for="rm-pac-doc-num" data-t="pac_doc_num">Número del document</label>
+          <input id="rm-pac-doc-num" type="text" maxlength="24" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-required="true">
+          <label class="rm-check"><input type="checkbox" id="rm-pac-desa" checked><span data-t="pac_desa">Desa la data de naixement i el DNI/NIE a la fitxa del pacient. Són dades administratives i se sincronitzen amb la resta de la fitxa.</span></label>
+        </div>
+
+        <div class="rm-card">
+          <h2 data-t="med_tit">Medicament</h2>
+          <p class="rm-nota" data-t="med_un">Un sol medicament per recepta.</p>
+          <label for="rm-principi" data-t="l_principi">Principi actiu o medicament</label>
+          <input id="rm-principi" type="text" maxlength="50" aria-required="true" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+          <div class="rm-fila">
+            <div><label for="rm-dosi" data-t="l_dosi">Dosi</label><input id="rm-dosi" type="text" maxlength="40" aria-required="true" placeholder="Ex.: 875/125 mg" data-tp="ph_dosi" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></div>
+            <div><label for="rm-forma" data-t="l_forma">Forma farmacèutica</label><input id="rm-forma" type="text" maxlength="40" aria-required="true" placeholder="Ex.: comprimits" data-tp="ph_forma" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></div>
+          </div>
+          <div class="rm-fila">
+            <div><label for="rm-via" data-t="l_via">Via d'administració (si cal)</label><input id="rm-via" type="text" maxlength="18" placeholder="Ex.: oral" data-tp="ph_via" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></div>
+            <div><label for="rm-format" data-t="l_format">Format de l'envàs</label><input id="rm-format" type="text" maxlength="40" aria-required="true" placeholder="Ex.: envàs de 30 comprimits" data-tp="ph_format" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></div>
+          </div>
+          <div class="rm-fila">
+            <div><label for="rm-envasos" data-t="l_envasos">Nombre d'envasos</label><input id="rm-envasos" type="number" min="1" max="4" step="1" value="1" inputmode="numeric" aria-required="true" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></div>
+          </div>
+          <p id="rm-avis-envasos" class="rm-avis" data-t="avis_envasos" hidden>Fins a quatre envasos només en els casos de l'art. 5.5.a) del RD 1718/2010: antibacterians J01 en unidosi per via parenteral (excepte J01E, J01M i J01R), vials multidosi d'insulines A10A i medicaments de diagnòstic hospitalari. Els estupefaents no es poden receptar amb ReceptaMed.</p>
+          <label for="rm-posologia" data-t="l_posologia">Posologia</label>
+          <textarea id="rm-posologia" rows="2" maxlength="140" aria-required="true" aria-describedby="rm-posologia-ajuda" placeholder="Ex.: 1 comprimit cada 12 hores durant 10 dies" data-tp="ph_posologia" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+          <p id="rm-posologia-ajuda" class="rm-ajuda" data-t="ajuda_posologia">Unitats per presa, freqüència i durada del tractament</p>
+          <!-- ENG-41 (A2 §4) · 23_ §4.8, literal i FIX: no detecta res (no hi ha cap llista de fàrmacs) -->
+          <p id="rm-avis-estupefaents" class="rm-avis-fix" role="note" data-t="avis_estupefaents">ReceptaMed no serveix per receptar estupefaents ni productes sanitaris. Els estupefaents de la llista I es prescriuen en la recepta oficial d'estupefaents, que es demana al Col·legi de Metges i s'omple a mà (RD 1675/2012). Un producte sanitari no pot anar a la mateixa recepta que un medicament (art. 13 del RD 1718/2010).</p>
+
+          <div id="rm-errors" class="rm-errors" role="alert" hidden><p data-t="err_tit">No s'ha imprès res. Falta o no és correcte:</p><ul id="rm-errors-llista"></ul></div>
+          <div class="rm-botons">
+            <button type="button" class="rm-btn" id="b-imprimir-recepta" data-t="b_imprimir">Imprimir la recepta</button>
+            <button type="button" class="rm-btn sec" id="b-netejar" data-t="b_netejar">Començar de nou</button>
+          </div>
+          <div id="rm-desada" class="rm-ok" role="status" hidden><span data-t="desada">Recepta desada a l'historial</span></div>
+          <p id="rm-desada-nota" class="rm-ajuda" data-t="desada_cancel" hidden>Si heu cancel·lat la impressió, la podeu anul·lar des de l'historial.</p>
+          <div class="rm-botons"><button type="button" class="rm-btn sec" id="b-una-altra" data-t="b_una_altra" hidden>Una altra recepta per al mateix pacient</button></div>
+        </div>
+      </div>
+
+      <div class="rm-card rm-previ-card">
+        <h2 data-t="previ_tit">Previsualització</h2>
+        <div id="rm-previsualitzacio" class="rm-previ" role="img" data-ta="previ_aria"></div>
+        <p class="rm-ajuda" id="rm-previ-paper"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ HISTORIAL ═══ -->
+  <section id="sec-historial" role="tabpanel" aria-labelledby="tab-historial" hidden>
+    <div class="rm-card">
+      <div class="rm-filtres">
+        <div><label for="rm-h-cerca" data-t="h_cerca">Cerca (pacient, medicament o dosi)</label><input id="rm-h-cerca" type="search" autocomplete="off" spellcheck="false"></div>
+        <div><label for="rm-h-des" data-t="h_des">Des de</label><input id="rm-h-des" type="date"></div>
+        <div><label for="rm-h-fins" data-t="h_fins">Fins a</label><input id="rm-h-fins" type="date"></div>
+      </div>
+      <label class="rm-check"><input type="checkbox" id="rm-h-anullades"><span data-t="h_anullades">Mostra també les anul·lades</span></label>
+      <div class="rm-export">
+        <button type="button" class="rm-btn sec mini" id="b-exporta-csv" data-t="b_csv">Exportar en CSV</button>
+        <button type="button" class="rm-btn sec mini" id="b-exporta-json" data-t="b_json">Còpia en JSON</button>
+      </div>
+      <p class="rm-compte" id="rm-h-compte" aria-live="polite"></p>
+      <table class="rm-taula" id="rm-h-taula">
+        <thead><tr><th scope="col" data-t="h_col_data">Data</th><th scope="col" data-t="h_col_pacient">Pacient</th><th scope="col" data-t="h_col_med">Medicament</th><th scope="col" data-t="h_col_pos">Posologia</th><th scope="col" data-t="h_col_estat">Estat</th><th scope="col" data-t="h_col_acc">Accions</th></tr></thead>
+        <tbody id="rm-h-files"></tbody>
+      </table>
+      <p class="rm-buit" id="rm-h-buit" hidden></p>
+    </div>
+  </section>
+
+  <!-- ═══ DADES DE LA RECEPTA ═══ -->
+  <section id="sec-dades" role="tabpanel" aria-labelledby="tab-dades" hidden>
+    <!-- ENG-41 (A2 §4) · 23_ §7.3, literal: sempre, a «Dades de la recepta» -->
+    <div id="rm-avis-model" class="rm-avis-fix" role="note" data-tr="avis_model"></div>
+    <div id="rm-avis-dades" class="rm-avis" role="alert" hidden></div>
+    <div id="rm-d-errors" class="rm-errors" role="alert" hidden><p id="rm-d-errors-tit" data-t="d_err_tit">No s'han desat les dades. Cal corregir:</p><ul id="rm-d-errors-llista"></ul></div>
+    <div class="rm-dades">
+      <div class="rm-card">
+        <h2 data-t="d_metge_tit">Metge</h2>
+        <p class="rm-nota" id="rm-d-metge-de" hidden></p>
+        <p class="rm-avis" id="rm-d-metge-cap" data-t="d_metge_cap" hidden>Trieu el metge a dalt de tot per escriure les seves dades.</p>
+        <label for="rm-d-tractament" data-t="d_tractament">Tractament</label>
+        <select id="rm-d-tractament"><option value="" data-t="d_tractament_cap">(cap)</option><option value="Dr.">Dr.</option><option value="Dra.">Dra.</option></select>
+        <label for="rm-d-nom" data-t="d_nom">Nom i dos cognoms *</label>
+        <input id="rm-d-nom" type="text" maxlength="80" aria-required="true" autocomplete="off">
+        <label for="rm-d-especialitat" data-t="d_especialitat">Especialitat oficialment acreditada *</label>
+        <input id="rm-d-especialitat" type="text" maxlength="80" aria-required="true" autocomplete="off">
+        <label for="rm-d-extra1" data-t="d_extra1">Línia addicional 1 (opcional)</label>
+        <input id="rm-d-extra1" type="text" maxlength="60" autocomplete="off">
+        <label for="rm-d-extra2" data-t="d_extra2">Línia addicional 2 (opcional)</label>
+        <input id="rm-d-extra2" type="text" maxlength="60" autocomplete="off">
+        <label for="rm-d-colegiat" data-t="d_colegiat">Número de col·legiat *</label>
+        <input id="rm-d-colegiat" type="text" maxlength="20" aria-required="true" autocomplete="off" spellcheck="false">
+      </div>
+      <div class="rm-card">
+        <h2 data-t="d_consulta_tit">Consulta</h2>
+        <label for="rm-d-cnom" data-t="d_cnom">Nom de la consulta o del centre (opcional)</label>
+        <input id="rm-d-cnom" type="text" maxlength="80" autocomplete="off">
+        <label for="rm-d-linia1" data-t="d_linia1">Adreça: carrer i número *</label>
+        <input id="rm-d-linia1" type="text" maxlength="80" aria-required="true" autocomplete="off">
+        <label for="rm-d-linia2" data-t="d_linia2">Codi postal i població *</label>
+        <input id="rm-d-linia2" type="text" maxlength="80" aria-required="true" autocomplete="off">
+        <label for="rm-d-telefon" data-t="d_telefon">Telèfon *</label>
+        <input id="rm-d-telefon" type="tel" maxlength="30" aria-required="true" aria-describedby="rm-d-telefon-ajuda" autocomplete="off">
+        <p class="rm-ajuda" id="rm-d-telefon-ajuda" data-t="d_telefon_ajuda">Sense prefix, s'hi afegeix +34 (9 xifres). D'un altre país, escriviu-lo amb el prefix (+33…).</p>
+        <label for="rm-d-correu" data-t="d_correu">Correu electrònic *</label>
+        <input id="rm-d-correu" type="email" maxlength="120" aria-required="true" autocomplete="off" spellcheck="false">
+      </div>
+      <div class="rm-card">
+        <h2 data-t="d_paper_tit">Paper</h2>
+        <fieldset>
+          <legend data-t="d_paper_llegenda">On s'imprimeix la recepta</legend>
+          <label class="rm-radio"><input type="radio" name="rm-paper" id="rm-d-paper-a4" value="A4_TALL"><span data-t="d_paper_A4">A4: la recepta a dalt i el full d'informació per al pacient a baix, amb una línia per tallar (per defecte)</span></label>
+          <label class="rm-radio"><input type="radio" name="rm-paper" id="rm-d-paper-a5" value="A5"><span data-t="d_paper_A5">Mig A4 (A5) en horitzontal: la recepta i el full d'informació per al pacient, en dos fulls</span></label>
+          <label class="rm-radio"><input type="radio" name="rm-paper" id="rm-d-paper-capcalera" value="CAPCALERA"><span data-t="d_paper_CAP">Paper amb la capçalera ja impresa: la recepta i el full d'informació per al pacient, en dos fulls</span></label>
+        </fieldset>
+        <p class="rm-ajuda" id="rm-d-paper-ajuda" data-t="d_paper_ajuda">La recepta surt sempre amb el full d'informació per al pacient: l'A4, en un sol full; l'A5 i el paper amb capçalera, en dos.</p>
+        <p id="rm-d-avis-capcalera" class="rm-avis" data-t="d_avis_capcalera" hidden>Feu servir el full d'alineació per ajustar-ho al vostre paper</p>
+        <h3 data-t="d_calib_tit">Calibratge</h3>
+        <div class="rm-fila">
+          <div><label for="rm-d-dx" data-t="d_dx">Desplaçament horitzontal (mm)</label><input id="rm-d-dx" type="number" min="-6" max="6" step="0.5" value="0" inputmode="decimal" aria-describedby="rm-d-calib-ajuda"></div>
+          <div><label for="rm-d-dy" data-t="d_dy">Desplaçament vertical (mm)</label><input id="rm-d-dy" type="number" min="-6" max="6" step="0.5" value="0" inputmode="decimal" aria-describedby="rm-d-calib-ajuda"></div>
+        </div>
+        <p class="rm-ajuda" id="rm-d-calib-ajuda" data-t="d_calib_ajuda">De −6 a 6 mm, de 0,5 en 0,5. Positiu: cap a la dreta i cap avall.</p>
+        <p id="rm-d-avis-marge" class="rm-avis" role="status" data-t="d_avis_marge" hidden>Amb aquest desplaçament, part del text entra al marge de seguretat (12 mm als costats, 10 mm a dalt i a baix). Comproveu-ho amb el full d'alineació.</p>
+        <div class="rm-botons"><button type="button" class="rm-btn sec mini" id="b-full-alineacio" data-t="b_alineacio">Imprimir un full d'alineació</button></div>
+        <p id="rm-d-alin-nota" class="rm-ajuda" data-t="d_alin_nota" hidden>Aquest full s'ha imprès amb valors que encara no heu desat. Deseu les dades perquè les receptes els facin servir.</p>
+      </div>
+      <div class="rm-card">
+        <h2 data-t="d_idioma_tit">Idioma de la recepta</h2>
+        <label for="rm-d-idioma" data-t="d_idioma">Idioma de la recepta impresa</label>
+        <select id="rm-d-idioma"><option value="ca">Català</option><option value="es">Castellano</option></select>
+        <p class="rm-ajuda" data-t="d_idioma_ajuda">El que escriviu vós s'imprimeix tal com l'escriviu, en qualsevol idioma.</p>
+      </div>
+    </div>
+    <p class="rm-nota" data-t="obligatoris_nota">Els camps amb * són obligatoris.</p>
+    <div class="rm-botons"><button type="button" class="rm-btn" id="b-desa-dades" data-t="b_desa_dades">Desar les dades</button></div>
+  </section>
+
+  <!-- ═══ FINESTRA: VEURE (nomes lectura) ═══ -->
+  <div class="rm-modal" id="rm-modal-veure" role="dialog" aria-modal="true" aria-labelledby="rm-mv-tit" hidden>
+    <div class="rm-modal-caixa">
+      <h2 id="rm-mv-tit"></h2>
+      <p class="rm-nota" data-t="mv_nomes_lectura">Només lectura. Una recepta emesa no es modifica ni es torna a imprimir.</p>
+      <p class="rm-nota" id="rm-mv-info"></p>
+      <div class="rm-mv-previ" id="rm-mv-full"></div>
+      <div class="rm-botons"><button type="button" class="rm-btn sec" id="b-mv-tanca" data-t="b_tancar">Tancar</button></div>
+    </div>
+  </div>
+
+  <!-- ═══ FINESTRA: ANUL·LAR ═══ -->
+  <div class="rm-modal" id="rm-modal-anullar" role="dialog" aria-modal="true" aria-labelledby="rm-ma-tit" hidden>
+    <div class="rm-modal-caixa estreta">
+      <h2 id="rm-ma-tit" data-t="ma_tit">Anul·lar la recepta</h2>
+      <p class="rm-nota" id="rm-ma-resum"></p>
+      <label for="rm-ma-motiu" data-t="ma_motiu">Motiu (obligatori, de 3 a 200 caràcters)</label>
+      <textarea id="rm-ma-motiu" maxlength="200" rows="3" aria-required="true"></textarea>
+      <label class="rm-check"><input type="checkbox" id="rm-ma-confirma"><span data-t="ma_confirma">Confirmo que vull anul·lar aquesta recepta. No es pot desfer.</span></label>
+      <p id="rm-ma-err" class="rm-avis" role="alert" hidden></p>
+      <div class="rm-botons">
+        <button type="button" class="rm-btn perill" id="b-ma-anulla" data-t="ma_tit">Anul·lar la recepta</button>
+        <button type="button" class="rm-btn sec" id="b-ma-cancel" data-t="pn_cancel">Cancel·lar</button>
+      </div>
+    </div>
+  </div>
+</template>
+
+<!-- Els textos. La pantalla, en 4 idiomes (provisionals fins a PROD-21: el
+     catala es el de l'ordre ENG-40); la recepta impresa, en catala i castella,
+     i MAI pel traductor de pantalla (la regla d'ENG-4d: un document no segueix
+     la pantalla). ENG-41 (A2 §12): els textos de Legal (23_) son LITERALS. Legal
+     els dona en catala i en castella; a la pantalla en alemany i en angles hi van
+     els castellans, tal qual, fins que Legal o PROD-21 en donin (P-ENG-97). -->
+<script type="application/json" id="rm-textos">
+{
+"ui": {
+"ca": {
+"idioma_ui": "Idioma de la pantalla",
+"carregant": "Un moment…",
+"soon": "Aviat",
+"d_recept": "Receptes privades des de la mateixa visita, signades pel metge.",
+"rol_tit": "Les receptes les fa el metge.",
+"metge_tria": "Metge que fa la recepta",
+"metge_tria_buit": "— Trieu el metge —",
+"tabs_aria": "Seccions de ReceptaMed",
+"tab_nova": "Nova recepta",
+"tab_historial": "Historial",
+"tab_dades": "Dades de la recepta",
+"pac_tit": "Pacient",
+"pac_cerca": "Cerqueu el pacient (nom o DNI/NIE)",
+"pac_llista": "Pacients de la consulta",
+"pac_cap": "Cap pacient coincideix amb la cerca.",
+"pac_nou": "+ Pacient nou",
+"pn_tit": "Fitxa nova",
+"pn_nom": "Nom i cognoms",
+"pn_crea": "Crear la fitxa",
+"pn_cancel": "Cancel·lar",
+"pn_creada": "Fitxa creada: {nom}.",
+"pn_existeix": "Ja hi ha un pacient amb aquest nom. Cerqueu-lo a dalt.",
+"pn_falta_nom": "El nom és obligatori.",
+"pac_nom": "Nom i cognoms del pacient",
+"pac_avis_nom": "Comprovi que hi hagi el nom i els dos cognoms, si en té",
+"pac_naix": "Data de naixement",
+"pac_doc_tipus": "Document",
+"doc_DNI": "DNI",
+"doc_NIE": "NIE",
+"doc_PASSAPORT": "Passaport (pacient estranger sense DNI ni NIE)",
+"doc_REPRESENTANT": "DNI/NIE del pare, de la mare o del representant legal (menor sense document)",
+"pac_doc_num": "Número del document",
+"pac_desa": "Desa la data de naixement i el DNI/NIE a la fitxa del pacient. Són dades administratives i se sincronitzen amb la resta de la fitxa.",
+"med_tit": "Medicament",
+"med_un": "Un sol medicament per recepta.",
+"l_principi": "Principi actiu o medicament",
+"l_dosi": "Dosi",
+"l_forma": "Forma farmacèutica",
+"l_via": "Via d'administració (si cal)",
+"l_format": "Format de l'envàs",
+"l_envasos": "Nombre d'envasos",
+"l_posologia": "Posologia",
+"ph_dosi": "Ex.: 875/125 mg",
+"ph_forma": "Ex.: comprimits",
+"ph_via": "Ex.: oral",
+"ph_format": "Ex.: envàs de 30 comprimits",
+"ph_posologia": "Ex.: 1 comprimit cada 12 hores durant 10 dies",
+"ajuda_posologia": "Unitats per presa, freqüència i durada del tractament",
+"avis_envasos": "Fins a quatre envasos només en els casos de l'art. 5.5.a) del RD 1718/2010: antibacterians J01 en unidosi per via parenteral (excepte J01E, J01M i J01R), vials multidosi d'insulines A10A i medicaments de diagnòstic hospitalari. Els estupefaents no es poden receptar amb ReceptaMed.",
+"avis_estupefaents": "ReceptaMed no serveix per receptar estupefaents ni productes sanitaris. Els estupefaents de la llista I es prescriuen en la recepta oficial d'estupefaents, que es demana al Col·legi de Metges i s'omple a mà (RD 1675/2012). Un producte sanitari no pot anar a la mateixa recepta que un medicament (art. 13 del RD 1718/2010).",
+"avis_model": "ReceptaMed imprimeix la recepta amb les dades que exigeix l'art. 3 del RD 1718/2010. **Qui edita la recepta és la vostra consulta**, i és qui ha de posar-hi les mesures contra la falsificació que demana l'art. 4.1 (per exemple, el paper numerat que us doni el vostre col·legi). ConsultaMed no genera cap número oficial ni cap codi de verificació, i no certifica que cap recepta sigui vàlida. A Catalunya, el CoMB ofereix la recepta electrònica privada (REMPe) gratuïtament als col·legiats en exercici.",
+"amp_tit": "Abans de començar",
+"amp_entesos": "Entesos",
+"previ_tit": "Previsualització",
+"previ_aria": "Previsualització de la recepta i del full d'informació per al pacient, tal com s'imprimiran",
+"previ_paper_A5": "A5 (210 × 148 mm), en dos fulls: la recepta i el full d'informació per al pacient.",
+"previ_paper_A4_TALL": "A4: la recepta a dalt i el full d'informació per al pacient a baix, amb la línia per tallar.",
+"previ_paper_CAPCALERA": "Paper amb capçalera, en dos fulls: la recepta i el full d'informació per al pacient, sense les dades del metge ni les de la consulta.",
+"b_imprimir": "Imprimir la recepta",
+"b_netejar": "Començar de nou",
+"b_una_altra": "Una altra recepta per al mateix pacient",
+"desada": "Recepta desada a l'historial",
+"desada_cancel": "Si heu cancel·lat la impressió, la podeu anul·lar des de l'historial.",
+"netejar_confirma": "Voleu esborrar el que heu escrit i començar de nou?",
+"err_tit": "No s'ha imprès res. Falta o no és correcte:",
+"err_falta": "Falta: {camp}",
+"err_falta_dades": "Falta a «Dades de la recepta»: {camp}",
+"err_metge": "Trieu el metge que fa la recepta",
+"err_pacient": "Trieu o creeu el pacient",
+"err_naix": "{camp}: ha de ser una data entre l'1/1/1900 i avui",
+"err_dni": "El DNI ha de tenir 8 xifres i la lletra",
+"err_dni_lletra": "La lletra del DNI no correspon al número",
+"err_nie": "El NIE ha de ser X, Y o Z, 7 xifres i la lletra",
+"err_nie_lletra": "La lletra del NIE no correspon al número",
+"err_pass": "El passaport ha de tenir de 5 a 20 lletres o xifres",
+"err_representant": "Escriviu el DNI o el NIE del pare, de la mare o del representant legal, amb la lletra que li correspon",
+"err_envasos": "{camp}: ha de ser un nombre enter de l'1 al 4",
+"err_llarg": "{camp}: com a màxim {n} caràcters",
+"err_desborda": "El text de «{camp}» és massa llarg per a la recepta",
+"err_clausula": "La clàusula de protecció de dades no hi cap amb aquestes dades de la consulta: escurceu el nom de la consulta, l'adreça o el correu",
+"err_correu": "{camp}: el correu ha de tenir la forma nom@domini",
+"err_tel_prefix": "{camp}: amb 9 xifres s'hi posa +34; si no, escriviu el prefix internacional (+33…)",
+"err_tel_xifres": "{camp}: ha de tenir de 8 a 15 xifres",
+"err_colegiat": "{camp}: ha de tenir almenys una xifra",
+"err_despl": "{camp}: un nombre de −6 a 6, de 0,5 en 0,5",
+"err_desar": "No s'ha pogut desar la recepta: l'emmagatzematge d'aquest navegador és ple o no està disponible. No s'ha imprès res.",
+"err_illegible": "Les dades de ReceptaMed d'aquest dispositiu no es poden llegir. Per no perdre-les, no s'hi ha escrit res i no s'ha imprès res.",
+"err_imprimir": "La recepta s'ha desat, però aquest navegador no ha obert el diàleg d'impressió.",
+"err_fitxa_no": "La recepta s'ha desat, però no s'ha trobat la fitxa de {nom}: la fitxa no s'ha actualitzat.",
+"camp_principi_dosi": "Principi actiu o medicament i dosi",
+"camp_detall": "Forma, via i format de l'envàs",
+"camp_pac_dades": "Data de naixement i document",
+"d_err_tit": "No s'han desat les dades. Cal corregir:",
+"d_metge_tit": "Metge",
+"d_metge_de": "Dades de: {nom}",
+"d_metge_cap": "Trieu el metge a dalt de tot per escriure les seves dades.",
+"d_tractament": "Tractament",
+"d_tractament_cap": "(cap)",
+"d_nom": "Nom i dos cognoms *",
+"d_especialitat": "Especialitat oficialment acreditada *",
+"d_extra1": "Línia addicional 1 (opcional)",
+"d_extra2": "Línia addicional 2 (opcional)",
+"d_colegiat": "Número de col·legiat *",
+"d_consulta_tit": "Consulta",
+"d_cnom": "Nom de la consulta o del centre (opcional)",
+"d_linia1": "Adreça: carrer i número *",
+"d_linia2": "Codi postal i població *",
+"d_telefon": "Telèfon *",
+"d_telefon_ajuda": "Sense prefix, s'hi afegeix +34 (9 xifres). D'un altre país, escriviu-lo amb el prefix (+33…).",
+"d_correu": "Correu electrònic *",
+"d_paper_tit": "Paper",
+"d_paper_llegenda": "On s'imprimeix la recepta",
+"d_paper_A5": "Mig A4 (A5) en horitzontal: la recepta i el full d'informació per al pacient, en dos fulls",
+"d_paper_A4": "A4: la recepta a dalt i el full d'informació per al pacient a baix, amb una línia per tallar (per defecte)",
+"d_paper_CAP": "Paper amb la capçalera ja impresa: la recepta i el full d'informació per al pacient, en dos fulls",
+"d_paper_ajuda": "La recepta surt sempre amb el full d'informació per al pacient: l'A4, en un sol full; l'A5 i el paper amb capçalera, en dos.",
+"d_avis_capcalera": "Feu servir el full d'alineació per ajustar-ho al vostre paper",
+"d_calib_tit": "Calibratge",
+"d_dx": "Desplaçament horitzontal (mm)",
+"d_dy": "Desplaçament vertical (mm)",
+"d_calib_ajuda": "De −6 a 6 mm, de 0,5 en 0,5. Positiu: cap a la dreta i cap avall.",
+"d_avis_marge": "Amb aquest desplaçament, part del text entra al marge de seguretat (12 mm als costats, 10 mm a dalt i a baix). Comproveu-ho amb el full d'alineació.",
+"b_alineacio": "Imprimir un full d'alineació",
+"d_alin_nota": "Aquest full s'ha imprès amb valors que encara no heu desat. Deseu les dades perquè les receptes els facin servir.",
+"d_idioma_tit": "Idioma de la recepta",
+"d_idioma": "Idioma de la recepta impresa",
+"d_idioma_ajuda": "El que escriviu vós s'imprimeix tal com l'escriviu, en qualsevol idioma.",
+"obligatoris_nota": "Els camps amb * són obligatoris.",
+"b_desa_dades": "Desar les dades",
+"d_desades": "Dades desades.",
+"d_desades_falten": "Dades desades. Per imprimir receptes encara falta: {llista}.",
+"avis_dades": "Abans de la primera recepta, completeu les dades del metge i de la consulta. Falta: {llista}.",
+"h_cerca": "Cerca (pacient, medicament o dosi)",
+"h_des": "Des de",
+"h_fins": "Fins a",
+"h_anullades": "Mostra també les anul·lades",
+"h_col_data": "Data",
+"h_col_pacient": "Pacient",
+"h_col_med": "Medicament",
+"h_col_pos": "Posologia",
+"h_col_estat": "Estat",
+"h_col_acc": "Accions",
+"estat_EMESA": "Emesa",
+"estat_ANULLADA": "Anul·lada",
+"mostra": "Mostra",
+"b_veure": "Veure",
+"b_repetir": "Repetir",
+"b_anullar": "Anul·lar",
+"aria_veure": "Veure la recepta {id} de {pac}",
+"aria_repetir": "Repetir la recepta {id} de {pac}",
+"aria_anullar": "Anul·lar la recepta {id} de {pac}",
+"h_buit": "Encara no hi ha cap recepta.",
+"h_cap": "Cap recepta coincideix amb els filtres.",
+"h_metge_cap": "Trieu el metge a dalt de tot per veure les seves receptes.",
+"h_compte_1": "1 recepta",
+"h_compte_n": "{n} receptes",
+"b_csv": "Exportar en CSV",
+"b_json": "Còpia en JSON",
+"exportat": "Fitxer preparat: {nom}.",
+"exporta_buit": "No hi ha cap recepta per exportar.",
+"repetir_confirma": "Ja hi ha una recepta a mig escriure. Voleu substituir-la per la repetició?",
+"repetida": "Recepta {id} copiada a «Nova recepta», amb la data d'avui. Reviseu-la i imprimiu-la quan vulgueu.",
+"mv_tit": "Recepta {id}",
+"mv_nomes_lectura": "Només lectura. Una recepta emesa no es modifica ni es torna a imprimir.",
+"mv_info": "Emesa el {data}.",
+"mv_origen": "Repetició de {id}.",
+"mv_anullada": "Anul·lada el {data}. Motiu: {motiu}",
+"b_tancar": "Tancar",
+"ma_tit": "Anul·lar la recepta",
+"ma_resum": "{id} · {pac} · {med}",
+"ma_motiu": "Motiu (obligatori, de 3 a 200 caràcters)",
+"ma_confirma": "Confirmo que vull anul·lar aquesta recepta. No es pot desfer.",
+"ma_err_motiu": "El motiu ha de tenir de 3 a 200 caràcters.",
+"ma_err_conf": "Marqueu la confirmació.",
+"anullada_ok": "Recepta {id} anul·lada. Es conserva a l'historial.",
+"csv_id": "id",
+"csv_data": "data",
+"csv_estat": "estat",
+"csv_pacient": "pacient",
+"csv_naix": "data de naixement",
+"csv_document": "document",
+"csv_principi": "principi",
+"csv_dosi": "dosi",
+"csv_forma": "forma",
+"csv_via": "via",
+"csv_format": "format",
+"csv_envasos": "envasos",
+"csv_posologia": "posologia",
+"csv_metge": "metge",
+"csv_colegiat": "col·legiat",
+"csv_mostra": "mostra",
+"si": "sí",
+"no": "no"
+},
+"es": {
+"idioma_ui": "Idioma de la pantalla",
+"carregant": "Un momento…",
+"soon": "Próximamente",
+"d_recept": "Recetas privadas desde la misma visita, firmadas por el médico.",
+"rol_tit": "Las recetas las hace el médico.",
+"metge_tria": "Médico que hace la receta",
+"metge_tria_buit": "— Elija el médico —",
+"tabs_aria": "Secciones de ReceptaMed",
+"tab_nova": "Nueva receta",
+"tab_historial": "Historial",
+"tab_dades": "Datos de la receta",
+"pac_tit": "Paciente",
+"pac_cerca": "Busque al paciente (nombre o DNI/NIE)",
+"pac_llista": "Pacientes de la consulta",
+"pac_cap": "Ningún paciente coincide con la búsqueda.",
+"pac_nou": "+ Paciente nuevo",
+"pn_tit": "Ficha nueva",
+"pn_nom": "Nombre y apellidos",
+"pn_crea": "Crear la ficha",
+"pn_cancel": "Cancelar",
+"pn_creada": "Ficha creada: {nom}.",
+"pn_existeix": "Ya existe un paciente con ese nombre. Búsquelo arriba.",
+"pn_falta_nom": "El nombre es obligatorio.",
+"pac_nom": "Nombre y apellidos del paciente",
+"pac_avis_nom": "Compruebe que estén el nombre y los dos apellidos, si los tiene",
+"pac_naix": "Fecha de nacimiento",
+"pac_doc_tipus": "Documento",
+"doc_DNI": "DNI",
+"doc_NIE": "NIE",
+"doc_PASSAPORT": "Pasaporte (paciente extranjero sin DNI ni NIE)",
+"doc_REPRESENTANT": "DNI/NIE del padre, de la madre o del representante legal (menor sin documento)",
+"pac_doc_num": "Número del documento",
+"pac_desa": "Guardar la fecha de nacimiento y el DNI/NIE en la ficha del paciente. Son datos administrativos y se sincronizan con el resto de la ficha.",
+"med_tit": "Medicamento",
+"med_un": "Un solo medicamento por receta.",
+"l_principi": "Principio activo o medicamento",
+"l_dosi": "Dosis",
+"l_forma": "Forma farmacéutica",
+"l_via": "Vía de administración (si procede)",
+"l_format": "Formato del envase",
+"l_envasos": "Número de envases",
+"l_posologia": "Posología",
+"ph_dosi": "Ej.: 875/125 mg",
+"ph_forma": "Ej.: comprimidos",
+"ph_via": "Ej.: oral",
+"ph_format": "Ej.: envase de 30 comprimidos",
+"ph_posologia": "Ej.: 1 comprimido cada 12 horas durante 10 días",
+"ajuda_posologia": "Unidades por toma, frecuencia y duración del tratamiento",
+"avis_envasos": "Hasta cuatro envases solo en los casos del art. 5.5.a) del RD 1718/2010: antibacterianos J01 en unidosis por vía parenteral (excepto J01E, J01M y J01R), viales multidosis de insulinas A10A y medicamentos de diagnóstico hospitalario. Los estupefacientes no pueden prescribirse con ReceptaMed.",
+"avis_estupefaents": "ReceptaMed no sirve para prescribir estupefacientes ni productos sanitarios. Los estupefacientes de la lista I se prescriben en la receta oficial de estupefacientes, que se solicita al Colegio de Médicos y se rellena a mano (RD 1675/2012). Un producto sanitario no puede ir en la misma receta que un medicamento (art. 13 del RD 1718/2010).",
+"avis_model": "ReceptaMed imprime la receta con los datos que exige el art. 3 del RD 1718/2010. **Quien edita la receta es su consulta**, y es quien debe incorporar las medidas contra la falsificación que exige el art. 4.1 (por ejemplo, el papel numerado que le facilite su colegio). ConsultaMed no genera ningún número oficial ni código de verificación, y no certifica que ninguna receta sea válida. En Cataluña, el CoMB ofrece la receta electrónica privada (REMPe) gratuitamente a los colegiados en ejercicio.",
+"amp_tit": "Antes de empezar",
+"amp_entesos": "Entendido",
+"previ_tit": "Vista previa",
+"previ_aria": "Vista previa de la receta y de la hoja de información para el paciente, tal como se imprimirán",
+"previ_paper_A5": "A5 (210 × 148 mm), en dos hojas: la receta y la hoja de información para el paciente.",
+"previ_paper_A4_TALL": "A4: la receta arriba y la hoja de información para el paciente abajo, con la línea de corte.",
+"previ_paper_CAPCALERA": "Papel con membrete, en dos hojas: la receta y la hoja de información para el paciente, sin los datos del médico ni los de la consulta.",
+"b_imprimir": "Imprimir la receta",
+"b_netejar": "Empezar de nuevo",
+"b_una_altra": "Otra receta para el mismo paciente",
+"desada": "Receta guardada en el historial",
+"desada_cancel": "Si ha cancelado la impresión, puede anularla desde el historial.",
+"netejar_confirma": "¿Borrar lo escrito y empezar de nuevo?",
+"err_tit": "No se ha impreso nada. Falta o no es correcto:",
+"err_falta": "Falta: {camp}",
+"err_falta_dades": "Falta en «Datos de la receta»: {camp}",
+"err_metge": "Elija el médico que hace la receta",
+"err_pacient": "Elija o cree el paciente",
+"err_naix": "{camp}: debe ser una fecha entre el 1/1/1900 y hoy",
+"err_dni": "El DNI debe tener 8 cifras y la letra",
+"err_dni_lletra": "La letra del DNI no corresponde al número",
+"err_nie": "El NIE debe ser X, Y o Z, 7 cifras y la letra",
+"err_nie_lletra": "La letra del NIE no corresponde al número",
+"err_pass": "El pasaporte debe tener de 5 a 20 letras o cifras",
+"err_representant": "Escriba el DNI o el NIE del padre, de la madre o del representante legal, con la letra que le corresponde",
+"err_envasos": "{camp}: debe ser un número entero del 1 al 4",
+"err_llarg": "{camp}: como máximo {n} caracteres",
+"err_desborda": "El texto de «{camp}» es demasiado largo para la receta",
+"err_clausula": "La cláusula de protección de datos no cabe con estos datos de la consulta: acorte el nombre de la consulta, la dirección o el correo",
+"err_correu": "{camp}: el correo debe tener la forma nombre@dominio",
+"err_tel_prefix": "{camp}: con 9 cifras se añade +34; si no, escriba el prefijo internacional (+33…)",
+"err_tel_xifres": "{camp}: debe tener de 8 a 15 cifras",
+"err_colegiat": "{camp}: debe tener al menos una cifra",
+"err_despl": "{camp}: un número de −6 a 6, de 0,5 en 0,5",
+"err_desar": "No se ha podido guardar la receta: el almacenamiento de este navegador está lleno o no está disponible. No se ha impreso nada.",
+"err_illegible": "Los datos de ReceptaMed de este dispositivo no se pueden leer. Para no perderlos, no se ha escrito nada y no se ha impreso nada.",
+"err_imprimir": "La receta se ha guardado, pero este navegador no ha abierto el diálogo de impresión.",
+"err_fitxa_no": "La receta se ha guardado, pero no se ha encontrado la ficha de {nom}: la ficha no se ha actualizado.",
+"camp_principi_dosi": "Principio activo o medicamento y dosis",
+"camp_detall": "Forma, vía y formato del envase",
+"camp_pac_dades": "Fecha de nacimiento y documento",
+"d_err_tit": "No se han guardado los datos. Hay que corregir:",
+"d_metge_tit": "Médico",
+"d_metge_de": "Datos de: {nom}",
+"d_metge_cap": "Elija el médico arriba del todo para escribir sus datos.",
+"d_tractament": "Tratamiento",
+"d_tractament_cap": "(ninguno)",
+"d_nom": "Nombre y dos apellidos *",
+"d_especialitat": "Especialidad oficialmente acreditada *",
+"d_extra1": "Línea adicional 1 (opcional)",
+"d_extra2": "Línea adicional 2 (opcional)",
+"d_colegiat": "Número de colegiado *",
+"d_consulta_tit": "Consulta",
+"d_cnom": "Nombre de la consulta o del centro (opcional)",
+"d_linia1": "Dirección: calle y número *",
+"d_linia2": "Código postal y población *",
+"d_telefon": "Teléfono *",
+"d_telefon_ajuda": "Sin prefijo, se añade +34 (9 cifras). De otro país, escríbalo con el prefijo (+33…).",
+"d_correu": "Correo electrónico *",
+"d_paper_tit": "Papel",
+"d_paper_llegenda": "Dónde se imprime la receta",
+"d_paper_A5": "Medio A4 (A5) en horizontal: la receta y la hoja de información para el paciente, en dos hojas",
+"d_paper_A4": "A4: la receta arriba y la hoja de información para el paciente abajo, con una línea de corte (por defecto)",
+"d_paper_CAP": "Papel con el membrete ya impreso: la receta y la hoja de información para el paciente, en dos hojas",
+"d_paper_ajuda": "La receta sale siempre con la hoja de información para el paciente: el A4, en una sola hoja; el A5 y el papel con membrete, en dos.",
+"d_avis_capcalera": "Use la hoja de alineación para ajustarlo a su papel",
+"d_calib_tit": "Calibración",
+"d_dx": "Desplazamiento horizontal (mm)",
+"d_dy": "Desplazamiento vertical (mm)",
+"d_calib_ajuda": "De −6 a 6 mm, de 0,5 en 0,5. Positivo: hacia la derecha y hacia abajo.",
+"d_avis_marge": "Con este desplazamiento, parte del texto entra en el margen de seguridad (12 mm a los lados, 10 mm arriba y abajo). Compruébelo con la hoja de alineación.",
+"b_alineacio": "Imprimir una hoja de alineación",
+"d_alin_nota": "Esta hoja se ha impreso con valores que todavía no ha guardado. Guarde los datos para que las recetas los usen.",
+"d_idioma_tit": "Idioma de la receta",
+"d_idioma": "Idioma de la receta impresa",
+"d_idioma_ajuda": "Lo que escribe usted se imprime tal como lo escribe, en cualquier idioma.",
+"obligatoris_nota": "Los campos con * son obligatorios.",
+"b_desa_dades": "Guardar los datos",
+"d_desades": "Datos guardados.",
+"d_desades_falten": "Datos guardados. Para imprimir recetas todavía falta: {llista}.",
+"avis_dades": "Antes de la primera receta, complete los datos del médico y de la consulta. Falta: {llista}.",
+"h_cerca": "Buscar (paciente, medicamento o dosis)",
+"h_des": "Desde",
+"h_fins": "Hasta",
+"h_anullades": "Mostrar también las anuladas",
+"h_col_data": "Fecha",
+"h_col_pacient": "Paciente",
+"h_col_med": "Medicamento",
+"h_col_pos": "Posología",
+"h_col_estat": "Estado",
+"h_col_acc": "Acciones",
+"estat_EMESA": "Emitida",
+"estat_ANULLADA": "Anulada",
+"mostra": "Muestra",
+"b_veure": "Ver",
+"b_repetir": "Repetir",
+"b_anullar": "Anular",
+"aria_veure": "Ver la receta {id} de {pac}",
+"aria_repetir": "Repetir la receta {id} de {pac}",
+"aria_anullar": "Anular la receta {id} de {pac}",
+"h_buit": "Todavía no hay ninguna receta.",
+"h_cap": "Ninguna receta coincide con los filtros.",
+"h_metge_cap": "Elija el médico arriba del todo para ver sus recetas.",
+"h_compte_1": "1 receta",
+"h_compte_n": "{n} recetas",
+"b_csv": "Exportar en CSV",
+"b_json": "Copia en JSON",
+"exportat": "Archivo preparado: {nom}.",
+"exporta_buit": "No hay ninguna receta para exportar.",
+"repetir_confirma": "Ya hay una receta a medio escribir. ¿Sustituirla por la repetición?",
+"repetida": "Receta {id} copiada en «Nueva receta», con la fecha de hoy. Revísela e imprímala cuando quiera.",
+"mv_tit": "Receta {id}",
+"mv_nomes_lectura": "Solo lectura. Una receta emitida no se modifica ni se vuelve a imprimir.",
+"mv_info": "Emitida el {data}.",
+"mv_origen": "Repetición de {id}.",
+"mv_anullada": "Anulada el {data}. Motivo: {motiu}",
+"b_tancar": "Cerrar",
+"ma_tit": "Anular la receta",
+"ma_resum": "{id} · {pac} · {med}",
+"ma_motiu": "Motivo (obligatorio, de 3 a 200 caracteres)",
+"ma_confirma": "Confirmo que quiero anular esta receta. No se puede deshacer.",
+"ma_err_motiu": "El motivo debe tener de 3 a 200 caracteres.",
+"ma_err_conf": "Marque la confirmación.",
+"anullada_ok": "Receta {id} anulada. Se conserva en el historial.",
+"csv_id": "id",
+"csv_data": "fecha",
+"csv_estat": "estado",
+"csv_pacient": "paciente",
+"csv_naix": "fecha de nacimiento",
+"csv_document": "documento",
+"csv_principi": "principio",
+"csv_dosi": "dosis",
+"csv_forma": "forma",
+"csv_via": "vía",
+"csv_format": "formato",
+"csv_envasos": "envases",
+"csv_posologia": "posología",
+"csv_metge": "médico",
+"csv_colegiat": "colegiado",
+"csv_mostra": "muestra",
+"si": "sí",
+"no": "no"
+},
+"de": {
+"idioma_ui": "Sprache der Oberfläche",
+"carregant": "Einen Moment…",
+"soon": "Bald",
+"d_recept": "Privatrezepte direkt aus dem Termin, vom Arzt signiert.",
+"rol_tit": "Rezepte stellt der Arzt aus.",
+"metge_tria": "Ausstellender Arzt",
+"metge_tria_buit": "— Arzt auswählen —",
+"tabs_aria": "Bereiche von ReceptaMed",
+"tab_nova": "Neues Rezept",
+"tab_historial": "Verlauf",
+"tab_dades": "Rezeptdaten",
+"pac_tit": "Patient",
+"pac_cerca": "Patient suchen (Name oder DNI/NIE)",
+"pac_llista": "Patienten der Praxis",
+"pac_cap": "Kein Patient passt zur Suche.",
+"pac_nou": "+ Neuer Patient",
+"pn_tit": "Neue Patientenakte",
+"pn_nom": "Vor- und Nachname(n)",
+"pn_crea": "Akte anlegen",
+"pn_cancel": "Abbrechen",
+"pn_creada": "Akte angelegt: {nom}.",
+"pn_existeix": "Es gibt bereits einen Patienten mit diesem Namen. Suchen Sie ihn oben.",
+"pn_falta_nom": "Der Name ist ein Pflichtfeld.",
+"pac_nom": "Name des Patienten",
+"pac_avis_nom": "Bitte prüfen Sie, ob Vorname und beide Nachnamen angegeben sind, falls vorhanden",
+"pac_naix": "Geburtsdatum",
+"pac_doc_tipus": "Ausweisdokument",
+"doc_DNI": "DNI",
+"doc_NIE": "NIE",
+"doc_PASSAPORT": "Pasaporte (paciente extranjero sin DNI ni NIE)",
+"doc_REPRESENTANT": "DNI/NIE del padre, de la madre o del representante legal (menor sin documento)",
+"pac_doc_num": "Dokumentnummer",
+"pac_desa": "Guardar la fecha de nacimiento y el DNI/NIE en la ficha del paciente. Son datos administrativos y se sincronizan con el resto de la ficha.",
+"med_tit": "Arzneimittel",
+"med_un": "Ein Arzneimittel pro Rezept.",
+"l_principi": "Wirkstoff oder Arzneimittel",
+"l_dosi": "Stärke",
+"l_forma": "Darreichungsform",
+"l_via": "Verabreichungsweg (falls nötig)",
+"l_format": "Packungsgröße",
+"l_envasos": "Anzahl der Packungen",
+"l_posologia": "Dosierung",
+"ph_dosi": "Bsp.: 875/125 mg",
+"ph_forma": "Bsp.: Tabletten",
+"ph_via": "Bsp.: oral",
+"ph_format": "Bsp.: Packung mit 30 Tabletten",
+"ph_posologia": "Bsp.: 1 Tablette alle 12 Stunden für 10 Tage",
+"ajuda_posologia": "Einheiten pro Einnahme, Häufigkeit und Behandlungsdauer",
+"avis_envasos": "Hasta cuatro envases solo en los casos del art. 5.5.a) del RD 1718/2010: antibacterianos J01 en unidosis por vía parenteral (excepto J01E, J01M y J01R), viales multidosis de insulinas A10A y medicamentos de diagnóstico hospitalario. Los estupefacientes no pueden prescribirse con ReceptaMed.",
+"avis_estupefaents": "ReceptaMed no sirve para prescribir estupefacientes ni productos sanitarios. Los estupefacientes de la lista I se prescriben en la receta oficial de estupefacientes, que se solicita al Colegio de Médicos y se rellena a mano (RD 1675/2012). Un producto sanitario no puede ir en la misma receta que un medicamento (art. 13 del RD 1718/2010).",
+"avis_model": "ReceptaMed imprime la receta con los datos que exige el art. 3 del RD 1718/2010. **Quien edita la receta es su consulta**, y es quien debe incorporar las medidas contra la falsificación que exige el art. 4.1 (por ejemplo, el papel numerado que le facilite su colegio). ConsultaMed no genera ningún número oficial ni código de verificación, y no certifica que ninguna receta sea válida. En Cataluña, el CoMB ofrece la receta electrónica privada (REMPe) gratuitamente a los colegiados en ejercicio.",
+"amp_tit": "Bevor Sie beginnen",
+"amp_entesos": "Verstanden",
+"previ_tit": "Vorschau",
+"previ_aria": "Vorschau des Rezepts und des Informationsblatts für den Patienten, wie sie gedruckt werden",
+"previ_paper_A5": "A5 (210 × 148 mm) auf zwei Blättern: Rezept und Informationsblatt für den Patienten.",
+"previ_paper_A4_TALL": "A4: oben das Rezept, unten das Informationsblatt für den Patienten, mit Schnittlinie.",
+"previ_paper_CAPCALERA": "Briefkopfpapier auf zwei Blättern: Rezept und Informationsblatt für den Patienten, ohne Arzt- und Praxisdaten.",
+"b_imprimir": "Rezept drucken",
+"b_netejar": "Neu beginnen",
+"b_una_altra": "Weiteres Rezept für denselben Patienten",
+"desada": "Rezept im Verlauf gespeichert",
+"desada_cancel": "Wenn Sie den Druck abgebrochen haben, können Sie das Rezept im Verlauf stornieren.",
+"netejar_confirma": "Eingaben löschen und neu beginnen?",
+"err_tit": "Es wurde nichts gedruckt. Fehlt oder ist nicht korrekt:",
+"err_falta": "Fehlt: {camp}",
+"err_falta_dades": "Fehlt unter „Rezeptdaten“: {camp}",
+"err_metge": "Wählen Sie den ausstellenden Arzt",
+"err_pacient": "Patienten auswählen oder anlegen",
+"err_naix": "{camp}: muss ein Datum zwischen dem 1.1.1900 und heute sein",
+"err_dni": "Die DNI muss 8 Ziffern und einen Buchstaben haben",
+"err_dni_lletra": "Der Buchstabe der DNI passt nicht zur Nummer",
+"err_nie": "Die NIE muss mit X, Y oder Z beginnen, 7 Ziffern und einen Buchstaben haben",
+"err_nie_lletra": "Der Buchstabe der NIE passt nicht zur Nummer",
+"err_pass": "Der Reisepass muss 5 bis 20 Buchstaben oder Ziffern haben",
+"err_representant": "Geben Sie die DNI oder NIE des Vaters, der Mutter oder des gesetzlichen Vertreters mit dem passenden Buchstaben ein",
+"err_envasos": "{camp}: muss eine ganze Zahl von 1 bis 4 sein",
+"err_llarg": "{camp}: höchstens {n} Zeichen",
+"err_desborda": "Der Text in „{camp}“ ist zu lang für das Rezept",
+"err_clausula": "Die Datenschutzklausel passt mit diesen Praxisdaten nicht: Kürzen Sie den Praxisnamen, die Adresse oder die E-Mail",
+"err_correu": "{camp}: die E-Mail muss die Form name@domain haben",
+"err_tel_prefix": "{camp}: bei 9 Ziffern wird +34 ergänzt; sonst bitte mit internationaler Vorwahl (+33…)",
+"err_tel_xifres": "{camp}: muss 8 bis 15 Ziffern haben",
+"err_colegiat": "{camp}: muss mindestens eine Ziffer enthalten",
+"err_despl": "{camp}: eine Zahl von −6 bis 6 in 0,5-Schritten",
+"err_desar": "Das Rezept konnte nicht gespeichert werden: Der Speicher dieses Browsers ist voll oder nicht verfügbar. Es wurde nichts gedruckt.",
+"err_illegible": "Die ReceptaMed-Daten auf diesem Gerät können nicht gelesen werden. Damit sie nicht verloren gehen, wurde nichts geschrieben und nichts gedruckt.",
+"err_imprimir": "Das Rezept wurde gespeichert, aber dieser Browser hat den Druckdialog nicht geöffnet.",
+"err_fitxa_no": "Das Rezept wurde gespeichert, aber die Akte von {nom} wurde nicht gefunden und nicht aktualisiert.",
+"camp_principi_dosi": "Wirkstoff oder Arzneimittel und Stärke",
+"camp_detall": "Darreichungsform, Weg und Packungsgröße",
+"camp_pac_dades": "Geburtsdatum und Dokument",
+"d_err_tit": "Die Daten wurden nicht gespeichert. Bitte korrigieren:",
+"d_metge_tit": "Arzt",
+"d_metge_de": "Daten von: {nom}",
+"d_metge_cap": "Wählen Sie ganz oben den Arzt, um seine Daten einzugeben.",
+"d_tractament": "Anrede",
+"d_tractament_cap": "(keine)",
+"d_nom": "Vor- und Nachnamen *",
+"d_especialitat": "Especialidad oficialmente acreditada *",
+"d_extra1": "Zusatzzeile 1 (optional)",
+"d_extra2": "Zusatzzeile 2 (optional)",
+"d_colegiat": "Ärztekammer-Nummer *",
+"d_consulta_tit": "Praxis",
+"d_cnom": "Name der Praxis oder des Zentrums (optional)",
+"d_linia1": "Adresse: Straße und Hausnummer *",
+"d_linia2": "Postleitzahl und Ort *",
+"d_telefon": "Telefon *",
+"d_telefon_ajuda": "Ohne Vorwahl wird +34 ergänzt (9 Ziffern). Aus einem anderen Land bitte mit Vorwahl (+33…).",
+"d_correu": "E-Mail *",
+"d_paper_tit": "Papier",
+"d_paper_llegenda": "Worauf das Rezept gedruckt wird",
+"d_paper_A5": "Halbes A4 (A5) quer: Rezept und Informationsblatt für den Patienten auf zwei Blättern",
+"d_paper_A4": "A4: oben das Rezept und unten das Informationsblatt für den Patienten, mit Schnittlinie (Standard)",
+"d_paper_CAP": "Papier mit vorgedrucktem Briefkopf: Rezept und Informationsblatt für den Patienten auf zwei Blättern",
+"d_paper_ajuda": "Das Rezept wird immer mit dem Informationsblatt für den Patienten gedruckt: A4 auf einem Blatt, A5 und Briefkopfpapier auf zwei.",
+"d_avis_capcalera": "Nutzen Sie das Ausrichtungsblatt, um es an Ihr Papier anzupassen",
+"d_calib_tit": "Kalibrierung",
+"d_dx": "Horizontale Verschiebung (mm)",
+"d_dy": "Vertikale Verschiebung (mm)",
+"d_calib_ajuda": "Von −6 bis 6 mm in 0,5-Schritten. Positiv: nach rechts und nach unten.",
+"d_avis_marge": "Mit dieser Verschiebung reicht ein Teil des Textes in den Sicherheitsrand (12 mm seitlich, 10 mm oben und unten). Prüfen Sie es mit dem Ausrichtungsblatt.",
+"b_alineacio": "Ausrichtungsblatt drucken",
+"d_alin_nota": "Dieses Blatt wurde mit noch nicht gespeicherten Werten gedruckt. Speichern Sie die Daten, damit die Rezepte sie verwenden.",
+"d_idioma_tit": "Sprache des Rezepts",
+"d_idioma": "Sprache des gedruckten Rezepts",
+"d_idioma_ajuda": "Was Sie schreiben, wird genau so gedruckt, in jeder Sprache.",
+"obligatoris_nota": "Mit * markierte Felder sind Pflichtfelder.",
+"b_desa_dades": "Daten speichern",
+"d_desades": "Daten gespeichert.",
+"d_desades_falten": "Daten gespeichert. Für Rezepte fehlt noch: {llista}.",
+"avis_dades": "Bitte vor dem ersten Rezept die Arzt- und Praxisdaten vervollständigen. Es fehlt: {llista}.",
+"h_cerca": "Suche (Patient, Arzneimittel oder Stärke)",
+"h_des": "Von",
+"h_fins": "Bis",
+"h_anullades": "Auch stornierte anzeigen",
+"h_col_data": "Datum",
+"h_col_pacient": "Patient",
+"h_col_med": "Arzneimittel",
+"h_col_pos": "Dosierung",
+"h_col_estat": "Status",
+"h_col_acc": "Aktionen",
+"estat_EMESA": "Ausgestellt",
+"estat_ANULLADA": "Storniert",
+"mostra": "Muster",
+"b_veure": "Ansehen",
+"b_repetir": "Wiederholen",
+"b_anullar": "Stornieren",
+"aria_veure": "Rezept {id} von {pac} ansehen",
+"aria_repetir": "Rezept {id} von {pac} wiederholen",
+"aria_anullar": "Rezept {id} von {pac} stornieren",
+"h_buit": "Noch keine Rezepte.",
+"h_cap": "Kein Rezept entspricht den Filtern.",
+"h_metge_cap": "Wählen Sie ganz oben den Arzt, um seine Rezepte zu sehen.",
+"h_compte_1": "1 Rezept",
+"h_compte_n": "{n} Rezepte",
+"b_csv": "Als CSV exportieren",
+"b_json": "Kopie als JSON",
+"exportat": "Datei bereit: {nom}.",
+"exporta_buit": "Es gibt keine Rezepte zum Exportieren.",
+"repetir_confirma": "Es gibt bereits ein angefangenes Rezept. Durch die Wiederholung ersetzen?",
+"repetida": "Rezept {id} in „Neues Rezept“ übernommen, mit heutigem Datum. Prüfen und drucken Sie es, wann Sie möchten.",
+"mv_tit": "Rezept {id}",
+"mv_nomes_lectura": "Nur Lesen. Ein ausgestelltes Rezept wird weder geändert noch erneut gedruckt.",
+"mv_info": "Ausgestellt am {data}.",
+"mv_origen": "Wiederholung von {id}.",
+"mv_anullada": "Storniert am {data}. Grund: {motiu}",
+"b_tancar": "Schließen",
+"ma_tit": "Rezept stornieren",
+"ma_resum": "{id} · {pac} · {med}",
+"ma_motiu": "Grund (Pflichtfeld, 3 bis 200 Zeichen)",
+"ma_confirma": "Ich bestätige, dass ich dieses Rezept stornieren will. Das kann nicht rückgängig gemacht werden.",
+"ma_err_motiu": "Der Grund muss 3 bis 200 Zeichen haben.",
+"ma_err_conf": "Bitte bestätigen Sie die Stornierung.",
+"anullada_ok": "Rezept {id} storniert. Es bleibt im Verlauf.",
+"csv_id": "id",
+"csv_data": "Datum",
+"csv_estat": "Status",
+"csv_pacient": "Patient",
+"csv_naix": "Geburtsdatum",
+"csv_document": "Dokument",
+"csv_principi": "Wirkstoff",
+"csv_dosi": "Stärke",
+"csv_forma": "Darreichungsform",
+"csv_via": "Verabreichungsweg",
+"csv_format": "Packung",
+"csv_envasos": "Packungen",
+"csv_posologia": "Dosierung",
+"csv_metge": "Arzt",
+"csv_colegiat": "Kammernummer",
+"csv_mostra": "Muster",
+"si": "ja",
+"no": "nein"
+},
+"en": {
+"idioma_ui": "Screen language",
+"carregant": "One moment…",
+"soon": "Soon",
+"d_recept": "Private prescriptions from the visit itself, signed by the doctor.",
+"rol_tit": "Prescriptions are written by the doctor.",
+"metge_tria": "Prescribing doctor",
+"metge_tria_buit": "— Choose the doctor —",
+"tabs_aria": "ReceptaMed sections",
+"tab_nova": "New prescription",
+"tab_historial": "History",
+"tab_dades": "Prescription details",
+"pac_tit": "Patient",
+"pac_cerca": "Find the patient (name or DNI/NIE)",
+"pac_llista": "Practice patients",
+"pac_cap": "No patient matches the search.",
+"pac_nou": "+ New patient",
+"pn_tit": "New patient record",
+"pn_nom": "Full name",
+"pn_crea": "Create the record",
+"pn_cancel": "Cancel",
+"pn_creada": "Record created: {nom}.",
+"pn_existeix": "A patient with this name already exists. Search for them above.",
+"pn_falta_nom": "The name is required.",
+"pac_nom": "Patient's full name",
+"pac_avis_nom": "Check that the first name and both surnames are there, if the patient has them",
+"pac_naix": "Date of birth",
+"pac_doc_tipus": "Document",
+"doc_DNI": "DNI",
+"doc_NIE": "NIE",
+"doc_PASSAPORT": "Pasaporte (paciente extranjero sin DNI ni NIE)",
+"doc_REPRESENTANT": "DNI/NIE del padre, de la madre o del representante legal (menor sin documento)",
+"pac_doc_num": "Document number",
+"pac_desa": "Guardar la fecha de nacimiento y el DNI/NIE en la ficha del paciente. Son datos administrativos y se sincronizan con el resto de la ficha.",
+"med_tit": "Medicine",
+"med_un": "One medicine per prescription.",
+"l_principi": "Active ingredient or medicine",
+"l_dosi": "Strength",
+"l_forma": "Pharmaceutical form",
+"l_via": "Route of administration (if needed)",
+"l_format": "Pack size",
+"l_envasos": "Number of packs",
+"l_posologia": "Dosage instructions",
+"ph_dosi": "E.g.: 875/125 mg",
+"ph_forma": "E.g.: tablets",
+"ph_via": "E.g.: oral",
+"ph_format": "E.g.: pack of 30 tablets",
+"ph_posologia": "E.g.: 1 tablet every 12 hours for 10 days",
+"ajuda_posologia": "Units per dose, frequency and length of treatment",
+"avis_envasos": "Hasta cuatro envases solo en los casos del art. 5.5.a) del RD 1718/2010: antibacterianos J01 en unidosis por vía parenteral (excepto J01E, J01M y J01R), viales multidosis de insulinas A10A y medicamentos de diagnóstico hospitalario. Los estupefacientes no pueden prescribirse con ReceptaMed.",
+"avis_estupefaents": "ReceptaMed no sirve para prescribir estupefacientes ni productos sanitarios. Los estupefacientes de la lista I se prescriben en la receta oficial de estupefacientes, que se solicita al Colegio de Médicos y se rellena a mano (RD 1675/2012). Un producto sanitario no puede ir en la misma receta que un medicamento (art. 13 del RD 1718/2010).",
+"avis_model": "ReceptaMed imprime la receta con los datos que exige el art. 3 del RD 1718/2010. **Quien edita la receta es su consulta**, y es quien debe incorporar las medidas contra la falsificación que exige el art. 4.1 (por ejemplo, el papel numerado que le facilite su colegio). ConsultaMed no genera ningún número oficial ni código de verificación, y no certifica que ninguna receta sea válida. En Cataluña, el CoMB ofrece la receta electrónica privada (REMPe) gratuitamente a los colegiados en ejercicio.",
+"amp_tit": "Before you start",
+"amp_entesos": "Understood",
+"previ_tit": "Preview",
+"previ_aria": "Preview of the prescription and the patient information sheet as they will be printed",
+"previ_paper_A5": "A5 (210 × 148 mm), on two sheets: the prescription and the patient information sheet.",
+"previ_paper_A4_TALL": "A4: the prescription on top and the patient information sheet below, with the cutting line.",
+"previ_paper_CAPCALERA": "Letterhead paper, on two sheets: the prescription and the patient information sheet, without the doctor's or the practice's details.",
+"b_imprimir": "Print the prescription",
+"b_netejar": "Start again",
+"b_una_altra": "Another prescription for the same patient",
+"desada": "Prescription saved to the history",
+"desada_cancel": "If you cancelled printing, you can void it from the history.",
+"netejar_confirma": "Clear what you have written and start again?",
+"err_tit": "Nothing was printed. Missing or not correct:",
+"err_falta": "Missing: {camp}",
+"err_falta_dades": "Missing in “Prescription details”: {camp}",
+"err_metge": "Choose the prescribing doctor",
+"err_pacient": "Choose or create the patient",
+"err_naix": "{camp}: must be a date between 1/1/1900 and today",
+"err_dni": "The DNI must have 8 digits and the letter",
+"err_dni_lletra": "The DNI letter does not match the number",
+"err_nie": "The NIE must be X, Y or Z, 7 digits and the letter",
+"err_nie_lletra": "The NIE letter does not match the number",
+"err_pass": "The passport must have 5 to 20 letters or digits",
+"err_representant": "Enter the DNI or NIE of the father, mother or legal representative, with its matching letter",
+"err_envasos": "{camp}: must be a whole number from 1 to 4",
+"err_llarg": "{camp}: {n} characters at most",
+"err_desborda": "The text in “{camp}” is too long for the prescription",
+"err_clausula": "The data protection clause does not fit with these practice details: shorten the practice name, the address or the email",
+"err_correu": "{camp}: the email must look like name@domain",
+"err_tel_prefix": "{camp}: with 9 digits +34 is added; otherwise type the international prefix (+33…)",
+"err_tel_xifres": "{camp}: must have 8 to 15 digits",
+"err_colegiat": "{camp}: must contain at least one digit",
+"err_despl": "{camp}: a number from −6 to 6 in steps of 0.5",
+"err_desar": "The prescription could not be saved: this browser's storage is full or unavailable. Nothing was printed.",
+"err_illegible": "ReceptaMed's data on this device cannot be read. So as not to lose it, nothing was written and nothing was printed.",
+"err_imprimir": "The prescription was saved, but this browser did not open the print dialog.",
+"err_fitxa_no": "The prescription was saved, but the record of {nom} was not found, so it was not updated.",
+"camp_principi_dosi": "Active ingredient or medicine and strength",
+"camp_detall": "Form, route and pack size",
+"camp_pac_dades": "Date of birth and document",
+"d_err_tit": "The details were not saved. Please correct:",
+"d_metge_tit": "Doctor",
+"d_metge_de": "Details of: {nom}",
+"d_metge_cap": "Choose the doctor at the very top to enter their details.",
+"d_tractament": "Title",
+"d_tractament_cap": "(none)",
+"d_nom": "Full name (first name and both surnames) *",
+"d_especialitat": "Especialidad oficialmente acreditada *",
+"d_extra1": "Extra line 1 (optional)",
+"d_extra2": "Extra line 2 (optional)",
+"d_colegiat": "Medical licence number *",
+"d_consulta_tit": "Practice",
+"d_cnom": "Practice or centre name (optional)",
+"d_linia1": "Address: street and number *",
+"d_linia2": "Postcode and town *",
+"d_telefon": "Phone *",
+"d_telefon_ajuda": "Without a prefix, +34 is added (9 digits). From another country, type it with the prefix (+33…).",
+"d_correu": "Email *",
+"d_paper_tit": "Paper",
+"d_paper_llegenda": "Where the prescription is printed",
+"d_paper_A5": "Half A4 (A5) landscape: the prescription and the patient information sheet, on two sheets",
+"d_paper_A4": "A4: the prescription on top and the patient information sheet below, with a cutting line (default)",
+"d_paper_CAP": "Letterhead paper: the prescription and the patient information sheet, on two sheets",
+"d_paper_ajuda": "The prescription always prints with the patient information sheet: A4 on one sheet; A5 and letterhead on two.",
+"d_avis_capcalera": "Use the alignment sheet to fit it to your paper",
+"d_calib_tit": "Calibration",
+"d_dx": "Horizontal offset (mm)",
+"d_dy": "Vertical offset (mm)",
+"d_calib_ajuda": "From −6 to 6 mm in steps of 0.5. Positive: to the right and down.",
+"d_avis_marge": "With this offset, part of the text enters the safety margin (12 mm at the sides, 10 mm at the top and bottom). Check it with the alignment sheet.",
+"b_alineacio": "Print an alignment sheet",
+"d_alin_nota": "This sheet was printed with values you have not saved yet. Save the details so that prescriptions use them.",
+"d_idioma_tit": "Prescription language",
+"d_idioma": "Language of the printed prescription",
+"d_idioma_ajuda": "What you write is printed exactly as you write it, in any language.",
+"obligatoris_nota": "Fields marked * are required.",
+"b_desa_dades": "Save details",
+"d_desades": "Details saved.",
+"d_desades_falten": "Details saved. To print prescriptions you still need: {llista}.",
+"avis_dades": "Before the first prescription, complete the doctor's and the practice's details. Missing: {llista}.",
+"h_cerca": "Search (patient, medicine or strength)",
+"h_des": "From",
+"h_fins": "To",
+"h_anullades": "Also show voided ones",
+"h_col_data": "Date",
+"h_col_pacient": "Patient",
+"h_col_med": "Medicine",
+"h_col_pos": "Dosage",
+"h_col_estat": "Status",
+"h_col_acc": "Actions",
+"estat_EMESA": "Issued",
+"estat_ANULLADA": "Voided",
+"mostra": "Sample",
+"b_veure": "View",
+"b_repetir": "Repeat",
+"b_anullar": "Void",
+"aria_veure": "View prescription {id} for {pac}",
+"aria_repetir": "Repeat prescription {id} for {pac}",
+"aria_anullar": "Void prescription {id} for {pac}",
+"h_buit": "No prescriptions yet.",
+"h_cap": "No prescription matches the filters.",
+"h_metge_cap": "Choose the doctor at the very top to see their prescriptions.",
+"h_compte_1": "1 prescription",
+"h_compte_n": "{n} prescriptions",
+"b_csv": "Export as CSV",
+"b_json": "JSON copy",
+"exportat": "File ready: {nom}.",
+"exporta_buit": "There are no prescriptions to export.",
+"repetir_confirma": "There is a prescription in progress. Replace it with the repeat?",
+"repetida": "Prescription {id} copied to “New prescription”, with today's date. Check it and print it when you are ready.",
+"mv_tit": "Prescription {id}",
+"mv_nomes_lectura": "Read-only. An issued prescription is never changed or printed again.",
+"mv_info": "Issued on {data}.",
+"mv_origen": "Repeat of {id}.",
+"mv_anullada": "Voided on {data}. Reason: {motiu}",
+"b_tancar": "Close",
+"ma_tit": "Void the prescription",
+"ma_resum": "{id} · {pac} · {med}",
+"ma_motiu": "Reason (required, 3 to 200 characters)",
+"ma_confirma": "I confirm I want to void this prescription. This cannot be undone.",
+"ma_err_motiu": "The reason must have 3 to 200 characters.",
+"ma_err_conf": "Tick the confirmation.",
+"anullada_ok": "Prescription {id} voided. It stays in the history.",
+"csv_id": "id",
+"csv_data": "date",
+"csv_estat": "status",
+"csv_pacient": "patient",
+"csv_naix": "date of birth",
+"csv_document": "document",
+"csv_principi": "active ingredient",
+"csv_dosi": "strength",
+"csv_forma": "form",
+"csv_via": "route",
+"csv_format": "pack",
+"csv_envasos": "packs",
+"csv_posologia": "dosage",
+"csv_metge": "doctor",
+"csv_colegiat": "licence number",
+"csv_mostra": "sample",
+"si": "yes",
+"no": "no"
+}
+},
+"recepta": {
+"ca": {
+"naix": "Data de naixement",
+"doc_DNI": "DNI",
+"doc_NIE": "NIE",
+"doc_PASSAPORT": "Passaport",
+"doc_REPRESENTANT": "DNI/NIE del representant legal:",
+"via": "via",
+"envas1": "envàs",
+"envasN": "envasos",
+"marca": "MOSTRA · SENSE VALIDESA",
+"anullada": "ANUL·LADA",
+"full_tit": "Full d'informació per al pacient",
+"validesa": "Aquesta recepta és vàlida per a una dispensació durant deu dies naturals des de la data de prescripció.",
+"clausula": "Protecció de dades. Les dades d'aquesta recepta les tracta {RESPONSABLE} ({ADRECA}) per prescriure i documentar el tractament, i l'oficina de farmàcia per dispensar-lo i conservar la recepta. Podeu exercir els drets d'accés, rectificació, supressió, limitació, oposició i portabilitat a {CORREU}. Hi ha informació addicional a disposició vostra a la consulta.",
+"col": "Col.",
+"tel": "Tel.",
+"alin": "FULL D'ALINEACIÓ — NO ÉS UNA RECEPTA",
+"alin_pacient": "FULL D'INFORMACIÓ PER AL PACIENT",
+"z1": "1 · Metge",
+"z2": "2 · Consulta",
+"z3": "3 · Pacient",
+"z4": "4 · Medicament",
+"z5": "5 · Posologia",
+"z6": "6 · Signatura",
+"z7": "7 · Data",
+"z8": "8 · Protecció de dades",
+"zf_titol": "Títol",
+"zf_pacient": "Pacient",
+"zf_tractament": "Tractament",
+"zf_posologia": "Posologia",
+"zf_validesa": "Termini de dispensació",
+"mesos": ["gener", "febrer", "març", "abril", "maig", "juny", "juliol", "agost", "setembre", "octubre", "novembre", "desembre"]
+},
+"es": {
+"naix": "Fecha de nacimiento",
+"doc_DNI": "DNI",
+"doc_NIE": "NIE",
+"doc_PASSAPORT": "Pasaporte",
+"doc_REPRESENTANT": "DNI/NIE del representante legal:",
+"via": "vía",
+"envas1": "envase",
+"envasN": "envases",
+"marca": "MUESTRA · SIN VALIDEZ",
+"anullada": "ANULADA",
+"full_tit": "Hoja de información para el paciente",
+"validesa": "Esta receta es válida para una dispensación durante diez días naturales desde la fecha de prescripción.",
+"clausula": "Protección de datos. Los datos de esta receta son tratados por {RESPONSABLE} ({ADRECA}) para prescribir y documentar el tratamiento, y por la oficina de farmacia para dispensarlo y conservar la receta. Puede ejercer los derechos de acceso, rectificación, supresión, limitación, oposición y portabilidad en {CORREU}. Hay información adicional a su disposición en la consulta.",
+"col": "Col.",
+"tel": "Tel.",
+"alin": "HOJA DE ALINEACIÓN — NO ES UNA RECETA",
+"alin_pacient": "HOJA DE INFORMACIÓN PARA EL PACIENTE",
+"z1": "1 · Médico",
+"z2": "2 · Consulta",
+"z3": "3 · Paciente",
+"z4": "4 · Medicamento",
+"z5": "5 · Posología",
+"z6": "6 · Firma",
+"z7": "7 · Fecha",
+"z8": "8 · Protección de datos",
+"zf_titol": "Título",
+"zf_pacient": "Paciente",
+"zf_tractament": "Tratamiento",
+"zf_posologia": "Posología",
+"zf_validesa": "Plazo de dispensación",
+"mesos": ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"]
+}
+}
+}
+</script>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════════════════
+   ReceptaMed v1 · ENG-40 (A-023) · Enginyeria · 7/10/2026
+
+   LES LINIES VERMELLES (§3 de l'ordre), que mana sobre tot el que hi ha aqui:
+   1. Transcrivim, no recomanem: cap llista de medicaments, cap suggeriment, cap
+      autocompletat, cap alerta. L'unica «memoria» es REPETIR una recepta del
+      mateix metge, que es una accio seva i explicita.
+   2. El clinic no surt de l'ordinador: les receptes viuen a `rm_*` i no hi ha
+      cap fetch en aquesta pagina. Nomes `cmsync.js` parla amb el servidor, i
+      `cmsync.js` nomes coneix sm_cites i fm2_pacients. L'unica escriptura fora
+      de rm_* es la data de naixement i el DNI/NIE a la fitxa, si el metge ho
+      deixa marcat.
+   3. Cap recurs de fora: res de CDN; la impressio no depen mai de la xarxa.
+   4. Una recepta emesa no es modifica: Repetir en crea una de nova, Anul·lar
+      guarda el motiu i la conserva. No hi ha cap altre cami per imprimir una
+      recepta que el boto «Imprimir la recepta».
+   5. En mode de prova, totes porten la marca d'aigua.
+   ENG-41 · L'ESMENA A2 (Legal 23_ i DIS-16), que mana sobre la part A:
+   6. Una recepta de paper son DOS COSSOS: la recepta i el full d'informacio per
+      al pacient (art. 3.1 i 3.3 del RD 1718/2010). Cap paper imprimeix la recepta
+      sola. L'A4 amb linia de tall es el paper per defecte.
+   7. ConsultaMed imprimeix, i no certifica: cap text diu que la recepta sigui
+      «oficial» o «valida», fora dels literals de Legal.
+   ═══════════════════════════════════════════════════════════════════════════ */
+(function () {
+  'use strict';
+
+  /* ═══ LA PORTA (§9.2) ═══ Publicar (P4) es posar-la a true, en un lot a part. */
+  var RECEPTA_PUBLICA = false;
+
+  var K = { cfg: 'rm_config', perfils: 'rm_perfils', rec: 'rm_receptes', esb: 'rm_esborrany', metge: 'rm_metge' };
+  var KF = { conf: 'fm2_config', pac: 'fm2_pacients' };
+  var IDIOMES_UI = ['ca', 'es', 'de', 'en'];
+  var PAPERS = ['A4_TALL', 'A5', 'CAPCALERA'];            /* OFICIAL: tancat sense data (ENG-46 ①, 8/10): cap opció a la pantalla */
+  var PAPER_DEFECTE = 'A4_TALL';                            /* A2 §2: la recepta i el full del pacient en un sol full */
+  var DOCS = ['DNI', 'NIE', 'PASSAPORT', 'REPRESENTANT'];   /* A2 §5: TUTOR passa a REPRESENTANT (23_ §4.1) */
+  var LLETRES = 'TRWAGMYFPDXBNJZSQVHLCKE';
+  /* DIS-16 §1 · els maxims, de xarxa: el que mana es la mesura en viu (vigila*). El nom
+     del pacient: amb la Inter de casa a 11 pt, en 150 mm hi caben de 74 a 81 caracters
+     de noms llargs reals (DIS-16 en deia 84): 80. */
+  var MAX = { principi: 50, dosi: 40, forma: 40, via: 18, format: 40, posologia: 140, pacient: 80, extra: 60, colegiat: 20, nom: 80, especialitat: 80, linia: 80, cnom: 80, correu: 120, telefon: 30 };
+  var DESPL_MAX = 6;                                        /* DIS-16 §2: el calibratge, de −6 a +6 mm */
+  var SEGURA = { x0: 12, x1: 198, y0: 10, baix: 10 };       /* la zona segura de cada cos, en mm */
+  var RE_CORREU = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  var PAGINA = { A5: '@page { size: 210mm 148mm; margin: 0 }', A4: '@page { size: 210mm 297mm; margin: 0 }' };
+  var PX_MM = 96 / 25.4;
+  var ROLS_SENSE_RECEPTA = ['RECEPCIO', 'ADMIN_CENTRE'];
+
+  var TEXTOS = JSON.parse(document.getElementById('rm-textos').textContent);
+  var TXT = TEXTOS.ui, PRT = TEXTOS.recepta;
+
+  /* ─────────────────────────── utilitats ─────────────────────────── */
+  function $(id) { return document.getElementById(id); }
+  function el(tag, cls) { var e = document.createElement(tag); if (cls) e.className = cls; return e; }
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function llegeix(k, def) {
+    var v = null;
+    try { v = localStorage.getItem(k); } catch (e) { return def; }
+    if (v == null || v === '') return def;
+    try { var o = JSON.parse(v); return o == null ? def : o; } catch (e) { return def; }
+  }
+  function escriu(k, v) { localStorage.setItem(k, JSON.stringify(v)); }   /* llança si no hi cap: qui crida ho tracta */
+  function treu(k) { try { localStorage.removeItem(k); } catch (e) {} }
+  function llista(k) { var l = llegeix(k, []); return Array.isArray(l) ? l : []; }
+  /* Per ESCRIURE una llista: si la clau existeix pero no es pot llegir com a
+     llista, no es trepitja mai (null). Llegir-la buida i desar-hi un element
+     esborraria tot el que hi havia. */
+  function llistaPerEscriure(k) {
+    var v = null;
+    try { v = localStorage.getItem(k); } catch (e) { return null; }
+    if (v == null || v === '') return [];
+    try { var o = JSON.parse(v); return Array.isArray(o) ? o : null; } catch (e) { return null; }
+  }
+  function pad(n) { return (n < 10 ? '0' : '') + n; }
+  function avuiISO() { var d = new Date(); return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
+  function dataValida(s) {
+    s = String(s || '');
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(s)) return false;
+    var y = +s.slice(0, 4), m = +s.slice(5, 7), d = +s.slice(8, 10);
+    var dt = new Date(Date.UTC(y, m - 1, d));
+    return dt.getUTCFullYear() === y && dt.getUTCMonth() === m - 1 && dt.getUTCDate() === d;
+  }
+  function ddmmaaaa(s) { return dataValida(s) ? s.slice(8, 10) + '/' + s.slice(5, 7) + '/' + s.slice(0, 4) : ''; }
+  /* §8.3: «7 d’octubre de 2026» (apostrof tipografic davant d'abril, agost i
+     octubre; «de» davant de la resta) · «7 de octubre de 2026» */
+  function dataLletres(s, l) {
+    if (!dataValida(s)) return '';
+    var P = PRT[l] || PRT.ca, d = +s.slice(8, 10), mes = P.mesos[+s.slice(5, 7) - 1], y = s.slice(0, 4);
+    if (l === 'ca') return d + ' ' + (/^[aeiou]/.test(mes) ? 'd\u2019' : 'de ') + mes + ' de ' + y;
+    return d + ' de ' + mes + ' de ' + y;
+  }
+  function normal(s) { return String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase(); }
+  function normDoc(s) { return String(s || '').toUpperCase().replace(/[\s\-]/g, ''); }
+  function dniOk(s) { return /^[0-9]{8}[A-Z]$/.test(s) && LLETRES.charAt(parseInt(s.slice(0, 8), 10) % 23) === s.charAt(8); }
+  function nieOk(s) { if (!/^[XYZ][0-9]{7}[A-Z]$/.test(s)) return false; var n = { X: '0', Y: '1', Z: '2' }[s.charAt(0)] + s.slice(1, 8); return LLETRES.charAt(parseInt(n, 10) % 23) === s.charAt(8); }
+  function clona(o) { return JSON.parse(JSON.stringify(o)); }
+  function val(id) { var e = $(id); return e ? String(e.value || '').trim() : ''; }
+  function mmPx(mm) { return mm * PX_MM; }
+  function esProva() {
+    /* La mateixa regla que cmstore.js: tot el que no sigui exactament ACTIU o
+       IMPAGAMENT es PROVA. El dubte cau del canto segur (§9.1). */
+    var v = null;
+    try { v = localStorage.getItem('cm_estat_compte'); } catch (e) {}
+    return !(v === 'ACTIU' || v === 'IMPAGAMENT');
+  }
+
+  /* ─────────────────────────── idioma ─────────────────────────── */
+  function idiomaUI() { var l = null; try { l = localStorage.getItem('em_idioma_ui'); } catch (e) {} return IDIOMES_UI.indexOf(l) >= 0 ? l : 'ca'; }
+  var ui = idiomaUI();
+  function t(k, v) {
+    var s = (TXT[ui] && TXT[ui][k] != null) ? TXT[ui][k] : TXT.ca[k];
+    if (s == null) s = k;
+    if (v) s = s.replace(/\{(\w+)\}/g, function (m, n) { return v[n] != null ? v[n] : m; });
+    return s;
+  }
+  function pr(l, k) { var P = PRT[l] || PRT.ca; return P[k] != null ? P[k] : PRT.ca[k]; }
+  /* Nomes els elements marcats. La recepta impresa no en porta cap: es pinta
+     amb els textos de l'idioma de la recepta i el traductor no la toca mai. */
+  function pintaTextos(arrel) {
+    if (!arrel) return;
+    arrel.querySelectorAll('[data-t]').forEach(function (e) { e.textContent = t(e.getAttribute('data-t')); });
+    arrel.querySelectorAll('[data-tp]').forEach(function (e) { e.setAttribute('placeholder', t(e.getAttribute('data-tp'))); });
+    arrel.querySelectorAll('[data-ta]').forEach(function (e) { e.setAttribute('aria-label', t(e.getAttribute('data-ta'))); });
+    arrel.querySelectorAll('[data-tr]').forEach(function (e) { pintaRic(e, t(e.getAttribute('data-tr'))); });
+  }
+  /* un text amb trossos en negreta (**…**), com el de Legal (23_ §7.3), sense innerHTML */
+  function pintaRic(e, s) {
+    e.textContent = '';
+    String(s).split('**').forEach(function (tros, i) {
+      if (!tros) return;
+      if (i % 2) { var b = el('strong'); b.textContent = tros; e.appendChild(b); }
+      else e.appendChild(document.createTextNode(tros));
+    });
+  }
+
+  /* ═══════════════════════ ARRENCADA: porta i rol ═══════════════════════ */
+  function portaOberta() {
+    if (RECEPTA_PUBLICA === true) return true;
+    var pv = null;
+    try { pv = localStorage.getItem('cm_preview'); } catch (e) {}
+    return pv === '1';
+  }
+  function pantallaSenzilla(id, clauText, ambEtiqueta) {
+    var m = $('rm-main'); m.textContent = '';
+    var s = el('section', 'rm-neutra'); s.id = id;
+    var img = el('img', 'rm-neutra-logo'); img.src = 'receptamed.png'; img.alt = 'ReceptaMed';
+    s.appendChild(img);
+    if (ambEtiqueta) { var tg = el('p', 'rm-neutra-tag'); tg.setAttribute('data-t', 'soon'); s.appendChild(tg); }
+    var tx = el('p', 'rm-neutra-txt'); tx.setAttribute('data-t', clauText); s.appendChild(tx);
+    var a = el('a', 'rm-btn sec'); a.href = 'hub.html'; a.textContent = '\u25C0 Panel'; s.appendChild(a);
+    m.appendChild(s);
+    pintaTextos(m);
+  }
+  /* §9.2 · la porta tancada: el logotip, «Aviat» i el text del hub, i el panell. */
+  function pintaNeutra() { pantallaSenzilla('rm-neutra', 'd_recept', true); }
+  /* §6.5 · recepcio i administracio del centre: res mes que aixo. */
+  function pintaNomesMetge() { pantallaSenzilla('rm-nomes-metge', 'rol_tit', false); }
+  function pintaCarregant() { var m = $('rm-main'); m.textContent = ''; var p = el('p', 'rm-carregant'); p.setAttribute('data-t', 'carregant'); m.appendChild(p); pintaTextos(m); }
+  function treuPlantilla() { var tp = $('rm-app'); if (tp && tp.parentNode) tp.parentNode.removeChild(tp); }
+
+  /* §6.5 · EL ROL, sense cap sonda de mes (ENG-22: com a molt una per carrega).
+     cmsync.js ja pregunta `jo` si pot haver-hi sessio (cmStore.potHaverSessio);
+     si ha decidit no preguntar, aqui tampoc: el rol es desconegut i la pagina va
+     sencera. Si ha preguntat, cmSync.jo() torna la MATEIXA promesa. */
+  var nomSessio = null, appActiva = false;
+  function rolDe(r) {
+    if (!r || !r.ok || !r.usuari) return null;
+    nomSessio = r.usuari.nom || null;
+    var os = r.usuari.organitzacions || [], org = null, o = null;
+    try { org = window.cmSync && cmSync.org ? cmSync.org() : null; } catch (e) {}
+    for (var i = 0; i < os.length; i++) if (os[i] && os[i].id === org) o = os[i];
+    if (!o) o = os[0] || null;
+    return o ? (o.rol || null) : null;
+  }
+  function decideixRol(cb) {
+    var fet = false;
+    function acaba(rol) {
+      if (!fet) { fet = true; cb(rol); return; }
+      /* La resposta ha arribat tard (després del temps d'espera): si diu que no
+         és metge, es desmunta el que s'havia pintat. */
+      if (ROLS_SENSE_RECEPTA.indexOf(rol) >= 0) { desmuntaApp(); pintaNomesMetge(); }
+      else if (appActiva) preparaCentre();
+    }
+    var st = window.cmStore || {};
+    if (!window.cmSync || typeof cmSync.jo !== 'function' || (st.potHaverSessio && !st.potHaverSessio())) { acaba(null); return; }
+    var p = null;
+    try { p = cmSync.jo(); } catch (e) { p = null; }
+    if (!p || typeof p.then !== 'function') { acaba(null); return; }
+    pintaCarregant();
+    var espera = setTimeout(function () { acaba(null); }, 6000);
+    p.then(function (r) { clearTimeout(espera); acaba(rolDe(r)); }, function () { clearTimeout(espera); acaba(null); });
+  }
+  function desmuntaApp() {
+    appActiva = false;
+    var ids = ['rm-impressio', 'rm-mesura'];
+    ids.forEach(function (id) { var e = $(id); if (e && e.parentNode) e.parentNode.removeChild(e); });
+    var b = $('barra-prova'); if (b) b.style.display = 'none';
+    $('rm-main').textContent = '';
+  }
+
+  function arrenca() {
+    document.documentElement.lang = ui;
+    var nav = document.querySelector('.rm-nav');
+    pintaTextos(nav);
+    var sel = $('rm-idioma-ui');
+    sel.value = ui;
+    sel.addEventListener('change', function () { canviaIdioma(sel.value); });
+    if (!portaOberta()) { treuPlantilla(); pintaNeutra(); return; }
+    decideixRol(function (rol) {
+      if (ROLS_SENSE_RECEPTA.indexOf(rol) >= 0) { treuPlantilla(); pintaNomesMetge(); return; }
+      iniciaApp();
+    });
+  }
+  function canviaIdioma(l) {
+    if (IDIOMES_UI.indexOf(l) < 0) return;
+    ui = l;
+    try { localStorage.setItem('em_idioma_ui', l); } catch (e) {}
+    document.documentElement.lang = l;
+    pintaTextos(document.body);
+    if (appActiva) {
+      amagaErrors();
+      pintaSelectorMetges();
+      pintaDadesMetgeDe();
+      pintaHistorial();
+      pintaPrevi();
+      pintaAvisDades();
+      vigilaDades();
+      vigilaMarge();
+      barra();
+    }
+  }
+
+  /* ═══════════════════════ L'APLICACIÓ ═══════════════════════ */
+  var E = {
+    cfg: null,          /* rm_config normalitzada */
+    centre: false,      /* mode centre (fm2_config.centre.actiu amb metges) */
+    metges: [],
+    metge: '',          /* clau del metge triat en mode centre */
+    origen: null,       /* id de la recepta que s'esta repetint */
+    emesa: null,        /* id de la recepta acabada d'imprimir: el formulari queda bloquejat */
+    armada: false,      /* hi ha una recepta (o el full d'alineacio) a punt al contenidor d'impressio */
+    filaAnullar: null,
+    llistaSel: -1
+  };
+
+  function iniciaApp() {
+    var tp = $('rm-app');
+    var m = $('rm-main');
+    m.textContent = '';
+    m.appendChild(tp.content.cloneNode(true));
+    treuPlantilla();
+    var imp = el('div'); imp.id = 'rm-impressio'; imp.setAttribute('aria-hidden', 'true'); document.body.appendChild(imp);
+    var mes = el('div'); mes.id = 'rm-mesura'; mes.setAttribute('aria-hidden', 'true'); document.body.appendChild(mes);
+    appActiva = true;
+    pintaTextos(m);
+    E.cfg = carregaCfg();
+    connecta();
+    preparaCentre(true);
+    restauraEsborrany();
+    pintaDades();
+    pintaHistorial();
+    barra();
+    if (dadesErrors().length) obrePestanya('dades'); else obrePestanya('nova');
+    pintaAvisDades();
+    /* A2 §4 · 23_ §7.3, UNA vegada en obrir ReceptaMed per primer cop */
+    $('rm-avis-model-primer').hidden = !!E.cfg.avisModelVist;
+  }
+  function entesosAvisModel() {
+    $('rm-avis-model-primer').hidden = true;
+    var cfg = clona(E.cfg); cfg.avisModelVist = true;
+    try { escriu(K.cfg, cfg); E.cfg = normalitzaCfg(cfg); } catch (e) {}   /* si no es pot desar, sortira una altra vegada */
+  }
+
+  /* ─────────── rm_config (§5.1) ─────────── */
+  function metgeBuit(nom) { return { tractament: '', nom: nom || '', especialitat: '', extra: ['', ''], colegiat: '' }; }
+  function canonMetge(m) {
+    m = m || {};
+    var ex = Array.isArray(m.extra) ? m.extra : [];
+    var tr = (m.tractament === 'Dr.' || m.tractament === 'Dra.') ? m.tractament : '';
+    return { tractament: tr, nom: String(m.nom || '').trim(), especialitat: String(m.especialitat || '').trim(), extra: [String(ex[0] || '').trim(), String(ex[1] || '').trim()], colegiat: String(m.colegiat || '').trim() };
+  }
+  function canonConsulta(c) {
+    c = c || {};
+    return { nom: String(c.nom || '').trim(), linia1: String(c.linia1 || '').trim(), linia2: String(c.linia2 || '').trim(), telefon: String(c.telefon || '').trim(), correu: String(c.correu || '').trim() };
+  }
+  function despl(v) { var n = Number(v); if (!isFinite(n)) return 0; n = Math.round(n * 2) / 2; return Math.max(-DESPL_MAX, Math.min(DESPL_MAX, n)); }
+  function desplMal(v) { return !isFinite(v) || v < -DESPL_MAX || v > DESPL_MAX || Math.round(v * 2) !== v * 2; }
+  function normalitzaCfg(c) {
+    c = (c && typeof c === 'object') ? c : {};
+    var o = {
+      versio: 1,
+      paper: PAPERS.indexOf(c.paper) >= 0 ? c.paper : PAPER_DEFECTE,
+      despl: { x: despl(c.despl && c.despl.x), y: despl(c.despl && c.despl.y) },
+      idioma: c.idioma === 'es' ? 'es' : 'ca',
+      consulta: canonConsulta(c.consulta),
+      metges: {},
+      avisModelVist: c.avisModelVist === true                /* A2 §4: l'avis de 23_ §7.3 ja s'ha vist */
+    };
+    var ms = (c.metges && typeof c.metges === 'object') ? c.metges : {};
+    Object.keys(ms).forEach(function (k) { o.metges[k] = canonMetge(ms[k]); });
+    return o;
+  }
+  /* El primer cop, des de fm2_config (FacturaMed): nom, col·legiat i l'adreça
+     partida pel « — ». Des d'aqui, rm_config es independent. */
+  function carregaCfg() {
+    var c = llegeix(K.cfg, null);
+    if (c && typeof c === 'object') return normalitzaCfg(c);
+    var fm = llegeix(KF.conf, {}) || {};
+    var n = normalitzaCfg({});
+    var tit = metgeBuit(String(fm.nom || '').trim());
+    tit.colegiat = String(fm.colegiat || '').trim();
+    n.metges.titular = tit;
+    var adr = String(fm.adreca || '').trim(), i = adr.indexOf(' \u2014 ');
+    if (i >= 0) { n.consulta.linia1 = adr.slice(0, i).trim(); n.consulta.linia2 = adr.slice(i + 3).trim(); }
+    else n.consulta.linia1 = adr;
+    try { escriu(K.cfg, n); } catch (e) {}
+    return n;
+  }
+
+  /* ─────────── mode centre (§6.1) ─────────── */
+  function preparaCentre(primerCop) {
+    var fm = llegeix(KF.conf, {}) || {};
+    var cen = fm.centre || {};
+    var ms = (cen.actiu && Array.isArray(cen.metges)) ? cen.metges.filter(function (x) { return typeof x === 'string' && x.trim(); }) : [];
+    E.centre = !!(cen.actiu && ms.length);
+    E.metges = ms;
+    $('rm-metge-wrap').hidden = !E.centre;
+    if (!E.centre) { E.metge = 'titular'; return; }
+    var abans = E.metge;
+    if (primerCop || !abans || E.metges.indexOf(abans) < 0) {
+      var g = null;
+      try { g = localStorage.getItem(K.metge); } catch (e) {}
+      if (nomSessio && E.metges.indexOf(nomSessio) >= 0) E.metge = nomSessio;
+      else if (g && E.metges.indexOf(g) >= 0) E.metge = g;
+      else E.metge = '';
+    }
+    pintaSelectorMetges();
+    if (!primerCop && abans !== E.metge) canviMetge();
+  }
+  function pintaSelectorMetges() {
+    if (!E.centre) return;
+    var s = $('rm-metge'); s.textContent = '';
+    var o0 = el('option'); o0.value = ''; o0.textContent = t('metge_tria_buit'); s.appendChild(o0);
+    E.metges.forEach(function (m) { var o = el('option'); o.value = m; o.textContent = m; s.appendChild(o); });
+    s.value = E.metge;
+  }
+  function clauMetge() { return E.centre ? E.metge : 'titular'; }
+  function metgeCfg() {
+    var k = clauMetge();
+    if (!k) return metgeBuit('');
+    return E.cfg.metges[k] ? E.cfg.metges[k] : metgeBuit(E.centre ? k : '');
+  }
+  function canviMetge() {
+    if (E.centre && E.metge) { try { localStorage.setItem(K.metge, E.metge); } catch (e) {} }
+    pintaDades();
+    pintaHistorial();
+    pintaPrevi();
+    pintaAvisDades();
+    programaEsborrany();
+    if (E.centre && E.metge && dadesErrors().length) obrePestanya('dades');
+  }
+
+  /* ─────────── validacio de les dades del metge i la consulta (§7.3, §7.4) ─────────── */
+  function normalitzaTelefon(s) {
+    s = String(s || '').trim();
+    if (!s) return { ok: false, err: 'falta' };
+    var valor;
+    if (s.charAt(0) === '+' || s.slice(0, 2) === '00') {
+      valor = '+' + (s.charAt(0) === '+' ? s.slice(1) : s.slice(2)).trim();
+    } else {
+      var net = s.replace(/[^\d ]/g, '').trim();
+      if (net.replace(/\D/g, '').length !== 9) return { ok: false, err: 'prefix' };
+      valor = '+34 ' + net;
+    }
+    var n = valor.replace(/\D/g, '').length;
+    if (n < 8 || n > 15) return { ok: false, err: 'xifres' };
+    return { ok: true, valor: valor };
+  }
+  var ETIQ = {
+    'rm-d-nom': 'd_nom', 'rm-d-especialitat': 'd_especialitat', 'rm-d-extra1': 'd_extra1', 'rm-d-extra2': 'd_extra2',
+    'rm-d-colegiat': 'd_colegiat', 'rm-d-cnom': 'd_cnom', 'rm-d-linia1': 'd_linia1', 'rm-d-linia2': 'd_linia2',
+    'rm-d-telefon': 'd_telefon', 'rm-d-correu': 'd_correu', 'rm-d-dx': 'd_dx', 'rm-d-dy': 'd_dy',
+    'rm-pac-naix': 'pac_naix', 'rm-pac-doc-num': 'pac_doc_num', 'rm-pac-nom': 'pac_nom',
+    'rm-principi': 'l_principi', 'rm-dosi': 'l_dosi', 'rm-forma': 'l_forma', 'rm-via': 'l_via', 'rm-format': 'l_format',
+    'rm-envasos': 'l_envasos', 'rm-posologia': 'l_posologia'
+  };
+  function etiq(id) { return t(ETIQ[id] || id).replace(/\s*\*$/, ''); }
+  /* Els errors de les dades: amb `formats` nomes els de forma (per desar); sense,
+     tambe els que falten (per imprimir). */
+  function dadesErrors(m, c, nomesFormats) {
+    m = m || (E.centre && !E.metge ? null : metgeCfg());
+    c = c || E.cfg.consulta;
+    var e = [];
+    function falta(id) { e.push({ id: id, msg: t('err_falta_dades', { camp: etiq(id) }), dades: true }); }
+    function mal(id, k, x) { e.push({ id: id, msg: t(k, Object.assign({ camp: etiq(id) }, x || {})), dades: true }); }
+    if (m) {
+      if (!m.nom) { if (!nomesFormats) falta('rm-d-nom'); } else if (m.nom.length > MAX.nom) mal('rm-d-nom', 'err_llarg', { n: MAX.nom });
+      if (!m.especialitat) { if (!nomesFormats) falta('rm-d-especialitat'); } else if (m.especialitat.length > MAX.especialitat) mal('rm-d-especialitat', 'err_llarg', { n: MAX.especialitat });
+      if (m.extra[0].length > MAX.extra) mal('rm-d-extra1', 'err_llarg', { n: MAX.extra });
+      if (m.extra[1].length > MAX.extra) mal('rm-d-extra2', 'err_llarg', { n: MAX.extra });
+      if (!m.colegiat) { if (!nomesFormats) falta('rm-d-colegiat'); }
+      else if (m.colegiat.length > MAX.colegiat) mal('rm-d-colegiat', 'err_llarg', { n: MAX.colegiat });
+      else if (!/\d/.test(m.colegiat)) mal('rm-d-colegiat', 'err_colegiat');
+    }
+    if (c.nom.length > MAX.cnom) mal('rm-d-cnom', 'err_llarg', { n: MAX.cnom });
+    if (!c.linia1) { if (!nomesFormats) falta('rm-d-linia1'); } else if (c.linia1.length > MAX.linia) mal('rm-d-linia1', 'err_llarg', { n: MAX.linia });
+    if (!c.linia2) { if (!nomesFormats) falta('rm-d-linia2'); } else if (c.linia2.length > MAX.linia) mal('rm-d-linia2', 'err_llarg', { n: MAX.linia });
+    if (!c.telefon) { if (!nomesFormats) falta('rm-d-telefon'); }
+    else { var tn = normalitzaTelefon(c.telefon); if (!tn.ok) mal('rm-d-telefon', tn.err === 'prefix' ? 'err_tel_prefix' : 'err_tel_xifres'); }
+    if (!c.correu) { if (!nomesFormats) falta('rm-d-correu'); }
+    else if (!RE_CORREU.test(c.correu) || c.correu.length > MAX.correu) mal('rm-d-correu', 'err_correu');
+    return e;
+  }
+
+  /* ─────────── pestanyes ─────────── */
+  var PESTANYES = ['nova', 'historial', 'dades'];
+  function obrePestanya(nom, focus) {
+    PESTANYES.forEach(function (p) {
+      var tb = $('tab-' + p), sc = $('sec-' + p), act = p === nom;
+      tb.setAttribute('aria-selected', act ? 'true' : 'false');
+      tb.tabIndex = act ? 0 : -1;
+      sc.hidden = !act;
+    });
+    if (focus) $('tab-' + nom).focus();
+    if (nom === 'nova') pintaPrevi();
+    if (nom === 'historial') pintaHistorial();
+    if (nom === 'dades') { pintaAvisDades(); }
+  }
+
+  /* ─────────── avisos ─────────── */
+  var tBanner = null;
+  function banner(tipus, msg) {
+    var b = $('rm-banner'); if (!b) return;
+    b.className = 'rm-banner ' + tipus; b.textContent = msg; b.hidden = false;
+    clearTimeout(tBanner);
+    tBanner = setTimeout(function () { b.hidden = true; }, 9000);
+  }
+  function pintaAvisDades() {
+    var a = $('rm-avis-dades'); if (!a) return;
+    if (E.centre && !E.metge) { a.hidden = true; return; }
+    var errs = dadesErrors();
+    if (!errs.length) { a.hidden = true; return; }
+    a.textContent = t('avis_dades', { llista: errs.map(function (x) { return etiq(x.id); }).join(', ') });
+    a.hidden = false;
+  }
+  function amagaErrors() {
+    var e = $('rm-errors'); if (e) e.hidden = true;
+    document.querySelectorAll('#sec-nova [aria-invalid="true"],#rm-metge[aria-invalid="true"]').forEach(function (x) { x.removeAttribute('aria-invalid'); });
+  }
+  function llistaErrors(ul, errs) {
+    ul.textContent = '';
+    errs.forEach(function (x) {
+      var li = el('li'); var b = el('button', 'rm-err-camp'); b.type = 'button'; b.textContent = x.msg;
+      b.setAttribute('data-camp', x.id);
+      b.addEventListener('click', function () { anaACamp(x.id); });
+      li.appendChild(b); ul.appendChild(li);
+      var c = $(x.id); if (c && /^(INPUT|SELECT|TEXTAREA)$/.test(c.tagName)) c.setAttribute('aria-invalid', 'true');
+    });
+  }
+  /* §7 · una llista amb CADA camp que falta, i el focus al primer. Si el primer
+     és de «Dades de la recepta», la pestanya canvia i la llista d'aquells camps
+     s'hi veu tambe (la de «Nova recepta» queda a punt per quan s'hi torni). */
+  function mostraErrors(errs, llistaId, cont) {
+    llistaErrors($(llistaId || 'rm-errors-llista'), errs);
+    $(cont || 'rm-errors').hidden = false;
+    if (!llistaId) {
+      var dd = errs.filter(function (x) { return /^rm-d-/.test(x.id); });
+      var c0 = $(errs[0].id);
+      if (dd.length && c0 && c0.closest('#sec-dades')) {
+        $('rm-d-errors-tit').setAttribute('data-t', 'err_tit'); $('rm-d-errors-tit').textContent = t('err_tit');
+        llistaErrors($('rm-d-errors-llista'), dd);
+        $('rm-d-errors').hidden = false;
+      }
+    } else if (llistaId === 'rm-d-errors-llista') {
+      $('rm-d-errors-tit').setAttribute('data-t', 'd_err_tit'); $('rm-d-errors-tit').textContent = t('d_err_tit');
+    }
+    anaACamp(errs[0].id);
+  }
+  function anaACamp(id) {
+    var c = $(id); if (!c) return;
+    var sec = c.closest('section[role="tabpanel"]');
+    if (sec) { var nom = sec.id.replace('sec-', ''); if ($('tab-' + nom).getAttribute('aria-selected') !== 'true') obrePestanya(nom); }
+    try { c.focus(); } catch (e) {}
+  }
+
+  /* ═══════════════════ NOVA RECEPTA: el formulari ═══════════════════ */
+  var CAMPS_MED = ['rm-principi', 'rm-dosi', 'rm-forma', 'rm-via', 'rm-format', 'rm-envasos', 'rm-posologia'];
+  var CAMPS_PAC = ['rm-pac-nom', 'rm-pac-naix', 'rm-pac-doc-tipus', 'rm-pac-doc-num'];
+  function envasos() {
+    var v = String($('rm-envasos').value || '').trim();
+    if (v === '') return '';
+    return /^\d+$/.test(v) ? parseInt(v, 10) : NaN;
+  }
+  function llegeixFormulari() {
+    var tipus = $('rm-pac-doc-tipus').value;
+    return {
+      pacient: { nom: val('rm-pac-nom'), naixement: val('rm-pac-naix'), doc: { tipus: DOCS.indexOf(tipus) >= 0 ? tipus : 'DNI', num: normDoc($('rm-pac-doc-num').value) } },
+      medicament: { principi: val('rm-principi'), dosi: val('rm-dosi'), forma: val('rm-forma'), via: val('rm-via'), format: val('rm-format'), envasos: envasos() },
+      posologia: String($('rm-posologia').value || '').trim()
+    };
+  }
+  function formulariBuit() {
+    return !CAMPS_PAC.concat(CAMPS_MED).some(function (id) {
+      if (id === 'rm-pac-doc-tipus') return false;
+      if (id === 'rm-envasos') return val(id) !== '' && val(id) !== '1';
+      return val(id) !== '';
+    });
+  }
+  function posaFormulari(e) {
+    e = e || {};
+    var p = e.pacient || {}, d = p.doc || {}, m = e.medicament || {};
+    $('rm-pac-nom').value = p.nom || '';
+    $('rm-pac-naix').value = dataValida(p.naixement) ? p.naixement : '';
+    $('rm-pac-doc-tipus').value = DOCS.indexOf(d.tipus) >= 0 ? d.tipus : 'DNI';
+    $('rm-pac-doc-num').value = d.num || '';
+    $('rm-principi').value = m.principi || '';
+    $('rm-dosi').value = m.dosi || '';
+    $('rm-forma').value = m.forma || '';
+    $('rm-via').value = m.via || '';
+    $('rm-format').value = m.format || '';
+    $('rm-envasos').value = (m.envasos === '' || m.envasos == null) ? '1' : String(m.envasos);
+    $('rm-posologia').value = e.posologia || '';
+    E.origen = e.origen || null;
+    avisNom();
+    avisEnvasos();
+  }
+  function buidaMedicament() {
+    ['rm-principi', 'rm-dosi', 'rm-forma', 'rm-via', 'rm-format', 'rm-posologia'].forEach(function (id) { $(id).value = ''; });
+    $('rm-envasos').value = '1';
+    avisEnvasos();
+  }
+  function avisNom() {
+    var n = val('rm-pac-nom');
+    $('rm-pac-avis-nom').hidden = !n || n.split(/\s+/).filter(Boolean).length >= 3;
+  }
+  /* 23_ §4.7: es dispara per un nombre (els envasos), mai per un medicament */
+  function avisEnvasos() { var n = envasos(); $('rm-avis-envasos').hidden = !(n > 1); }
+
+  /* rm_esborrany (§5.4): es desa sol 400 ms despres de l'ultim canvi */
+  var tEsb = null;
+  function programaEsborrany() { clearTimeout(tEsb); tEsb = setTimeout(desaEsborrany, 400); }
+  function desaEsborrany() {
+    if (!appActiva || E.emesa) return;
+    if (formulariBuit() && !E.origen) { treu(K.esb); return; }
+    var f = llegeixFormulari();
+    var e = { versio: 1, metgeClau: clauMetge() || null, pacient: f.pacient, medicament: f.medicament, posologia: f.posologia, origen: E.origen || null };
+    if (typeof e.medicament.envasos === 'number' && isNaN(e.medicament.envasos)) e.medicament.envasos = '';
+    try { escriu(K.esb, e); } catch (x) {}
+  }
+  function restauraEsborrany() {
+    var e = llegeix(K.esb, null);
+    if (e && typeof e === 'object') posaFormulari(e);
+  }
+
+  /* ─────────── el pacient (§6.2) ─────────── */
+  function pacients() { return llista(KF.pac).filter(function (p) { return p && typeof p === 'object' && p.nom; }); }
+  function cercaPacients(q) {
+    var qs = normal(q).trim(), qn = normDoc(q);
+    if (!qs) return [];
+    var r = pacients().filter(function (p) {
+      return normal(p.nom).indexOf(qs) >= 0 || (qn.length >= 2 && normDoc(p.nif).indexOf(qn) >= 0);
+    });
+    r.sort(function (a, b) {
+      var ia = normal(a.nom).indexOf(qs) === 0 ? 0 : 1, ib = normal(b.nom).indexOf(qs) === 0 ? 0 : 1;
+      return ia - ib || String(a.nom).localeCompare(String(b.nom));
+    });
+    return r.slice(0, 8);
+  }
+  var resultats = [];
+  function pintaLlistaPacients() {
+    var ul = $('rm-pac-llista'), inp = $('rm-pac-cerca');
+    var q = inp.value;
+    ul.textContent = '';
+    E.llistaSel = -1;
+    if (!q.trim()) { ul.hidden = true; inp.setAttribute('aria-expanded', 'false'); inp.removeAttribute('aria-activedescendant'); return; }
+    resultats = cercaPacients(q);
+    if (!resultats.length) {
+      var li0 = el('li', 'rm-buida'); li0.setAttribute('role', 'option'); li0.setAttribute('aria-disabled', 'true'); li0.textContent = t('pac_cap'); ul.appendChild(li0);
+    }
+    resultats.forEach(function (p, i) {
+      var li = el('li'); li.id = 'rm-pac-op-' + i; li.setAttribute('role', 'option'); li.setAttribute('aria-selected', 'false');
+      li.appendChild(document.createTextNode(p.nom));
+      if (p.nif) { var sm = el('small'); sm.textContent = p.nif; li.appendChild(sm); }
+      li.addEventListener('mousedown', function (ev) { ev.preventDefault(); triaPacient(p); });
+      ul.appendChild(li);
+    });
+    ul.hidden = false; inp.setAttribute('aria-expanded', 'true');
+  }
+  function marcaOpcio(i) {
+    var ops = $('rm-pac-llista').querySelectorAll('li[id]');
+    if (!ops.length) return;
+    E.llistaSel = (i + ops.length) % ops.length;
+    ops.forEach(function (o, j) { o.setAttribute('aria-selected', j === E.llistaSel ? 'true' : 'false'); });
+    $('rm-pac-cerca').setAttribute('aria-activedescendant', ops[E.llistaSel].id);
+    ops[E.llistaSel].scrollIntoView({ block: 'nearest' });
+  }
+  function tancaLlista() { var ul = $('rm-pac-llista'); ul.hidden = true; ul.textContent = ''; $('rm-pac-cerca').setAttribute('aria-expanded', 'false'); $('rm-pac-cerca').removeAttribute('aria-activedescendant'); E.llistaSel = -1; }
+  function docDeFitxa(nif) {
+    var n = normDoc(nif);
+    if (/^[XYZ][0-9]{7}[A-Z]$/.test(n)) return { tipus: 'NIE', num: n };
+    return { tipus: 'DNI', num: n };   /* format de DNI, o qualsevol altra cosa: el metge la veu i la corregeix */
+  }
+  function triaPacient(p) {
+    $('rm-pac-nom').value = p.nom;
+    $('rm-pac-naix').value = dataValida(p.naixement) ? p.naixement : '';
+    var d = docDeFitxa(p.nif);
+    $('rm-pac-doc-tipus').value = d.tipus;
+    $('rm-pac-doc-num').value = d.num;
+    $('rm-pac-cerca').value = '';
+    tancaLlista();
+    avisNom();
+    canviFormulari();
+    $('rm-pac-naix').focus();
+  }
+  function sincronitzaFitxes() { try { if (window.cmSync && cmSync.canvi) cmSync.canvi(KF.pac); } catch (e) {} }
+  function errNaixement(n) { return !dataValida(n) || n < '1900-01-01' || n > avuiISO(); }
+  function errDoc(tipus, num) {
+    if (tipus === 'REPRESENTANT') return (num && (dniOk(num) || nieOk(num))) ? null : t('err_representant');
+    if (!num) return t('err_falta', { camp: etiq('rm-pac-doc-num') });
+    if (tipus === 'DNI') return !/^[0-9]{8}[A-Z]$/.test(num) ? t('err_dni') : (dniOk(num) ? null : t('err_dni_lletra'));
+    if (tipus === 'NIE') return !/^[XYZ][0-9]{7}[A-Z]$/.test(num) ? t('err_nie') : (nieOk(num) ? null : t('err_nie_lletra'));
+    if (tipus === 'PASSAPORT') return /^[A-Z0-9]{5,20}$/.test(num) ? null : t('err_pass');
+    return t('err_falta', { camp: t('pac_doc_tipus') });
+  }
+  function creaPacient() {
+    var err = $('rm-pn-err'); err.hidden = true;
+    function mal(m, id) { err.textContent = m; err.hidden = false; if (id) $(id).focus(); }
+    var nom = val('rm-pn-nom').replace(/\s+/g, ' ');
+    if (!nom) return mal(t('pn_falta_nom'), 'rm-pn-nom');
+    var ps = llistaPerEscriure(KF.pac);
+    if (!ps) return mal(t('err_illegible'));
+    /* el mateix criteri que FacturaMed: el nom no es repeteix (sense distingir majuscules) */
+    if (ps.some(function (p) { return p && String(p.nom || '').toLowerCase() === nom.toLowerCase(); })) return mal(t('pn_existeix'), 'rm-pn-nom');
+    var naix = val('rm-pn-naix');
+    if (naix && errNaixement(naix)) return mal(t('err_naix', { camp: t('pac_naix') }), 'rm-pn-naix');
+    var tipus = $('rm-pn-doc-tipus').value, num = normDoc($('rm-pn-doc-num').value);
+    if (num) { var ed = errDoc(tipus, num); if (ed) return mal(ed, 'rm-pn-doc-num'); }
+    /* Al `nif` de la fitxa nomes hi va un DNI o un NIE correcte: FacturaMed
+       rebutjaria un passaport, i el document del representant no es del pacient. */
+    var nif = (tipus === 'DNI' && dniOk(num)) || (tipus === 'NIE' && nieOk(num)) ? num : '';
+    var fitxa = { nom: nom, nif: nif, telefon: '', correu: '', adreca: '', naixement: naix || '', mutua: '', observacions: '' };
+    ps.push(fitxa);
+    try { escriu(KF.pac, ps); } catch (e) { return mal(t('err_desar')); }
+    sincronitzaFitxes();
+    $('rm-pac-nom').value = nom;
+    $('rm-pac-naix').value = naix || '';
+    $('rm-pac-doc-tipus').value = tipus;
+    $('rm-pac-doc-num').value = num;
+    tancaPacientNou();
+    avisNom();
+    canviFormulari();
+    banner('ok', t('pn_creada', { nom: nom }));
+  }
+  function obrePacientNou() {
+    var c = $('rm-pac-nou'); c.hidden = false; $('b-pac-nou').setAttribute('aria-expanded', 'true');
+    $('rm-pn-nom').value = $('rm-pac-cerca').value.trim(); $('rm-pn-naix').value = ''; $('rm-pn-doc-tipus').value = 'DNI'; $('rm-pn-doc-num').value = '';
+    $('rm-pn-err').hidden = true; tancaLlista(); $('rm-pn-nom').focus();
+  }
+  function tancaPacientNou() { $('rm-pac-nou').hidden = true; $('b-pac-nou').setAttribute('aria-expanded', 'false'); }
+  /* §6.2 · NOMES la data de naixement i un DNI o NIE correcte, i nomes amb la casella */
+  function actualitzaFitxa(pac) {
+    var ps = llistaPerEscriure(KF.pac), f = null;
+    if (!ps) return false;
+    for (var i = 0; i < ps.length; i++) if (ps[i] && ps[i].nom === pac.nom) { f = ps[i]; break; }
+    if (!f) return false;
+    var canvi = false;
+    if (dataValida(pac.naixement) && f.naixement !== pac.naixement) { f.naixement = pac.naixement; canvi = true; }
+    var d = pac.doc || {};
+    if (((d.tipus === 'DNI' && dniOk(d.num)) || (d.tipus === 'NIE' && nieOk(d.num))) && f.nif !== d.num) { f.nif = d.num; canvi = true; }
+    if (canvi) { try { escriu(KF.pac, ps); sincronitzaFitxes(); } catch (e) {} }
+    return true;
+  }
+
+  /* ═══════════════════ VALIDACIO (§7) ═══════════════════ */
+  function valida(f) {
+    var errs = [];
+    function err(id, msg) { errs.push({ id: id, msg: msg }); }
+    if (E.centre && !E.metge) err('rm-metge', t('err_metge'));
+    var p = f.pacient;
+    if (!p.nom) err('rm-pac-cerca', t('err_pacient'));
+    if (!p.naixement) err('rm-pac-naix', t('err_falta', { camp: etiq('rm-pac-naix') }));
+    else if (errNaixement(p.naixement)) err('rm-pac-naix', t('err_naix', { camp: etiq('rm-pac-naix') }));
+    var ed = errDoc(p.doc.tipus, p.doc.num); if (ed) err('rm-pac-doc-num', ed);
+    var m = f.medicament;
+    ['principi', 'dosi', 'forma', 'format'].forEach(function (k) {
+      var id = 'rm-' + k;
+      if (!m[k]) err(id, t('err_falta', { camp: etiq(id) }));
+      else if (m[k].length > MAX[k]) err(id, t('err_llarg', { camp: etiq(id), n: MAX[k] }));
+    });
+    if (m.via.length > MAX.via) err('rm-via', t('err_llarg', { camp: etiq('rm-via'), n: MAX.via }));
+    if (m.envasos === '') err('rm-envasos', t('err_falta', { camp: etiq('rm-envasos') }));
+    else if (!(m.envasos >= 1 && m.envasos <= 4)) err('rm-envasos', t('err_envasos', { camp: etiq('rm-envasos') }));
+    if (!f.posologia) err('rm-posologia', t('err_falta', { camp: etiq('rm-posologia') }));
+    else if (f.posologia.length > MAX.posologia) err('rm-posologia', t('err_llarg', { camp: etiq('rm-posologia'), n: MAX.posologia }));
+    if (!(E.centre && !E.metge)) dadesErrors().forEach(function (x) { errs.push(x); });
+    /* §7.5 · el desbordament, mesurat al DOM d'impressio (mateix codi i mateix CSS) */
+    desbordaments(receptaVirtual(f)).forEach(function (x) { errs.push(x); });
+    return errs;
+  }
+
+  /* ═══════════════════ LA RECEPTA IMPRESA (§8) ═══════════════════ */
+  /* Cada linia que pot no cabre, amb el seu cos, el seu minim (§7.5) i el camp
+     que la omple (per al missatge i el focus). L'interlineat es fix en mm: les
+     zones no es mouen mai quan el cos baixa. */
+  var AJUST = {
+    'nom':      { base: 12,  min: 8.6, camp: 'rm-d-nom' },
+    'esp':      { base: 10,  min: 8.6, camp: 'rm-d-especialitat' },
+    'extra1':   { base: 9.5, min: 8.6, camp: 'rm-d-extra1' },
+    'extra2':   { base: 9.5, min: 8.6, camp: 'rm-d-extra2' },
+    'col':      { base: 10,  min: 8.6, camp: 'rm-d-colegiat' },
+    'cnom':     { base: 10,  min: 8.6, camp: 'rm-d-cnom' },
+    'linia1':   { base: 10,  min: 8.6, camp: 'rm-d-linia1' },
+    'linia2':   { base: 10,  min: 8.6, camp: 'rm-d-linia2' },
+    'tel':      { base: 10,  min: 8.6, camp: 'rm-d-telefon' },
+    'correu':   { base: 9.5, min: 8.6, camp: 'rm-d-correu' },
+    'pacient':  { base: 15,  min: 11,  camp: 'rm-pac-nom' },
+    'pdades':   { base: 10,  min: 8.6, camp: 'rm-pac-doc-num', nom: 'camp_pac_dades' },
+    'principi': { base: 14,  min: 11,  camp: 'rm-principi', nom: 'camp_principi_dosi' },
+    'detall':   { base: 9.5, min: 8.6, camp: 'rm-forma', nom: 'camp_detall' },
+    'posologia':{ base: 13,  min: 10,  camp: 'rm-posologia', linies: 2 },
+    /* A2 §3 · la clausula: fixa a 6 pt (no baixa mai). Si no hi cap sense trepitjar
+       cap zona ni sortir de la zona segura, es un error al camp de l'adreça. */
+    'clausula': { base: 6,   min: 6,   camp: 'rm-d-linia1', fix: true, msg: 'err_clausula' }
+  };
+  function linia(pare, cls, text, aj) {
+    var d = el('div', cls); d.textContent = text;
+    if (aj) d.setAttribute('data-aj', aj);
+    pare.appendChild(d); return d;
+  }
+  function zona(cls, id, nom) { var z = el('div', 'rm-z ' + cls); if (id) z.id = id; if (nom) z.setAttribute('data-zona', nom); return z; }
+  function docText(d, l) { return d && d.num ? pr(l, 'doc_' + (DOCS.indexOf(d.tipus) >= 0 ? d.tipus : 'DNI')) + ' ' + d.num : ''; }
+  /* §7 (A2) · el telefon arriba al paper AMB el prefix (P-LEG-47 ①): si el que hi
+     ha desat no el porta (una configuracio d'abans, o escrita a ma), es normalitza
+     aqui, amb la mateixa regla que en desar (§7.4). */
+  function telPaper(s) { var n = normalitzaTelefon(s); return n.ok ? n.valor : String(s || '').trim(); }
+  /* §3 (A2) · la clausula de proteccio de dades, literal de 23_ §6.2. El responsable
+     es la consulta o el centre si el perfil en te el nom; si no, el metge (§6.1). */
+  function clausula(r, l) {
+    var M = r.metge || {}, C = r.consulta || {};
+    var v = { RESPONSABLE: C.nom || M.nom || '', ADRECA: [C.linia1, C.linia2].filter(Boolean).join(', '), CORREU: C.correu || '' };
+    return String(pr(l, 'clausula')).replace(/\{(RESPONSABLE|ADRECA|CORREU)\}/g, function (m, k) { return v[k]; });
+  }
+  function marcaProva(k, l) { var mk = el('div', 'rm-marca-prova'); mk.textContent = pr(l, 'marca'); k.appendChild(mk); }
+  function marcaAnullada(k, l) { var an = el('div', 'rm-marca-anullada'); an.textContent = pr(l, 'anullada'); k.appendChild(an); }
+  /* 1 i 2 · el metge i la consulta: els mateixos a la recepta i al full del pacient */
+  function pintaCapcalera(z1, z2, M, C, l) {
+    linia(z1, 'rm-l-nom rm-1l', [M.tractament, M.nom].filter(Boolean).join(' '), 'nom');
+    linia(z1, 'rm-l-esp rm-1l', M.especialitat || '', 'esp');
+    var ex = Array.isArray(M.extra) ? M.extra : [];
+    if (ex[0]) linia(z1, 'rm-l-extra rm-1l', ex[0], 'extra1');
+    if (ex[1]) linia(z1, 'rm-l-extra rm-1l', ex[1], 'extra2');
+    linia(z1, 'rm-l-col rm-1l', M.colegiat ? pr(l, 'col') + ' ' + M.colegiat : '', 'col');
+    if (C.nom) linia(z2, 'rm-l-cnom rm-1l', C.nom, 'cnom');
+    linia(z2, 'rm-l-l rm-1l', C.linia1 || '', 'linia1');
+    linia(z2, 'rm-l-l rm-1l', C.linia2 || '', 'linia2');
+    linia(z2, 'rm-l-l rm-1l', C.telefon ? pr(l, 'tel') + ' ' + telPaper(C.telefon) : '', 'tel');
+    linia(z2, 'rm-l-mail rm-1l', C.correu || '', 'correu');
+  }
+  /* el medicament: a la recepta, amb el format i els envasos; al full del pacient,
+     el medicament, la dosi, la forma i la via (23_ §3.2) */
+  function pintaTractament(z, Md, l, receptaSencera) {
+    linia(z, 'rm-m-principi rm-1l', [Md.principi, Md.dosi].filter(Boolean).join(' '), 'principi');
+    var det = [];
+    if (Md.forma) det.push(Md.forma);
+    if (Md.via) det.push(pr(l, 'via') + ' ' + Md.via);
+    if (receptaSencera) {
+      if (Md.format) det.push(Md.format);
+      var n = Md.envasos;
+      if (n >= 1 && n <= 4) det.push(n + ' ' + (n === 1 ? pr(l, 'envas1') : pr(l, 'envasN')));
+    }
+    linia(z, 'rm-m-detall rm-1l', det.join(' · '), 'detall');
+  }
+  /* 7 i 8 · la data i, a sota, la clausula: apilades arran del limit de baix */
+  function pintaPeu(k, r, l, ids) {
+    var z7 = zona('rm-z-data', ids ? 'rm-z-data' : null, 'data'), z8 = zona('rm-z-clausula', ids ? 'rm-z-clausula' : null, 'clausula');
+    linia(z7, 'rm-d-dia rm-1l', dataLletres(r.data, l));
+    z8.textContent = clausula(r, l);
+    z8.setAttribute('data-aj', 'clausula');
+    var peu = el('div', 'rm-peu'); peu.appendChild(z7); peu.appendChild(z8); k.appendChild(peu);
+  }
+  /* EL COS DE LA RECEPTA: les zones de §8.2, la 8 (A2 §3) i, en prova, la marca */
+  function pintaRecepta(k, r, l, op) {
+    var M = r.metge || {}, C = r.consulta || {}, P = r.pacient || {}, Md = r.medicament || {};
+    var id = function (n) { return op.ids ? n : null; };
+    /* §8.8 · la marca d'aigua, la primera: queda DARRERE del text */
+    if (r.prova) marcaProva(k, l);
+    var z1 = zona('rm-z-metge', id('rm-z-metge'), 'metge'), z2 = zona('rm-z-consulta', id('rm-z-consulta'), 'consulta'),
+        z3 = zona('rm-z-pacient', id('rm-z-pacient'), 'pacient'), z4 = zona('rm-z-medicament', id('rm-z-medicament'), 'medicament'),
+        z5 = zona('rm-z-posologia', id('rm-z-posologia'), 'posologia'), z6 = zona('rm-z-signatura', id('rm-z-signatura'), 'signatura');
+    pintaCapcalera(z1, z2, M, C, l);
+    /* 3 · el pacient */
+    linia(z3, 'rm-p-nom rm-1l', P.nom || '', 'pacient');
+    var dd = [];
+    if (P.naixement) dd.push(pr(l, 'naix') + ': ' + ddmmaaaa(P.naixement));
+    var dt = docText(P.doc, l); if (dt) dd.push(dt);
+    linia(z3, 'rm-p-dades rm-1l', dd.join(' · '), 'pdades');
+    /* 4 · el medicament */
+    pintaTractament(z4, Md, l, true);
+    /* 5 · la posologia, tal com s'ha escrit (com a molt dues linies) */
+    z5.textContent = r.posologia || '';
+    z5.setAttribute('data-aj', 'posologia');
+    /* 6 · la signatura: en blanc (art. 3.2: «estampada personalment») */
+    [z1, z2, z3, z4, z5, z6].forEach(function (z) { k.appendChild(z); });
+    pintaPeu(k, r, l, op.ids);
+    if (op.anullada) marcaAnullada(k, l);
+  }
+  /* §1 (A2) · EL FULL D'INFORMACIO PER AL PACIENT (23_ §3.2): la capçalera, el titol,
+     el nom del pacient i RES MES del pacient (cap DNI/NIE ni data de naixement: es un
+     full que es queda ell), el tractament, la posologia sencera, la data, la validesa
+     (23_ §8.2) i, al peu, la clausula. Cap signatura ni cap diagnostic. Es pinta, com
+     la recepta, des de la recepta desada. La disposicio, provisional fins a DIS-17. */
+  function pintaFullPacient(k, r, l, op) {
+    var M = r.metge || {}, C = r.consulta || {}, P = r.pacient || {}, Md = r.medicament || {};
+    if (r.prova) marcaProva(k, l);
+    var z1 = zona('rm-z-metge', null, 'metge'), z2 = zona('rm-z-consulta', null, 'consulta'),
+        zt = zona('rm-z-ftitol', null, 'titol'), zp = zona('rm-z-fpacient', null, 'pacient'),
+        zm = zona('rm-z-ftractament', null, 'tractament'), zo = zona('rm-z-fposologia', null, 'posologia'),
+        zv = zona('rm-z-fvalidesa', null, 'validesa');
+    pintaCapcalera(z1, z2, M, C, l);
+    zt.textContent = pr(l, 'full_tit');
+    linia(zp, 'rm-p-nom rm-1l', P.nom || '', 'pacient');
+    pintaTractament(zm, Md, l, false);
+    zo.textContent = r.posologia || '';
+    zo.setAttribute('data-aj', 'posologia');
+    zv.textContent = pr(l, 'validesa');
+    [z1, z2, zt, zp, zm, zo, zv].forEach(function (z) { k.appendChild(z); });
+    pintaPeu(k, r, l, false);
+    if (op.anullada) marcaAnullada(k, l);
+  }
+  /* §8.5 · el full d'alineacio: els marcs de les zones, les creus i el rotul. A l'A4
+     marca tambe les zones del full del pacient (A2 §2). */
+  function pintaAlineacio(kR, kP, l, a4) {
+    function marc(k, cls, et) { var z = zona(cls, null, null); linia(z, 'rm-a-nom', et); k.appendChild(z); return z; }
+    [['rm-z-metge', 'z1'], ['rm-z-consulta', 'z2'], ['rm-z-pacient', 'z3'], ['rm-z-medicament', 'z4'], ['rm-z-posologia', 'z5'], ['rm-z-signatura', 'z6']].forEach(function (x) { marc(kR, x[0], pr(l, x[1])); });
+    function peu(k) {
+      var p = el('div', 'rm-peu'); k.appendChild(p);
+      marc(p, 'rm-z-data', pr(l, 'z7')); marc(p, 'rm-z-clausula', pr(l, 'z8'));
+    }
+    peu(kR);
+    [[12, 10], [198, 10], [105, 74], [12, 138], [198, 138]].forEach(function (p, i) {
+      var cr = el('div', 'rm-creu rm-creu-' + (i + 1)); var sp = el('span'); sp.textContent = '(' + p[0] + ', ' + p[1] + ')'; cr.appendChild(sp); kR.appendChild(cr);
+    });
+    var rot = el('div', 'rm-a-rotul'); rot.textContent = pr(l, 'alin'); kR.appendChild(rot);
+    if (!a4) return;
+    marc(kP, 'rm-z-metge', pr(l, 'z1')); marc(kP, 'rm-z-consulta', pr(l, 'z2'));
+    [['rm-z-ftitol', 'zf_titol'], ['rm-z-fpacient', 'zf_pacient'], ['rm-z-ftractament', 'zf_tractament'], ['rm-z-fposologia', 'zf_posologia'], ['rm-z-fvalidesa', 'zf_validesa']].forEach(function (x) { marc(kP, x[0], pr(l, x[1])); });
+    peu(kP);
+    var rp = el('div', 'rm-a-rotul rm-a-rotul-p'); rp.textContent = pr(l, 'alin_pacient'); kP.appendChild(rp);
+  }
+  /* r: { paper, idioma, prova, metge, consulta, pacient, medicament, posologia, data }
+     op: { ids: el de veritat (#rm-full) · alineacio · anullada · despl:{x,y} }
+     ENG-41 (A2 §1 i §2) · DOS COSSOS, SEMPRE JUNTS: la recepta i el full d'informacio
+     per al pacient. A4_TALL: un full de 210 × 297 amb la recepta a dalt, la linia de
+     tall a 148,5 mm i el full del pacient a baix. A5 i CAPCALERA: dos fulls de
+     210 × 148, la recepta i el full del pacient. Cap paper imprimeix la recepta sola. */
+  function construeixFull(r, op) {
+    op = op || {};
+    var l = r.idioma === 'es' ? 'es' : 'ca';
+    var paper = PAPERS.indexOf(r.paper) >= 0 ? r.paper : PAPER_DEFECTE;
+    var imp = el('div', 'rm-impres');
+    if (paper === 'A4_TALL') imp.classList.add('rm-a4');
+    if (paper === 'CAPCALERA') imp.classList.add('rm-capcalera');
+    if (op.alineacio) imp.classList.add('rm-alineacio');
+    imp.setAttribute('lang', l);
+    imp.setAttribute('data-paper', paper);
+    if (op.ids) imp.id = 'rm-full';
+    var dx = op.despl ? despl(op.despl.x) : 0, dy = op.despl ? despl(op.despl.y) : 0;
+    function full(a4) {
+      var f = el('div', a4 ? 'rm-full rm-a4' : 'rm-full'), c = el('div', 'rm-contingut');
+      /* §8.5 · el calibratge, al contingut de cada full (el full no es mou) */
+      if (dx || dy) c.style.transform = 'translate(' + dx + 'mm, ' + dy + 'mm)';
+      f.appendChild(c); imp.appendChild(f);
+      return c;
+    }
+    var kR = el('div', 'rm-cos rm-cos-recepta'), kP = el('div', 'rm-cos rm-cos-pacient');
+    if (op.ids) { kR.id = 'rm-cos-recepta'; kP.id = 'rm-cos-pacient'; }
+    if (paper === 'A4_TALL') {
+      var c = full(true);
+      c.appendChild(kR); c.appendChild(kP);
+      c.parentNode.appendChild(el('div', 'rm-tall'));
+    } else {
+      full(false).appendChild(kR);
+      /* el full d'alineacio de l'A5 i de la capçalera es d'un full: la recepta */
+      if (!op.alineacio) full(false).appendChild(kP);
+    }
+    if (op.alineacio) pintaAlineacio(kR, kP, l, paper === 'A4_TALL');
+    else { pintaRecepta(kR, r, l, op); pintaFullPacient(kP, r, l, op); }
+    return imp;
+  }
+  function cap(e, a) {
+    if (e.scrollWidth > e.clientWidth + 1) return false;
+    if (a.linies) { var lh = parseFloat(getComputedStyle(e).lineHeight) || 0; if (lh && e.scrollHeight > lh * a.linies + 1) return false; }
+    return true;
+  }
+  /* §7.5 · baixa el cos de 0,5 en 0,5 pt fins al minim de la zona; torna el que
+     encara no hi cap. Necessita el full maquetat (no pot estar en display:none). */
+  function ajusta(full) {
+    var dolents = [];
+    full.querySelectorAll('[data-aj]').forEach(function (e) {
+      var a = AJUST[e.getAttribute('data-aj')]; if (!a) return;
+      e.style.fontSize = '';
+      e.classList.remove('rm-desborda');
+      if (!e.textContent || a.fix) return;      /* la clausula no baixa mai: es mira a sota */
+      var pt = a.base;
+      while (!cap(e, a) && pt > a.min) { pt = Math.max(a.min, Math.round((pt - 0.5) * 10) / 10); e.style.fontSize = pt + 'pt'; }
+      if (!cap(e, a)) { e.classList.add('rm-desborda'); dolents.push(e.getAttribute('data-aj')); }
+    });
+    /* A2 §3 · la clausula, SENCERA: dins de la zona segura del seu cos i sense
+       trepitjar cap zona (ni ella ni la data, que s'hi enfila al damunt) */
+    full.querySelectorAll('.rm-cos').forEach(function (k) {
+      if (!k.querySelector('.rm-z-clausula[data-aj]')) return;
+      if (peuMal(k)) { k.querySelector('.rm-z-clausula').classList.add('rm-desborda'); dolents.push('clausula'); }
+    });
+    return dolents;
+  }
+  /* La caixa d'un element dins del seu cos, en mm, desfent l'escala de la
+     previsualitzacio (el calibratge mou el cos i les zones alhora: no hi compta). */
+  /* cada cos fa 210 mm d'amplada: l'escala de la previsualitzacio surt d'aqui, exacta
+     (offsetWidth arrodoneix a pixels i desquadraria les mides unes centesimes) */
+  function escalaDe(k) { return k.getBoundingClientRect().width / mmPx(210) || 1; }
+  function caixa(e, k) {
+    var K = k.getBoundingClientRect(), R = e.getBoundingClientRect(), s = escalaDe(k);
+    return { x: (R.left - K.left) / s / PX_MM, y: (R.top - K.top) / s / PX_MM, w: R.width / s / PX_MM, h: R.height / s / PX_MM };
+  }
+  /* l'alçada del cos, en mm, sense l'arrodoniment a pixels d'offsetHeight */
+  function altDe(k) { return k.getBoundingClientRect().height / escalaDe(k) / PX_MM; }
+  function visible(e) { return getComputedStyle(e).display !== 'none'; }
+  /* la pila de la data i la clausula: dins de la zona segura i sense tocar cap
+     altra zona del cos; i la clausula no surt de la seva amplada */
+  function peuMal(k) {
+    var peu = k.querySelector('.rm-peu'), z8 = k.querySelector('.rm-z-clausula');
+    if (!peu || !z8) return false;
+    if (z8.scrollWidth > z8.clientWidth + 1) return true;
+    var P = caixa(peu, k), alt = altDe(k), tol = 0.05;
+    if (P.y < SEGURA.y0 - tol || P.y + P.h > alt - SEGURA.baix + tol || P.x < SEGURA.x0 - tol || P.x + P.w > SEGURA.x1 + tol) return true;
+    var dins = [].slice.call(peu.querySelectorAll('.rm-z'));
+    var zs = [].filter.call(k.querySelectorAll('.rm-z'), function (z) { return dins.indexOf(z) < 0 && visible(z); });
+    return dins.some(function (d) {
+      var A = caixa(d, k);
+      return zs.some(function (z) { var B = caixa(z, k); return A.x < B.x + B.w - tol && B.x < A.x + A.w - tol && A.y < B.y + B.h - tol && B.y < A.y + A.h - tol; });
+    });
+  }
+  function receptaVirtual(f) {
+    var cfg = E.cfg;
+    return {
+      paper: cfg.paper, idioma: cfg.idioma, prova: esProva(),
+      metge: canonMetge(metgeCfg()), consulta: canonConsulta(cfg.consulta),
+      pacient: f.pacient, medicament: f.medicament, posologia: f.posologia,
+      data: avuiISO()
+    };
+  }
+  /* les claus del que no hi cap (sense repetir), mesurat al DOM d'impressio */
+  function dolentsDe(rv) {
+    var mes = $('rm-mesura'); mes.textContent = '';
+    var full = construeixFull(rv, {});
+    mes.appendChild(full);
+    var d = ajusta(full);
+    mes.textContent = '';
+    var vistos = {};
+    return d.filter(function (k) { if (vistos[k]) return false; vistos[k] = 1; return true; });
+  }
+  function missatgeAj(k) { var a = AJUST[k]; return a.msg ? t(a.msg) : t('err_desborda', { camp: a.nom ? t(a.nom) : etiq(a.camp) }); }
+  function desbordaments(rv) {
+    return dolentsDe(rv).map(function (k) { var a = AJUST[k]; return { id: a.camp, msg: missatgeAj(k), dades: /^rm-d-/.test(a.camp) }; });
+  }
+  /* DIS-16 §1 · ELS LIMITS, AL CAMP I EN VIU: la comprovacio de §7.5 corre mentre el
+     metge escriu, sobre el mateix DOM d'impressio, i avisa al camp en el moment que
+     el text deixaria de cabre (no en premer «Imprimir»). */
+  function marcaLlarg(id, msg) {
+    var c = $(id); if (!c) return;
+    var p = $('rm-llarg-' + id);
+    if (!msg) { if (p) p.hidden = true; return; }
+    if (!p) {
+      p = el('p', 'rm-avis-suau rm-llarg'); p.id = 'rm-llarg-' + id; p.setAttribute('role', 'status');
+      c.parentNode.insertBefore(p, c.nextSibling);
+    }
+    p.textContent = msg; p.hidden = false;
+  }
+  function marquesLlarg(claus, dolents) {
+    var per = {};
+    claus.forEach(function (k) { var a = AJUST[k]; per[a.camp] = per[a.camp] || []; if (dolents.indexOf(k) >= 0) per[a.camp].push(missatgeAj(k)); });
+    Object.keys(per).forEach(function (id) { marcaLlarg(id, per[id].join(' · ') || null); });
+  }
+  var AJ_NOVA = ['pacient', 'pdades', 'principi', 'detall', 'posologia'];
+  var AJ_DADES = ['nom', 'esp', 'extra1', 'extra2', 'col', 'cnom', 'linia1', 'linia2', 'tel', 'correu', 'clausula'];
+  function perfilEscrit() {
+    return {
+      metge: canonMetge({ tractament: $('rm-d-tractament').value, nom: val('rm-d-nom'), especialitat: val('rm-d-especialitat'), extra: [val('rm-d-extra1'), val('rm-d-extra2')], colegiat: val('rm-d-colegiat') }),
+      consulta: canonConsulta({ nom: val('rm-d-cnom'), linia1: val('rm-d-linia1'), linia2: val('rm-d-linia2'), telefon: val('rm-d-telefon'), correu: val('rm-d-correu') })
+    };
+  }
+  /* a «Dades de la recepta», amb el que hi ha ESCRIT (encara sense desar) */
+  var tDades = null;
+  function programaVigilaDades() { clearTimeout(tDades); tDades = setTimeout(vigilaDades, 120); }
+  function vigilaDades() {
+    if (!appActiva || !$('rm-d-nom')) return;
+    var p = perfilEscrit();
+    var rv = { paper: paperTriat(), idioma: $('rm-d-idioma').value === 'es' ? 'es' : 'ca', prova: false, metge: p.metge, consulta: p.consulta, pacient: {}, medicament: {}, posologia: '', data: avuiISO() };
+    marquesLlarg(AJ_DADES, dolentsDe(rv));
+  }
+  /* DIS-16 §2 · el calibratge, acotat (±6 mm), i un avis quan el contingut entra al
+     marge de seguretat. Es mesura: el contingut de cada cos (amb la capçalera o sense)
+     i el desplaçament escrit. */
+  function vigilaMarge() {
+    if (!appActiva || !$('rm-d-dx')) return;
+    var dx = Number($('rm-d-dx').value), dy = Number($('rm-d-dy').value), a = $('rm-d-avis-marge');
+    if (desplMal(dx) || desplMal(dy) || (!dx && !dy)) { a.hidden = true; return; }
+    var p = perfilEscrit();
+    var rv = { paper: paperTriat(), idioma: $('rm-d-idioma').value === 'es' ? 'es' : 'ca', prova: false, metge: p.metge, consulta: p.consulta,
+      pacient: { nom: 'M', naixement: '2000-01-01', doc: { tipus: 'DNI', num: '00000000T' } }, medicament: { principi: 'M', dosi: 'M', forma: 'M', via: 'M', format: 'M', envasos: 1 }, posologia: 'M', data: avuiISO() };
+    var mes = $('rm-mesura'); mes.textContent = '';
+    var full = construeixFull(rv, {});
+    mes.appendChild(full);
+    var fora = false;
+    full.querySelectorAll('.rm-cos').forEach(function (k) {
+      var alt = altDe(k);
+      k.querySelectorAll('.rm-z').forEach(function (z) {
+        if (!visible(z) || !z.textContent) return;
+        var B = caixa(z, k);
+        if (B.x + dx < SEGURA.x0 - 0.05 || B.x + B.w + dx > SEGURA.x1 + 0.05 || B.y + dy < SEGURA.y0 - 0.05 || B.y + B.h + dy > alt - SEGURA.baix + 0.05) fora = true;
+      });
+    });
+    mes.textContent = '';
+    a.hidden = !fora;
+  }
+  function escalaA(cont, imp) {
+    if (!cont || !imp) return;
+    var w = cont.clientWidth; if (!w) return;
+    var s = w / mmPx(210);
+    imp.style.transform = 'scale(' + s + ')';
+    cont.style.height = Math.ceil(imp.offsetHeight * s) + 'px';
+  }
+
+  /* ─────────── la previsualitzacio (§6.2): el mateix DOM, escalat ─────────── */
+  function pintaPrevi() {
+    if (!appActiva) return;
+    var cont = $('rm-previsualitzacio');
+    if (!cont || $('sec-nova').hidden) return;
+    var f = llegeixFormulari();
+    if (typeof f.medicament.envasos === 'number' && isNaN(f.medicament.envasos)) f.medicament.envasos = '';
+    var full = construeixFull(receptaVirtual(f), {});
+    cont.textContent = '';
+    cont.appendChild(full);
+    var dolents = ajusta(full);
+    escalaA(cont, full);
+    $('rm-previ-paper').textContent = t('previ_paper_' + E.cfg.paper);
+    /* DIS-16 §1 · en viu, al camp que toca */
+    if (!E.emesa) marquesLlarg(AJ_NOVA, dolents);
+  }
+
+  /* ═══════════════════ IMPRIMIR (§8.6) ═══════════════════ */
+  function buidaImpressio() {
+    var imp = $('rm-impressio'); if (imp) imp.textContent = '';
+    E.armada = false;
+    $('rm-page').textContent = PAGINA.A5;
+  }
+  function preparaImpressio(full, paper) {
+    var imp = $('rm-impressio');
+    imp.textContent = '';
+    imp.appendChild(full);
+    ajusta(full);
+    $('rm-page').textContent = paper === 'A4_TALL' ? PAGINA.A4 : PAGINA.A5;
+    E.armada = true;
+  }
+  /* Si el dialeg no avisa (afterprint), la proxima accio del metge buida el
+     full: un Ctrl+P mes tard no pot treure mai la mateixa recepta. */
+  function armaNeteja() {
+    if (!E.armada) return;
+    function fet() { document.removeEventListener('pointerdown', fet, true); document.removeEventListener('keydown', fet, true); if (E.armada) buidaImpressio(); }
+    document.addEventListener('pointerdown', fet, true);
+    document.addEventListener('keydown', fet, true);
+  }
+  function llancaImpressio(despres) {
+    var fonts = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
+    fonts.then(function () {
+      var ok = true;
+      try { window.print(); } catch (e) { ok = false; }
+      despres(ok);
+      setTimeout(armaNeteja, 1000);
+    });
+  }
+  function perfilDe(pid) { var ps = llista(K.perfils); for (var i = 0; i < ps.length; i++) if (ps[i] && ps[i].pid === pid) return ps[i]; return null; }
+  /* §5.2 · la fotografia de la capçalera: una d'identica es reaprofita; si no
+     n'hi ha cap, se n'afegeix una. La llista es immutable. */
+  function pidDe(snap) {
+    var ps = llistaPerEscriure(K.perfils), clau = JSON.stringify(snap), max = 0;
+    if (!ps) throw { illegible: true };
+    for (var i = 0; i < ps.length; i++) {
+      var p = ps[i]; if (!p) continue;
+      if (JSON.stringify({ metge: p.metge, consulta: p.consulta }) === clau) return p.pid;
+      var n = parseInt(String(p.pid || '').replace(/^P/, ''), 10); if (n > max) max = n;
+    }
+    var nou = { pid: 'P' + (max + 1), metge: snap.metge, consulta: snap.consulta };
+    ps.push(nou);
+    escriu(K.perfils, ps);
+    return nou.pid;
+  }
+  function nouId(avui, existents) {
+    var base = 'R-' + avui.replace(/-/g, '') + '-', id, a = new Uint8Array(3);
+    do {
+      crypto.getRandomValues(a);
+      id = base + Array.prototype.map.call(a, function (b) { return (b < 16 ? '0' : '') + b.toString(16); }).join('');
+    } while (existents[id]);
+    return id;
+  }
+  function trobaRecepta(id) { var l = llista(K.rec); for (var i = 0; i < l.length; i++) if (l[i] && l[i].id === id) return l[i]; return null; }
+  function receptaPerPintar(r) {
+    var pf = perfilDe(r.pid) || { metge: {}, consulta: {} };
+    return { paper: r.paper, idioma: r.idioma, prova: !!r.prova, metge: pf.metge, consulta: pf.consulta, pacient: r.pacient, medicament: r.medicament, posologia: r.posologia, data: r.data };
+  }
+  var emetent = false;
+  function imprimeix() {
+    if (emetent || E.emesa || !appActiva) return;
+    amagaErrors();
+    $('rm-desada').hidden = true; $('rm-desada-nota').hidden = true;
+    var f = llegeixFormulari();
+    /* 1 · es valida: si falta res, cap recepta i cap print */
+    var errs = valida(f);
+    if (errs.length) { mostraErrors(errs); return; }
+    emetent = true;
+    clearTimeout(tEsb);
+    var r;
+    try {
+      /* 2 · la recepta, amb la fotografia de la capçalera i l'estat del compte */
+      var cfg = E.cfg, clau = clauMetge();
+      var pid = pidDe({ metge: canonMetge(metgeCfg()), consulta: canonConsulta(cfg.consulta) });
+      var l = llistaPerEscriure(K.rec), ids = {};
+      if (!l) throw { illegible: true };
+      l.forEach(function (x) { if (x && x.id) ids[x.id] = 1; });
+      var avui = avuiISO();
+      r = {
+        id: nouId(avui, ids), versio: 1, creada: new Date().toISOString(), data: avui,
+        estat: 'EMESA', anullacio: null, prova: esProva(),
+        paper: cfg.paper, idioma: cfg.idioma, pid: pid, metgeClau: clau,
+        pacient: { nom: f.pacient.nom, naixement: f.pacient.naixement, doc: { tipus: f.pacient.doc.tipus, num: f.pacient.doc.num } },
+        medicament: { principi: f.medicament.principi, dosi: f.medicament.dosi, forma: f.medicament.forma, via: f.medicament.via, format: f.medicament.format, envasos: f.medicament.envasos },
+        posologia: f.posologia, origen: E.origen || null
+      };
+      /* 3 · ES DESA ABANS D'IMPRIMIR */
+      l.push(r);
+      escriu(K.rec, l);
+    } catch (e) {
+      emetent = false;
+      mostraErrors([{ id: 'b-imprimir-recepta', msg: t(e && e.illegible ? 'err_illegible' : 'err_desar') }]);
+      return;
+    }
+    var desada = trobaRecepta(r.id);
+    if (!desada) { emetent = false; mostraErrors([{ id: 'b-imprimir-recepta', msg: t('err_desar') }]); return; }
+    var fitxaOk = true;
+    if ($('rm-pac-desa').checked) fitxaOk = actualitzaFitxa(desada.pacient);
+    /* 4 · fora l'esborrany */
+    treu(K.esb);
+    E.origen = null;
+    bloquejaFormulari(desada.id);
+    /* 5 · el full es pinta amb la recepta DESADA, no amb el formulari */
+    preparaImpressio(construeixFull(receptaPerPintar(desada), { ids: true, despl: E.cfg.despl }), desada.paper);
+    /* 6 · tipografies a punt, i el dialeg */
+    llancaImpressio(function (ok) {
+      emetent = false;
+      /* 7 · l'avis i «Una altra recepta» */
+      $('rm-desada').hidden = false;
+      $('rm-desada-nota').hidden = false;
+      $('b-una-altra').hidden = false;
+      if (!ok) banner('err', t('err_imprimir'));
+      else if (!fitxaOk) banner('info', t('err_fitxa_no', { nom: desada.pacient.nom }));
+      pintaHistorial();
+    });
+  }
+  function bloquejaFormulari(id) {
+    E.emesa = id;
+    document.querySelectorAll('#sec-nova input, #sec-nova select, #sec-nova textarea').forEach(function (x) { x.disabled = true; });
+    $('b-pac-nou').disabled = true;
+    $('b-imprimir-recepta').disabled = true;
+    tancaPacientNou();
+  }
+  function desbloquejaFormulari() {
+    E.emesa = null;
+    document.querySelectorAll('#sec-nova input, #sec-nova select, #sec-nova textarea').forEach(function (x) { x.disabled = false; });
+    $('b-pac-nou').disabled = false;
+    $('b-imprimir-recepta').disabled = false;
+    $('rm-desada').hidden = true; $('rm-desada-nota').hidden = true; $('b-una-altra').hidden = true;
+  }
+  /* §6.2 · manté el pacient i buida el medicament */
+  function unaAltra() {
+    desbloquejaFormulari();
+    buidaMedicament();
+    E.origen = null;
+    desaEsborrany();
+    pintaPrevi();
+    $('rm-principi').focus();
+  }
+  function netejar() {
+    if (!E.emesa && !formulariBuit() && !window.confirm(t('netejar_confirma'))) return;
+    desbloquejaFormulari();
+    clearTimeout(tEsb);
+    posaFormulari({});
+    $('rm-pac-desa').checked = true;
+    $('rm-pac-cerca').value = ''; tancaLlista(); tancaPacientNou();
+    treu(K.esb);
+    amagaErrors();
+    pintaPrevi();
+    $('rm-pac-cerca').focus();
+  }
+
+  /* §8.5 · el full d'alineacio: el paper, el desplaçament i l'idioma que hi ha
+     escrits ara; no es desa enlloc i no crea cap recepta. */
+  function imprimeixAlineacio() {
+    if (emetent) return;
+    var errs = [];
+    var dx = Number($('rm-d-dx').value), dy = Number($('rm-d-dy').value);
+    [['rm-d-dx', dx], ['rm-d-dy', dy]].forEach(function (x) {
+      if (desplMal(x[1])) errs.push({ id: x[0], msg: t('err_despl', { camp: etiq(x[0]) }) });
+    });
+    $('rm-d-errors').hidden = true;
+    if (errs.length) { mostraErrors(errs, 'rm-d-errors-llista', 'rm-d-errors'); return; }
+    var paper = paperTriat(), idioma = $('rm-d-idioma').value === 'es' ? 'es' : 'ca';
+    preparaImpressio(construeixFull({ paper: paper, idioma: idioma, prova: false }, { ids: true, alineacio: true, despl: { x: dx, y: dy } }), paper);
+    var senseDesar = paper !== E.cfg.paper || despl(dx) !== E.cfg.despl.x || despl(dy) !== E.cfg.despl.y || idioma !== E.cfg.idioma;
+    emetent = true;
+    llancaImpressio(function () { emetent = false; $('rm-d-alin-nota').hidden = !senseDesar; });
+  }
+  window.addEventListener('beforeprint', function () { if (!E.armada) { var imp = $('rm-impressio'); if (imp) imp.textContent = ''; } });
+  window.addEventListener('afterprint', function () { if (E.armada) buidaImpressio(); });
+
+  /* ═══════════════════ DADES DE LA RECEPTA (§6.4) ═══════════════════ */
+  function paperTriat() { var r = document.querySelector('input[name="rm-paper"]:checked'); return r && PAPERS.indexOf(r.value) >= 0 ? r.value : PAPER_DEFECTE; }
+  function pintaDadesMetgeDe() {
+    var de = $('rm-d-metge-de'), cap0 = $('rm-d-metge-cap');
+    if (!de) return;
+    de.hidden = !(E.centre && E.metge); cap0.hidden = !(E.centre && !E.metge);
+    if (E.centre && E.metge) de.textContent = t('d_metge_de', { nom: E.metge });
+  }
+  function pintaDades() {
+    var m = metgeCfg(), c = E.cfg.consulta, senseMetge = E.centre && !E.metge;
+    $('rm-d-tractament').value = m.tractament || '';
+    $('rm-d-nom').value = m.nom; $('rm-d-especialitat').value = m.especialitat;
+    $('rm-d-extra1').value = m.extra[0]; $('rm-d-extra2').value = m.extra[1]; $('rm-d-colegiat').value = m.colegiat;
+    ['rm-d-tractament', 'rm-d-nom', 'rm-d-especialitat', 'rm-d-extra1', 'rm-d-extra2', 'rm-d-colegiat'].forEach(function (id) { $(id).disabled = senseMetge; });
+    $('rm-d-cnom').value = c.nom; $('rm-d-linia1').value = c.linia1; $('rm-d-linia2').value = c.linia2;
+    $('rm-d-telefon').value = c.telefon; $('rm-d-correu').value = c.correu;
+    var r = { A5: 'rm-d-paper-a5', A4_TALL: 'rm-d-paper-a4', CAPCALERA: 'rm-d-paper-capcalera' }[E.cfg.paper] || 'rm-d-paper-a4';
+    $(r).checked = true;
+    $('rm-d-dx').value = String(E.cfg.despl.x); $('rm-d-dy').value = String(E.cfg.despl.y);
+    $('rm-d-idioma').value = E.cfg.idioma;
+    $('rm-d-avis-capcalera').hidden = E.cfg.paper !== 'CAPCALERA';
+    pintaDadesMetgeDe();
+    vigilaDades();
+    vigilaMarge();
+  }
+  function desaDades() {
+    $('rm-d-errors').hidden = true;
+    document.querySelectorAll('#sec-dades [aria-invalid="true"]').forEach(function (x) { x.removeAttribute('aria-invalid'); });
+    var senseMetge = E.centre && !E.metge;
+    var m = canonMetge({ tractament: $('rm-d-tractament').value, nom: val('rm-d-nom'), especialitat: val('rm-d-especialitat'), extra: [val('rm-d-extra1'), val('rm-d-extra2')], colegiat: val('rm-d-colegiat') });
+    var c = canonConsulta({ nom: val('rm-d-cnom'), linia1: val('rm-d-linia1'), linia2: val('rm-d-linia2'), telefon: val('rm-d-telefon'), correu: val('rm-d-correu') });
+    var errs = dadesErrors(senseMetge ? null : m, c, true).map(function (x) { return { id: x.id, msg: x.msg }; });
+    var dx = Number($('rm-d-dx').value), dy = Number($('rm-d-dy').value);
+    [['rm-d-dx', dx], ['rm-d-dy', dy]].forEach(function (x) {
+      if (desplMal(x[1])) errs.push({ id: x[0], msg: t('err_despl', { camp: etiq(x[0]) }) });
+    });
+    if (errs.length) { mostraErrors(errs, 'rm-d-errors-llista', 'rm-d-errors'); return false; }
+    /* §7.4 · el telefon es desa normalitzat */
+    if (c.telefon) c.telefon = normalitzaTelefon(c.telefon).valor;
+    var cfg = clona(E.cfg);
+    if (!senseMetge) cfg.metges[clauMetge()] = m;
+    cfg.consulta = c;
+    cfg.paper = paperTriat();
+    cfg.despl = { x: despl(dx), y: despl(dy) };
+    cfg.idioma = $('rm-d-idioma').value === 'es' ? 'es' : 'ca';
+    cfg = normalitzaCfg(cfg);
+    try { escriu(K.cfg, cfg); } catch (e) { banner('err', t('err_desar')); return false; }
+    E.cfg = cfg;
+    pintaDades();
+    pintaAvisDades();
+    $('rm-d-alin-nota').hidden = true;
+    var falten = senseMetge ? [] : dadesErrors();
+    banner('ok', falten.length ? t('d_desades_falten', { llista: falten.map(function (x) { return etiq(x.id); }).join(', ') }) : t('d_desades'));
+    return true;
+  }
+
+  /* ═══════════════════ HISTORIAL (§6.3) ═══════════════════ */
+  function abast() {
+    var l = llista(K.rec).filter(function (r) { return r && r.id && r.pacient && r.medicament; });
+    if (E.centre) l = l.filter(function (r) { return r.metgeClau === E.metge; });
+    return l;
+  }
+  function pintaHistorial() {
+    if (!appActiva || !$('rm-h-files')) return;
+    var cos = $('rm-h-files'), buit = $('rm-h-buit'), compte = $('rm-h-compte');
+    cos.textContent = '';
+    if (E.centre && !E.metge) { buit.textContent = t('h_metge_cap'); buit.hidden = false; compte.textContent = ''; $('rm-h-taula').hidden = true; return; }
+    var totes = abast();
+    var q = normal(val('rm-h-cerca')), des = val('rm-h-des'), fins = val('rm-h-fins'), anul = $('rm-h-anullades').checked;
+    var files = [];
+    for (var i = totes.length - 1; i >= 0; i--) {
+      var r = totes[i];
+      if (!anul && r.estat === 'ANULLADA') continue;
+      if (des && r.data < des) continue;
+      if (fins && r.data > fins) continue;
+      if (q && normal([r.pacient.nom, r.medicament.principi, r.medicament.dosi].join(' ')).indexOf(q) < 0) continue;
+      files.push(r);
+    }
+    $('rm-h-taula').hidden = !files.length;
+    compte.textContent = files.length === 1 ? t('h_compte_1') : t('h_compte_n', { n: files.length });
+    if (!files.length) { buit.textContent = totes.length ? t('h_cap') : t('h_buit'); buit.hidden = false; return; }
+    buit.hidden = true;
+    var html = files.map(function (r) {
+      var pos = String(r.posologia || '').replace(/\s+/g, ' ');
+      if (pos.length > 60) pos = pos.slice(0, 60) + '\u2026';
+      var est = r.estat === 'ANULLADA' ? 'ANULLADA' : 'EMESA';
+      var v = { id: r.id, pac: r.pacient.nom };
+      return '<tr data-id="' + esc(r.id) + '"' + (est === 'ANULLADA' ? ' class="rm-anullada"' : '') + '>' +
+        '<td data-l="' + esc(t('h_col_data')) + '">' + esc(ddmmaaaa(r.data)) + '</td>' +
+        '<td data-l="' + esc(t('h_col_pacient')) + '">' + esc(r.pacient.nom) + '</td>' +
+        '<td data-l="' + esc(t('h_col_med')) + '" class="rm-h-med">' + esc([r.medicament.principi, r.medicament.dosi].filter(Boolean).join(' ')) + '</td>' +
+        '<td data-l="' + esc(t('h_col_pos')) + '">' + esc(pos) + '</td>' +
+        '<td data-l="' + esc(t('h_col_estat')) + '"><span class="rm-estat ' + (est === 'ANULLADA' ? 'anullada' : 'emesa') + '">' + esc(t('estat_' + est)) + '</span>' +
+          (r.prova ? '<span class="rm-mostra">' + esc(t('mostra')) + '</span>' : '') + '</td>' +
+        '<td class="rm-accions">' +
+          '<button type="button" class="rm-btn sec mini b-veure" aria-label="' + esc(t('aria_veure', v)) + '">' + esc(t('b_veure')) + '</button>' +
+          '<button type="button" class="rm-btn sec mini b-repetir" aria-label="' + esc(t('aria_repetir', v)) + '">' + esc(t('b_repetir')) + '</button>' +
+          (est === 'EMESA' ? '<button type="button" class="rm-btn perill mini b-anullar" aria-label="' + esc(t('aria_anullar', v)) + '">' + esc(t('b_anullar')) + '</button>' : '') +
+        '</td></tr>';
+    }).join('');
+    cos.innerHTML = html;
+  }
+  var tornaFocus = null;
+  function obreModal(id, focusId) {
+    tornaFocus = document.activeElement;
+    $(id).hidden = false;
+    var f = $(focusId); if (f) f.focus();
+  }
+  function tancaModal(id) {
+    $(id).hidden = true;
+    if (id === 'rm-modal-veure') $('rm-mv-full').textContent = '';
+    if (tornaFocus && document.body.contains(tornaFocus)) { try { tornaFocus.focus(); } catch (e) {} }
+    tornaFocus = null;
+  }
+  /* .b-veure · nomes lectura, sense cap boto d'imprimir */
+  function veure(id) {
+    var r = trobaRecepta(id); if (!r) return;
+    $('rm-mv-tit').textContent = t('mv_tit', { id: r.id });
+    var info = [t('mv_info', { data: ddmmaaaa(r.data) })];
+    if (r.origen) info.push(t('mv_origen', { id: r.origen }));
+    if (r.estat === 'ANULLADA' && r.anullacio) info.push(t('mv_anullada', { data: ddmmaaaa(String(r.anullacio.el || '').slice(0, 10)), motiu: r.anullacio.motiu || '' }));
+    $('rm-mv-info').textContent = info.join(' ');
+    var cont = $('rm-mv-full'); cont.textContent = '';
+    obreModal('rm-modal-veure', 'b-mv-tanca');
+    var full = construeixFull(receptaPerPintar(r), { anullada: r.estat === 'ANULLADA' });
+    cont.appendChild(full);
+    ajusta(full);
+    escalaA(cont, full);
+  }
+  /* .b-repetir · un esborrany NOU amb origen; no imprimeix res sol */
+  function repeteix(id) {
+    var r = trobaRecepta(id); if (!r) return;
+    if (E.centre && r.metgeClau !== E.metge) return;
+    if (E.emesa) desbloquejaFormulari();
+    else if (!formulariBuit() && !window.confirm(t('repetir_confirma'))) return;
+    posaFormulari({ pacient: clona(r.pacient), medicament: clona(r.medicament), posologia: r.posologia, origen: r.id });
+    obrePestanya('nova');
+    desaEsborrany();
+    pintaPrevi();
+    banner('info', t('repetida', { id: r.id }));
+    $('b-imprimir-recepta').focus();
+  }
+  /* .b-anullar · motiu de 3 a 200 caracters i confirmacio; no s'esborra res */
+  function obreAnullar(id) {
+    var r = trobaRecepta(id); if (!r || r.estat !== 'EMESA') return;
+    E.filaAnullar = id;
+    $('rm-ma-resum').textContent = t('ma_resum', { id: r.id, pac: r.pacient.nom, med: [r.medicament.principi, r.medicament.dosi].filter(Boolean).join(' ') });
+    $('rm-ma-motiu').value = ''; $('rm-ma-confirma').checked = false; $('rm-ma-err').hidden = true;
+    obreModal('rm-modal-anullar', 'rm-ma-motiu');
+  }
+  function confirmaAnullar() {
+    var motiu = String($('rm-ma-motiu').value || '').trim().replace(/\s+/g, ' ');
+    var err = $('rm-ma-err');
+    if (motiu.length < 3 || motiu.length > 200) { err.textContent = t('ma_err_motiu'); err.hidden = false; $('rm-ma-motiu').focus(); return; }
+    if (!$('rm-ma-confirma').checked) { err.textContent = t('ma_err_conf'); err.hidden = false; $('rm-ma-confirma').focus(); return; }
+    var l = llistaPerEscriure(K.rec), r = null;
+    if (!l) { err.textContent = t('err_illegible'); err.hidden = false; return; }
+    for (var i = 0; i < l.length; i++) if (l[i] && l[i].id === E.filaAnullar) r = l[i];
+    if (!r || r.estat !== 'EMESA') { tancaModal('rm-modal-anullar'); return; }
+    r.estat = 'ANULLADA';
+    r.anullacio = { el: new Date().toISOString(), motiu: motiu };
+    try { escriu(K.rec, l); } catch (e) { err.textContent = t('err_desar'); err.hidden = false; return; }
+    var id = r.id;
+    E.filaAnullar = null;
+    tancaModal('rm-modal-anullar');
+    pintaHistorial();
+    banner('ok', t('anullada_ok', { id: id }));
+  }
+
+  /* ─────────── exportacio (§6.3): com descarrega() de FacturaMed ─────────── */
+  function descarrega(nom, contingut, mime) {
+    var blob = new Blob([contingut], { type: mime });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob); a.download = nom;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 2000);
+  }
+  function cel(v) { v = String(v == null ? '' : v); return /[";\n\r]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }
+  /* A2 §10 (P-ENG-74) · com FacturaMed: una exportacio no segueix la pantalla. Les
+     capçaleres i els valors traduits del CSV, en castella sempre. */
+  function tEs(k) { return TXT.es[k] != null ? TXT.es[k] : t(k); }
+  function exportaCSV() {
+    var l = llista(K.rec).filter(function (r) { return r && r.id && r.pacient && r.medicament; });
+    if (!l.length) { banner('info', t('exporta_buit')); return; }
+    var cap0 = ['csv_id', 'csv_data', 'csv_estat', 'csv_pacient', 'csv_naix', 'csv_document', 'csv_principi', 'csv_dosi', 'csv_forma', 'csv_via', 'csv_format', 'csv_envasos', 'csv_posologia', 'csv_metge', 'csv_colegiat', 'csv_mostra'].map(tEs);
+    var files = l.map(function (r) {
+      var pf = perfilDe(r.pid) || { metge: {} }, m = pf.metge || {}, d = r.pacient.doc || {};
+      return [r.id, ddmmaaaa(r.data), tEs('estat_' + (r.estat === 'ANULLADA' ? 'ANULLADA' : 'EMESA')), r.pacient.nom, ddmmaaaa(r.pacient.naixement),
+        d.num ? pr('es', 'doc_' + (DOCS.indexOf(d.tipus) >= 0 ? d.tipus : 'DNI')) + ' ' + d.num : '',
+        r.medicament.principi, r.medicament.dosi, r.medicament.forma, r.medicament.via, r.medicament.format, r.medicament.envasos,
+        r.posologia, [m.tractament, m.nom].filter(Boolean).join(' '), m.colegiat || '', r.prova ? tEs('si') : tEs('no')].map(cel).join(';');
+    });
+    var nom = 'ReceptaMed_receptes_' + avuiISO() + '.csv';
+    descarrega(nom, '\uFEFF' + cap0.join(';') + '\n' + files.join('\n'), 'text/csv;charset=utf-8');
+    banner('ok', t('exportat', { nom: nom }));
+  }
+  function exportaJSON() {
+    var copia = { format: 'receptamed-copia', versio: 1, exportada: new Date().toISOString(), rm_config: llegeix(K.cfg, null), rm_perfils: llista(K.perfils), rm_receptes: llista(K.rec) };
+    var nom = 'ReceptaMed_copia_' + avuiISO() + '.json';
+    descarrega(nom, JSON.stringify(copia, null, 2), 'application/json');
+    banner('ok', t('exportat', { nom: nom }));
+  }
+
+  /* ─────────── la barra de mode de prova (§9.1), la de cmstore.js ─────────── */
+  function barra() { try { if (window.cmStore && cmStore.barraProva) cmStore.barraProva({ tornar: 'recepta' }); } catch (e) {} }
+
+  /* ═══════════════════ ESDEVENIMENTS ═══════════════════ */
+  function canviFormulari() {
+    if (!appActiva || E.emesa) return;
+    programaEsborrany();
+    pintaPrevi();
+  }
+  function connecta() {
+    /* pestanyes, amb fletxes */
+    PESTANYES.forEach(function (p, i) {
+      var tb = $('tab-' + p);
+      tb.addEventListener('click', function () { obrePestanya(p); });
+      tb.addEventListener('keydown', function (ev) {
+        if (ev.key === 'ArrowRight' || ev.key === 'ArrowLeft') {
+          ev.preventDefault();
+          obrePestanya(PESTANYES[(i + (ev.key === 'ArrowRight' ? 1 : PESTANYES.length - 1)) % PESTANYES.length], true);
+        }
+      });
+    });
+    $('rm-metge').addEventListener('change', function () { E.metge = this.value; this.removeAttribute('aria-invalid'); canviMetge(); });
+    /* el pacient */
+    var cerca = $('rm-pac-cerca');
+    cerca.addEventListener('input', pintaLlistaPacients);
+    cerca.addEventListener('keydown', function (ev) {
+      var obert = !$('rm-pac-llista').hidden;
+      if (ev.key === 'ArrowDown') { ev.preventDefault(); if (!obert) pintaLlistaPacients(); marcaOpcio(E.llistaSel + 1); }
+      else if (ev.key === 'ArrowUp') { ev.preventDefault(); marcaOpcio(E.llistaSel - 1); }
+      else if (ev.key === 'Enter') { ev.preventDefault(); if (obert && E.llistaSel >= 0 && resultats[E.llistaSel]) triaPacient(resultats[E.llistaSel]); }
+      else if (ev.key === 'Escape') { tancaLlista(); }
+    });
+    cerca.addEventListener('blur', function () { setTimeout(tancaLlista, 150); });
+    $('b-pac-nou').addEventListener('click', function () { if ($('rm-pac-nou').hidden) obrePacientNou(); else tancaPacientNou(); });
+    $('b-pn-crea').addEventListener('click', creaPacient);
+    $('b-pn-cancel').addEventListener('click', function () { tancaPacientNou(); $('b-pac-nou').focus(); });
+    $('rm-pac-doc-tipus').addEventListener('change', canviFormulari);
+    $('rm-pac-doc-num').addEventListener('blur', function () { var v = normDoc(this.value); if (v !== this.value) { this.value = v; canviFormulari(); } });
+    CAMPS_MED.concat(['rm-pac-naix', 'rm-pac-doc-num']).forEach(function (id) {
+      $(id).addEventListener('input', function () { this.removeAttribute('aria-invalid'); if (id === 'rm-envasos') avisEnvasos(); canviFormulari(); });
+      $(id).addEventListener('change', canviFormulari);
+    });
+    /* §6.2 · LA TECLA RETORN NO IMPRIMEIX MAI: ni des d'un camp ni des del
+       boto amb el focus (l'espai si que l'activa). */
+    $('sec-nova').addEventListener('keydown', function (ev) {
+      if (ev.key === 'Enter' && ev.target && ev.target.tagName !== 'TEXTAREA' && ev.target.id !== 'rm-pac-cerca') {
+        if (ev.target.tagName === 'INPUT' || ev.target.id === 'b-imprimir-recepta') ev.preventDefault();
+      }
+    });
+    $('b-imprimir-recepta').addEventListener('click', imprimeix);
+    $('b-netejar').addEventListener('click', netejar);
+    $('b-una-altra').addEventListener('click', unaAltra);
+    /* historial */
+    ['rm-h-cerca', 'rm-h-des', 'rm-h-fins'].forEach(function (id) { $(id).addEventListener('input', pintaHistorial); $(id).addEventListener('change', pintaHistorial); });
+    $('rm-h-anullades').addEventListener('change', pintaHistorial);
+    $('rm-h-files').addEventListener('click', function (ev) {
+      var b = ev.target.closest('button'); if (!b) return;
+      var tr = b.closest('tr'); if (!tr) return;
+      var id = tr.getAttribute('data-id');
+      if (b.classList.contains('b-veure')) veure(id);
+      else if (b.classList.contains('b-repetir')) repeteix(id);
+      else if (b.classList.contains('b-anullar')) obreAnullar(id);
+    });
+    $('b-exporta-csv').addEventListener('click', exportaCSV);
+    $('b-exporta-json').addEventListener('click', exportaJSON);
+    $('b-mv-tanca').addEventListener('click', function () { tancaModal('rm-modal-veure'); });
+    $('b-ma-cancel').addEventListener('click', function () { tancaModal('rm-modal-anullar'); });
+    $('b-ma-anulla').addEventListener('click', confirmaAnullar);
+    ['rm-modal-veure', 'rm-modal-anullar'].forEach(function (id) {
+      $(id).addEventListener('keydown', function (ev) {
+        if (ev.key === 'Escape') { tancaModal(id); return; }
+        if (ev.key !== 'Tab') return;
+        /* el focus no surt de la finestra mentre és oberta (aria-modal) */
+        var f = [].filter.call($(id).querySelectorAll('button, input, textarea, select, [tabindex]:not([tabindex="-1"])'), function (x) { return !x.disabled && x.offsetParent !== null; });
+        if (!f.length) return;
+        if (ev.shiftKey && document.activeElement === f[0]) { ev.preventDefault(); f[f.length - 1].focus(); }
+        else if (!ev.shiftKey && document.activeElement === f[f.length - 1]) { ev.preventDefault(); f[0].focus(); }
+      });
+      $(id).addEventListener('mousedown', function (ev) { if (ev.target === $(id)) tancaModal(id); });
+    });
+    /* dades */
+    $('b-desa-dades').addEventListener('click', desaDades);
+    $('b-full-alineacio').addEventListener('click', imprimeixAlineacio);
+    $('b-avis-model-entesos').addEventListener('click', entesosAvisModel);
+    document.querySelectorAll('input[name="rm-paper"]').forEach(function (r) { r.addEventListener('change', function () { $('rm-d-avis-capcalera').hidden = paperTriat() !== 'CAPCALERA'; vigilaDades(); vigilaMarge(); }); });
+    /* DIS-16 §1 i §2 · els limits i el marge, en viu, a «Dades de la recepta» */
+    ['rm-d-tractament', 'rm-d-nom', 'rm-d-especialitat', 'rm-d-extra1', 'rm-d-extra2', 'rm-d-colegiat', 'rm-d-cnom', 'rm-d-linia1', 'rm-d-linia2', 'rm-d-telefon', 'rm-d-correu', 'rm-d-idioma'].forEach(function (id) {
+      $(id).addEventListener('input', programaVigilaDades); $(id).addEventListener('change', programaVigilaDades);
+    });
+    ['rm-d-dx', 'rm-d-dy'].forEach(function (id) { $(id).addEventListener('input', vigilaMarge); $(id).addEventListener('change', vigilaMarge); });
+    $('sec-dades').addEventListener('keydown', function (ev) { if (ev.key === 'Enter' && ev.target && ev.target.tagName === 'INPUT') ev.preventDefault(); });
+    /* la mida de la previsualitzacio */
+    var ro = window.ResizeObserver ? new ResizeObserver(function () { escalaA($('rm-previsualitzacio'), $('rm-previsualitzacio').firstChild); escalaA($('rm-mv-full'), $('rm-mv-full').firstChild); }) : null;
+    if (ro) { ro.observe($('rm-previsualitzacio')); ro.observe($('rm-mv-full')); }
+    else window.addEventListener('resize', function () { escalaA($('rm-previsualitzacio'), $('rm-previsualitzacio').firstChild); });
+    /* les fitxes arriben d'altres dispositius (cmsync) i les receptes, d'altres pestanyes */
+    window.addEventListener('cm-sync-pull', function () { if (appActiva && !$('rm-pac-llista').hidden) pintaLlistaPacients(); });
+    window.addEventListener('storage', function (ev) {
+      if (!appActiva || !ev.key) return;
+      if (ev.key === K.rec || ev.key === K.perfils) pintaHistorial();
+      if (ev.key === K.cfg) { E.cfg = carregaCfg(); pintaDades(); pintaPrevi(); pintaAvisDades(); }
+      if (ev.key === KF.conf) preparaCentre(false);
+    });
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', arrenca);
+  else arrenca();
+})();
+</script>
+</body>
+</html>

@@ -286,7 +286,7 @@
     de: { prova:'Testmodus',      fisc:'die Rechnungen haben keine steuerliche Gültigkeit', cta:'Konto aktivieren' },
     en: { prova:'Test mode',      fisc:'these invoices have no fiscal validity', cta:'Activate my account' }
   };
-  var DESTINS_BARRA = { app:'app', escriba:'escriba', secre:'secre' };
+  var DESTINS_BARRA = { app:'app', escriba:'escriba', secre:'secre', recepta:'recepta' };   /* ENG-40 */
 
   function estatCompteBarra() {
     /* Mateixa regla que a FacturaMed: qualsevol cosa que no sigui exactament

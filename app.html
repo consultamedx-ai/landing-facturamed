@@ -1228,10 +1228,45 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
     for(var i=n-22;i>=Math.max(0,n-22-65557);i--){if(dv.getUint32(i,true)===0x06054b50){eocd=i;break}}
     if(eocd<0)throw new Error('zip');
     var total=dv.getUint16(eocd+10,true),p=dv.getUint32(eocd+16,true),ents={};
+    /* ENG-50 (ENG-26 lot 3) · ZIP64. Quan un valor no cap al camp de tota la vida, el
+       zip hi deixa una MARCA (0xFFFF o 0xFFFFFFFF) i el número de debò va al
+       registre zip64. Fins avui no es miraven aquestes marques: el nombre
+       d'entrades sortia 65535 o l'offset apuntava fora del fitxer, saltava un
+       RangeError i el metge llegia «Use un Excel (.xlsx) o un CSV» sobre un
+       fitxer que ÉS un Excel. L'escriu qualsevol Info-ZIP amb `zip -fz`.
+       La comprovació és un O i no un I: al cas reproduït, `total` val 9 i
+       només l'OFFSET porta la marca. */
+    if(total===0xFFFF||p===0xFFFFFFFF||dv.getUint32(eocd+12,true)===0xFFFFFFFF){
+      var loc=eocd-20;
+      if(loc<0||dv.getUint32(loc,true)!==0x07064b50)throw new Error('zip64');
+      var z64=Number(dv.getBigUint64(loc+8,true));
+      if(!(z64>=0&&z64+56<=n)||dv.getUint32(z64,true)!==0x06064b50)throw new Error('zip64');
+      total=Number(dv.getBigUint64(z64+32,true));
+      p=Number(dv.getBigUint64(z64+48,true));
+    }
     for(var k=0;k<total;k++){
-      if(dv.getUint32(p,true)!==0x02014b50)throw new Error('zip');
-      var metode=dv.getUint16(p+10,true),compMida=dv.getUint32(p+20,true),nomLen=dv.getUint16(p+28,true),
-          extraLen=dv.getUint16(p+30,true),comLen=dv.getUint16(p+32,true),locOff=dv.getUint32(p+42,true);
+      if(p<0||p+46>n||dv.getUint32(p,true)!==0x02014b50)throw new Error('zip');
+      var metode=dv.getUint16(p+10,true),compMida=dv.getUint32(p+20,true),origMida=dv.getUint32(p+24,true),
+          nomLen=dv.getUint16(p+28,true),extraLen=dv.getUint16(p+30,true),comLen=dv.getUint16(p+32,true),
+          locOff=dv.getUint32(p+42,true);
+      /* Els camps marcats viuen al bloc extra 0x0001, i hi van EN AQUEST ORDRE
+         i només els que porten marca: mida original, mida comprimida, offset.
+         Per això s'ha de saltar la mida original encara que no la fem servir:
+         si no, es llegiria el número equivocat. */
+      if(compMida===0xFFFFFFFF||locOff===0xFFFFFFFF||origMida===0xFFFFFFFF){
+        var ex=p+46+nomLen,fiEx=ex+extraLen;
+        while(ex+4<=fiEx){
+          var idEx=dv.getUint16(ex,true),midaEx=dv.getUint16(ex+2,true),q=ex+4;
+          if(idEx===0x0001){
+            if(origMida===0xFFFFFFFF){if(q+8>fiEx)throw new Error('zip64');q+=8}
+            if(compMida===0xFFFFFFFF){if(q+8>fiEx)throw new Error('zip64');compMida=Number(dv.getBigUint64(q,true));q+=8}
+            if(locOff===0xFFFFFFFF){if(q+8>fiEx)throw new Error('zip64');locOff=Number(dv.getBigUint64(q,true))}
+            break;
+          }
+          ex=q+midaEx;
+        }
+        if(compMida===0xFFFFFFFF||locOff===0xFFFFFFFF)throw new Error('zip64');
+      }
       ents[new TextDecoder().decode(u8.subarray(p+46,p+46+nomLen))]={metode:metode,compMida:compMida,locOff:locOff};
       p+=46+nomLen+extraLen+comLen;
     }
@@ -1317,7 +1352,7 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
     return cami.join('/');
   }
   function numFull(k){var m=String(k).match(/(\d+)\.xml$/);return m?parseInt(m[1],10):0}
-  async function xlsxFiles(buf){
+  async function xlsxFiles(buf,vol){
     var ents=zipEntrades(buf),wb=await zipText(buf,ents,'xl/workbook.xml');
     if(!wb)throw new Error('no-xlsx');
     var fulls=[],tria=null,rid=null,rels=null,relsFull=[],full=null,avisa=false;
@@ -1325,7 +1360,11 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
     var amagat=/^\s*(hidden|veryhidden)\s*$/i;
     var visibles=fulls.filter(function(s){return !amagat.test(s.getAttribute('state')||'')});
     var llista=visibles.length?visibles:fulls;
-    tria=llista[0]||null;
+    /* ENG-50 (ENG-26 lot 3) · `vol` és el full que ha triat el metge al desplegable.
+       Sense res triat es llegeix el primer, que segueix sent la política per
+       defecte de sempre; el que canvia és que ara hi ha sortida. */
+    var iVol=(typeof vol==='number'&&vol>=0&&vol<llista.length)?vol:0;
+    tria=llista[iVol]||null;
     if(tria)rid=tria.getAttribute('r:id')||tria.getAttributeNS(NS_REL,'id')||null;
     try{rels=await zipText(buf,ents,'xl/_rels/workbook.xml.rels')}catch(e){rels=null}
     if(rels)try{
@@ -1350,7 +1389,8 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
     }
     if(avisa)throw new Error('full');
     if(!full||!ents[full])throw new Error('no-xlsx');
-    fullLlegit={nom:(tria&&netText(tria.getAttribute('name')))||full.replace(/^.*\//,''),total:llista.length||1};
+    fullLlegit={nom:(tria&&netText(tria.getAttribute('name')))||full.replace(/^.*\//,''),total:llista.length||1,
+      i:iVol,noms:llista.map(function(s,j){return netText(s.getAttribute('name'))||('Hoja '+(j+1))})};
     var sst=[],sstx=await zipText(buf,ents,'xl/sharedStrings.xml');
     if(sstx)xmlTots(xmlDoc(sstx),'si').forEach(function(si){sst.push(desescapa(xmlTots(si,'t').map(function(x){return x.textContent}).join('')))});
     var files=[];
@@ -1668,13 +1708,30 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
        al davant sortia amb «filas con datos: 0» i enlloc de la pàgina no hi
        havia la paraula «hoja»: el metge sabia que el fitxer tenia pacients i no
        tenia cap manera de saber que se n'havia llegit un altre full. Amb més
-       d'un full es diu també quants n'hi ha i què ha de fer. (El desplegable per
-       triar-lo és interfície nova i no és d'aquest lot.) */
+       d'un full es diu també quants n'hi ha i què ha de fer. ENG-50 (ENG-26 lot 3):
+       ara el metge el tria al desplegable «Hoja del archivo», i el consell ho diu. */
     var txtFitxer=Tf('Archivo: {f} · filas con datos: {n} · encabezados en la fila {r}.',{f:pend.nomFitxer,n:r.files.length,r:pend.cap+1});
     if(pend.full)txtFitxer+=' '+(pend.full.total>1
-      ? Tf('Hoja leída: «{h}», de las {t} hojas del archivo. Si sus pacientes están en otra, muévalos a la primera hoja y vuelva a importar.',{h:pend.full.nom,t:pend.full.total})
+      ? Tf('Hoja leída: «{h}», de las {t} hojas del archivo. Si sus pacientes están en otra, elíjala en «Hoja del archivo».',{h:pend.full.nom,t:pend.full.total})
       : Tf('Hoja leída: «{h}».',{h:pend.full.nom}));
     $('pi-fitxer').textContent=txtFitxer;
+    /* ENG-50 (ENG-26 lot 3) · el desplegable per triar el full. Només surt quan n'hi ha
+       més d'un: amb un de sol seria una pregunta sense resposta possible. Es
+       crea aquí i no al marcatge perquè el panell ja es pinta sencer des del
+       JavaScript i afegir-hi un buit a mà seria una peça més per desincronitzar. */
+    var caixaFull=$('pi-full-tria');
+    if(pend.full&&pend.full.noms&&pend.full.noms.length>1){
+      if(!caixaFull){
+        caixaFull=document.createElement('div');
+        caixaFull.id='pi-full-tria';caixaFull.style.margin='6px 0 0';
+        $('pi-fitxer').parentNode.insertBefore(caixaFull,$('pi-fitxer').nextSibling);
+      }
+      caixaFull.style.display='';
+      var hf='<label for="pi-full" style="margin-right:6px">'+esc(T('Hoja del archivo:'))+'</label><select id="pi-full">';
+      pend.full.noms.forEach(function(n,i){hf+='<option value="'+i+'"'+(pend.full.i===i?' selected':'')+'>'+esc(n)+'</option>'});
+      caixaFull.innerHTML=hf+'</select>';
+      $('pi-full').addEventListener('change',function(){canviaFullImport(parseInt(this.value,10))});
+    }else if(caixaFull)caixaFull.style.display='none';
     var res=[];
     if(pend.mapa.nom==null&&pend.mapa.cognoms==null)res.push('<strong style="color:var(--vermell)">'+esc(T('Elija en qué columna está el nombre para poder importar.'))+'</strong>');
     else res.push('<strong>'+esc(Tf('Fichas nuevas que se crearán: {n}.',{n:r.nous.length}))+'</strong>');
@@ -1727,6 +1784,43 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
     b.disabled=!(nn||nc);   /* DIS-12 · l'aspecte del botó desactivat el posa .btn[disabled] (CSS), no cap style en línia */
     card.style.display='block';
   }
+  /* ENG-50 (ENG-26 lot 3) · QUÈ ÉS AQUEST FITXER.
+     Fins avui, tot el que no començava amb «PK» anava al lector de CSV, i
+     `csvFiles` no té cap camí d'error: una pàgina d'HTML («Su sesión ha
+     caducado» desada amb el nom del fitxer que s'esperava), un PNG reanomenat
+     o un binari qualsevol acabaven al panell d'importació sense cap avís. El
+     contrast deia on era el llistó: un zip TRENCAT sí que es diagnosticava.
+     Ara es diagnostiquen els dos. Cap d'aquests casos és de laboratori: tots
+     tres surten d'una exportació que ha anat malament. */
+  function menaDeFitxer(u8,buf){
+    if(u8.length>=4&&u8[0]===0x50&&u8[1]===0x4B&&(u8[2]===3||u8[2]===5||u8[2]===7))return 'zip';
+    if(u8.length>=8&&u8[0]===0xD0&&u8[1]===0xCF&&u8[2]===0x11&&u8[3]===0xE0)return 'ole';
+    /* Un zip amb bytes al davant: els offsets del directori central són
+       relatius a l'inici de l'arxiu i aquí estarien tots desplaçats. No ens
+       l'inventem: es diu. */
+    var cap=u8.subarray(0,Math.min(u8.length,65536));
+    for(var i=0;i+3<cap.length;i++)if(cap[i]===0x50&&cap[i+1]===0x4B&&cap[i+2]===3&&cap[i+3]===4)return 'zip-desplacat';
+    /* UTF-16 va PLE de NUL i és un CSV perfectament bo: el lector el suporta
+       des del lot 1 (§2.4). Si no se n'exceptués, la comprovació de sota es
+       menjaria un fitxer que avui entra bé — ho va ensenyar el control de
+       mutacions abans de publicar-ho, no un metge després. */
+    var bom16=u8.length>=2&&((u8[0]===0xFF&&u8[1]===0xFE)||(u8[0]===0xFE&&u8[1]===0xFF));
+    if(bom16)return 'text';
+    /* Binari: un NUL o massa caràcters de control. El text d'un full de càlcul
+       exportat no en té mai (el tabulador, el CR i el LF no compten). */
+    var mostra=u8.subarray(0,Math.min(u8.length,4096)),ctrl=0;
+    for(var j=0;j<mostra.length;j++){
+      var c=mostra[j];
+      if(c===0)return 'binari';
+      if(c<9||(c>13&&c<32))ctrl++;
+    }
+    if(mostra.length&&ctrl/mostra.length>0.02)return 'binari';
+    var text='';
+    try{text=decodifica(buf)}catch(e){return 'binari'}
+    var ini=text.slice(0,2048).replace(/^\uFEFF/,'').trim().toLowerCase();
+    if(/^<!doctype html|^<html[\s>]|^<\?xml|^<meta[\s>]/.test(ini)||(/<table[\s>]/.test(ini)&&/<\/t[dr]>/.test(ini)))return 'html';
+    return 'text';
+  }
   async function llegeixFitxerPacients(f){
     var nom=f.name||'',ext=(nom.match(/\.([a-z0-9]+)$/i)||['',''])[1].toLowerCase();
     if(ext==='xls'){avis('err','Este archivo es un Excel antiguo (.xls). Ábralo en Excel y guárdelo como .xlsx o como CSV.');return}
@@ -1735,8 +1829,12 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
     csvSenseSeparador=false;   /* només el camí CSV el pot encendre */
     fullLlegit=null;           /* i només el camí .xlsx omple el full llegit */
     try{
-      if(u8.length>=4&&u8[0]===0x50&&u8[1]===0x4B)files=await xlsxFiles(buf);
-      else if(u8.length>=8&&u8[0]===0xD0&&u8[1]===0xCF&&u8[2]===0x11&&u8[3]===0xE0){avis('err','Este archivo es un Excel antiguo (.xls). Ábralo en Excel y guárdelo como .xlsx o como CSV.');return}
+      var mena=menaDeFitxer(u8,buf);
+      if(mena==='zip')files=await xlsxFiles(buf);
+      else if(mena==='ole'){avis('err','Este archivo es un Excel antiguo (.xls). Ábralo en Excel y guárdelo como .xlsx o como CSV.');return}
+      else if(mena==='html'){avis('err','Este archivo no es una hoja de cálculo: es una página web guardada con ese nombre. Vuelva a exportar sus pacientes desde el programa donde los tiene.');return}
+      else if(mena==='binari'){avis('err','Este archivo no es una hoja de cálculo ni un CSV: no contiene texto. Compruebe que ha elegido el archivo correcto.');return}
+      else if(mena==='zip-desplacat'){avis('err','Este archivo parece un Excel pero tiene datos delante y no se puede abrir. Ábralo en Excel y vuelva a guardarlo como .xlsx.');return}
       else files=csvFiles(decodifica(buf));
     }catch(e){
       if(e&&e.message==='navegador'){avis('err','Este navegador no puede leer .xlsx. Guarde el archivo como CSV o use Google Chrome.');return}
@@ -1745,19 +1843,41 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
          «no s'ha trobat el full» i «no es pot llegir el fitxer» no són el
          mateix problema ni tenen la mateixa sortida. */
       if(e&&e.message==='full'){avis('err','No se ha podido encontrar la hoja de cálculo dentro del archivo. Ábralo en Excel, vuelva a guardarlo como .xlsx e inténtelo de nuevo.');return}
+      /* ENG-50 (ENG-26 lot 3) · zip64: el fitxer ÉS un Excel, o sigui que el consell de
+         «use un Excel» no el porta enlloc. */
+      if(e&&e.message==='zip64'){avis('err','No se ha podido leer la compresión (zip64) de este Excel. Ábralo en Excel y vuelva a guardarlo como .xlsx, o expórtelo como CSV.');return}
       avis('err','No se ha podido leer el archivo. Use un Excel (.xlsx) o un CSV.');return;
     }
+    if(!muntaImport(files,nom,buf))return;
+    $('p-import').scrollIntoView({behavior:'smooth',block:'start'});
+  }
+  /* ENG-50 (ENG-26 lot 3) · el tram de després de llegir, compartit amb el canvi de
+     full. Abans vivia dins de `llegeixFitxerPacients`; en treure'l aquí, triar
+     un altre full passa exactament pel mateix camí que obrir el fitxer, i no
+     per una còpia que un dia divergiria. Es guarda també el buffer, que és
+     l'única manera de tornar a llegir sense demanar el fitxer un altre cop. */
+  function muntaImport(files,nom,buf){
     files=files.map(function(r){return r.map(function(c){return c==null?'':String(c)})});
     while(files.length&&!files[files.length-1].some(function(c){return c.trim()}))files.pop();
     var ambDades=files.filter(function(r){return r.some(function(c){return c.trim()})}).length;
-    if(!ambDades){avis('err','El archivo no tiene filas con datos.');return}
+    if(!ambDades){avis('err','El archivo no tiene filas con datos.');return false}
     /* ENG-27: 20.000 files (abans 5.000). Sense sostre per consulta, el fitxer
        d'una consulta de tota una vida ha de cabre en una sola importació. */
-    if(ambDades>20001){avis('err','El archivo tiene más de 20.000 filas. Divídalo en varios.');return}
+    if(ambDades>20001){avis('err','El archivo tiene más de 20.000 filas. Divídalo en varios.');return false}
     var cap=filaCapcalera(files);
-    importPendent={nomFitxer:nom,files:files,cap:cap,mapa:detectaMapa(files[cap]),completar:false,senseSep:csvSenseSeparador,full:fullLlegit};
+    importPendent={nomFitxer:nom,files:files,cap:cap,mapa:detectaMapa(files[cap]),completar:false,senseSep:csvSenseSeparador,full:fullLlegit,buf:buf};
     pintaImportPacients();
-    $('p-import').scrollIntoView({behavior:'smooth',block:'start'});
+    return true;
+  }
+  /* Tornar a llegir el mateix fitxer per un altre full. Si el full triat no es
+     pot llegir, l'anterior es queda com estava: val més el panell d'abans que
+     un panell buit sense explicació. */
+  async function canviaFullImport(i){
+    if(!importPendent||!importPendent.buf)return;
+    var nom=importPendent.nomFitxer,buf=importPendent.buf,anterior=importPendent,files;
+    try{files=await xlsxFiles(buf,i)}
+    catch(e){avis('err','No se ha podido leer esa hoja del archivo.');importPendent=anterior;pintaImportPacients();return}
+    if(!muntaImport(files,nom,buf)){importPendent=anterior;pintaImportPacients()}
   }
   safe(function(){
     $('b-pac-importar-btn').addEventListener('click',function(){$('b-pac-importar').click()});
@@ -3091,7 +3211,13 @@ th:first-child{border-top-left-radius:8px}th:last-child{border-top-right-radius:
   "Este formato no se puede leer directamente. Expórtelo como Excel (.xlsx) o como CSV.":["Aquest format no es pot llegir directament. Exporteu-lo com a Excel (.xlsx) o com a CSV.","Dieses Format kann nicht direkt gelesen werden. Exportieren Sie es als Excel (.xlsx) oder CSV.","This format cannot be read directly. Export it as Excel (.xlsx) or CSV."],
   "No se ha podido encontrar la hoja de cálculo dentro del archivo. Ábralo en Excel, vuelva a guardarlo como .xlsx e inténtelo de nuevo.":["No s'ha pogut trobar el full de càlcul dins del fitxer. Obriu-lo a l'Excel, torneu-lo a desar com a .xlsx i proveu-ho de nou.","Das Tabellenblatt konnte in der Datei nicht gefunden werden. Öffnen Sie sie in Excel, speichern Sie sie erneut als .xlsx und versuchen Sie es noch einmal.","The sheet could not be found inside the file. Open it in Excel, save it again as .xlsx and try again."],
   "Hoja leída: «{h}».":["Full llegit: «{h}».","Gelesenes Blatt: «{h}».","Sheet read: “{h}”."],
-  "Hoja leída: «{h}», de las {t} hojas del archivo. Si sus pacientes están en otra, muévalos a la primera hoja y vuelva a importar.":["Full llegit: «{h}», dels {t} fulls del fitxer. Si els vostres pacients són en un altre, moveu-los al primer full i torneu a importar.","Gelesenes Blatt: «{h}», von {t} Blättern der Datei. Wenn Ihre Patienten auf einem anderen Blatt stehen, verschieben Sie sie auf das erste Blatt und importieren Sie erneut.","Sheet read: “{h}”, of the {t} sheets in the file. If your patients are on another one, move them to the first sheet and import again."],
+  "Hoja leída: «{h}», de las {t} hojas del archivo. Si sus pacientes están en otra, elíjala en «Hoja del archivo».":["Full llegit: «{h}», dels {t} fulls del fitxer. Si els vostres pacients són en un altre, trieu-lo a «Full del fitxer».","Gelesenes Blatt: «{h}», von {t} Blättern der Datei. Wenn Ihre Patienten auf einem anderen Blatt stehen, wählen Sie es unter «Blatt der Datei» aus.","Sheet read: “{h}”, of the {t} sheets in the file. If your patients are on another one, choose it under “Sheet in the file”."],
+  "Hoja del archivo:":["Full del fitxer:","Blatt der Datei:","Sheet in the file:"],
+  "No se ha podido leer esa hoja del archivo.":["No s'ha pogut llegir aquest full del fitxer.","Dieses Blatt der Datei konnte nicht gelesen werden.","That sheet of the file could not be read."],
+  "Este archivo no es una hoja de cálculo: es una página web guardada con ese nombre. Vuelva a exportar sus pacientes desde el programa donde los tiene.":["Aquest fitxer no és un full de càlcul: és una pàgina web desada amb aquest nom. Torneu a exportar els vostres pacients des del programa on els teniu.","Diese Datei ist keine Tabellendatei: Es ist eine Webseite, die unter diesem Namen gespeichert wurde. Exportieren Sie Ihre Patienten erneut aus dem Programm, in dem Sie sie führen.","This file is not a spreadsheet: it is a web page saved under that name. Export your patients again from the program where you keep them."],
+  "Este archivo no es una hoja de cálculo ni un CSV: no contiene texto. Compruebe que ha elegido el archivo correcto.":["Aquest fitxer no és un full de càlcul ni un CSV: no conté text. Comproveu que heu triat el fitxer correcte.","Diese Datei ist weder eine Tabellendatei noch eine CSV-Datei: Sie enthält keinen Text. Prüfen Sie, ob Sie die richtige Datei ausgewählt haben.","This file is neither a spreadsheet nor a CSV: it contains no text. Check that you have chosen the right file."],
+  "Este archivo parece un Excel pero tiene datos delante y no se puede abrir. Ábralo en Excel y vuelva a guardarlo como .xlsx.":["Aquest fitxer sembla un Excel, però té dades al davant i no es pot obrir. Obriu-lo a l'Excel i torneu-lo a desar com a .xlsx.","Diese Datei sieht wie eine Excel-Datei aus, hat aber Daten davor und lässt sich nicht öffnen. Öffnen Sie sie in Excel und speichern Sie sie erneut als .xlsx.","This file looks like an Excel file but has data in front of it and cannot be opened. Open it in Excel and save it again as .xlsx."],
+  "No se ha podido leer la compresión (zip64) de este Excel. Ábralo en Excel y vuelva a guardarlo como .xlsx, o expórtelo como CSV.":["No s'ha pogut llegir la compressió (zip64) d'aquest Excel. Obriu-lo a l'Excel i torneu-lo a desar com a .xlsx, o exporteu-lo com a CSV.","Die Komprimierung (zip64) dieser Excel-Datei konnte nicht gelesen werden. Öffnen Sie sie in Excel und speichern Sie sie erneut als .xlsx, oder exportieren Sie sie als CSV.","The compression (zip64) of this Excel file could not be read. Open it in Excel and save it again as .xlsx, or export it as CSV."],
   "No se ha encontrado ningún separador de columnas (; , tabulador o |): el archivo se ha leído como una sola columna.":["No s'ha trobat cap separador de columnes (; , tabulador o |): el fitxer s'ha llegit com una sola columna.","Es wurde kein Spaltentrennzeichen gefunden (; , Tabulator oder |): Die Datei wurde als eine einzige Spalte gelesen.","No column separator was found (; , tab or |): the file has been read as a single column."],
   "El archivo no tiene filas con datos.":["El fitxer no té files amb dades.","Die Datei enthält keine Datenzeilen.","The file has no rows with data."],
   "El archivo tiene más de 20.000 filas. Divídalo en varios.":["El fitxer té més de 20.000 files. Dividiu-lo en diversos.","Die Datei hat mehr als 20.000 Zeilen. Teilen Sie sie auf.","The file has more than 20,000 rows. Split it into several files."],
